@@ -9,17 +9,15 @@ namespace GLUI {
 	// A button with a label inside, that can raise events when pressed/released
 	class Button : public Component {
 	protected:
-		bool clicked;				// Becomes true when the user clicks on a button, and remains true until the user released the left mouse button
-		Label* lbl_text;			// The label inside the button, its aligned mid-mid by default
-		Stopwatch watch_wait;		// Timer to watch when should the button start repeating button presses
-		Stopwatch watch_repeat;		// Timer to watch when should the button raise the next button press event
-		float wait_time;			// Time until repeating button presses after the first button press
-		float repeat_time;			// Time between repeated button presses
+		bool clicked;									// Becomes true when the user clicks on a button, and remains true until the user released the left mouse button
+		Label* lbl_text;								// The label inside the button, its aligned mid-mid by default
+		Stopwatch watch_wait;							// Timer to watch when should the button start repeating button presses
+		Stopwatch watch_repeat;							// Timer to watch when should the button raise the next button press event
+		float wait_time;								// Time until repeating button presses after the first button press
+		float repeat_time;								// Time between repeated button presses
 
-		// Raises a button pressed event
-		virtual void press_button(Event& e);
-		// Raises a button released event
-		virtual void release_button(Event& e);
+		virtual void press_button(Event& e);			// Raises a button pressed event
+		virtual void release_button(Event& e);			// Raises a button released event
 		virtual void handle_event(Event& e) override;
 		virtual void draw() override;
 	public:
