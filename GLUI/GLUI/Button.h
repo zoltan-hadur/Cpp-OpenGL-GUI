@@ -35,69 +35,66 @@ namespace GLUI {
 		float get_repeat_time();
 		// Returns the label
 		Label* get_label();
-		// Returns the 'clicked' variable
-		bool get_clicked();
 	};
 
 	// Raises a button pressed event
 	void Button::press_button(Event& e) {
-		border_width = active_border_width;										// The button press 'animation'
+		border_width = active_border_width;			// The button press 'animation'
 		clicked = true;
 		e.button_pressed = true;
 		e.button_released = false;
-		this->raise_event(this, e);												// Raise an event that the button was pressed
+		this->raise_event(this, e);					// Raise an event that the button was pressed
 		e.button_pressed = false;
 		e.button_released = false;
-		this->watch_wait.start();
+		this->watch_wait.start();					// Start waiting for repeated button presses
 	}
 
 	// Raises a button released event
 	void Button::release_button(Event& e) {
-		border_width = default_border_width;											// The button press 'animation' is over, decrease the border's width
+		border_width = default_border_width;		// The button press 'animation' is over, decrease the border's width
 		clicked = false;
 		e.button_pressed = false;
 		e.button_released = true;
-		this->raise_event(this, e);														// Raise an event that the button was released
+		this->raise_event(this, e);					// Raise an event that the button was released
 		e.button_pressed = false;
 		e.button_released = false;
 	}
 
 	void Button::handle_event(Event& e) {
-		float2 pos = this->get_absolute_position();											// The absolute position relative to the top-level window
-		if (pos.x < e.x && e.x < pos.x + width && pos.y < e.y && e.y < pos.y + height) {	// Check if the mouse was was above the button when the event happened
-			if (visible) {																	// Check if visible, because one does not simply press a button if it's invisible
-				this->highlighted = true;													// Highlight the button if the mouse is above the button
-				if (e.mouse_left && e.mouse_pressed & !clicked) {							// Check if the user clicked on the button with the left mouse button
-					this->press_button(e);
-				} else if (e.mouse_left_down) {
-					if (this->watch_wait.is_running()) {
-						if (this->watch_wait.get_elapsed_time() > this->wait_time-this->repeat_time) {
-							if (this->watch_repeat.is_running()) {
-								if (this->watch_repeat.get_elapsed_time() > this->repeat_time) {
-									this->release_button(e);
-									this->press_button(e);
-									this->watch_repeat.stop();
-									this->watch_repeat.start();
-								}
+		float2 pos = this->get_absolute_position();															// The absolute position relative to the top-level window
+		if (pos.x < e.x && e.x < pos.x + width && pos.y < e.y && e.y < pos.y + height) {					// Check if the mouse is above the button
+			if (visible) {																					// Check if visible, because one does not simply press a button if it's invisible
+				this->highlighted = true;																	// Highlight the button if the mouse is above the button
+				if (e.mouse_left && e.mouse_pressed & !clicked) {											// Check if the user clicked on the button with the left mouse button
+					this->press_button(e);																	// Then press the button
+				} else if (e.mouse_left_down) {																// Check if the user still holds the left mouse button after down
+					if (this->watch_wait.is_running()) {													// Check if wait watch is running
+						if (this->watch_wait.get_elapsed_time() > this->wait_time - this->repeat_time) {	// Check if enough time has elapsed to start repeating button presses
+							if (!this->watch_repeat.is_running()) {											// Check if repeat watch is running
+								this->watch_repeat.start();													// Start it if not running
 							} else {
-								this->watch_repeat.start();
+								if (this->watch_repeat.get_elapsed_time() > this->repeat_time) {			// Check if enough time has elapsed after the last repeated button event to start new ones
+									this->release_button(e);												// When the user clicked on the button, it never had the opportunity to release it
+									this->press_button(e);													// Thus the release-press process
+									this->watch_repeat.reset();												// Reset the repeat watch
+								}
 							}
 						}
 					}
 				} else {
-					this->watch_wait.stop();
+					this->watch_wait.stop();																// Stop repeating events if the user is not holding the left mouse button down anymore
 					this->watch_repeat.stop();
 				}
 			}
 		} else {
-			this->watch_wait.stop();
+			this->watch_wait.stop();																		// Stop repeating events if the mouse is not above the button
 			this->watch_repeat.stop();
 			if (!clicked) {
-				this->highlighted = false;														// Disable the highligh when the mouse is not above the button, and the button is not currently being pressed
+				this->highlighted = false;																	// Disable the highlight when the mouse is not above the button, and the button is not currently being pressed
 			}
 		}
-		if (e.mouse_left && e.mouse_released && clicked) {									// Check if the user released the left mouse button
-			this->release_button(e);
+		if (e.mouse_left && e.mouse_released && clicked) {													// Check if the user released the left mouse button
+			this->release_button(e);																		// Then raise the button
 		}
 	}
 
@@ -110,27 +107,31 @@ namespace GLUI {
 
 	// Label inside the button, the coordinates of the button, the size of the button, and the border's width of the button
 	Button::Button(std::string text, float x, float y, float width, float height, float border_width) : Component(x, y, width, height, border_width) {
-		this->wait_time = 0.5;
-		this->repeat_time = 0.10;
+		this->wait_time = 0.5;									// Default 0.5 sec until repeating button presses
+		this->repeat_time = 0.10;								// Default 0.1 sec between repeated button pressed
 
-		this->background_color = Color(120, 120, 120, 255);
+		this->background_color = Color(120, 120, 120, 255);		// Default grey color
 		this->clicked = false;
 		this->lbl_text = new Label(text);
 		this->add_component(this->lbl_text);
 	}
 
+	// Sets the wait time (minimum is 0.25 sec)
 	void Button::set_wait_time(float wait_time) {
 		this->wait_time = std::max(wait_time, 0.25f);
 	}
 
+	// Sets the repeat time (minimum is 0 sec)
 	void Button::set_repeat_time(float repeat_time) {
 		this->repeat_time = std::max(repeat_time, 0.0f);
 	}
 
+	// Gets the wait time
 	float Button::get_wait_time() {
 		return this->wait_time;
 	}
 
+	// Gets the repeat time
 	float Button::get_repeat_time() {
 		return this->repeat_time;
 	}
@@ -138,11 +139,6 @@ namespace GLUI {
 	// Returns the label
 	Label* Button::get_label() {
 		return lbl_text;
-	}
-
-	// Returns the 'clicked' variable
-	bool Button::get_clicked() {
-		return clicked;
 	}
 
 }
