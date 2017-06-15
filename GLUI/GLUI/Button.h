@@ -37,7 +37,6 @@ namespace GLUI {
 
 	// Raises a button pressed event
 	void Button::press_button(Event& e) {
-		this->border_width = this->active_border_width;		// The button press 'animation'
 		this->clicked = true;
 		e.button_pressed = true;
 		e.button_released = false;
@@ -49,7 +48,6 @@ namespace GLUI {
 
 	// Raises a button released event
 	void Button::release_button(Event& e) {
-		this->border_width = this->default_border_width;	// The button press 'animation' is over, decrease the border's width
 		this->clicked = false;
 		e.button_pressed = false;
 		e.button_released = true;
