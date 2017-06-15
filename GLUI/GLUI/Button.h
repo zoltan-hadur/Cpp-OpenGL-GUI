@@ -39,23 +39,23 @@ namespace GLUI {
 
 	// Raises a button pressed event
 	void Button::press_button(Event& e) {
-		border_width = active_border_width;			// The button press 'animation'
-		clicked = true;
+		this->border_width = this->active_border_width;		// The button press 'animation'
+		this->clicked = true;
 		e.button_pressed = true;
 		e.button_released = false;
-		this->raise_event(this, e);					// Raise an event that the button was pressed
+		this->raise_event(this, e);							// Raise an event that the button was pressed
 		e.button_pressed = false;
 		e.button_released = false;
-		this->watch_wait.start();					// Start waiting for repeated button presses
+		this->watch_wait.start();							// Start waiting for repeated button presses
 	}
 
 	// Raises a button released event
 	void Button::release_button(Event& e) {
-		border_width = default_border_width;		// The button press 'animation' is over, decrease the border's width
-		clicked = false;
+		this->border_width = this->default_border_width;	// The button press 'animation' is over, decrease the border's width
+		this->clicked = false;
 		e.button_pressed = false;
 		e.button_released = true;
-		this->raise_event(this, e);					// Raise an event that the button was released
+		this->raise_event(this, e);							// Raise an event that the button was released
 		e.button_pressed = false;
 		e.button_released = false;
 	}
@@ -63,9 +63,9 @@ namespace GLUI {
 	void Button::handle_event(Event& e) {
 		float2 pos = this->get_absolute_position();															// The absolute position relative to the top-level window
 		if (pos.x < e.x && e.x < pos.x + width && pos.y < e.y && e.y < pos.y + height) {					// Check if the mouse is above the button
-			if (visible) {																					// Check if visible, because one does not simply press a button if it's invisible
+			if (this->visible) {																			// Check if visible, because one does not simply press a button if it's invisible
 				this->highlighted = true;																	// Highlight the button if the mouse is above the button
-				if (e.mouse_left && e.mouse_pressed & !clicked) {											// Check if the user clicked on the button with the left mouse button
+				if (e.mouse_left && e.mouse_pressed & !this->clicked) {										// Check if the user clicked on the button with the left mouse button
 					this->press_button(e);																	// Then press the button
 				} else if (e.mouse_left_down) {																// Check if the user still holds the left mouse button after down
 					if (this->watch_wait.is_running()) {													// Check if wait watch is running
@@ -89,27 +89,26 @@ namespace GLUI {
 		} else {
 			this->watch_wait.stop();																		// Stop repeating events if the mouse is not above the button
 			this->watch_repeat.stop();
-			if (!clicked) {
+			if (!this->clicked) {
 				this->highlighted = false;																	// Disable the highlight when the mouse is not above the button, and the button is not currently being pressed
 			}
 		}
-		if (e.mouse_left && e.mouse_released && clicked) {													// Check if the user released the left mouse button
+		if (e.mouse_left && e.mouse_released && this->clicked) {											// Check if the user released the left mouse button
 			this->release_button(e);																		// Then raise the button
 		}
 	}
 
 	void Button::draw() {
-		lbl_text->set_position(default_border_width, default_border_width);					// Dynamically set the label's position to match the button's position
-		lbl_text->set_size(width - default_border_width, height - default_border_width);	// Dynamically set the label's size to match the button's size
-
-		Component::draw();																	// Draw the base component
+		this->lbl_text->set_position(this->default_border_width, this->default_border_width);							// Dynamically set the label's position to match the button's position
+		this->lbl_text->set_size(this->width - this->default_border_width, this->height - this->default_border_width);	// Dynamically set the label's size to match the button's size
+		this->border_width = this->clicked ? this->active_border_width : this->default_border_width;					// Border width is bigger when clicked (so animation, much wow)
+		Component::draw();																								// Draw the base component
 	}
 
 	// Label inside the button, the coordinates of the button, the size of the button, and the border's width of the button
 	Button::Button(std::string text, float x, float y, float width, float height, float border_width) : Component(x, y, width, height, border_width) {
 		this->wait_time = 0.5;									// Default 0.5 sec until repeating button presses
 		this->repeat_time = 0.10;								// Default 0.1 sec between repeated button pressed
-
 		this->background_color = Color(120, 120, 120, 255);		// Default grey color
 		this->clicked = false;
 		this->lbl_text = new Label(text);
@@ -138,7 +137,7 @@ namespace GLUI {
 
 	// Returns the label
 	Label* Button::get_label() {
-		return lbl_text;
+		return this->lbl_text;
 	}
 
 }
