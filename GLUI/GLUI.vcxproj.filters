@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\GLUI">
+      <UniqueIdentifier>{e377be79-ed4b-405d-a67b-79ef45a84ad8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Event">
+      <UniqueIdentifier>{43113d48-c1f8-4e74-8fa2-8027d477dc00}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="freeglut.dll">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Stopwatch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GLUI\Component.h">
+      <Filter>Header Files\GLUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Event\Event.h">
+      <Filter>Header Files\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Event\EventListener.h">
+      <Filter>Header Files\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Event\EventRaiser.h">
+      <Filter>Header Files\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="GLUI\Window.h">
+      <Filter>Header Files\GLUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GLUI\Button.h">
+      <Filter>Header Files\GLUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GLUI\CheckBox.h">
+      <Filter>Header Files\GLUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GLUI\ComboBox.h">
+      <Filter>Header Files\GLUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GLUI\Slider.h">
+      <Filter>Header Files\GLUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GLUI\Label.h">
+      <Filter>Header Files\GLUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GLUI\GLUI.h">
+      <Filter>Header Files\GLUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GLUI\ScrollPanel.h">
+      <Filter>Header Files\GLUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GLUI\TabbedPanel.h">
+      <Filter>Header Files\GLUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GLUI\Panel.h">
+      <Filter>Header Files\GLUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GLUI\TextBox.h">
+      <Filter>Header Files\GLUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GLUI\TextEditor.h">
+      <Filter>Header Files\GLUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GLUI\ProgressBar.h">
+      <Filter>Header Files\GLUI</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
