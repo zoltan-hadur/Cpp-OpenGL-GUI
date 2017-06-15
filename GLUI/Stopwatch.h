@@ -13,6 +13,7 @@ public:
 	void start(float time_to_live = 0);
 	void stop();
 	bool try_stop();
+	void reset();
 	bool is_running();
 	float get_delta_time();
 	float get_elapsed_time();
@@ -48,6 +49,11 @@ bool Stopwatch::try_stop() {
 	} else {
 		return false;
 	}
+}
+
+void Stopwatch::reset() {
+	this->stop();
+	this->start();
 }
 
 bool Stopwatch::is_running() {
