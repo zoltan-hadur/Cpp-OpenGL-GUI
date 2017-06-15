@@ -39,6 +39,7 @@ struct Event {
 	bool checkbox_unchecked;
 
 	// ComboBox
+	bool combobox_changed;
 	std::string combobox_selected;
 
 	// Slider
