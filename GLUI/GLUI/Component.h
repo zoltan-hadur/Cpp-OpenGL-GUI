@@ -8,6 +8,8 @@
 
 namespace GLUI {
 
+	// Structure to store 2 floating points, with + and - operator overload
+	// Used mainly for positions
 	struct float2 {
 		float x;
 		float y;
@@ -24,6 +26,9 @@ namespace GLUI {
 		}
 	};
 
+	// Struct to store colors, in RGBA form
+	// Constructor takes the usual variables in 0-255 range,
+	// but it stores them in the 0-1 range for OpenGL use
 	class Color {
 	private:
 		float R;
@@ -31,6 +36,7 @@ namespace GLUI {
 		float B;
 		float A;
 	public:
+		// RGBA, range: 0-255
 		Color(unsigned char R = 0U, unsigned char G = 0U, unsigned char B = 0U, unsigned char A = 255U) {
 			this->R = R / 255.0f;
 			this->G = G / 255.0f;
@@ -51,9 +57,10 @@ namespace GLUI {
 		}
 	};
 
+	// Abstract class, every gui element is a component
 	class Component : public EventRaiser {
 	protected:
-		Component* parent;								// Pointer to parent component
+		Component* parent;								// Parent component
 		std::list<Component*> children;					// Children components
 		static const unsigned char char_width = 9;		// Width of drawable char in pixels
 		static const unsigned char char_height = 16;	// Height of drawable char in pixels
@@ -61,11 +68,10 @@ namespace GLUI {
 		float width;									// Width of the component
 		float height;									// Height of the component
 		float border_width;								// Border width of the component
-		float active_border_width;						// Border width of the component on event
+		float active_border_width;						// Border width of the component on event (if the derived class handles it)
 		float default_border_width;						// Default border width of the component
 		bool visible;									// Determines if the component is visible (if set to false, no children will be drawn)
-		bool highlighted;								// Determines if the component is highlighted (mouse is on the component)
-		std::string title;								// Title of the component
+		bool highlighted;								// Determines if the component is highlighted (i.e. mouse is above the component, if the derived class handles it)
 		Color background_color;							// Color of the component's background
 		Color border_color;								// Color of the component's border
 		Color highlight_color;							// Color of the component's background when highlighted
@@ -90,7 +96,6 @@ namespace GLUI {
 		// Sets the width of the border of the component on screen in pixels
 		virtual void set_default_border_width(float border_width);
 		// Sets the title of the component
-		virtual void set_title(std::string title);
 		// Sets the background color
 		virtual void set_background_color(Color background_color);
 		// Sets the background color
@@ -122,7 +127,7 @@ namespace GLUI {
 		// Gets the highlight color of the component
 		virtual Color get_highlight_color();
 		// Gets visibility of the component
-		virtual bool get_visible();
+		virtual bool is_visible();
 
 		// Handles input events (keyboard, mouse)
 		// Just create events in the main loop and pass them to the top-level window
@@ -160,59 +165,62 @@ namespace GLUI {
 
 		// Draw border
 		// Top left quarter-circle
-		glColor4f(border_color.get_r(), border_color.get_g(), border_color.get_b(), border_color.get_a());
+		glColor4f(this->border_color.get_r(),
+				  this->border_color.get_g(),
+				  this->border_color.get_b(),
+				  this->border_color.get_a());
 		glBegin(GL_POLYGON);
-		for (int i = 0; i <= border_width; ++i) {
-			float t = M_PI + i * M_PI / 2.0f / border_width;
-			float r = border_width;
-			float x = r*cos(t) + pos.x + border_width;
-			float y = r*sin(t) + pos.y + border_width;
+		for (int i = 0; i <= this->border_width; ++i) {
+			float t = M_PI + i * M_PI / 2.0f / this->border_width;
+			float r = this->border_width;
+			float x = r*cos(t) + pos.x + this->border_width;
+			float y = r*sin(t) + pos.y + this->border_width;
 			glVertex2f(x, y);
 		}
 		// Top bar
-		glVertex2f(pos.x + border_width, pos.y);
-		glVertex2f(pos.x + width - border_width, pos.y);
+		glVertex2f(pos.x + this->border_width, pos.y);
+		glVertex2f(pos.x + this->width - this->border_width, pos.y);
 		// Top right quarter-circle
-		for (int i = 0; i <= border_width; ++i) {
-			float t = -M_PI / 2.0f + i * M_PI / 2.0f / border_width;
-			float r = border_width;
-			float x = r*cos(t) + pos.x + width - border_width;
-			float y = r*sin(t) + pos.y + border_width;
+		for (int i = 0; i <= this->border_width; ++i) {
+			float t = -M_PI / 2.0f + i * M_PI / 2.0f / this->border_width;
+			float r = this->border_width;
+			float x = r*cos(t) + pos.x + this->width - this->border_width;
+			float y = r*sin(t) + pos.y + this->border_width;
 			glVertex2f(x, y);
 		}
 		glEnd();
 		// Bot right quarter-circle
 		glBegin(GL_POLYGON);
-		for (int i = 0; i <= border_width; ++i) {
-			float t = i * M_PI / 2.0f / border_width;
-			float r = border_width;
-			float x = r*cos(t) + pos.x + width - border_width;
-			float y = r*sin(t) + pos.y + height - border_width;
+		for (int i = 0; i <= this->border_width; ++i) {
+			float t = i * M_PI / 2.0f / this->border_width;
+			float r = this->border_width;
+			float x = r*cos(t) + pos.x + this->width - this->border_width;
+			float y = r*sin(t) + pos.y + this->height - this->border_width;
 			glVertex2f(x, y);
 		}
 		// Bot bar
-		glVertex2f(pos.x + width - border_width, pos.y + height);
-		glVertex2f(pos.x + border_width, pos.y + height);
+		glVertex2f(pos.x + this->width - this->border_width, pos.y + this->height);
+		glVertex2f(pos.x + this->border_width, pos.y + this->height);
 		// Bot left quarter-circle
-		for (int i = 0; i <= border_width; ++i) {
-			float t = M_PI / 2.0f + i * M_PI / 2.0f / border_width;
-			float r = border_width;
-			float x = r*cos(t) + pos.x + border_width;
-			float y = r*sin(t) + pos.y + height - border_width;
+		for (int i = 0; i <= this->border_width; ++i) {
+			float t = M_PI / 2.0f + i * M_PI / 2.0f / this->border_width;
+			float r = this->border_width;
+			float x = r*cos(t) + pos.x + this->border_width;
+			float y = r*sin(t) + pos.y + this->height - this->border_width;
 			glVertex2f(x, y);
 		}
 		glEnd();
 		// Left bar
 		glBegin(GL_QUADS);
-		glVertex2f(pos.x, pos.y + border_width);
-		glVertex2f(pos.x + border_width, pos.y + border_width);
-		glVertex2f(pos.x + border_width, pos.y + height - border_width);
-		glVertex2f(pos.x, pos.y + height - border_width);
+		glVertex2f(pos.x, pos.y + this->border_width);
+		glVertex2f(pos.x + this->border_width, pos.y + this->border_width);
+		glVertex2f(pos.x + this->border_width, pos.y + this->height - this->border_width);
+		glVertex2f(pos.x, pos.y + this->height - this->border_width);
 		// Right bar
-		glVertex2f(pos.x + width - border_width, pos.y + border_width);
-		glVertex2f(pos.x + width, pos.y + border_width);
-		glVertex2f(pos.x + width, pos.y + height - border_width);
-		glVertex2f(pos.x + width - border_width, pos.y + height - border_width);
+		glVertex2f(pos.x + this->width - this->border_width, pos.y + this->border_width);
+		glVertex2f(pos.x + this->width, pos.y + this->border_width);
+		glVertex2f(pos.x + this->width, pos.y + this->height - this->border_width);
+		glVertex2f(pos.x + this->width - this->border_width, pos.y + this->height - this->border_width);
 		glEnd();
 
 		//// Draw border
@@ -226,34 +234,33 @@ namespace GLUI {
 
 		// Draw background
 		if (highlighted) {
-			glColor4f(highlight_color.get_r(), highlight_color.get_g(), highlight_color.get_b(), highlight_color.get_a());
+			glColor4f(this->highlight_color.get_r(),
+					  this->highlight_color.get_g(),
+					  this->highlight_color.get_b(),
+					  this->highlight_color.get_a());
 		} else {
-			glColor4f(background_color.get_r(), background_color.get_g(), background_color.get_b(), background_color.get_a());
+			glColor4f(this->background_color.get_r(),
+					  this->background_color.get_g(),
+					  this->background_color.get_b(),
+					  this->background_color.get_a());
 		}
 		glBegin(GL_QUADS);
-		glVertex2f(pos.x + border_width, pos.y + border_width);
-		glVertex2f(pos.x + width - border_width, pos.y + border_width);
-		glVertex2f(pos.x + width - border_width, pos.y + height - border_width);
-		glVertex2f(pos.x + border_width, pos.y + height - border_width);
+		glVertex2f(pos.x + this->border_width, pos.y + this->border_width);
+		glVertex2f(pos.x + this->width - this->border_width, pos.y + this->border_width);
+		glVertex2f(pos.x + this->width - this->border_width, pos.y + this->height - this->border_width);
+		glVertex2f(pos.x + this->border_width, pos.y + this->height - this->border_width);
 		glEnd();
-
-		// Draw title
-		if (!title.empty()) {
-			glColor4f(1, 1, 1, 1);
-			glRasterPos2f(pos.x + border_width + 5, pos.y + border_width + char_height);
-			glutBitmapString(GLUT_BITMAP_9_BY_15, (const unsigned char*)title.c_str());
-		}
 	}
 
 	// Adds a component
 	void Component::add_component(Component* c) {
 		c->parent = this;
-		children.push_back(c);
+		this->children.push_back(c);
 	}
 
 	// Removes a component
 	void Component::remove_component(Component* c) {
-		children.remove(c);
+		this->children.remove(c);
 	}
 
 	// Sets the position of the component on screen in pixels relative to the parent component
@@ -277,11 +284,6 @@ namespace GLUI {
 		this->default_border_width = border_width;
 		this->border_width = border_width;
 		this->active_border_width = border_width + 2;
-	}
-
-	// Sets the title of the component
-	void Component::set_title(std::string title) {
-		this->title = title;
 	}
 
 	// Sets the background color
@@ -330,9 +332,9 @@ namespace GLUI {
 	// Gets the absolute position of the component
 	float2 Component::get_absolute_position() {
 		if (this->parent == nullptr) {
-			return pos;
+			return this->pos;
 		} else {
-			return pos + parent->get_absolute_position();
+			return this->pos + parent->get_absolute_position();
 		}
 	}
 
@@ -367,7 +369,7 @@ namespace GLUI {
 	}
 
 	// Gets visibility of the component
-	bool Component::get_visible() {
+	bool Component::is_visible() {
 		return this->visible;
 	}
 
@@ -382,7 +384,7 @@ namespace GLUI {
 	// Draws the component and it's children components
 	// Just call it on a window object, and all children components will be drawn
 	void Component::render() {
-		if (visible) {
+		if (this->visible) {
 			glMatrixMode(GL_PROJECTION); glPushMatrix(); glLoadIdentity();								// Save current projection matrix
 			glOrtho(0.0f, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), 0.0f, -1.0f, 1.0f);	// Transform it to able to draw in pixel coordinates
 			glMatrixMode(GL_MODELVIEW); glPushMatrix(); glLoadIdentity();								// Save current modelview matrix
