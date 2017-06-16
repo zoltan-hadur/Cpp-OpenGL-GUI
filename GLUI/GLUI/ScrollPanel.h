@@ -11,8 +11,8 @@ namespace GLUI {
 	protected:
 		enum class ALIGN;		// Forward declaration
 
-		Slider* scroll_bar;		// The scroll bar
 		ALIGN align;			// Determines the alignment, either horizontal or vertical
+		Slider* scroll_bar;		// The scroll bar
 		float2 max_pos;			// Dynamically gets calculated to determine how far the user can scroll
 
 		virtual void handle_event(Event& e) override;
