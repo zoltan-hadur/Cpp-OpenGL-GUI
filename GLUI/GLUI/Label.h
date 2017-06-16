@@ -14,6 +14,7 @@ namespace GLUI {
 		H_ALIGN h_align;		// Determines the horizontal alignment
 		V_ALIGN v_align;		// Determines the vertical alignment
 
+		virtual void handle_event(Event& e) override;
 		virtual void draw(bool draw_background = true) override;
 	public:
 		enum class H_ALIGN {	// Horizontal alignment values
@@ -42,6 +43,10 @@ namespace GLUI {
 		// Get the vertical alignment
 		V_ALIGN get_v_align();
 	};
+
+	void Label::handle_event(Event& e) {
+
+	}
 
 	void Label::draw(bool draw_background) {
 		if (!text.empty()) {
