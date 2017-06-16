@@ -21,6 +21,8 @@ namespace GLUI {
 		virtual void handle_event(Event& e) override;
 		virtual void draw(bool draw_background = true) override;
 	public:
+		// To listen on the children component's events
+		virtual void action_performed(void* sender, Event& e) override;
 		// The coordinates of the combo box, the size of the combo box, and the border's width of the combo box
 		ComboBox(float x = 0, float y = 0, float width = 100, float height = 20, float border_width = 1);
 		// Adds an element to the combo box
@@ -29,8 +31,6 @@ namespace GLUI {
 		void remove_element(std::string text);
 		// To properly handle the drop down list
 		virtual void set_visible(bool visible) override;
-		// To listen on the children component's events
-		virtual void action_performed(void* sender, Event& e) override;
 	};
 
 	void ComboBox::handle_event(Event& e) {
@@ -39,6 +39,28 @@ namespace GLUI {
 
 	void ComboBox::draw(bool draw_background) {
 		Component::draw();
+	}
+
+	// To listen on the children component's events
+	void ComboBox::action_performed(void* sender, Event& e) {
+		if (e.button_pressed) {									// If a button was pressed
+			if (sender == this->btn_drop_down) {				// And it was the drop down button
+				this->dropped_down = !this->dropped_down;		// The list opens if it was closed, and closes of it was opened
+				this->set_visible(true);						// So need to refresh the visibility tree
+			} else {											// Else a button in the drop down list was pressed
+				std::string text =
+					((Button*)sender)->get_label()->get_text();	// Get the selected item's text
+				if (text != this->lbl_selected->get_text()) {	// If the previously selected item differs from the one selected now
+					this->lbl_selected->set_text(text);			// Change the text
+					e.combobox_changed = true;
+					e.combobox_selected = text;
+					this->raise_event(this, e);					// Raise an event that the selected item changed
+					e.combobox_changed = false;
+				}
+				this->dropped_down = false;						// The drop down list automatically closes when an item is selected from it
+				this->set_visible(true);						// Thus the refresh
+			}
+		}
 	}
 
 	// The coordinates of the combo box, the size of the combo box, and the border's width the of the combo box
@@ -85,28 +107,6 @@ namespace GLUI {
 		Component::set_visible(visible);						// Sets all component's visibility
 		if (visible) {											// But if the combobox is visible
 			this->scp_list->set_visible(this->dropped_down);	// The dropdown list is not sure visible
-		}
-	}
-
-	// To listen on the children component's events
-	void ComboBox::action_performed(void* sender, Event& e) {
-		if (e.button_pressed) {									// If a button was pressed
-			if (sender == this->btn_drop_down) {				// And it was the drop down button
-				this->dropped_down = !this->dropped_down;		// The list opens if it was closed, and closes of it was opened
-				this->set_visible(true);						// So need to refresh the visibility tree
-			} else {											// Else a button in the drop down list was pressed
-				std::string text =
-					((Button*)sender)->get_label()->get_text();	// Get the selected item's text
-				if (text != this->lbl_selected->get_text()) {	// If the previously selected item differs from the one selected now
-					this->lbl_selected->set_text(text);			// Change the text
-					e.combobox_changed = true;
-					e.combobox_selected = text;
-					this->raise_event(this, e);					// Raise an event that the selected item changed
-					e.combobox_changed = false;
-				}
-				this->dropped_down = false;						// The drop down list automatically closes when an item is selected from it
-				this->set_visible(true);						// Thus the refresh
-			}
 		}
 	}
 
