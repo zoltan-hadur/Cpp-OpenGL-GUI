@@ -77,6 +77,8 @@ namespace GLUI {
 	// Sets the label
 	void Label::set_text(std::string text) {
 		this->text = text;
+		this->width = std::max(width, (float)(text.size() * char_width));	// Minimum width is the width of the text in pixels
+		this->height = std::max(height, (float)char_height);				// Minimum height is the width of the text in pixels
 	}
 
 	// Sets the horizontal alignment
