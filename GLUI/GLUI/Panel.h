@@ -24,7 +24,7 @@ namespace GLUI {
 	};
 
 	void Panel::handle_event(Event& e) {
-		if (dragged) {																// If dragged
+		if (this->dragged) {														// If dragged
 			if (e.mouse_moved) {													// And the mouse moved
 				this->set_position(this->get_position() + float2(e.dx, e.dy));		// Reposition the panel
 			}
