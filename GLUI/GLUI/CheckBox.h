@@ -13,7 +13,7 @@ namespace GLUI {
 		virtual void check_checkbox(Event& e);			// Raises a checkbox checked event
 		virtual void uncheck_checkbox(Event& e);		// Raises a checkbox unchecked event
 		virtual void handle_event(Event& e) override;
-		virtual void draw() override;
+		virtual void draw(bool draw_background = true) override;
 	public:
 		// To listen on inner component events
 		virtual void action_performed(void* sender, Event& e) override;
@@ -49,7 +49,7 @@ namespace GLUI {
 
 	}
 
-	void CheckBox::draw() {
+	void CheckBox::draw(bool draw_background) {
 		if (checked) {
 			this->btn_check->get_label()->set_text("X");
 		} else {

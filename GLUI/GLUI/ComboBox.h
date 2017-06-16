@@ -19,7 +19,7 @@ namespace GLUI {
 		float element_offset;				// For element addition alignment
 
 		virtual void handle_event(Event& e) override;
-		virtual void draw() override;
+		virtual void draw(bool draw_background = true) override;
 	public:
 		// The coordinates of the combo box, the size of the combo box, and the border's width of the combo box
 		ComboBox(float x = 0, float y = 0, float width = 100, float height = 20, float border_width = 2);
@@ -37,7 +37,7 @@ namespace GLUI {
 
 	}
 
-	void ComboBox::draw() {
+	void ComboBox::draw(bool draw_background) {
 		Component::draw();
 	}
 

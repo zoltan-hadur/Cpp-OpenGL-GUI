@@ -19,7 +19,7 @@ namespace GLUI {
 		virtual void press_button(Event& e);			// Raises a button pressed event
 		virtual void release_button(Event& e);			// Raises a button released event
 		virtual void handle_event(Event& e) override;
-		virtual void draw() override;
+		virtual void draw(bool draw_background = true) override;
 	public:
 		// Label inside the button, the coordinates of the button, the size of the button, and the border's width of the button
 		Button(std::string text = "Button", float x = 0, float y = 0, float width = 100, float height = 20, float border_width = 1);
@@ -94,7 +94,7 @@ namespace GLUI {
 		}
 	}
 
-	void Button::draw() {
+	void Button::draw(bool draw_background) {
 		this->lbl_text->set_position(this->default_border_width, this->default_border_width);							// Dynamically set the label's position to match the button's position
 		this->lbl_text->set_size(this->width - this->default_border_width, this->height - this->default_border_width);	// Dynamically set the label's size to match the button's size
 		this->border_width = this->clicked ? this->active_border_width : this->default_border_width;					// Border width is bigger when clicked (so animation, much wow)
