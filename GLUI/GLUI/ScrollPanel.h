@@ -48,6 +48,21 @@ namespace GLUI {
 	}
 
 	void ScrollPanel::draw(bool draw_background) {
+		switch (this->align) {	// Position the slider in the panel according to it's alignment and it's size
+			case ALIGN::HORIZONTAL:
+				this->scroll_bar->set_position(this->default_border_width / 2,							// X
+											   this->height - 20 - this->default_border_width / 2);		// Y
+				this->scroll_bar->set_size(this->width - this->default_border_width,					// Width
+										   20);															// Height
+				break;
+			case ALIGN::VERTICAL:
+				this->scroll_bar->set_position(this->width - 20 - this->default_border_width / 2,		// X
+											   this->default_border_width / 2);							// Y
+				this->scroll_bar->set_size(20,															// Width
+										   this->height - this->default_border_width);					// Height
+				break;
+		}
+
 		for (auto c : this->children) {														// Get the farthest components bottom right corner's absolute coordinates relative to the scroll panel
 			float2 pos = c->get_absolute_position() - this->get_absolute_position();		// Get absolute position relative to the scroll panel
 			pos = pos + float2(c->get_width(), c->get_height());							// Bottom right corner
