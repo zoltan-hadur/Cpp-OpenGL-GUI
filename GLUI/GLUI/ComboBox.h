@@ -22,7 +22,7 @@ namespace GLUI {
 		virtual void draw(bool draw_background = true) override;
 	public:
 		// The coordinates of the combo box, the size of the combo box, and the border's width of the combo box
-		ComboBox(float x = 0, float y = 0, float width = 100, float height = 20, float border_width = 2);
+		ComboBox(float x = 0, float y = 0, float width = 100, float height = 20, float border_width = 1);
 		// Adds an element to the combo box
 		void add_element(std::string text);
 		// Removes an element from the combo box (or multiple, if there are multiplte elements with the same name)
@@ -45,7 +45,7 @@ namespace GLUI {
 	ComboBox::ComboBox(float x, float y, float width, float height, float border_width) : Component(x, y, width, height, border_width) {
 		this->dropped_down = false;
 		this->element_offset = 0;
-
+		this->background_color = Color(120, 120, 120, 255);		// Default grey color
 		this->lbl_selected = new Label("", 0, 0, width - 20, 20);
 		this->btn_drop_down = new Button(R"(\/)", width - 20 - border_width / 2, border_width / 2, 20, 20 - border_width);
 		this->btn_drop_down->add_event_listener(this);
