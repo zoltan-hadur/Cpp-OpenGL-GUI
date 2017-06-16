@@ -29,8 +29,6 @@ namespace GLUI {
 		void add_element(std::string text);
 		// Removes an element from the combo box (or multiple, if there are multiplte elements with the same name)
 		void remove_element(std::string text);
-		// To properly handle the drop down list
-		virtual void set_visible(bool visible) override;
 	};
 
 	void ComboBox::handle_event(Event& e) {
@@ -38,16 +36,21 @@ namespace GLUI {
 	}
 
 	void ComboBox::draw(bool draw_background) {
+		if (this->visible) {									// If the combobox is visible
+			this->scp_list->set_visible(this->dropped_down);	// The dropdown list is not sure visible
+		}
 		Component::draw();
 	}
 
 	// To listen on the children component's events
 	void ComboBox::action_performed(void* sender, Event& e) {
-		if (e.button_pressed) {									// If a button was pressed
-			if (sender == this->btn_drop_down) {				// And it was the drop down button
+		if (sender == this->btn_drop_down) {					// If the drop down button
+			if (e.button_pressed) {								// Was pressed
 				this->dropped_down = !this->dropped_down;		// The list opens if it was closed, and closes of it was opened
 				this->set_visible(true);						// So need to refresh the visibility tree
-			} else {											// Else a button in the drop down list was pressed
+			}
+		} else {												// Else
+			if (e.button_released) {							// If any button in the drop down list was pressed
 				std::string text =
 					((Button*)sender)->get_label()->get_text();	// Get the selected item's text
 				if (text != this->lbl_selected->get_text()) {	// If the previously selected item differs from the one selected now
@@ -99,14 +102,6 @@ namespace GLUI {
 				this->btn_elements.remove(c);					// Remove the element from the combobox
 				break;
 			}
-		}
-	}
-
-	// To properly handle the drop down list
-	void ComboBox::set_visible(bool visible) {
-		Component::set_visible(visible);						// Sets all component's visibility
-		if (visible) {											// But if the combobox is visible
-			this->scp_list->set_visible(this->dropped_down);	// The dropdown list is not sure visible
 		}
 	}
 
