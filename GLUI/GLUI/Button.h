@@ -58,7 +58,7 @@ namespace GLUI {
 
 	void Button::handle_event(Event& e) {
 		float2 pos = this->get_absolute_position();															// The absolute position relative to the top-level window
-		if (pos.x < e.x && e.x < pos.x + width && pos.y < e.y && e.y < pos.y + height) {					// Check if the mouse is above the button
+		if (pos.x < e.x && e.x < pos.x + this->width && pos.y < e.y && e.y < pos.y + this->height) {		// Check if the mouse is above the button
 			if (this->visible) {																			// Check if visible, because one does not simply press a button if it's invisible
 				this->highlighted = true;																	// Highlight the button if the mouse is above the button
 				if (e.mouse_left && e.mouse_pressed & !this->clicked) {										// Check if the user clicked on the button with the left mouse button
