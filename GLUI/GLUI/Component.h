@@ -81,7 +81,7 @@ namespace GLUI {
 		// Raises events according to the input events
 		virtual void handle_event(Event& e);
 		// Draws the component
-		virtual void draw();
+		virtual void draw(bool draw_background = true);
 	public:
 		// Adds a component
 		virtual void add_component(Component* c);
@@ -160,7 +160,11 @@ namespace GLUI {
 	}
 
 	// Draws the component
-	void Component::draw() {
+	void Component::draw(bool draw_background) {
+		if (!draw_background) {
+			return;
+		}
+
 		float2 pos = this->get_absolute_position();
 
 		// Draw border
