@@ -7,28 +7,28 @@ namespace GLUI {
 
 	class Slider : public EventListener, public Component {
 	protected:
-		enum class ALIGN;		// Forward declaration
+		enum class ALIGN;				// Forward declaration
 
-		ALIGN align;			// Determines the alignment, either horizontal of vertical
-		Button* left;			// Button on the left when horizontal
-		Button* right;			// Button on the right when horizontal
-		Button* indicator;		// Button between left and right, the slider itself
-		Stopwatch watch;		// Timer to watch when should the indicator start moving towards the mouse
-		float wait_time;		// Time until the indicator starts to move towards the mouse
-		float speed;			// Determines how fast the indicator moves towards the mouse
-		bool dragged;			// Becomes true when the user clicks on the indicator button, and false when releases the left mouse button
-		float min;				// The minimum value that the slider can hold
-		float max;				// The maximum value that the slider can hold
-		float value;			// The value that the slider holds, between min and max
-		float increment;		// Determines how much the value changes
+		ALIGN align;					// Determines the alignment, either horizontal of vertical
+		Button* btn_left;				// Button on the left when horizontal
+		Button* btn_right;				// Button on the right when horizontal
+		Button* btn_indicator;			// Button between left and right, the slider itself
+		Stopwatch watch;				// Timer to watch when should the indicator start moving towards the mouse
+		float wait_time;				// Time until the indicator starts to move towards the mouse
+		float speed;					// Determines how fast the indicator moves towards the mouse
+		bool dragged;					// Becomes true when the user clicks on the indicator button, and false when releases the left mouse button
+		float min;						// The minimum value that the slider can hold
+		float max;						// The maximum value that the slider can hold
+		float value;					// The value that the slider holds, between min and max
+		float increment;				// Determines how much the value changes
 		float2 indicator_pos_offset;	// For moving the indicator with the mouse
 
 		virtual void handle_event(Event& e) override;
 		virtual void draw(bool draw_background = true) override;
 	public:
 		enum class ALIGN {
-			HORIZONTAL,			// Horizontal alignment
-			VERTICAL			// Vertical alignment
+			HORIZONTAL,					// Horizontal alignment
+			VERTICAL					// Vertical alignment
 		};
 
 		// To listen on inner component events
@@ -68,30 +68,30 @@ namespace GLUI {
 
 	// To listen on inner component events
 	void Slider::action_performed(void* sender, Event& e) {
-		if (e.button_pressed) {																		// Check if any component button was pressed
-			if (sender == this->left) {																// If the left button was pressed,
-				this->dec_value();																	// Decrease the value
-			} else if (sender == this->right) {														// If the right button was pressed,
-				this->inc_value();																	// Increase the value
-			} else if (sender == this->indicator) {													// If the indicator button was pressed
-				this->dragged = true;																// The user possibly wants to drag it with the mouse
+		if (e.button_pressed) {																			// Check if any component button was pressed
+			if (sender == this->btn_left) {																// If the left button was pressed,
+				this->dec_value();																		// Decrease the value
+			} else if (sender == this->btn_right) {														// If the right button was pressed,
+				this->inc_value();																		// Increase the value
+			} else if (sender == this->btn_indicator) {													// If the indicator button was pressed
+				this->dragged = true;																	// The user possibly wants to drag it with the mouse
 				float2 pos = this->get_position();
-				this->indicator_pos_offset = float2(e.x, e.y) - this->indicator->get_position();	// Thus the offset
+				this->indicator_pos_offset = float2(e.x, e.y) - this->btn_indicator->get_position();	// Thus the offset
 			}
 		}
 	}
 
 	void Slider::handle_event(Event& e) {
-		float old_val = this->value;																// To determine at the end of this method if the value has changed
+		float old_val = this->value;																	// To determine at the end of this method if the value has changed
 		float2 pos = this->get_absolute_position();
-		float2 pos_offset = (this->align == ALIGN::HORIZONTAL) ? float2(15, 0) : float2(0, 15);		// The left and right buttons has a 15 width/height according to the alignment
+		float2 pos_offset = (this->align == ALIGN::HORIZONTAL) ? float2(15, 0) : float2(0, 15);			// The left and right buttons has a 15 width/height according to the alignment
 
-		if (this->dragged) {																		// If the indicator is dragged
+		if (this->dragged) {																			// If the indicator is dragged
 			float2 pos = float2(e.x, e.y) - this->indicator_pos_offset;
-			switch (this->align) {																	// Move it according to the mouse positios
+			switch (this->align) {																		// Move it according to the mouse positios
 				case ALIGN::HORIZONTAL:
 				{
-					pos.x = std::min(pos.x, (float)(this->width - 15 - 20));						// The indicator has a 20 width/height according to the alignment
+					pos.x = std::min(pos.x, (float)(this->width - 15 - 20));							// The indicator has a 20 width/height according to the alignment
 					pos.x = std::max(pos.x, (float)15);
 					this->value = (this->max - this->min)*(pos.x - 15) / (this->width - 50);
 					break;
@@ -115,18 +115,18 @@ namespace GLUI {
 						switch (this->align) {
 							case ALIGN::HORIZONTAL:
 							{
-								if (e.x < this->indicator->get_absolute_position().x) {
+								if (e.x < this->btn_indicator->get_absolute_position().x) {
 									this->set_value(this->get_value() - dt);
-								} else if (e.x > this->indicator->get_absolute_position().x + this->indicator->get_width()) {
+								} else if (e.x > this->btn_indicator->get_absolute_position().x + this->btn_indicator->get_width()) {
 									this->set_value(this->get_value() + dt);
 								}
 								break;
 							}
 							case ALIGN::VERTICAL:
 							{
-								if (e.y < this->indicator->get_absolute_position().y) {
+								if (e.y < this->btn_indicator->get_absolute_position().y) {
 									this->set_value(this->get_value() - dt);
-								} else if (e.y > this->indicator->get_absolute_position().y + this->indicator->get_height()) {
+								} else if (e.y > this->btn_indicator->get_absolute_position().y + this->btn_indicator->get_height()) {
 									this->set_value(this->get_value() + dt);
 								}
 								break;
@@ -157,32 +157,32 @@ namespace GLUI {
 		switch (this->align) {
 			case ALIGN::HORIZONTAL:
 			{
-				this->left->get_label()->set_text("<");
-				this->left->set_size(16, this->height);
-				this->left->set_position(0, 0);
+				this->btn_left->get_label()->set_text("<");
+				this->btn_left->set_size(16, this->height);
+				this->btn_left->set_position(0, 0);
 
-				this->right->get_label()->set_text(">");
-				this->right->set_size(16, this->height);
-				this->right->set_position(this->width - 16, 0);
+				this->btn_right->get_label()->set_text(">");
+				this->btn_right->set_size(16, this->height);
+				this->btn_right->set_position(this->width - 16, 0);
 
-				this->indicator->get_label()->set_text("|");
-				this->indicator->set_size(20, this->height);
-				this->indicator->set_position(15 + (this->width - 50)*(this->value + this->min) / (this->max - this->min), 0);
+				this->btn_indicator->get_label()->set_text("|");
+				this->btn_indicator->set_size(20, this->height);
+				this->btn_indicator->set_position(15 + (this->width - 50)*(this->value + this->min) / (this->max - this->min), 0);
 				break;
 			}
 			case ALIGN::VERTICAL:
 			{
-				this->right->get_label()->set_text(R"(\/)");
-				this->right->set_size(this->width, 16);
-				this->right->set_position(0, this->height - 16);
+				this->btn_right->get_label()->set_text(R"(\/)");
+				this->btn_right->set_size(this->width, 16);
+				this->btn_right->set_position(0, this->height - 16);
 
-				this->left->get_label()->set_text(R"(/\)");
-				this->left->set_size(this->width, 16);
-				this->left->set_position(0, 0);
+				this->btn_left->get_label()->set_text(R"(/\)");
+				this->btn_left->set_size(this->width, 16);
+				this->btn_left->set_position(0, 0);
 
-				this->indicator->get_label()->set_text("-");
-				this->indicator->set_size(this->width, 20);
-				this->indicator->set_position(0, 15 + (this->height - 50)*(this->value + this->min) / (this->max - this->min));
+				this->btn_indicator->get_label()->set_text("-");
+				this->btn_indicator->set_size(this->width, 20);
+				this->btn_indicator->set_position(0, 15 + (this->height - 50)*(this->value + this->min) / (this->max - this->min));
 				break;
 			}
 		}
@@ -215,15 +215,15 @@ namespace GLUI {
 		this->increment = (max - min) / 10;
 		this->dragged = false;
 
-		this->left = new Button();
-		this->right = new Button();
-		this->indicator = new Button();
-		this->add_component(this->left);
-		this->add_component(this->right);
-		this->add_component(this->indicator);
-		this->left->add_event_listener(this);
-		this->right->add_event_listener(this);
-		this->indicator->add_event_listener(this);
+		this->btn_left = new Button();
+		this->btn_right = new Button();
+		this->btn_indicator = new Button();
+		this->add_component(this->btn_left);
+		this->add_component(this->btn_right);
+		this->add_component(this->btn_indicator);
+		this->btn_left->add_event_listener(this);
+		this->btn_right->add_event_listener(this);
+		this->btn_indicator->add_event_listener(this);
 
 		if (height <= width) {
 			this->align = ALIGN::HORIZONTAL;
@@ -254,14 +254,14 @@ namespace GLUI {
 
 	// Sets the min
 	void Slider::set_min(float min) {
-		this->min = std::min(min, this->max);		// Can't be bigger than max
-		this->value = std::max(this->value, min);	// Adjust the value if new min is bigger than value
+		this->min = std::min(min, this->max);			// Can't be bigger than max
+		this->value = std::max(this->value, min);		// Adjust the value if new min is bigger than value
 	}
 
 	// Sets the max
 	void Slider::set_max(float max) {
-		this->max = std::max(max, this->min);		// Can't be smaller than min
-		this->value = std::min(this->value, max);	// Adjust eh value if new max is smaller than value
+		this->max = std::max(max, this->min);			// Can't be smaller than min
+		this->value = std::min(this->value, max);		// Adjust eh value if new max is smaller than value
 	}
 
 	// Sets the value (will be between min and max)
@@ -271,7 +271,7 @@ namespace GLUI {
 
 	// Sets the increment
 	void Slider::set_increment(float increment) {
-		this->increment = std::max(increment, 1.0f);// Can't be smaller than 1
+		this->increment = std::max(increment, 1.0f);	// Can't be smaller than 1
 	}
 
 	// Sets the wait time
@@ -281,7 +281,7 @@ namespace GLUI {
 
 	// Sets the speed
 	void Slider::set_speed(float speed) {
-		this->speed = std::max(speed, 10.0f);		// Can't be smaller than 10
+		this->speed = std::max(speed, 10.0f);			// Can't be smaller than 10
 	}
 
 	// Gets the min
