@@ -10,6 +10,9 @@ namespace GLUI {
 
 	class TextEditor : public Component {
 	private:
+		enum class TYPE;
+
+		TYPE type;
 		Stopwatch watch;
 		float acc;
 
@@ -35,30 +38,21 @@ namespace GLUI {
 		void cursor_move_down();					// Moves the cursor by one line down
 		void cursor_jump_left();					// Moves the cursor to the top left (like pressing home in a text editor)
 		void cursor_jump_right();					// Moves the cursor to the top right (like pressing end in a text editor)
-
 		void draw_selection(float x, float y);		// Draws quads upon selected text in the buffer
 	protected:
-		TextEditor(float x = 0, float y = 0, float width = 100, float height = 20);
-	public:
-		void set_focus(bool focused);
-		bool get_focus();
+		TextEditor(TYPE type, float x = 0, float y = 0, float width = 100, float height = 20);
+
 		virtual void handle_event(Event& e) override;
-		virtual void draw() override;
+		virtual void draw(bool draw_background = true) override;
+	public:
+		enum class TYPE {	// Determines that the text editor can edit single or multiple lines
+			SINGLE_LINE,	// Text editor has only one editable line
+			MULTI_LINE		// Text editor has multiple editable line
+		};
+
+		void set_focus(bool focused);
+		bool has_focus();
 	};
-
-	TextEditor::TextEditor(float x, float y, float width, float height) : Component(x, y, width, height) {
-		this->watch = Stopwatch();
-		watch.start();
-		this->acc = 0;
-		this->focused = false;
-		this->pos_cursor = 0;
-		this->pos_selection = false;
-		this->active_shift = false;
-		this->buffer = std::deque<unsigned char>();
-
-		this->window_start = 0;
-		this->window_end = (width - char_width) / char_width;
-	}
 
 	void TextEditor::insert_char(unsigned char key) {
 		if (selecting_buffer_input) {												// WHen selecting_buffer_input
@@ -92,7 +86,7 @@ namespace GLUI {
 #ifdef linux
 		throw "Getting clipboard text on linux with ctrl+c or ctrl+x is not supported!";
 #endif
-		}
+	}
 
 	void TextEditor::set_clipboard_text(std::string copy) {
 #ifdef _WIN32
@@ -113,7 +107,7 @@ namespace GLUI {
 #ifdef linux
 		throw "Setting clipboard text on linux with ctrl+v is not supported!";
 #endif
-		}
+	}
 
 	void TextEditor::delete_char_before() {
 		if (selecting_buffer_input) {												// Delete the whole selection when selecting_buffer_input
@@ -160,7 +154,7 @@ namespace GLUI {
 	}
 
 	void TextEditor::cursor_move_up() {
-		if ((int)height / char_height == 1) {										// Does nothing when TextBox is a single line TextBox
+		if (this->type == TYPE::SINGLE_LINE) {										// Does nothing when TextBox is a single line TextBox
 			return;
 		}
 
@@ -215,7 +209,7 @@ namespace GLUI {
 	}
 
 	void TextEditor::cursor_move_down() {
-		if ((int)height / char_height == 1) {										// Does nothing when TextBox is a single line TextBox
+		if (this->type == TYPE::SINGLE_LINE) {										// Does nothing when TextBox is a single line TextBox
 			return;
 		}
 
@@ -296,7 +290,7 @@ namespace GLUI {
 			selecting_buffer_input = false;
 		}
 
-		if ((int)height / char_height == 1) {										// Jumps to the top left when TextBox is a single line TextBox
+		if (this->type == TYPE::SINGLE_LINE) {										// Jumps to the top left when TextBox is a single line TextBox
 			pos_cursor = 0;
 			return;
 		}
@@ -331,7 +325,7 @@ namespace GLUI {
 			selecting_buffer_input = false;
 		}
 
-		if ((int)height / char_height == 1) {										// Jumps to the top right when TextBox is a single line TextBox
+		if (this->type == TYPE::SINGLE_LINE) {										// Jumps to the top right when TextBox is a single line TextBox
 			pos_cursor = buffer.size();
 			return;
 		}
@@ -339,7 +333,7 @@ namespace GLUI {
 		float2 start_pos = this->get_absolute_position() + float2(default_border_width + char_width / 2, default_border_width + char_width * 3 / 2);
 		float2 pos = start_pos;
 		float max_pos_x = start_pos.x + width - char_width * 2;
-		
+
 		for (int i = 0; i < pos_cursor; ++i) {
 			unsigned char c = buffer[i];
 			if (c == '\n' || c == '\r' || pos.x > max_pos_x) {
@@ -370,12 +364,19 @@ namespace GLUI {
 		glEnd();
 	}
 
-	void TextEditor::set_focus(bool focused) {
-		this->focused = focused;
-	}
+	TextEditor::TextEditor(TYPE type, float x, float y, float width, float height) : Component(x, y, width, height) {
+		this->type = type;
+		this->acc = 0;
+		this->focused = false;
+		this->pos_cursor = 0;
+		this->pos_selection = false;
+		this->active_shift = false;
+		this->buffer = std::deque<unsigned char>();
 
-	bool TextEditor::get_focus() {
-		return this->focused;
+		this->window_start = 0;
+		this->window_end = (width - char_width) / char_width;
+		this->watch = Stopwatch();
+		watch.start();
 	}
 
 	void TextEditor::handle_event(Event& e) {
@@ -475,7 +476,7 @@ namespace GLUI {
 				float2 pos = start_pos;
 				float max_pos_x = start_pos.x + width - char_width * 2;
 
-				if ((int)height / char_height == 1) {
+				if (this->type == TYPE::SINGLE_LINE) {
 					start_pos = start_pos - float2(window_start*char_width, 0);
 					pos = start_pos;
 				}
@@ -534,7 +535,7 @@ namespace GLUI {
 		}
 	}
 
-	void TextEditor::draw() {
+	void TextEditor::draw(bool draw_background) {
 		Component::draw();
 
 		float dt = watch.get_delta_time();
@@ -550,13 +551,13 @@ namespace GLUI {
 			glutBitmapString(GLUT_BITMAP_9_BY_15, (unsigned char*)"TextBox");
 		}
 
-		if (max_lines == 1) {
+		if (max_lines == 1 || this->type == TYPE::SINGLE_LINE) {
 			int window_width = window_end - window_start;
 			window_start = std::min(window_start, pos_cursor);
 			window_start = std::max(window_start, pos_cursor - window_width);
 			window_end = std::max(window_end, pos_cursor);
 			window_end = std::min(window_end, pos_cursor + window_width);
-			for (int i = window_start; i < window_end && i<buffer.size(); ++i) {
+			for (int i = window_start; i < window_end && i < buffer.size(); ++i) {
 				if (std::min(pos_selection, pos_cursor) <= i && i < std::max(pos_selection, pos_cursor) && selecting_buffer_input) {	// Check if char is in the selection
 					if (buffer[i] != '\n' && buffer[i] != '\r') {
 						this->draw_selection(pos.x, pos.y);
@@ -573,7 +574,7 @@ namespace GLUI {
 				glColor4f(1, 1, 1, 1);
 				acc = fmod(acc + dt, 0.5);
 				if (acc < 0.25) {
-					pos = start_pos + float2(std::min(pos_cursor, pos_cursor-window_start) * char_width, 0);
+					pos = start_pos + float2(std::min(pos_cursor, pos_cursor - window_start) * char_width, 0);
 					glLineWidth(2);
 					glBegin(GL_LINES);
 					glVertex2f(pos.x, pos.y + 3);
@@ -631,4 +632,12 @@ namespace GLUI {
 		}
 	}
 
+	void TextEditor::set_focus(bool focused) {
+		this->focused = focused;
 	}
+
+	bool TextEditor::has_focus() {
+		return this->focused;
+	}
+
+}

@@ -8,12 +8,13 @@ namespace GLUI {
 	protected:
 
 	public:
-		TextBox(float x = 0, float y = 0, float width = 100, float height = 20);
+		TextBox(TYPE type, float x = 0, float y = 0, float width = 100, float height = 20, float border_width = 1);
 		virtual void handle_event(Event& e) override;
 	};
 
-	TextBox::TextBox(float x, float y, float width, float height) : TextEditor(x, y, width, height) {
+	TextBox::TextBox(TYPE type, float x, float y, float width, float height, float border_width) : TextEditor(type, x, y, width, height) {
 		this->background_color = Color(120, 120, 120, 255);
+		this->set_default_border_width(border_width);
 	}
 
 	void TextBox::handle_event(Event& e) {
@@ -27,7 +28,7 @@ namespace GLUI {
 				this->set_focus(false);
 			}
 		}
-		if ((e.key_code == '\n' || e.key_code == '\r') && e.key_pressed && !e.active_shift && this->get_focus()) {
+		if ((e.key_code == '\n' || e.key_code == '\r') && e.key_pressed && !e.active_shift && this->has_focus()) {
 			this->raise_event(this, e);
 		} else {
 			TextEditor::handle_event(e);
