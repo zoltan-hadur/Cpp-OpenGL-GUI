@@ -12,7 +12,7 @@ namespace GLUI {
 		enum class ALIGN;		// Forward declaration
 
 		ALIGN align;			// Determines the alignment, either horizontal or vertical
-		Slider* scroll_bar;		// The scroll bar
+		Slider* sld_scroll_bar;	// The scroll bar
 		float2 max_pos;			// Dynamically gets calculated to determine how far the user can scroll
 
 		virtual void handle_event(Event& e) override;
@@ -38,10 +38,10 @@ namespace GLUI {
 		if (pos.x < e.x && e.x < pos.x + this->width && pos.y < e.y && e.y < pos.y + this->height) {	// Check if the mouse is above the panel
 			if (this->visible) {																		// Check if the panel is visible
 				if (e.mouse_scroll_up && e.mouse_pressed) {												// Check if the user moved the mouse wheel to scroll
-					this->scroll_bar->dec_value();														// Then scroll
+					this->sld_scroll_bar->dec_value();													// Then scroll
 				}
 				if (e.mouse_scroll_down && e.mouse_pressed) {											// Check if the user moved the mouse wheel to scroll
-					this->scroll_bar->inc_value();														// Then scroll
+					this->sld_scroll_bar->inc_value();													// Then scroll
 				}
 			}
 		}
@@ -50,22 +50,22 @@ namespace GLUI {
 	void ScrollPanel::draw(bool draw_background) {
 		switch (this->align) {	// Position the slider in the panel according to it's alignment and it's size
 			case ALIGN::HORIZONTAL:
-				this->scroll_bar->set_position(this->default_border_width / 2,							// X
+				this->sld_scroll_bar->set_position(this->default_border_width / 2,						// X
 											   this->height - 20 - this->default_border_width / 2);		// Y
-				this->scroll_bar->set_size(this->width - this->default_border_width,					// Width
+				this->sld_scroll_bar->set_size(this->width - this->default_border_width,				// Width
 										   20);															// Height
 				break;
 			case ALIGN::VERTICAL:
-				this->scroll_bar->set_position(this->width - 20 - this->default_border_width / 2,		// X
+				this->sld_scroll_bar->set_position(this->width - 20 - this->default_border_width / 2,	// X
 											   this->default_border_width / 2);							// Y
-				this->scroll_bar->set_size(20,															// Width
+				this->sld_scroll_bar->set_size(20,														// Width
 										   this->height - this->default_border_width);					// Height
 				break;
 		}
 
-		for (auto c : this->children) {														// Get the farthest components bottom right corner's absolute coordinates relative to the scroll panel
-			float2 pos = c->get_absolute_position() - this->get_absolute_position();		// Get absolute position relative to the scroll panel
-			pos = pos + float2(c->get_width(), c->get_height());							// Bottom right corner
+		for (auto c : this->children) {																	// Get the farthest components bottom right corner's absolute coordinates relative to the scroll panel
+			float2 pos = c->get_absolute_position() - this->get_absolute_position();					// Get absolute position relative to the scroll panel
+			pos = pos + float2(c->get_width(), c->get_height());										// Bottom right corner
 			pos = pos + float2(this->default_border_width, this->default_border_width) + float2(c->get_default_border_width(), c->get_default_border_width());
 			if (pos.x > this->max_pos.x) {
 				this->max_pos.x = pos.x;
@@ -75,17 +75,17 @@ namespace GLUI {
 			}
 		}
 
-		switch (this->align) {																	// Set the scrollable area according to the farthest component and to the alignment
+		switch (this->align) {																			// Set the scrollable area according to the farthest component and to the alignment
 			case ALIGN::HORIZONTAL:
-				this->scroll_bar->set_max(std::max(this->max_pos.x - this->width, 0.0f));		// If the farthest object can fit into the panel, no need for scrolling, thus the 0
+				this->sld_scroll_bar->set_max(std::max(this->max_pos.x - this->width, 0.0f));			// If the farthest object can fit into the panel, no need for scrolling, thus the 0
 				break;
 			case ALIGN::VERTICAL:
-				this->scroll_bar->set_max(std::max(this->max_pos.y - this->height, 0.0f));
+				this->sld_scroll_bar->set_max(std::max(this->max_pos.y - this->height, 0.0f));
 				break;
 		}
 
-		for (auto c : this->children) {															// Hide every component that is outside of the panel's area
-			if (c != this->scroll_bar) {														// Except the scroll bar
+		for (auto c : this->children) {																	// Hide every component that is outside of the panel's area
+			if (c != this->sld_scroll_bar) {															// Except the scroll bar
 				float2 pos = c->get_position();
 				switch (this->align) {
 					case ALIGN::HORIZONTAL:
@@ -117,7 +117,7 @@ namespace GLUI {
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); glEnable(GL_BLEND);						// Enable transparency
 
 			this->draw();
-			this->scroll_bar->render();
+			this->sld_scroll_bar->render();
 
 			float2 pos = this->get_absolute_position();
 			pos.x = pos.x + this->default_border_width;
@@ -125,7 +125,7 @@ namespace GLUI {
 			glScissor(pos.x, pos.y, this->width - this->default_border_width * 2, this->height - this->default_border_width * 2);	// Allows partially drawing components
 			glEnable(GL_SCISSOR_TEST);
 			for (auto c : this->children) {
-				if (c != this->scroll_bar) {
+				if (c != this->sld_scroll_bar) {
 					c->render();
 				}
 			}
@@ -140,7 +140,7 @@ namespace GLUI {
 	// To listen on the children component's events
 	void ScrollPanel::action_performed(void* sender, Event& e) {
 		for (auto c : this->children) {										// Translate every component
-			if (c != this->scroll_bar) {									// Except the scroll bar
+			if (c != this->sld_scroll_bar) {								// Except the scroll bar
 				float2 pos = c->get_position();								// According to the delta x/y of the slider
 				switch (this->align) {
 					case ALIGN::HORIZONTAL:
@@ -160,20 +160,20 @@ namespace GLUI {
 		this->align = align;
 		switch (this->align) {						// Position the slider in the panel according to it's alignment
 			case ALIGN::HORIZONTAL:
-				this->scroll_bar = new Slider(0, 0, border_width / 2, height - 20 - border_width / 2, width - border_width, 20);
+				this->sld_scroll_bar = new Slider(0, 0, border_width / 2, height - 20 - border_width / 2, width - border_width, 20);
 				break;
 			case ALIGN::VERTICAL:
-				this->scroll_bar = new Slider(0, 0, width - 20 - border_width / 2, border_width / 2, 20, height - border_width);
+				this->sld_scroll_bar = new Slider(0, 0, width - 20 - border_width / 2, border_width / 2, 20, height - border_width);
 				break;
 		}
-		scroll_bar->set_increment(20);			// 20 pixel is not too small, not too big
-		scroll_bar->add_event_listener(this);	// To listen the slider's events
-		this->add_component(scroll_bar);
+		sld_scroll_bar->set_increment(20);			// 20 pixel is not too small, not too big
+		sld_scroll_bar->add_event_listener(this);	// To listen the slider's events
+		this->add_component(sld_scroll_bar);
 	}
 
 	// Gets the scroll bar
 	Slider* ScrollPanel::get_scroll_bar() {
-		return this->scroll_bar;
+		return this->sld_scroll_bar;
 	}
 
 }
