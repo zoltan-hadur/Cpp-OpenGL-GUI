@@ -2,7 +2,7 @@
 
 #define _USE_MATH_DEFINES
 #include <GL\freeglut.h>
-#include <list>
+#include <vector>
 #include "math.h"
 #include "../Event/EventRaiser.h"
 
@@ -61,7 +61,7 @@ namespace GLUI {
 	class Component : public EventRaiser {
 	protected:
 		Component* parent;								// Parent component
-		std::list<Component*> children;					// Children components
+		std::vector<Component*> children;				// Children components
 		static const unsigned char char_width = 9;		// Width of drawable char in pixels
 		static const unsigned char char_height = 16;	// Height of drawable char in pixels
 		float2 pos;										// Top left corner's position of the component relative to the parent component
@@ -83,6 +83,10 @@ namespace GLUI {
 		// Draws the component
 		virtual void draw(bool draw_background = true);
 	public:
+		// 
+		void bring_front(Event& e);
+		//
+		bool is_covered();
 		// Adds a component
 		virtual void add_component(Component* c);
 		// Removes a component
@@ -131,7 +135,7 @@ namespace GLUI {
 
 		// Handles input events (keyboard, mouse)
 		// Just create events in the main loop and pass them to the top-level window
-		void event_handler(Event& e);
+		virtual void event_handler(Event& e);
 		// Draws the component and it's children components
 		// Just call it on a top-level window object, and all children components will be drawn
 		virtual void render();
@@ -148,7 +152,7 @@ namespace GLUI {
 		this->active_border_width = border_width + 2;
 		this->visible = true;
 		this->highlighted = false;
-		this->background_color = Color(100, 100, 100, 200);
+		this->background_color = Color(100, 100, 100, 180);
 		this->border_color = Color(200, 200, 200, 255);
 		//this->highlight_color = Color(66, 134, 244, 255);
 		this->highlight_color = Color(160, 160, 160, 255);
@@ -256,6 +260,57 @@ namespace GLUI {
 		glEnd();
 	}
 
+	// 
+	void Component::bring_front(Event& e) {
+		auto children = this->children;
+		bool found = false;
+		do {
+			found = false;
+			for (int i = children.size() - 1; i >= 0 && !found; --i) {
+				auto c = children[i];
+				if (c->is_visible()) {
+					float2 pos = c->get_absolute_position();
+					if (pos.x < e.x && e.x < pos.x + c->width && pos.y < e.y && e.y < pos.y + c->height) {
+						if (c->parent) {
+							c->parent->remove_component(c);
+							c->parent->add_component(c);
+						}
+						children = children[i]->children;
+						found = true;
+					}
+				}
+			}
+		} while (children.size() > 1 && found);
+	}
+
+	//
+	bool Component::is_covered() {
+		bool covered = false;
+
+
+
+		//if (this->parent) {
+		//	covered = this->parent->is_covered(c);
+		//}
+
+		//auto children = this->children;
+		//children.reverse();
+		//for (auto comp : children) {
+		//	if (comp != c) {
+		//		if (comp->pos.x < c->pos.x &&								// c's left side is right of comp's left side
+		//			comp->pos.y < c->pos.y &&								// c's upper side is below of comp's upper side
+		//			c->pos.x + c->width < comp->pos.x + comp->width &&		// c's right side is left of comp's right side
+		//			c->pos.y + c->height < comp->pos.y + comp->height) {	// c's lower side is above of comp's lower side
+
+		//			covered = true;
+		//		}
+		//	} else {
+		//		break;
+		//	}
+		//}
+		return covered;
+	}
+
 	// Adds a component
 	void Component::add_component(Component* c) {
 		c->parent = this;
@@ -264,7 +319,9 @@ namespace GLUI {
 
 	// Removes a component
 	void Component::remove_component(Component* c) {
-		this->children.remove(c);
+		//this->children.remove(c);
+		this->children.erase(std::remove(this->children.begin(), this->children.end(), c), this->children.end());
+		
 	}
 
 	// Sets the position of the component on screen in pixels relative to the parent component
@@ -323,9 +380,11 @@ namespace GLUI {
 	// Sets the visibility of the component (if set to false, no children will be drawn)
 	void Component::set_visible(bool visible) {
 		this->visible = visible;
+		auto children = this->children;
 		for (auto c : children) {
 			c->set_visible(visible);
 		}
+		//this->children = children;
 	}
 
 	// Gets the position of the component relative to the parent component
@@ -335,10 +394,10 @@ namespace GLUI {
 
 	// Gets the absolute position of the component
 	float2 Component::get_absolute_position() {
-		if (this->parent == nullptr) {
-			return this->pos;
+		if (this->parent) {
+			return this->pos + this->parent->get_absolute_position();
 		} else {
-			return this->pos + parent->get_absolute_position();
+			return this->pos;
 		}
 	}
 
@@ -379,9 +438,13 @@ namespace GLUI {
 
 	// Handles input events (keyboard, mouse)
 	void Component::event_handler(Event& e) {
-		this->handle_event(e);
-		for (auto c : children) {
-			c->event_handler(e);
+		if (this->visible && !this->is_covered()) {
+			this->handle_event(e);
+			auto children = this->children;
+			for (auto c : children) {
+				c->event_handler(e);
+			}
+			//this->children = children;
 		}
 	}
 
@@ -395,6 +458,7 @@ namespace GLUI {
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); glEnable(GL_BLEND);						// Enable transparency
 
 			this->draw();
+			auto children = this->children;
 			for (auto c : children) {
 				c->render();
 			}
