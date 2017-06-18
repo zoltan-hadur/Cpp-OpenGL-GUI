@@ -17,7 +17,7 @@ namespace GLUI {
 
 		virtual void handle_event(Event& e) override;
 		virtual void draw(bool draw_background = true) override;
-		virtual void render() override;
+		//virtual void render() override;
 	public:
 		enum class ALIGN {		// Alignment values
 			HORIZONTAL,			// Horizontal alignment
@@ -109,33 +109,33 @@ namespace GLUI {
 		Panel::draw();
 	}
 
-	void ScrollPanel::render() {
-		if (this->visible) {
-			glMatrixMode(GL_PROJECTION); glPushMatrix(); glLoadIdentity();								// Save current projection matrix
-			glOrtho(0.0f, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), 0.0f, -1.0f, 1.0f);	// Transform it to able to draw in pixel coordinates
-			glMatrixMode(GL_MODELVIEW); glPushMatrix(); glLoadIdentity();								// Save current modelview matrix
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); glEnable(GL_BLEND);						// Enable transparency
+	//void ScrollPanel::render() {
+	//	if (this->visible) {
+	//		glMatrixMode(GL_PROJECTION); glPushMatrix(); glLoadIdentity();								// Save current projection matrix
+	//		glOrtho(0.0f, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), 0.0f, -1.0f, 1.0f);	// Transform it to able to draw in pixel coordinates
+	//		glMatrixMode(GL_MODELVIEW); glPushMatrix(); glLoadIdentity();								// Save current modelview matrix
+	//		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); glEnable(GL_BLEND);						// Enable transparency
 
-			this->draw();
-			this->sld_scroll_bar->render();
+	//		this->draw();
+	//		this->sld_scroll_bar->render();
 
-			float2 pos = this->get_absolute_position();
-			pos.x = pos.x + this->default_border_width;
-			pos.y = glutGet(GLUT_WINDOW_HEIGHT) - (pos.y + this->height - this->default_border_width);								// y is inverted
-			glScissor(pos.x, pos.y, this->width - this->default_border_width * 2, this->height - this->default_border_width * 2);	// Allows partially drawing components
-			glEnable(GL_SCISSOR_TEST);
-			for (auto c : this->children) {
-				if (c != this->sld_scroll_bar) {
-					c->render();
-				}
-			}
-			glDisable(GL_SCISSOR_TEST);
+	//		float2 pos = this->get_absolute_position();
+	//		pos.x = pos.x + this->default_border_width;
+	//		pos.y = glutGet(GLUT_WINDOW_HEIGHT) - (pos.y + this->height - this->default_border_width);								// y is inverted
+	//		glScissor(pos.x, pos.y, this->width - this->default_border_width * 2, this->height - this->default_border_width * 2);	// Allows partially drawing components
+	//		glEnable(GL_SCISSOR_TEST);
+	//		for (auto c : this->children) {
+	//			if (c != this->sld_scroll_bar) {
+	//				c->render();
+	//			}
+	//		}
+	//		glDisable(GL_SCISSOR_TEST);
 
-			glDisable(GL_BLEND);
-			glPopMatrix(); glMatrixMode(GL_PROJECTION);
-			glPopMatrix(); glMatrixMode(GL_MODELVIEW);
-		}
-	}
+	//		glDisable(GL_BLEND);
+	//		glPopMatrix(); glMatrixMode(GL_PROJECTION);
+	//		glPopMatrix(); glMatrixMode(GL_MODELVIEW);
+	//	}
+	//}
 
 	// To listen on the children component's events
 	void ScrollPanel::action_performed(void* sender, Event& e) {
@@ -155,7 +155,7 @@ namespace GLUI {
 	}
 
 	// Alignment, coordinates, size, border's width
-	ScrollPanel::ScrollPanel(ALIGN align, float x, float y, float width, float height, float border_width) : Panel("", x, y, width, height, border_width) {
+	ScrollPanel::ScrollPanel(ALIGN align, float x, float y, float width, float height, float border_width) : Panel(true, x, y, width, height, border_width) {
 		this->max_pos = float2(0, 0);
 		this->align = align;
 		switch (this->align) {						// Position the slider in the panel according to it's alignment
