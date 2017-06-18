@@ -81,6 +81,12 @@ namespace GLUI {
 			this->btn_minimize->set_visible(true);
 		}
 
+		if (this->collapsing) {
+			this->btn_collapse->get_label()->set_text(R"(\/)");
+		} else {
+			this->btn_collapse->get_label()->set_text(R"(/\)");
+		}
+
 		Panel::draw(draw_background);
 	}
 
@@ -124,17 +130,17 @@ namespace GLUI {
 		this->animating = false;
 
 		this->dragged = false;
-		this->btn_title = new Button(" " + title, 0, 0, width - 40 + border_width * 2, 20, border_width);
+		this->btn_title = new Button(" " + title, 0, 0, width - 50 + border_width * 2, 20, border_width);
 		this->btn_title->get_label()->set_h_align(Label::H_ALIGN::LEFT);
 		this->btn_title->set_wait_time(std::numeric_limits<float>::max());
 		this->btn_title->add_event_listener(this);
 		this->add_component(this->btn_title);
 
-		this->btn_collapse = new Button(R"(\/)", width - 20, 0, 20, 20, border_width);
+		this->btn_collapse = new Button(R"(\/)", width - 25, 0, 25, 20, border_width);
 		this->btn_collapse->add_event_listener(this);
 		this->add_component(this->btn_collapse);
 
-		this->btn_minimize = new Button("_", width - 40 + border_width, 0, 20, 20, border_width);
+		this->btn_minimize = new Button("_", width - 50 + border_width, 0, 25, 20, border_width);
 		this->btn_minimize->add_event_listener(this);
 		this->add_component(this->btn_minimize);
 	}
