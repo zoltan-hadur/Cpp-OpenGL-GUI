@@ -156,7 +156,7 @@ namespace GLUI {
 
 	void TabbedPanel::draw(bool draw_background) {
 		Panel::draw(this->draw_background);
-		((TabbedPanel*)main_tab)->draw(this->draw_background);
+		//((TabbedPanel*)main_tab)->draw(this->draw_background);
 
 		float2 offset = float2(0, 0);
 		for (int i = 0; i < tab_selectors.size(); ++i) {
@@ -208,6 +208,7 @@ namespace GLUI {
 			//this->tabs[i]->set_use_scissor(true);
 			this->tabs[i]->set_size(this->main_tab->get_width(), this->main_tab->get_height());
 			this->tabs[i]->set_position(this->tabs[i]->get_position() + float2(acc, 0));
+			this->tabs[i]->set_draw_background(true);
 		}
 	}
 

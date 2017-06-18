@@ -17,6 +17,7 @@ namespace GLUI {
 
 		bool dropped_down;					// Indicates if the drop down list is dropped down
 		float element_offset;				// For element addition alignment
+		float dropped_down_height;			// Component height when dropped down
 
 		virtual void handle_event(Event& e) override;
 		virtual void draw(bool draw_background = true) override;
@@ -38,6 +39,8 @@ namespace GLUI {
 	void ComboBox::draw(bool draw_background) {
 		if (this->visible) {									// If the combobox is visible
 			this->scp_list->set_visible(this->dropped_down);	// The dropdown list is not sure visible
+			this->height = this->dropped_down ? this->dropped_down_height : 20;
+			this->scp_list->set_draw_background(true);
 		}
 		Component::draw();
 	}
@@ -67,14 +70,16 @@ namespace GLUI {
 	}
 
 	// The coordinates of the combo box, the size of the combo box, and the border's width the of the combo box
-	ComboBox::ComboBox(float x, float y, float width, float height, float border_width) : Component(x, y, width, height, border_width) {
+	ComboBox::ComboBox(float x, float y, float width, float height, float border_width) : Component(x, y, width, 20, border_width) {
 		this->dropped_down = false;
 		this->element_offset = 0;
+		this->dropped_down_height = height;
 		this->background_color = Color(120, 120, 120, 255);		// Default grey color
 		this->lbl_selected = new Label("", 0, 0, width - 20, 20);
 		this->btn_drop_down = new Button(R"(\/)", width - 20 - border_width / 2, border_width / 2, 20, 20 - border_width);
 		this->btn_drop_down->add_event_listener(this);
-		this->scp_list = new ScrollPanel(ScrollPanel::ALIGN::VERTICAL, 0, height-border_width, width, 181, border_width);
+		//this->scp_list = new ScrollPanel(ScrollPanel::ALIGN::VERTICAL, 0, height-border_width, width, 181, border_width);
+		this->scp_list = new ScrollPanel(ScrollPanel::ALIGN::VERTICAL, 0, 20-border_width, width, height - 20 + border_width, border_width);
 		this->scp_list->get_scroll_bar()->set_increment(20 + border_width);
 		this->scp_list->set_visible(false);
 		this->add_component(this->lbl_selected);

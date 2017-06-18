@@ -40,28 +40,56 @@ namespace GLUI {
 			//this->draw(this->draw_background);
 
 			if (this->use_scissor && this->parent) {
+				GLint scissor_pos[4];
+				glGetIntegerv(GL_SCISSOR_BOX, scissor_pos);
+				GLint scissor_test;
+				glGetIntegerv(GL_SCISSOR_TEST, &scissor_test);
+
 				float2 posp = this->parent->get_absolute_position();
 				float2 sizep = float2(this->parent->get_width(), this->parent->get_height());
 				float2 posc = this->get_absolute_position();
 				float2 sizec = float2(this->get_width(), this->get_height());
+
+				if (scissor_test) {
+					posp.x = scissor_pos[0];
+					posp.y = glutGet(GLUT_WINDOW_HEIGHT) - (scissor_pos[1] + scissor_pos[3]);
+					sizep.x = scissor_pos[2];
+					sizep.y = scissor_pos[3];
+				}
 
 				float2 posi = float2(std::max(posp.x, posc.x), std::max(posp.y, posc.y));
 				float2 posi2 = float2(std::min(posp.x+sizep.x, posc.x+sizec.x), std::min(posp.y+sizep.y, posc.y+sizec.y));
 				float2 sizei = float2(posi2.x - posi.x, posi2.y - posi.y);
 
 				if (sizei.x > 5.0 && sizei.y > 5.0) {
-					float2 pos = posi;
-					pos.x = pos.x + this->default_border_width;
-					pos.y = glutGet(GLUT_WINDOW_HEIGHT) - (pos.y + sizei.y - this->default_border_width);								// y is inverted
-					glScissor(pos.x, pos.y, sizei.x - this->default_border_width * 2, sizei.y - this->default_border_width * 2);	// Allows partially drawing components
-					glEnable(GL_SCISSOR_TEST);
 
-					this->draw(this->draw_background);
+					if (this->draw_background) {
+						this->draw(this->draw_background);
+						float2 pos = posi;
+						pos.x = pos.x + this->default_border_width;
+						pos.y = glutGet(GLUT_WINDOW_HEIGHT) - (pos.y + sizei.y - this->default_border_width);								// y is inverted
+						glScissor(pos.x, pos.y, sizei.x - this->default_border_width * 2, sizei.y - this->default_border_width * 2);	// Allows partially drawing components
+						glEnable(GL_SCISSOR_TEST);
+					} else {
+						float2 pos = posi;
+						pos.x = pos.x;
+						pos.y = glutGet(GLUT_WINDOW_HEIGHT) - (pos.y + sizei.y);								// y is inverted
+						glScissor(pos.x, pos.y, sizei.x, sizei.y);	// Allows partially drawing components
+						glEnable(GL_SCISSOR_TEST);
+					}
+
+
+					//this->draw(this->draw_background);
 					auto children = this->children;
 					for (auto c : children) {
 						c->render();
 					}
 				}
+
+				if (!scissor_test) {
+					glDisable(GL_SCISSOR_TEST);
+				}
+				glScissor(scissor_pos[0], scissor_pos[1], scissor_pos[2], scissor_pos[3]);
 			} else {
 				this->draw(this->draw_background);
 				auto children = this->children;
@@ -70,9 +98,10 @@ namespace GLUI {
 				}
 			}
 
-			if (this->use_scissor) {
-				glDisable(GL_SCISSOR_TEST);
-			}
+			//if (this->use_scissor) {
+			//	glDisable(GL_SCISSOR_TEST);
+			//}
+
 			glDisable(GL_BLEND);
 			glPopMatrix(); glMatrixMode(GL_PROJECTION);
 			glPopMatrix(); glMatrixMode(GL_MODELVIEW);
