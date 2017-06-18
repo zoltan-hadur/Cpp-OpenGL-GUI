@@ -69,14 +69,23 @@ namespace GLUI {
 	}
 
 	template<typename T> void SpinnerBox<T>::draw(bool draw_background) {
-		this->btn_left->set_position(this->default_border_width / 2, this->default_border_width / 2);
-		this->btn_left->set_size(20, this->height - this->default_border_width);
+		//this->btn_left->set_position(this->default_border_width / 2, this->default_border_width / 2);
+		//this->btn_left->set_size(20, this->height - this->default_border_width);
 
-		this->btn_right->set_position(this->width - 20 - this->default_border_width / 2, this->default_border_width / 2);
-		this->btn_right->set_size(20, this->height - this->default_border_width);
+		//this->btn_right->set_position(this->width - 20 - this->default_border_width / 2, this->default_border_width / 2);
+		//this->btn_right->set_size(20, this->height - this->default_border_width);
 
-		this->txt_box->set_position(20, this->default_border_width / 2);
-		this->txt_box->set_size(this->width - 40, this->height - this->default_border_width);
+		//this->txt_box->set_position(20, this->default_border_width / 2);
+		//this->txt_box->set_size(this->width - 40, this->height - this->default_border_width);
+
+		this->btn_left->set_position(0, 0);
+		this->btn_left->set_size(20, this->height);
+
+		this->btn_right->set_position(this->width - 20, 0);
+		this->btn_right->set_size(20, this->height);
+
+		this->txt_box->set_position(20-default_border_width, 0);
+		this->txt_box->set_size(this->width - 40 + default_border_width*2, this->height);
 
 		std::string value = this->txt_box->get_text();
 		if (std::regex_match(value, std::regex(R"(^[+-]?(\d+(\.\d+)?|\.\d+)([eE][+-]?\d+)?$)"))) {
