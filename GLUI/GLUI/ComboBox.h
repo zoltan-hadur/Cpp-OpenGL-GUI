@@ -87,6 +87,7 @@ namespace GLUI {
 		Button* btn = new Button(text,
 								 this->default_border_width + 2, this->default_border_width + this->element_offset + 2,	// X, y
 								 this->width - this->default_border_width*2 - 3 - 20, 20);								// Width, height
+		btn->set_wait_time(std::numeric_limits<float>::max());
 		btn->add_event_listener(this);
 		this->element_offset = this->element_offset + 20 + this->default_border_width;
 		this->btn_elements.push_back(btn);
