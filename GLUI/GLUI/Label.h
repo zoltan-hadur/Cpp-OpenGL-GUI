@@ -53,7 +53,7 @@ namespace GLUI {
 			float2 pos = this->get_absolute_position();
 
 			int x = pos.x;
-			int y = pos.y + char_height - 3;
+			int y = pos.y + char_height - 4;
 			int w = text.size() * char_width;	// Width of the text in pixels
 
 			x = (h_align == H_ALIGN::RIGHT) ? (x + width - w) : ((h_align == H_ALIGN::MID) ? (x + (width - w) / 2) : x);						// Align

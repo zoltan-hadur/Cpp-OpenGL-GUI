@@ -81,7 +81,7 @@ void onInitialization() {
 	tabbed_panel->add_tab("automatic length");
 	GLUI::Panel* tab2 = tabbed_panel->get_tab("automatic length");
 
-	GLUI::ComboBox* cbox = new GLUI::ComboBox(10, 10, 200, 20);
+	GLUI::ComboBox* cbox = new GLUI::ComboBox(10, 10, 200, 200);
 	cbox->add_element("1");
 	cbox->add_element("2");
 	cbox->add_element("3");
@@ -123,6 +123,10 @@ void onInitialization() {
 
 	GLUI::SpinnerBox<int>* spb_spinner = new GLUI::SpinnerBox<int>(0, 255, 10, 290, 200, 20);
 	tab2->add_component(spb_spinner);
+
+	tabbed_panel->add_tab("long tab name 0");
+	tabbed_panel->add_tab("long tab name 1");
+	tabbed_panel->add_tab("long tab name 2");
 
 	watch.start();
 }

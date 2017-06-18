@@ -57,6 +57,7 @@ namespace GLUI {
 		this->dragged = false;
 		this->btn_title = new Button(" " + title, 0, 0, width, 20, border_width);
 		this->btn_title->get_label()->set_h_align(Label::H_ALIGN::LEFT);
+		this->btn_title->set_wait_time(std::numeric_limits<float>::max());
 		this->btn_title->add_event_listener(this);
 		this->add_component(this->btn_title);
 	}

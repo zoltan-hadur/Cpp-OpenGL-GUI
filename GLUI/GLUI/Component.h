@@ -72,6 +72,7 @@ namespace GLUI {
 		float default_border_width;						// Default border width of the component
 		bool visible;									// Determines if the component is visible (if set to false, no children will be drawn)
 		bool highlighted;								// Determines if the component is highlighted (i.e. mouse is above the component, if the derived class handles it)
+		bool use_scissor;
 		Color background_color;							// Color of the component's background
 		Color border_color;								// Color of the component's border
 		Color highlight_color;							// Color of the component's background when highlighted
@@ -116,6 +117,8 @@ namespace GLUI {
 		virtual void set_highlight_color(unsigned char R = 0U, unsigned char G = 0U, unsigned char B = 0U, unsigned char A = 255U);
 		// Sets the visibility of the component (if set to false, no children will be drawn)
 		virtual void set_visible(bool visible);
+		//
+		virtual void set_use_scissor(bool use_scissor);
 		// Gets the position of the component relative to the parent component
 		virtual float2 get_position();
 		// Gets the absolute position of the component
@@ -134,6 +137,8 @@ namespace GLUI {
 		virtual Color get_highlight_color();
 		// Gets visibility of the component
 		virtual bool is_visible();
+		//
+		virtual bool is_use_scissor();
 
 		// Handles input events (keyboard, mouse)
 		// Just create events in the main loop and pass them to the top-level window
@@ -154,6 +159,7 @@ namespace GLUI {
 		this->active_border_width = border_width + 2;
 		this->visible = true;
 		this->highlighted = false;
+		this->use_scissor = false;
 		this->background_color = Color(100, 100, 100, 180);
 		this->border_color = Color(200, 200, 200, 255);
 		//this->highlight_color = Color(66, 134, 244, 255);
@@ -403,7 +409,14 @@ namespace GLUI {
 		for (auto c : children) {
 			c->set_visible(visible);
 		}
-		//this->children = children;
+	}
+
+	//
+	void Component::set_use_scissor(bool use_scissor) {
+		this->use_scissor = use_scissor;
+		for (auto c : children) {
+			c->set_use_scissor(use_scissor);
+		}
 	}
 
 	// Gets the position of the component relative to the parent component
@@ -455,6 +468,11 @@ namespace GLUI {
 		return this->visible;
 	}
 
+	//
+	bool Component::is_use_scissor() {
+		return this->use_scissor;
+	}
+
 	// Handles input events (keyboard, mouse)
 	void Component::event_handler(Event& e) {
 		if (this->visible) {
@@ -476,11 +494,59 @@ namespace GLUI {
 			glMatrixMode(GL_MODELVIEW); glPushMatrix(); glLoadIdentity();								// Save current modelview matrix
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); glEnable(GL_BLEND);						// Enable transparency
 
+
+
 			this->draw();
 			auto children = this->children;
 			for (auto c : children) {
 				c->render();
 			}
+
+
+			//if (!this->use_scissor) {
+			//	this->draw();
+			//}
+
+			//bool intersection = true;
+			//if (this->use_scissor && this->parent) {
+			//	float2 posp = this->parent->get_absolute_position();
+			//	float2 sizep = float2(this->parent->get_width(), this->parent->get_height());
+			//	float2 posc = this->get_absolute_position();
+			//	float2 sizec = float2(this->get_width(), this->get_height());
+
+			//	float2 posi = float2(std::max(posp.x, posc.x), std::max(posp.y, posc.y));
+			//	float2 posi2 = float2(std::min(posp.x+sizep.x, posc.x+sizec.x), std::min(posp.y+sizep.y, posc.y+sizec.y));
+			//	float2 sizei = float2(posi2.x - posi.x, posi2.y - posi.y);
+			//	if (sizei.x > 0 && sizei.y > 0) {
+			//		float2 pos = posi;
+			//		pos.x = pos.x + this->default_border_width;
+			//		pos.y = glutGet(GLUT_WINDOW_HEIGHT) - (pos.y + sizei.y - this->default_border_width);								// y is inverted
+			//		glScissor(pos.x, pos.y, sizei.x - this->default_border_width * 2, sizei.y - this->default_border_width * 2);	// Allows partially drawing components
+			//		glEnable(GL_SCISSOR_TEST);
+			//	} else {
+			//		intersection = false;
+			//	}
+
+			//	//float2 pos = this->get_absolute_position();
+			//	//pos.x = pos.x + this->default_border_width;
+			//	//pos.y = glutGet(GLUT_WINDOW_HEIGHT) - (pos.y + this->height - this->default_border_width);								// y is inverted
+			//	//glScissor(pos.x, pos.y, this->width - this->default_border_width * 2, this->height - this->default_border_width * 2);	// Allows partially drawing components
+			//	//glEnable(GL_SCISSOR_TEST);
+			//}
+
+			//if (intersection) {
+			//	if (this->use_scissor) {
+			//		this->draw();
+			//	}
+			//	auto children = this->children;
+			//	for (auto c : children) {
+			//		c->render();
+			//	}
+			//}
+
+			//if (this->use_scissor) {
+			//	glDisable(GL_SCISSOR_TEST);
+			//}
 
 			glDisable(GL_BLEND);
 			glPopMatrix(); glMatrixMode(GL_PROJECTION);

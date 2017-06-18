@@ -47,6 +47,8 @@ namespace GLUI {
 	}
 
 	void ScrollPanel::draw(bool draw_background) {
+		this->set_use_scissor(true);
+
 		switch (this->align) {	// Position the slider in the panel according to it's alignment and it's size
 			case ALIGN::HORIZONTAL:
 				this->sld_scroll_bar->set_position(this->default_border_width / 2,						// X
