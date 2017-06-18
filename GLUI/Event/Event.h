@@ -45,4 +45,14 @@ struct Event {
 	// Slider
 	float slider_dvalue;
 	float slider_value;
+
+	// SpinnerBox
+	long double spinnerbox_dvalue;
+	long double spinnerbox_value;
+	template<typename T> T get_spinnerbox_dvalue() {
+		return reinterpret_cast<T>(spinnerbox_dvalue);
+	}
+	template<typename T> T get_spinnerbox_value() {
+		return reinterpret_cast<T>(spinnerbox_value);
+	}
 };
