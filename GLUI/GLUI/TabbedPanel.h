@@ -178,7 +178,7 @@ namespace GLUI {
 		this->main_tab->set_position(0, offset.y + 20 - this->default_border_width);
 		this->main_tab->set_size(this->width, this->height - (offset.y + 20 - this->default_border_width));
 		//this->set_use_scissor(true);
-		this->main_tab->set_use_scissor(true);
+		//this->main_tab->set_use_scissor(true);
 
 		for (int i = 0; i < this->tabs.size(); ++i) {
 			this->tabs[i]->set_position(i*this->main_tab->get_width(), 0);
@@ -208,7 +208,7 @@ namespace GLUI {
 			//this->tabs[i]->set_use_scissor(true);
 			this->tabs[i]->set_size(this->main_tab->get_width(), this->main_tab->get_height());
 			this->tabs[i]->set_position(this->tabs[i]->get_position() + float2(acc, 0));
-			this->tabs[i]->set_draw_background(true);
+			//this->tabs[i]->set_draw_background(true);
 		}
 	}
 

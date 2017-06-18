@@ -37,7 +37,7 @@ namespace GLUI {
 			glMatrixMode(GL_MODELVIEW); glPushMatrix(); glLoadIdentity();								// Save current modelview matrix
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); glEnable(GL_BLEND);						// Enable transparency
 
-			//this->draw(this->draw_background);
+			this->draw(this->draw_background);
 
 			if (this->use_scissor && this->parent) {
 				GLint scissor_pos[4];
@@ -52,9 +52,9 @@ namespace GLUI {
 
 				if (scissor_test) {
 					posp.x = scissor_pos[0];
-					posp.y = glutGet(GLUT_WINDOW_HEIGHT) - (scissor_pos[1] + scissor_pos[3]);
+					posp.y = glutGet(GLUT_WINDOW_HEIGHT) - (scissor_pos[1] + scissor_pos[3] - this->parent->get_default_border_width());
 					sizep.x = scissor_pos[2];
-					sizep.y = scissor_pos[3];
+					sizep.y = scissor_pos[3] - this->parent->get_default_border_width();
 				}
 
 				float2 posi = float2(std::max(posp.x, posc.x), std::max(posp.y, posc.y));
@@ -64,7 +64,7 @@ namespace GLUI {
 				if (sizei.x > 5.0 && sizei.y > 5.0) {
 
 					if (this->draw_background) {
-						this->draw(this->draw_background);
+						//this->draw(this->draw_background);
 						float2 pos = posi;
 						pos.x = pos.x + this->default_border_width;
 						pos.y = glutGet(GLUT_WINDOW_HEIGHT) - (pos.y + sizei.y - this->default_border_width);								// y is inverted
