@@ -190,18 +190,18 @@ namespace GLUI {
 		Component::draw();
 
 		// Draw the dashed lines
-		float2 pos = this->get_absolute_position() + float2(this->default_border_width, this->default_border_width);
-		glColor4f(1, 1, 1, 0.5);
-		glLineWidth(1);
-		glLineStipple(1, 0b0101010101010101);
-		glEnable(GL_LINE_STIPPLE);
-		glBegin(GL_LINES);
-		for (int i = 0; i < this->width - this->default_border_width; i = i + 2) {
-			glVertex2f(pos.x + i, pos.y + (i / 2) % 2);
-			glVertex2f(pos.x + i, pos.y + (i / 2) % 2 + this->height - this->default_border_width * 2);
-		}
-		glEnd();
-		glDisable(GL_LINE_STIPPLE);
+		//float2 pos = this->get_absolute_position() + float2(this->default_border_width, this->default_border_width);
+		//glColor4f(1, 1, 1, 0.5);
+		//glLineWidth(1);
+		//glLineStipple(1, 0b0101010101010101);
+		//glEnable(GL_LINE_STIPPLE);
+		//glBegin(GL_LINES);
+		//for (int i = 0; i < this->width - this->default_border_width; i = i + 2) {
+		//	glVertex2f(pos.x + i, pos.y + (i / 2) % 2);
+		//	glVertex2f(pos.x + i, pos.y + (i / 2) % 2 + this->height - this->default_border_width * 2);
+		//}
+		//glEnd();
+		//glDisable(GL_LINE_STIPPLE);
 	}
 
 	// Min, max, coordinates, size, border's width
