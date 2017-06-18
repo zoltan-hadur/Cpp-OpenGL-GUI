@@ -107,9 +107,9 @@ namespace GLUI {
 						}
 						case ANIMATION::TEXT_SPINNING:																				// Text goes in this order
 						{																											// Progressing |
-							if (watch.get_elapsed_time() < 1.0f / 4.0f * this->period_time) {										/* Progressing /*/
+							if (watch.get_elapsed_time() < 1.0f / 4.0f * this->period_time) {										/* Progressing / */
 								this->lbl_progressing->set_text(" Progressing |");													// Progressing -
-							} else if (watch.get_elapsed_time() < 2.0f / 4.0f * this->period_time) {								// Progressing \
+							} else if (watch.get_elapsed_time() < 2.0f / 4.0f * this->period_time) {								/* Progressing \ */
 								this->lbl_progressing->set_text(" Progressing /");
 							} else if (watch.get_elapsed_time() < 3.0f / 4.0f * this->period_time) {								// Each displayed for 1/4 of the period
 								unsigned char c = '\x12';																			// Wider '-' character (at least on my pc)
@@ -262,108 +262,12 @@ namespace GLUI {
 					}
 					glScissor(scissor_pos[0], scissor_pos[1], scissor_pos[2], scissor_pos[3]);
 				}
-
-
-			//	GLint scissor_pos[4];
-			//	glGetIntegerv(GL_SCISSOR_BOX, scissor_pos);
-			//	GLint scissor_test;
-			//	glGetIntegerv(GL_SCISSOR_TEST, &scissor_test);
-
-			//	float2 pos = this->get_absolute_position();
-			//	pos.x = pos.x + this->default_border_width;
-			//	pos.y = glutGet(GLUT_WINDOW_HEIGHT) - (pos.y + this->height - this->default_border_width);										// y is inverted
-			//	glScissor(pos.x, pos.y, (this->width - this->default_border_width * 2)*percent, this->height - this->default_border_width * 2);	// Allows partially drawing components
-			//	glEnable(GL_SCISSOR_TEST);
-
-			//	switch (this->anim) {
-			//		case ANIMATION::STRIPES:
-			//		{
-			//			if (this->watch.is_running()) {
-			//				if (this->watch.get_elapsed_time() > this->period_time) {					// Reset watch if a full period has elapsed
-			//					this->watch.reset();
-			//				}
-			//			}
-
-			//			float offset = this->watch.get_elapsed_time() / period_time;					// How much needed to be translated
-			//			pos = this->get_absolute_position() - float2(15, 0) + float2(20 * offset, 0);	// -15 so the bottom left vertex starts from 0, and 20 becouse the drawable parallelogram is 20 wide
-			//			glBegin(GL_QUADS);
-			//			for (int i = 0; i <= (this->width / 20 + 1)*percent; ++i) {						// Draw the parallelogram n times
-			//				glColor4f(this->fill_color.get_r(),
-			//						  this->fill_color.get_g(),
-			//						  this->fill_color.get_b(),
-			//						  this->fill_color.get_a());
-			//				glVertex2f(pos.x, pos.y);
-			//				glVertex2f(pos.x + 10, pos.y);
-			//				glVertex2f(pos.x + 5, pos.y + this->height);
-			//				glVertex2f(pos.x - 5, pos.y + this->height);
-			//				pos = pos + float2(10, 0);
-
-			//				glColor4f(this->highlight_color.get_r(),
-			//						  this->highlight_color.get_g(),
-			//						  this->highlight_color.get_b(),
-			//						  this->highlight_color.get_a());
-			//				glVertex2f(pos.x, pos.y);
-			//				glVertex2f(pos.x + 10, pos.y);
-			//				glVertex2f(pos.x + 5, pos.y + this->height);
-			//				glVertex2f(pos.x - 5, pos.y + this->height);
-			//				pos = pos + float2(10, 0);
-			//			}
-			//			glEnd();
-			//			break;
-			//		}
-			//		case ANIMATION::WINDOWS:
-			//		{
-			//			float speed = (60 + this->width) / 3.0;		// Speed of the travelling birghter area
-			//			if (this->watch.is_running()) {
-			//				float dist_over = this->watch.get_elapsed_time() * speed - (60 + this->width*percent);	// How much the brighter area travelled outside the progress bar
-			//				if (dist_over > 0) {
-			//					if (dist_over / speed > this->period_time) {	// If travelled outside more than the period time,
-			//						this->watch.reset();						// Reset the watch
-			//					}
-			//				}
-			//			}
-			//			pos = this->get_absolute_position() - float2(60, 0) + float2(this->watch.get_elapsed_time()*speed, 0);	// -60 because the brighter area is 60 wide
-			//			glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR);														// For proper blending
-			//			glBegin(GL_QUADS);																						// The brighter area is actually
-			//			glColor4f(this->fill_color.get_r(),																		// Two 30 wide rectangle
-			//					  this->fill_color.get_g(),																		// With color interpolation
-			//					  this->fill_color.get_b(),																		// From 0,fill_color to 30,brighter color
-			//					  this->fill_color.get_a());																	// And from 30, brighter color to 60, fill_color
-			//			glVertex2f(pos.x, pos.y + this->height);																// So the 60 wide rectangle's 2 edge has fill_color
-			//			glVertex2f(pos.x, pos.y);																				// While the middle has a brighter color
-			//			glColor4f(0.9, 0.9, 0.9, 1);
-			//			glVertex2f(pos.x + 30, pos.y);
-			//			glVertex2f(pos.x + 30, pos.y + this->height);
-			//			pos = pos + float2(30, 0);
-
-			//			glVertex2f(pos.x, pos.y + this->height);
-			//			glVertex2f(pos.x, pos.y);
-			//			glColor4f(this->fill_color.get_r(),
-			//					  this->fill_color.get_g(),
-			//					  this->fill_color.get_b(),
-			//					  this->fill_color.get_a());
-			//			glVertex2f(pos.x + 30, pos.y);
-			//			glVertex2f(pos.x + 30, pos.y + this->height);
-
-			//			glEnd();
-			//			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			//			break;
-			//		}
-			//		default:
-			//		{
-			//			break;
-			//		}
-			//	}
-			//	if (!scissor_test) {
-			//		glDisable(GL_SCISSOR_TEST);
-			//	}
-			//	glScissor(scissor_pos[0], scissor_pos[1], scissor_pos[2], scissor_pos[3]);
 			}
 		}
 	}
 
 	ProgressBar::ProgressBar(float min, float max, float x, float y, float width, float height, float border_width) : Component(x, y, width, height, border_width) {
-		this->anim = ANIMATION::WINDOWS;
+		this->anim = ANIMATION::STRIPES;
 		this->period_time = 1.0;
 		this->progressing = false;
 		this->min = min;
