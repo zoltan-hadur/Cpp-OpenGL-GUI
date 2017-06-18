@@ -30,6 +30,7 @@ namespace GLUI {
 		}
 		if ((e.key_code == '\n' || e.key_code == '\r') && e.key_pressed && !e.active_shift && this->has_focus()) {
 			this->raise_event(this, e);
+			this->set_focus(false);
 		} else {
 			TextEditor::handle_event(e);
 		}
