@@ -20,10 +20,10 @@ namespace GLUI {
 		Panel* get_tab(int id);
 		Panel* get_tab(std::string tab_title);
 		virtual void action_performed(void* sender, Event& e) override;
-		virtual void draw() override;
+		virtual void draw(bool draw_background = true) override;
 	};
 
-	TabbedPanel::TabbedPanel(float x, float y, float width, float height, float border_width) : Panel("", x, y, width, height, border_width) {
+	TabbedPanel::TabbedPanel(float x, float y, float width, float height, float border_width) : Panel(true, x, y, width, height, border_width) {
 
 	}
 
@@ -37,6 +37,11 @@ namespace GLUI {
 		}
 		tab->set_position(0, 20);
 		tab->set_size(width, height - 20);
+		tab->set_background_color(tab->get_background_color().get_r(),
+								  tab->get_background_color().get_g(),
+								  tab->get_background_color().get_b(),
+								  0);
+		tab->set_draw_background(false);
 		tabs.push_back(tab);
 		this->add_component(tab_selector);
 		this->add_component(tab);
@@ -121,14 +126,16 @@ namespace GLUI {
 		}
 	}
 
-	void TabbedPanel::draw() {
+	void TabbedPanel::draw(bool draw_background) {
+		//this->btn_title->set_visible(false);
+
 		//float offset = default_border_width / 2;
 		float offset = 0;
 		for (int i = 0; i < tab_selectors.size(); ++i) {
 			tab_selectors[i]->set_position(offset, 0);
 			tab_selectors[i]->set_size(tab_selectors[i]->get_label()->get_text().size() * char_width + 2 * char_width, 20 + default_border_width);
 			offset = offset + tab_selectors[i]->get_width() - default_border_width;
-			if (tabs[i]->get_visible()) {
+			if (tabs[i]->is_visible()) {
 				//tab_selectors[i]->set_background_color(200, 200, 200, 255);
 				tab_selectors[i]->set_background_color(180, 180, 180, 255);
 			} else {
@@ -137,7 +144,7 @@ namespace GLUI {
 			}
 		}
 
-		//Component::draw();
+		Panel::draw(this->draw_background);
 	}
 
 }
