@@ -57,7 +57,7 @@ void onInitialization() {
 	GLUI::Window* window_0 = new GLUI::Window("Window 0", 10, 10, 800, 500);
 	GLUI::Window* window_1 = new GLUI::Window("Window 1", 500, 10, 800, 500);
 	window->add_component(window_0);
-	//window->add_component(window_1);
+	window->add_component(window_1);
 
 	GLUI::TabbedPanel* tabbed_panel = new GLUI::TabbedPanel(20, 40, 600, 400);
 	window_0->add_component(tabbed_panel);
@@ -94,32 +94,32 @@ void onInitialization() {
 	cbox->add_element("10");
 	tab2->add_component(cbox);
 
-	//GLUI::Label* label = new GLUI::Label("CheckBox", 230, 10, 20, 20);
-	//tab2->add_component(label);
+	GLUI::Label* label = new GLUI::Label("CheckBox", 230, 10, 20, 20);
+	tab2->add_component(label);
 
-	//GLUI::CheckBox* check_box = new GLUI::CheckBox(310, 10, 20, 20);
-	//tab2->add_component(check_box);
+	GLUI::CheckBox* check_box = new GLUI::CheckBox(310, 10, 20, 20);
+	tab2->add_component(check_box);
 
-	//GLUI::TextBox* text_box0 = new GLUI::TextBox(GLUI::TextBox::TYPE::MULTI_LINE, 340, 10, 250, 100);
-	//tab2->add_component(text_box0);
+	GLUI::TextBox* text_box0 = new GLUI::TextBox(GLUI::TextBox::TYPE::MULTI_LINE, 340, 10, 250, 100);
+	tab2->add_component(text_box0);
 
-	//GLUI::TextBox* text_box1 = new GLUI::TextBox(GLUI::TextBox::TYPE::SINGLE_LINE, 340, 120, 250, 20);
-	//tab2->add_component(text_box1);
+	GLUI::TextBox* text_box1 = new GLUI::TextBox(GLUI::TextBox::TYPE::SINGLE_LINE, 340, 120, 250, 20);
+	tab2->add_component(text_box1);
 
-	//GLUI::ProgressBar* bar = new GLUI::ProgressBar(0, 100, 10, 230, 500, 20, 1);
-	//tab2->add_component(bar);
+	GLUI::ProgressBar* bar = new GLUI::ProgressBar(0, 100, 10, 230, 500, 20, 1);
+	tab2->add_component(bar);
 
-	//GLUI::Button* btn_start_progress = new GLUI::Button("Start progress", 10, 260, 150, 20);
-	//GLUI::Button* btn_progress = new GLUI::Button("Progress", 185, 260, 150, 20);
-	//GLUI::Button* btn_stop_progress = new GLUI::Button("Stop progress", 360, 260, 150, 20);
-	//tab2->add_component(btn_start_progress);
-	//tab2->add_component(btn_progress);
-	//tab2->add_component(btn_stop_progress);
+	GLUI::Button* btn_start_progress = new GLUI::Button("Start progress", 10, 260, 150, 20);
+	GLUI::Button* btn_progress = new GLUI::Button("Progress", 185, 260, 150, 20);
+	GLUI::Button* btn_stop_progress = new GLUI::Button("Stop progress", 360, 260, 150, 20);
+	tab2->add_component(btn_start_progress);
+	tab2->add_component(btn_progress);
+	tab2->add_component(btn_stop_progress);
 
-	//ASD* asd = new ASD(btn_start_progress, btn_progress, btn_stop_progress, bar);
-	//btn_start_progress->add_event_listener(asd);
-	//btn_progress->add_event_listener(asd);
-	//btn_stop_progress->add_event_listener(asd);
+	ASD* asd = new ASD(btn_start_progress, btn_progress, btn_stop_progress, bar);
+	btn_start_progress->add_event_listener(asd);
+	btn_progress->add_event_listener(asd);
+	btn_stop_progress->add_event_listener(asd);
 
 	GLUI::SpinnerBox<int>* spb_spinner = new GLUI::SpinnerBox<int>(0, 255, 10, 290, 200, 20);
 	tab2->add_component(spb_spinner);

@@ -17,7 +17,6 @@ namespace GLUI {
 
 		virtual void handle_event(Event& e) override;
 		virtual void draw(bool draw_background = true) override;
-		//virtual void render() override;
 	public:
 		enum class ALIGN {		// Alignment values
 			HORIZONTAL,			// Horizontal alignment
@@ -36,7 +35,7 @@ namespace GLUI {
 	void ScrollPanel::handle_event(Event& e) {
 		float2 pos = this->get_absolute_position();														// Get the absolute position relative to the top-level window
 		if (pos.x < e.x && e.x < pos.x + this->width && pos.y < e.y && e.y < pos.y + this->height) {	// Check if the mouse is above the panel
-			if (this->visible) {																		// Check if the panel is visible
+			if (!e.mouse_covered) {																		// Check if the panel is behind a component
 				if (e.mouse_scroll_up && e.mouse_pressed) {												// Check if the user moved the mouse wheel to scroll
 					this->sld_scroll_bar->dec_value();													// Then scroll
 				}
@@ -108,34 +107,6 @@ namespace GLUI {
 
 		Panel::draw();
 	}
-
-	//void ScrollPanel::render() {
-	//	if (this->visible) {
-	//		glMatrixMode(GL_PROJECTION); glPushMatrix(); glLoadIdentity();								// Save current projection matrix
-	//		glOrtho(0.0f, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), 0.0f, -1.0f, 1.0f);	// Transform it to able to draw in pixel coordinates
-	//		glMatrixMode(GL_MODELVIEW); glPushMatrix(); glLoadIdentity();								// Save current modelview matrix
-	//		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); glEnable(GL_BLEND);						// Enable transparency
-
-	//		this->draw();
-	//		this->sld_scroll_bar->render();
-
-	//		float2 pos = this->get_absolute_position();
-	//		pos.x = pos.x + this->default_border_width;
-	//		pos.y = glutGet(GLUT_WINDOW_HEIGHT) - (pos.y + this->height - this->default_border_width);								// y is inverted
-	//		glScissor(pos.x, pos.y, this->width - this->default_border_width * 2, this->height - this->default_border_width * 2);	// Allows partially drawing components
-	//		glEnable(GL_SCISSOR_TEST);
-	//		for (auto c : this->children) {
-	//			if (c != this->sld_scroll_bar) {
-	//				c->render();
-	//			}
-	//		}
-	//		glDisable(GL_SCISSOR_TEST);
-
-	//		glDisable(GL_BLEND);
-	//		glPopMatrix(); glMatrixMode(GL_PROJECTION);
-	//		glPopMatrix(); glMatrixMode(GL_MODELVIEW);
-	//	}
-	//}
 
 	// To listen on the children component's events
 	void ScrollPanel::action_performed(void* sender, Event& e) {

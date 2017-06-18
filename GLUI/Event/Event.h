@@ -29,6 +29,7 @@ struct Event {
 	bool mouse_pressed;
 	bool mouse_released;
 	bool mouse_moved;
+	bool mouse_covered;
 
 	// Button
 	bool button_pressed;

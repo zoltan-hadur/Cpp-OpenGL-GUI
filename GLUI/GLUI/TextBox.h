@@ -21,7 +21,7 @@ namespace GLUI {
 		float2 pos = this->get_absolute_position();
 		if (e.mouse_left && e.mouse_pressed) {
 			if (pos.x < e.x && e.x < pos.x + width && pos.y < e.y && e.y < pos.y + height) {
-				if (visible) {
+				if (!e.mouse_covered) {
 					this->set_focus(true);
 				}
 			} else {

@@ -104,8 +104,8 @@ namespace GLUI {
 					break;
 				}
 			}
-			// This long one checks if the mouse is above the slider, and it's position is between the left and right buttons
-		} else if (pos.x + pos_offset.x < e.x && e.x < pos.x + this->width - pos_offset.x && pos.y + pos_offset.y < e.y && e.y < pos.y + this->height - pos_offset.y) {
+			// This long one checks if the mouse is above the slider, and it's position is between the left and right buttons and the slider is not behind a component
+		} else if (pos.x + pos_offset.x < e.x && e.x < pos.x + this->width - pos_offset.x && pos.y + pos_offset.y < e.y && e.y < pos.y + this->height - pos_offset.y && !e.mouse_covered) {
 			if (e.mouse_left && e.mouse_pressed) {																					// Start a watch
 				this->watch.start();																								// If the user pressed the left mouse button
 			} else if (e.mouse_left_down) {																							// If the user still holds the left mouse button down

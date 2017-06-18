@@ -8,6 +8,7 @@ namespace GLUI {
 	class Window : public EventListener, public Panel {
 	protected:
 		Button* btn_title;	// Title of the panel
+		float2 pos_offset;	// For moving the window
 		bool dragged;		// Becomes true when the user clicks on the title button, and false when releases the left mouse button
 
 		virtual void handle_event(Event& e) override;
@@ -26,7 +27,7 @@ namespace GLUI {
 	void Window::handle_event(Event& e) {
 		if (this->dragged) {														// If dragged
 			if (e.mouse_moved) {													// And the mouse moved
-				this->set_position(this->get_position() + float2(e.dx, e.dy));		// Reposition the panel
+				this->set_position(float2(e.x, e.y) - this->pos_offset);			// Reposition the panel
 			}
 		}
 	}
@@ -44,6 +45,7 @@ namespace GLUI {
 		if (sender == this->btn_title) {		// If the title
 			if (e.button_pressed) {				// Was pressed
 				this->dragged = true;			// Then the user probably going to drag the panel to somewhere else
+				this->pos_offset = float2(e.x, e.y) - this->get_absolute_position();
 			} else if (e.button_released) {		// The user finished
 				this->dragged = false;			// Dragging the window
 			}

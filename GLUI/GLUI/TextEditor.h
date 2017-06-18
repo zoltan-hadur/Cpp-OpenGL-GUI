@@ -372,7 +372,7 @@ namespace GLUI {
 		this->acc = 0;
 		this->focused = false;
 		this->pos_cursor = 0;
-		this->pos_selection = false;
+		this->pos_selection = 0;
 		this->active_shift = false;
 		this->buffer = std::deque<unsigned char>();
 
@@ -650,6 +650,8 @@ namespace GLUI {
 		for (unsigned char c : text) {
 			this->insert_char(c);
 		}
+		window_start = 0;
+		window_end =  window_width;
 	}
 
 	void TextEditor::set_focus(bool focused) {

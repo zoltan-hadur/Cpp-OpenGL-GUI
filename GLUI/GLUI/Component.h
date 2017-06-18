@@ -86,7 +86,9 @@ namespace GLUI {
 		// 
 		void bring_front(Event& e);
 		//
-		bool is_covered();
+		bool is_covered(Event& e);
+		//
+		bool is_parent(Component* c);
 		// Adds a component
 		virtual void add_component(Component* c);
 		// Removes a component
@@ -262,8 +264,8 @@ namespace GLUI {
 
 	// 
 	void Component::bring_front(Event& e) {
-		auto children = this->children;
 		bool found = false;
+		auto children = this->children;
 		do {
 			found = false;
 			for (int i = children.size() - 1; i >= 0 && !found; --i) {
@@ -284,31 +286,48 @@ namespace GLUI {
 	}
 
 	//
-	bool Component::is_covered() {
+	bool Component::is_covered(Event& e) {
+		if (this->parent == nullptr) {
+			return false;
+		}
+		Component* parent = this;
+		while (parent->parent) {
+			parent = parent->parent;
+		}
+		auto children = parent->children;
 		bool covered = false;
-
-
-
-		//if (this->parent) {
-		//	covered = this->parent->is_covered(c);
-		//}
-
-		//auto children = this->children;
-		//children.reverse();
-		//for (auto comp : children) {
-		//	if (comp != c) {
-		//		if (comp->pos.x < c->pos.x &&								// c's left side is right of comp's left side
-		//			comp->pos.y < c->pos.y &&								// c's upper side is below of comp's upper side
-		//			c->pos.x + c->width < comp->pos.x + comp->width &&		// c's right side is left of comp's right side
-		//			c->pos.y + c->height < comp->pos.y + comp->height) {	// c's lower side is above of comp's lower side
-
-		//			covered = true;
-		//		}
-		//	} else {
-		//		break;
-		//	}
-		//}
+		do {
+			covered = false;
+			for (int i = children.size() - 1; i >= 0 && !covered; --i) {
+				auto c = children[i];
+				if (c->is_visible()) {
+					float2 pos = c->get_absolute_position();
+					if (pos.x < e.x && e.x < pos.x + c->width && pos.y < e.y && e.y < pos.y + c->height) {
+						children = children[i]->children;
+						if (this->is_parent(c)) {
+							return false;
+						} else {
+							covered = true;
+						}
+					} else {
+						children.erase(children.begin() + i);
+					}
+				}
+			}
+		} while (children.size() > 1 && !covered);
 		return covered;
+	}
+
+	//
+	bool Component::is_parent(Component* c) {
+		Component* parent = this;
+		while (parent) {
+			if (parent == c) {
+				return true;
+			}
+			parent = parent->parent;
+		}
+		return false;
 	}
 
 	// Adds a component
@@ -321,7 +340,7 @@ namespace GLUI {
 	void Component::remove_component(Component* c) {
 		//this->children.remove(c);
 		this->children.erase(std::remove(this->children.begin(), this->children.end(), c), this->children.end());
-		
+
 	}
 
 	// Sets the position of the component on screen in pixels relative to the parent component
@@ -438,13 +457,13 @@ namespace GLUI {
 
 	// Handles input events (keyboard, mouse)
 	void Component::event_handler(Event& e) {
-		if (this->visible && !this->is_covered()) {
+		if (this->visible) {
+			e.mouse_covered = this->is_covered(e);
 			this->handle_event(e);
 			auto children = this->children;
 			for (auto c : children) {
 				c->event_handler(e);
 			}
-			//this->children = children;
 		}
 	}
 

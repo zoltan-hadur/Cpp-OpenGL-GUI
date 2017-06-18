@@ -59,8 +59,7 @@ namespace GLUI {
 	void Button::handle_event(Event& e) {
 		float2 pos = this->get_absolute_position();															// The absolute position relative to the top-level window
 		if (pos.x < e.x && e.x < pos.x + this->width && pos.y < e.y && e.y < pos.y + this->height) {		// Check if the mouse is above the button
-			if (this->visible) {																			// Check if visible, because one does not simply press a button if it's invisible
-				this->highlighted = true;																	// Highlight the button if the mouse is above the button
+			if (!e.mouse_covered) {																			// Check if covered, because one does not simply press a button if it's behind a component
 				if (e.mouse_left && e.mouse_pressed & !this->clicked) {										// Check if the user clicked on the button with the left mouse button
 					this->press_button(e);																	// Then press the button
 				} else if (e.mouse_left_down) {																// Check if the user still holds the left mouse button after down
@@ -82,6 +81,7 @@ namespace GLUI {
 					this->watch_repeat.stop();
 				}
 			}
+			this->highlighted = !e.mouse_covered;															// Highlight the button if the mouse is above the button
 		} else {
 			this->watch_wait.stop();																		// Stop repeating events if the mouse is not above the button
 			this->watch_repeat.stop();
