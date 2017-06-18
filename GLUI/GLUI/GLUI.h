@@ -8,10 +8,12 @@
 #include "Component.h";
 #include "Label.h";
 #include "Panel.h";
+#include "Window.h";
 #include "ProgressBar.h";
 #include "ScrollPanel.h";
 #include "Slider.h";
+#include "SpinnerBox.h";
 #include "TabbedPanel.h";
 #include "TextBox.h";
 #include "TextEditor.h"
-#include "Window.h";
+#include "MainWindow.h";
