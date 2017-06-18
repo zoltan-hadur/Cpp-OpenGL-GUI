@@ -46,9 +46,6 @@
     <ClInclude Include="Event\EventRaiser.h">
       <Filter>Header Files\Event</Filter>
     </ClInclude>
-    <ClInclude Include="GLUI\Window.h">
-      <Filter>Header Files\GLUI</Filter>
-    </ClInclude>
     <ClInclude Include="GLUI\Button.h">
       <Filter>Header Files\GLUI</Filter>
     </ClInclude>
@@ -73,9 +70,6 @@
     <ClInclude Include="GLUI\TabbedPanel.h">
       <Filter>Header Files\GLUI</Filter>
     </ClInclude>
-    <ClInclude Include="GLUI\Panel.h">
-      <Filter>Header Files\GLUI</Filter>
-    </ClInclude>
     <ClInclude Include="GLUI\TextBox.h">
       <Filter>Header Files\GLUI</Filter>
     </ClInclude>
@@ -83,6 +77,18 @@
       <Filter>Header Files\GLUI</Filter>
     </ClInclude>
     <ClInclude Include="GLUI\ProgressBar.h">
+      <Filter>Header Files\GLUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GLUI\SpinnerBox.h">
+      <Filter>Header Files\GLUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GLUI\MainWindow.h">
+      <Filter>Header Files\GLUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GLUI\Window.h">
+      <Filter>Header Files\GLUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GLUI\Panel.h">
       <Filter>Header Files\GLUI</Filter>
     </ClInclude>
   </ItemGroup>

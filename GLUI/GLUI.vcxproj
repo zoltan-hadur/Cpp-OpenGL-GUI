@@ -106,13 +106,15 @@
     <ClInclude Include="GLUI\GLUI.h" />
     <ClInclude Include="GLUI\Label.h" />
     <ClInclude Include="GLUI\Panel.h" />
+    <ClInclude Include="GLUI\Window.h" />
     <ClInclude Include="GLUI\ProgressBar.h" />
     <ClInclude Include="GLUI\ScrollPanel.h" />
     <ClInclude Include="GLUI\Slider.h" />
+    <ClInclude Include="GLUI\SpinnerBox.h" />
     <ClInclude Include="GLUI\TabbedPanel.h" />
     <ClInclude Include="GLUI\TextBox.h" />
     <ClInclude Include="GLUI\TextEditor.h" />
-    <ClInclude Include="GLUI\Window.h" />
+    <ClInclude Include="GLUI\MainWindow.h" />
     <ClInclude Include="Stopwatch.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
