@@ -8,13 +8,19 @@
 
 namespace GLUI {
 
+	class Window;
+
 	// Structure to store 2 floating points, with + and - operator overload
 	// Used mainly for positions
 	struct float2 {
 		float x;
 		float y;
 
-		float2(float x = 0, float y = 0) {
+		float2() {
+			this->x = 0;
+			this->y = 0;
+		}
+		float2(float x, float y) {
 			this->x = x;
 			this->y = y;
 		}
@@ -62,6 +68,7 @@ namespace GLUI {
 	protected:
 		Component* parent;								// Parent component
 		std::vector<Component*> children;				// Children components
+		std::vector<Window*> minimized_windows;			// For minimizing windows
 		static const unsigned char char_width = 9;		// Width of drawable char in pixels
 		static const unsigned char char_height = 16;	// Height of drawable char in pixels
 		float2 pos;										// Top left corner's position of the component relative to the parent component
@@ -92,8 +99,12 @@ namespace GLUI {
 		bool is_parent(Component* c);
 		// Adds a component
 		virtual void add_component(Component* c);
+		// Adds a minimized window
+		virtual void add_minimized_window(Window* window);
 		// Removes a component
 		virtual void remove_component(Component* c);
+		// Removes a minimed window
+		virtual void remove_minimized_window(Window* window);
 		// Sets the position of the component on screen in pixels relative to the parent component
 		virtual void set_position(float x, float y);
 		// Sets the position of the component on screen in pixels relative to the parent component
@@ -119,6 +130,8 @@ namespace GLUI {
 		virtual void set_visible(bool visible);
 		//
 		virtual void set_use_scissor(bool use_scissor);
+		// Gets a minimized window list
+		virtual std::vector<Window*> get_minimized_windows();
 		// Gets the position of the component relative to the parent component
 		virtual float2 get_position();
 		// Gets the absolute position of the component
@@ -342,11 +355,19 @@ namespace GLUI {
 		this->children.push_back(c);
 	}
 
+	// Adds a minimized window
+	void Component::add_minimized_window(Window* window) {
+		this->minimized_windows.push_back(window);
+	}
+
 	// Removes a component
 	void Component::remove_component(Component* c) {
-		//this->children.remove(c);
 		this->children.erase(std::remove(this->children.begin(), this->children.end(), c), this->children.end());
+	}
 
+	// Removes a minimed window
+	void Component::remove_minimized_window(Window* window) {
+		this->minimized_windows.erase(std::remove(this->minimized_windows.begin(), this->minimized_windows.end(), window), this->minimized_windows.end());
 	}
 
 	// Sets the position of the component on screen in pixels relative to the parent component
@@ -417,6 +438,11 @@ namespace GLUI {
 		for (auto c : children) {
 			c->set_use_scissor(use_scissor);
 		}
+	}
+
+	// Gets a minimized window list
+	std::vector<Window*> Component::get_minimized_windows() {
+		return this->minimized_windows;
 	}
 
 	// Gets the position of the component relative to the parent component
