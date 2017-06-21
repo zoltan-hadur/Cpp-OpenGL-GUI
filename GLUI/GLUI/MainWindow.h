@@ -12,10 +12,12 @@ namespace GLUI {
 	protected:
 		virtual float get_width() override;
 		virtual float get_height() override;
+		virtual void draw(bool draw_background = true) override;
 	public:
 		MainWindow(std::string title = "MainWindow", float pos_x = 100, float pos_y = 100, float width = 960, float height = 540);
 		void destroy();
-		virtual void draw(bool draw_background = true) override;
+
+		virtual void render() override;
 		virtual void event_handler(Event& e) override;
 	};
 	
@@ -25,6 +27,10 @@ namespace GLUI {
 
 	float MainWindow::get_height() {
 		return glutGet(GLUT_WINDOW_HEIGHT);
+	}
+
+	void MainWindow::draw(bool draw_background) {
+
 	}
 
 	MainWindow::MainWindow(std::string title, float pos_x, float pos_y, float width, float height) : Component(0, 0, width, height, 0) {
@@ -37,8 +43,11 @@ namespace GLUI {
 
 	}
 
-	void MainWindow::draw(bool draw_background) {
-
+	void MainWindow::render() {
+		//glScissor(-10, -10, glutGet(GLUT_WINDOW_WIDTH) + 20, glutGet(GLUT_WINDOW_HEIGHT) + 20);
+		glScissor(0, 0, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
+		glEnable(GL_SCISSOR_TEST);
+		Component::render();
 	}
 
 	// Handles input events (keyboard, mouse)
