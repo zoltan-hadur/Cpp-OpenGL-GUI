@@ -59,8 +59,15 @@ void onInitialization() {
 	window->add_component(window_0);
 	window->add_component(window_1);
 
+	GLUI::Window* window_2 = new GLUI::Window("Window 2", 10, 30, 300, 300);
+	window_2->set_border_color(255, 0, 0, 255);
+	GLUI::Window* window_3 = new GLUI::Window("Window 3", 10, 30, 300, 300);
+	window_1->add_component(window_2);
+	//window_1->add_component(window_3);
+
 	GLUI::TabbedPanel* tabbed_panel = new GLUI::TabbedPanel(20, 40, 600, 400);
 	window_0->add_component(tabbed_panel);
+	//window->add_component(tabbed_panel);
 
 	GLUI::ScrollPanel* panel0 = new GLUI::ScrollPanel(GLUI::ScrollPanel::ALIGN::VERTICAL, 10, 10, 500, 350);
 	for (int i = 0; i < 6; ++i) {
@@ -125,8 +132,9 @@ void onInitialization() {
 	tab2->add_component(spb_spinner);
 
 	tabbed_panel->add_tab("long tab name 0");
-	tabbed_panel->add_tab("long tab name 1");
-	tabbed_panel->add_tab("long tab name 2");
+	tabbed_panel->get_tab("long tab name 0")->add_component(window_3);
+	tabbed_panel->add_tab("short 1");
+	tabbed_panel->add_tab("short 2");
 
 	watch.start();
 }
