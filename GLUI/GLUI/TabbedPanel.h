@@ -166,7 +166,7 @@ namespace GLUI {
 				offset.y = offset.y + tab_selectors[i]->get_height() - tab_selectors[i]->get_default_border_width();
 			}
 			tab_selectors[i]->set_position(offset);
-			offset = offset + tab_selectors[i]->get_width() - tab_selectors[i]->get_default_border_width();
+			offset.x = offset.x + tab_selectors[i]->get_width() - tab_selectors[i]->get_default_border_width();
 
 			if (i == this->selected) {
 				tab_selectors[i]->set_background_color(180, 180, 180, 255);
@@ -178,7 +178,7 @@ namespace GLUI {
 		this->main_tab->set_position(0, offset.y + 20 - this->default_border_width);
 		this->main_tab->set_size(this->width, this->height - (offset.y + 20 - this->default_border_width));
 		//this->set_use_scissor(true);
-		//this->main_tab->set_use_scissor(true);
+		this->main_tab->set_use_scissor(true);
 
 		for (int i = 0; i < this->tabs.size(); ++i) {
 			this->tabs[i]->set_position(i*this->main_tab->get_width(), 0);
@@ -187,10 +187,7 @@ namespace GLUI {
 		if (this->animating && this->watch.is_running()) {
 			float dt = this->positive ? this->watch.get_delta_time() : -this->watch.get_delta_time();
 			this->acc2 = this->acc2 + std::fabs(dt);
-			//float speed = this->main_tab->get_width() / this->anim_time;
-			//float speed = 20*(std::fabs(this->offset - this->acc) * this->watch.get_elapsed_time()) / this->anim_time + 10;
 			float speed = 20 * (std::fabs(this->offset - this->acc) * this->acc2) / this->anim_time + 20;
-			//printf("%f %f\n", speed, acc2);
 
 			this->acc = this->acc + speed*dt;
 
@@ -205,10 +202,10 @@ namespace GLUI {
 		for (int i = 0; i < this->tabs.size(); ++i) {
 			this->tabs[i]->set_visible(this->animating || i == this->selected);
 			//this->tabs[i]->set_visible(true);
-			//this->tabs[i]->set_use_scissor(true);
+			this->tabs[i]->set_use_scissor(true);
+			//this->tabs[i]->set_draw_background(true);
 			this->tabs[i]->set_size(this->main_tab->get_width(), this->main_tab->get_height());
 			this->tabs[i]->set_position(this->tabs[i]->get_position() + float2(acc, 0));
-			//this->tabs[i]->set_draw_background(true);
 		}
 	}
 
