@@ -17,13 +17,11 @@ namespace GLUI {
 		Panel(bool draw_background = true, float x = 0, float y = 0, float width = 100, float height = 100, float border_width = 2);
 
 		void set_draw_background(bool draw_background);
-		//void set_use_scissor(bool use_scissor);
 		bool is_draw_background();
-		//bool is_use_scissor();
 	};
 
 	void Panel::handle_event(Event& e) {
-		
+
 	}
 
 	void Panel::draw(bool draw_background) {
@@ -52,24 +50,28 @@ namespace GLUI {
 
 				if (scissor_test) {
 					posp.x = scissor_pos[0];
-					posp.y = glutGet(GLUT_WINDOW_HEIGHT) - (scissor_pos[1] + scissor_pos[3] - this->parent->get_default_border_width());
+					posp.y = glutGet(GLUT_WINDOW_HEIGHT) - (scissor_pos[1] + scissor_pos[3]);
 					sizep.x = scissor_pos[2];
-					sizep.y = scissor_pos[3] - this->parent->get_default_border_width();
+					sizep.y = scissor_pos[3];
 				}
 
-				float2 posi = float2(std::max(posp.x, posc.x), std::max(posp.y, posc.y));
-				float2 posi2 = float2(std::min(posp.x+sizep.x, posc.x+sizec.x), std::min(posp.y+sizep.y, posc.y+sizec.y));
+				float2 posi = float2(std::max(posp.x, posc.x + (this->draw_background ? this->default_border_width : 0)),
+									 std::max(posp.y, posc.y + (this->draw_background ? this->default_border_width : 0)));
+				float2 posi2 = float2(std::min(posp.x + sizep.x, posc.x + sizec.x - (this->draw_background ? this->default_border_width : 0)),
+									  std::min(posp.y + sizep.y, posc.y + sizec.y - (this->draw_background ? this->default_border_width : 0)));
 				float2 sizei = float2(posi2.x - posi.x, posi2.y - posi.y);
 
 				if (sizei.x > 5.0 && sizei.y > 5.0) {
-
 					if (this->draw_background) {
-						//this->draw(this->draw_background);
-						float2 pos = posi;
-						pos.x = pos.x + this->default_border_width;
-						pos.y = glutGet(GLUT_WINDOW_HEIGHT) - (pos.y + sizei.y - this->default_border_width);								// y is inverted
-						glScissor(pos.x, pos.y, sizei.x - this->default_border_width * 2, sizei.y - this->default_border_width * 2);	// Allows partially drawing components
+
+						float x = posi.x;
+						float y = glutGet(GLUT_WINDOW_HEIGHT) - (posi.y + sizei.y);
+						float w = sizei.x;
+						float h = sizei.y;
+
+						glScissor(std::ceilf(x), std::ceilf(y), w, h);	// Allows partially drawing components
 						glEnable(GL_SCISSOR_TEST);
+
 					} else {
 						float2 pos = posi;
 						pos.x = pos.x;
@@ -118,19 +120,8 @@ namespace GLUI {
 		this->draw_background = draw_background;
 	}
 
-	//void Panel::set_use_scissor(bool use_scissor) {
-	//	this->use_scissor = use_scissor;
-	//	for (auto c : children) {
-	//		c->set_use_scissor(use_scissor);
-	//	}
-	//}
-
 	bool Panel::is_draw_background() {
 		return this->draw_background;
 	}
-
-	//bool Panel::is_use_scissor() {
-	//	return this->use_scissor;
-	//}
 
 }
