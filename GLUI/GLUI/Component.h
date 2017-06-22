@@ -10,7 +10,7 @@ namespace GLUI {
 
 	class Window;
 
-	// Structure to store 2 floating points, with + and - operator overload
+	// Structure to store 2 floating points
 	// Used mainly for positions
 	struct float2 {
 		float x;
@@ -27,8 +27,26 @@ namespace GLUI {
 		float2 operator+(float2 p) {
 			return float2(x + p.x, y + p.y);
 		}
+		float2 operator+(float p) {
+			return float2(x + p, y + p);
+		}
 		float2 operator-(float2 p) {
 			return float2(x - p.x, y - p.y);
+		}
+		float2 operator-(float p) {
+			return float2(x - p, y - p);
+		}
+		float2 operator*(float2 p) {
+			return float2(x * p.x, y * p.y);
+		}
+		float2 operator*(float p) {
+			return float2(x * p, y * p);
+		}
+		float2 operator/(float2 p) {
+			return float2(x / p.x, y / p.y);
+		}
+		float2 operator/(float p) {
+			return float2(x / p, y / p);
 		}
 	};
 
@@ -93,6 +111,8 @@ namespace GLUI {
 	public:
 		// 
 		void bring_front(Event& e);
+		//
+		void bring_front();
 		//
 		bool is_covered(Event& e);
 		//
@@ -302,6 +322,15 @@ namespace GLUI {
 				}
 			}
 		} while (children.size() > 1 && found);
+	}
+
+	// 
+	void Component::bring_front() {
+		if (this->parent) {
+			this->parent->remove_component(this);
+			this->parent->add_component(this);
+			this->parent->bring_front();
+		}
 	}
 
 	//
@@ -515,12 +544,10 @@ namespace GLUI {
 	// Just call it on a window object, and all children components will be drawn
 	void Component::render() {
 		if (this->visible) {
-			glMatrixMode(GL_PROJECTION); glPushMatrix(); glLoadIdentity();								// Save current projection matrix
-			glOrtho(0.0f, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), 0.0f, -1.0f, 1.0f);	// Transform it to able to draw in pixel coordinates
-			glMatrixMode(GL_MODELVIEW); glPushMatrix(); glLoadIdentity();								// Save current modelview matrix
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); glEnable(GL_BLEND);						// Enable transparency
-
-
+			//glMatrixMode(GL_PROJECTION); glPushMatrix(); glLoadIdentity();								// Save current projection matrix
+			//glOrtho(0.0f, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), 0.0f, -1.0f, 1.0f);	// Transform it to able to draw in pixel coordinates
+			//glMatrixMode(GL_MODELVIEW); glPushMatrix(); glLoadIdentity();								// Save current modelview matrix
+			//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); glEnable(GL_BLEND);						// Enable transparency
 
 			this->draw();
 			auto children = this->children;
@@ -528,55 +555,9 @@ namespace GLUI {
 				c->render();
 			}
 
-
-			//if (!this->use_scissor) {
-			//	this->draw();
-			//}
-
-			//bool intersection = true;
-			//if (this->use_scissor && this->parent) {
-			//	float2 posp = this->parent->get_absolute_position();
-			//	float2 sizep = float2(this->parent->get_width(), this->parent->get_height());
-			//	float2 posc = this->get_absolute_position();
-			//	float2 sizec = float2(this->get_width(), this->get_height());
-
-			//	float2 posi = float2(std::max(posp.x, posc.x), std::max(posp.y, posc.y));
-			//	float2 posi2 = float2(std::min(posp.x+sizep.x, posc.x+sizec.x), std::min(posp.y+sizep.y, posc.y+sizec.y));
-			//	float2 sizei = float2(posi2.x - posi.x, posi2.y - posi.y);
-			//	if (sizei.x > 0 && sizei.y > 0) {
-			//		float2 pos = posi;
-			//		pos.x = pos.x + this->default_border_width;
-			//		pos.y = glutGet(GLUT_WINDOW_HEIGHT) - (pos.y + sizei.y - this->default_border_width);								// y is inverted
-			//		glScissor(pos.x, pos.y, sizei.x - this->default_border_width * 2, sizei.y - this->default_border_width * 2);	// Allows partially drawing components
-			//		glEnable(GL_SCISSOR_TEST);
-			//	} else {
-			//		intersection = false;
-			//	}
-
-			//	//float2 pos = this->get_absolute_position();
-			//	//pos.x = pos.x + this->default_border_width;
-			//	//pos.y = glutGet(GLUT_WINDOW_HEIGHT) - (pos.y + this->height - this->default_border_width);								// y is inverted
-			//	//glScissor(pos.x, pos.y, this->width - this->default_border_width * 2, this->height - this->default_border_width * 2);	// Allows partially drawing components
-			//	//glEnable(GL_SCISSOR_TEST);
-			//}
-
-			//if (intersection) {
-			//	if (this->use_scissor) {
-			//		this->draw();
-			//	}
-			//	auto children = this->children;
-			//	for (auto c : children) {
-			//		c->render();
-			//	}
-			//}
-
-			//if (this->use_scissor) {
-			//	glDisable(GL_SCISSOR_TEST);
-			//}
-
-			glDisable(GL_BLEND);
-			glPopMatrix(); glMatrixMode(GL_PROJECTION);
-			glPopMatrix(); glMatrixMode(GL_MODELVIEW);
+			//glDisable(GL_BLEND);
+			//glPopMatrix(); glMatrixMode(GL_PROJECTION);
+			//glPopMatrix(); glMatrixMode(GL_MODELVIEW);
 		}
 	}
 
