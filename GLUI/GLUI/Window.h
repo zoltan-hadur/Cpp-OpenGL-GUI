@@ -4,42 +4,43 @@
 
 namespace GLUI {
 
-	// Panel, that can store and display various components, movable, collapsable, minimizable
+	// Movable, collapsable and minimizable panel, that can store and display various components
+	// Added components needs a (0,20) offset to their positions because of window title
 	class Window : public EventListener, public Panel {
 	protected:
-		enum class STATE_0 {	// States of window collapsing
+		enum class C_STATE {	// States of window collapsing
 			EXPANDED,
 			COLLAPSING,
 			COLLAPSED,
 			EXPANDING
 		};
 
-		enum class STATE_1 {	// States of window minimizing
+		enum class M_STATE {	// States of window minimizing
 			ENLARGED,
 			MINIMIZING,
 			MINIMIZED,
 			ENLARGING
 		};
 
-		STATE_0 state_0;		// Stores that the window is expanded, collapsing, collapsed, or expanding
-		STATE_1 state_1;		// Stores that the window is enlarged, minimizing, minimized, or enlarging
+		C_STATE c_state;		// Stores that the window is expanded, collapsing, collapsed, or expanding
+		M_STATE m_state;		// Stores that the window is enlarged, minimizing, minimized, or enlarging
 
-		Button* btn_title;		// Title of the panel (can be grabbed and move the window by the mouse)
+		Button* btn_title;		// Title of the panel (the window can be moved by dragging this)
 		Button* btn_collapse;	// Button to collapse the window
 		Button* btn_minimize;	// Button to minimize the window
 
-		float2 pos_offset;		// Position offset for moving the window and for minimize animation
-		float2 size_offset;		// Size offset for collapsing 
-		float2 orig_pos;		// Original position for minimize
-		float2 orig_size;		// Original size for minimize and collapse
-		bool dragged;			// Becomes true when the user clicks on the title button (when the window is not minimized), and false when releases the left mouse button
+		float2 pos_offset;		// Position offset for animation
+		float2 size_offset;		// Size offset for animation
+		float2 orig_pos;		// Original position for animation
+		float2 orig_size;		// Original size for animation
+		float2 move_offset;		// Position offset for moving window
+
+		bool grabbed;			// Indicates that the window is grabbed by the mouse or not
 
 		Stopwatch watch;		// Timer for animations
-		float2 acc_delta_time;	// Stores accumulated non linear delta times
-		float2 acc_delta_time_2;// Stores accumulated non linear delta times
-		float2 acc_elapsed_time;// Stores elapsed time
-
-		float anim_time;
+		float2 acc_size;		// Stores accumulated size value for animation
+		float2 acc_pos;			// Stores accumulated position values for animation
+		float anim_time;		// Determines how long the animations last (not accurate because of non linearity)
 
 		virtual void handle_event(Event& e) override;
 		virtual void draw(bool draw_background = true) override;
@@ -55,220 +56,186 @@ namespace GLUI {
 	};
 
 	void Window::handle_event(Event& e) {
-		if (this->dragged) {														// If dragged
-			if (e.mouse_moved) {													// And the mouse moved
-				this->set_position(float2(e.x, e.y) - this->pos_offset);			// Reposition the panel
-				this->orig_pos = this->get_position();
-			}
+		if (this->grabbed && e.mouse_moved) {																			// If the user grabbed the window and moved the mouse
+			this->set_position(float2(e.x, e.y) - this->move_offset);													// Reposition the panel
+			this->orig_pos = this->get_position();																		// To enlarge the window to the new position from minimized state
 		}
 	}
 
 	void Window::draw(bool draw_background) {
+		this->btn_collapse->bring_front();																				// Bring to the front
+		this->btn_minimize->bring_front();																				// Bring to the front
+		this->btn_title->bring_front();																					// Bring to the front to draw last (hence it is in front of every object in the window)
+
 		this->set_use_scissor(true);
 
-		if (this->state_0 == STATE_0::EXPANDED) {
-			if (this->state_1 == STATE_1::MINIMIZED) {
+		if (this->m_state == M_STATE::MINIMIZED) {																		// If the window is minimized
+			float offset = 0;
+			for (int i = 0; i < this->parent->get_minimized_windows().size(); ++i) {									// Get how far the window needs to be from the parent component's left side according to the minimized windows that the parent holds
+				if (this->parent->get_minimized_windows()[i] == this) {													// Therefore is this break
+					break;
+				}
+				offset = offset + this->parent->get_minimized_windows()[i]->get_width() - this->parent->get_minimized_windows()[i]->get_default_border_width();
+			}
+			float2 pos_offset = float2(offset, this->parent->get_height() - 20) - this->orig_pos;						// Not setting the offset yet if it's not modified
+			this->set_position(this->pos.x, this->parent->get_height() - 20);											// Always at the bottom of the parent
+			this->acc_pos.y = pos_offset.y;																				// Always at the bottom of the parent
+			if (this->pos_offset.x != pos_offset.x) {																	// If the offset modified (a minimized window was removed from the list, thus the window needs to move to the left)
+				this->pos_offset = pos_offset;																			// The position where the window moves
+				this->m_state = M_STATE::MINIMIZING;																	// Modify the state to start animating again
+				if (this->watch.is_running()) {																			// Restart the timer
+					this->watch.reset();
+				} else {
+					this->watch.start();
+				}
+			} else {																									// If the minimized window not moved
 				bool visibility = this->is_visible();
-				this->set_visible(false);
+				this->set_visible(false);																				// Every component is invisibile
 				this->visible = visibility;
-				this->btn_title->set_visible(visibility);
-				this->btn_title->set_size(this->btn_title->get_label()->get_text().size()*this->char_width + 2 * this->char_width, 20);
-
-				float offset = 0;
-				for (int i = 0; i < this->parent->get_minimized_windows().size(); ++i) {
-					if (this->parent->get_minimized_windows()[i] == this) {
-						break;
-					}
-					offset = offset + this->parent->get_minimized_windows()[i]->get_width() - this->parent->get_minimized_windows()[i]->get_default_border_width();
-				}
-				this->set_position(offset, this->parent->get_height() - 20);
-				this->pos_offset = this->pos - this->orig_pos;
-				this->acc_delta_time_2 = this->pos_offset;
-
-			} else if (this->state_1 != STATE_1::ENLARGED) {
-				this->btn_title->set_size(this->orig_size.x - 50 + this->default_border_width * 2, 20);
-				this->set_visible(this->is_visible());
-				if (this->watch.is_running()) {
-					float dt = this->watch.get_delta_time();
-					this->acc_elapsed_time.x = this->watch.get_elapsed_time();
-					this->acc_elapsed_time.y = this->acc_elapsed_time.x;
-
-					float2 speed_size = float2(20 * (std::fabs(this->size_offset.x - this->acc_delta_time.x) * this->acc_elapsed_time.x) / this->anim_time,
-											   20 * (std::fabs(this->size_offset.y - this->acc_delta_time.y) * this->acc_elapsed_time.y) / this->anim_time);
-
-					float2 speed_pos = float2(20 * (std::fabs(this->pos_offset.x - this->acc_delta_time_2.x) * this->acc_elapsed_time.x) / this->anim_time,
-											  -20 * (std::fabs(this->pos_offset.y - this->acc_delta_time_2.y) * this->acc_elapsed_time.y) / this->anim_time);
-
-					if (this->state_1 == STATE_1::MINIMIZING) {
-						speed_size.x = -speed_size.x;
-						speed_size.y = -speed_size.y;
-						speed_pos.x = -speed_pos.x;
-						speed_pos.y = -speed_pos.y;
-					}
-
-					this->acc_delta_time = float2(this->acc_delta_time.x + speed_size.x * dt,
-												  this->acc_delta_time.y + speed_size.y * dt);
-
-					this->acc_delta_time_2 = float2(this->acc_delta_time_2.x + speed_pos.x * dt,
-													this->acc_delta_time_2.y + speed_pos.y * dt);
-
-					bool size_in_x = false;
-					bool size_in_y = false;
-					if (std::fabs(this->size_offset.x - this->acc_delta_time.x) < 1.0f) {
-						this->acc_delta_time.x = this->size_offset.x;
-						size_in_x = true;
-					}
-					if (std::fabs(this->size_offset.y - this->acc_delta_time.y) < 1.0f) {
-						this->acc_delta_time.y = this->size_offset.y;
-						size_in_y = true;
-					}
-
-					bool x_in_pos = true;
-					bool y_in_pos = true;
-					if (std::fabs(this->pos_offset.x - this->acc_delta_time_2.x) < 1.0f) {
-						this->acc_delta_time_2.x = this->pos_offset.x;
-						x_in_pos = true;
-					}
-					if (std::fabs(this->pos_offset.y - this->acc_delta_time_2.y) < 1.0f) {
-						this->acc_delta_time_2.y = this->pos_offset.y;
-						y_in_pos = true;
-					}
-
-					if (size_in_x && size_in_y && x_in_pos && y_in_pos) {
-						this->watch.stop();
-
-						if (this->state_1 == STATE_1::MINIMIZING) {
-							this->state_1 = STATE_1::MINIMIZED;
-						} else if (this->state_1 == STATE_1::ENLARGING) {
-							this->state_1 = STATE_1::ENLARGED;
-						}
-					}
-
-					this->set_size(this->orig_size.x + this->acc_delta_time.x, this->orig_size.y + this->acc_delta_time.y);
-					this->set_position(this->orig_pos + float2(acc_delta_time_2.x, acc_delta_time_2.y));
-				}
-			} else {
-				this->set_position(this->orig_pos);
-				this->set_size(this->orig_size.x, this->orig_size.y);
+				this->btn_title->set_visible(visibility);																// Except the title (needs to be visible, else how the user could enlarge the window)
+				this->btn_title->set_size(this->width, 20);
+			}
+		} else {																										// If the window is not minimized
+			this->set_visible(this->is_visible());																		// Update the visibility tree
+			this->btn_title->set_size(this->orig_size.x - 50 + this->default_border_width * 2, 20);						// Set the original size of the title
+			if (this->c_state == C_STATE::COLLAPSED) {																	// If the window was collapsed
+				bool visibility = this->is_visible();
+				this->set_visible(false);																				// Every component is invisible
+				this->visible = visibility;
+				this->btn_title->set_visible(visibility);																// Exceot the title,
+				this->btn_minimize->set_visible(visibility);															// Minimize button
+				this->btn_collapse->set_visible(visibility);															// And collapse button
 			}
 		}
 
-		if (this->state_1 == STATE_1::ENLARGED) {
-			if (this->state_0 == STATE_0::COLLAPSED) {
-				bool visibility = this->is_visible();
-				this->set_visible(false);
-				this->visible = visibility;
-				this->btn_title->set_visible(visibility);
-				this->btn_minimize->set_visible(visibility);
-				this->btn_collapse->set_visible(visibility);
-			} else if (this->state_0 != STATE_0::EXPANDED) {
-				this->set_visible(this->is_visible());
-				if (this->watch.is_running()) {
-					float dt = this->watch.get_delta_time();
-					this->acc_elapsed_time.x = this->watch.get_elapsed_time();
-					this->acc_elapsed_time.y = this->acc_elapsed_time.x;
-					float2 speed = float2(20 * (std::fabs(this->size_offset.x - this->acc_delta_time.x) * this->acc_elapsed_time.x) / this->anim_time,
-										  20 * (std::fabs(this->size_offset.y - this->acc_delta_time.y) * this->acc_elapsed_time.y) / this->anim_time);
+		if (this->watch.is_running()) {																					// Animate if the watch is running
+			float dt = this->watch.get_delta_time();																	// Get delta time
+			float et = this->watch.get_elapsed_time();																	// Get elapsed time
 
-					if (this->state_0 == STATE_0::COLLAPSING) {
-						speed.x = -speed.x;
-						speed.y = -speed.y;
-					}
+			float2 speed_size = (this->size_offset - this->acc_size) * 20 * et / this->anim_time;						// Calculate the current speed to modify the window's size
+			float2 speed_pos = (this->pos_offset - this->acc_pos) * 20 * et / this->anim_time;							// Calculate the current speed to modify the window's position
 
-					this->acc_delta_time = float2(this->acc_delta_time.x + speed.x * dt,
-												  this->acc_delta_time.y + speed.y * dt);
+			this->acc_size = this->acc_size + speed_size * dt;															// Accumulate the window's size
+			this->acc_pos = this->acc_pos + speed_pos * dt;																// Accumulate the window's position
 
-					bool size_in_x = false;
-					bool size_in_y = false;
-					if (std::fabs(this->size_offset.x - this->acc_delta_time.x) < 1.0f) {
-						this->acc_delta_time.x = this->size_offset.x;
-						size_in_x = true;
-					}
-					if (std::fabs(this->size_offset.y - this->acc_delta_time.y) < 1.0f) {
-						this->acc_delta_time.y = this->size_offset.y;
-						size_in_y = true;
-					}
+			bool x_in_size = false;
+			bool y_in_size = false;
+			if (std::fabs(this->size_offset.x - this->acc_size.x) < 1.0f) {												// Check if window's width has reached it's target value
+				this->acc_size.x = this->size_offset.x;
+				x_in_size = true;
+			}
+			if (std::fabs(this->size_offset.y - this->acc_size.y) < 1.0f) {												// Check if window's height has reached it's target value
+				this->acc_size.y = this->size_offset.y;
+				y_in_size = true;
+			}
 
-					if (size_in_x && size_in_y) {
-						this->watch.stop();
+			bool x_in_pos = false;
+			bool y_in_pos = false;
+			if (std::fabs(this->pos_offset.x - this->acc_pos.x) < 1.0f) {												// Check if the x coordinate of the window's position has reached it's target value
+				this->acc_pos.x = this->pos_offset.x;
+				x_in_pos = true;
+			}
+			if (std::fabs(this->pos_offset.y - this->acc_pos.y) < 1.0f) {												// Check if the y coordinate of the window's position has reached it's target value
+				this->acc_pos.y = this->pos_offset.y;
+				y_in_pos = true;
+			}
 
-						if (this->state_0 == STATE_0::COLLAPSING) {
-							this->state_0 = STATE_0::COLLAPSED;
-						} else if (this->state_0 == STATE_0::EXPANDING) {
-							this->state_0 = STATE_0::EXPANDED;
-						}
-					}
+			this->set_size(this->orig_size.x + this->acc_size.x, this->orig_size.y + this->acc_size.y);					// Modifiy the window's size according to the animation
+			this->set_position(this->orig_pos.x + this->acc_pos.x, this->orig_pos.y + this->acc_pos.y);					// Modify the window's position according to the animation
 
-					this->height = this->orig_size.y + this->acc_delta_time.y;
+			if (x_in_size && y_in_size && x_in_pos && y_in_pos) {														// If the window's position and it's size reached their target value
+				this->watch.stop();																						// The animation is over
+
+				if (this->c_state == C_STATE::COLLAPSING) {																// Set the states
+					this->c_state = C_STATE::COLLAPSED;
+				}
+				if (this->c_state == C_STATE::EXPANDING) {
+					this->c_state = C_STATE::EXPANDED;
+				}
+
+				if (this->m_state == M_STATE::MINIMIZING) {
+					this->m_state = M_STATE::MINIMIZED;
+				}
+				if (this->m_state == M_STATE::ENLARGING) {
+					this->m_state = M_STATE::ENLARGED;
 				}
 			}
 		}
-
 		Panel::draw(this->draw_background);
 	}
 
 	// To listen on inner component events
 	void Window::action_performed(void* sender, Event& e) {
-		if (sender == this->btn_title) {		// If the title
-			if (e.button_pressed) {				// Was pressed
-				if (this->state_1 == STATE_1::ENLARGED) {
-					this->pos_offset = float2(e.x, e.y) - this->get_absolute_position() + this->parent->get_absolute_position();
-					this->dragged = true;
+		if (sender == this->btn_title) {																				// If the title
+			if (e.button_pressed) {																						// Was pressed
+				if (this->m_state == M_STATE::ENLARGED) {																// And the window is fully enlarged
+					this->move_offset = (float2(e.x, e.y) - this->get_absolute_position() +								// Calculate the mouse position relative the window's parent's absolute position
+										 this->parent->get_absolute_position());
+					this->grabbed = true;																				// Because the user possibly wants to move the window with the mouse
 				}
-			} else if (e.button_released) {		// The user finished
-				this->dragged = false;			// Dragging the window
+			} else if (e.button_released) {																				// If the title was released
+				this->grabbed = false;																					// The user finished moving the window
 
-				if (this->state_1 == STATE_1::MINIMIZED) {
-					this->pos_offset = float2(0, 0);
-					this->size_offset = float2(0, 0);
-					this->parent->remove_minimized_window(this);
+				if (this->m_state == M_STATE::MINIMIZED || this->m_state == M_STATE::MINIMIZING) {						// If the window is minimized or minimizing
+					this->pos_offset = float2(0, 0);																	// Start enlarging it (a (0,0) offset means there is no difference between the original and the destination values, so the window will animate to it's original state from it's current state)
+					if (this->c_state == C_STATE::COLLAPSED || this->c_state == C_STATE::COLLAPSING) {					// Target window height is 20 when collapsing or collapsed
+						this->size_offset = float2(0, 20 - this->orig_size.y);
+					} else {
+						this->size_offset = float2(0, 0);																// Target window size is the original when expanding or expanded
+					}
+					this->parent->remove_minimized_window(this);														// The window is not minimized now, so remove it from the list
 
-					this->state_1 = STATE_1::ENLARGING;
+					this->m_state = M_STATE::ENLARGING;
 
-					if (this->watch.is_running()) {														// If the watch is running
-						this->watch.reset();															// Reset it
-					} else {																			// Else
-						this->watch.start();															// Start it
+																														// Reset the watch at every button press
+					if (this->watch.is_running()) {																		// If the watch is running
+						this->watch.reset();																			// Reset it
+					} else {																							// Else
+						this->watch.start();																			// Start it
 					}
 				}
 			}
 		}
-		if (sender == this->btn_collapse) {															// If the collapse button
-			if (e.button_released) {																// Was pressed
-				if (this->state_0 == STATE_0::EXPANDED || this->state_0 == STATE_0::EXPANDING) {	// Start collapsing the window if it was expanded or it was expanding
-					this->size_offset = float2(this->width, 20) - this->orig_size;					// The height is 20 while collapsed, so the offset in y is orig height - 20
-					this->state_0 = STATE_0::COLLAPSING;											// Change state
-				} else {																			// Start expanding the window if it was collapsed or it was collapsing
-					this->size_offset = float2(0, 0);												// The height is orig height while expanded, so the offset in y is 0 (because orig height minus orig height is zero)
-					this->state_0 = STATE_0::EXPANDING;												// Change state
+		if (sender == this->btn_collapse) {																				// If the collapse button
+			if (e.button_released) {																					// Was pressed
+				if (this->c_state == C_STATE::EXPANDED || this->c_state == C_STATE::EXPANDING) {						// Start collapsing the window if it was expanded or it was expanding
+					this->size_offset = float2(this->width, 20) - this->orig_size;										// The height is 20 while collapsed, so the offset in y is orig height - 20
+					this->c_state = C_STATE::COLLAPSING;
+				} else {																								// Start expanding the window if it was collapsed or it was collapsing
+					this->size_offset = float2(0, 0);																	// The height is orig height while expanded or expanding, so the offset in y is 0 (because orig height (target value) minus orig height (initial value) is zero)
+					this->c_state = C_STATE::EXPANDING;
 				}
-																									// Reset the watch at every button press
-				if (this->watch.is_running()) {														// If the watch is running
-					this->watch.reset();															// Reset it
-				} else {																			// Else
-					this->watch.start();															// Start it
+																														// Reset the watch at every button press
+				if (this->watch.is_running()) {																			// If the watch is running
+					this->watch.reset();																				// Reset it
+				} else {																								// Else
+					this->watch.start();																				// Start it
 				}
 			}
 		}
-		if (sender == this->btn_minimize) {
-			if (e.button_released) {
-				if (this->state_1 == STATE_1::ENLARGED && this->state_0 == STATE_0::EXPANDED) {
+		if (sender == this->btn_minimize) {																				// If the minimize button
+			if (e.button_released) {																					// Was pressed
+				if (this->m_state == M_STATE::ENLARGED) {																// And the window is fully enlarged
 
-					float offset = 0;
+					float offset = 0;																					// Get how far the window needs to be from the parent component's left side according to the minimized windows that the parent holds
 					for (int i = 0; i < this->parent->get_minimized_windows().size(); ++i) {
-						offset = offset + this->parent->get_minimized_windows()[i]->get_width() - this->parent->get_minimized_windows()[i]->get_default_border_width();
+						offset = (offset +																				// A minimized window's width is determined by it's title text's length
+								  this->parent->get_minimized_windows()[i]->btn_title->get_label()->get_text().size() * this->char_width + 2 * this->char_width -
+								  this->parent->get_minimized_windows()[i]->get_default_border_width());
 					}
-					this->size_offset = float2(this->btn_title->get_label()->get_text().size()*this->char_width + 2 * this->char_width, 20) - this->orig_size;
+					// A minimized window's width is determined by it's title text's length
+					this->size_offset = float2(this->btn_title->get_label()->get_text().size() * this->char_width + 2 * this->char_width, 20) - this->orig_size;
 					this->pos_offset = float2(offset, this->parent->get_height() - 20) - this->orig_pos;
 
-					this->parent->add_minimized_window(this);
+					this->parent->add_minimized_window(this);															// Add the minimized window to the list
 
-					this->state_1 = STATE_1::MINIMIZING;
+					this->m_state = M_STATE::MINIMIZING;
 
-					if (this->watch.is_running()) {														// If the watch is running
-						this->watch.reset();															// Reset it
-					} else {																			// Else
-						this->watch.start();															// Start it
+																														// Reset the watch at every button press
+					if (this->watch.is_running()) {																		// If the watch is running
+						this->watch.reset();																			// Reset it
+					} else {																							// Else
+						this->watch.start();																			// Start it
 					}
 				}
 			}
@@ -277,19 +244,19 @@ namespace GLUI {
 
 	// Title, what is displayed in the top left corner, the coordinates, the size, and the border's width
 	Window::Window(std::string title, float x, float y, float width, float height, float border_width) : Panel(true, x, y, width, height, border_width) {
-		this->state_0 = STATE_0::EXPANDED;
-		this->state_1 = STATE_1::ENLARGED;
+		this->c_state = C_STATE::EXPANDED;
+		this->m_state = M_STATE::ENLARGED;
 
 		this->pos_offset = float2(0, 0);
 		this->size_offset = float2(0, 0);
 		this->orig_pos = float2(x, y);
 		this->orig_size = float2(width, height);
-		this->dragged = false;
+		this->move_offset = float2(0, 0);
+		this->grabbed = false;
 
 		this->watch = Stopwatch();
-		this->acc_delta_time = float2(0, 0);
-		this->acc_delta_time_2 = float2(0, 0);
-		this->acc_elapsed_time = float2(0, 0);
+		this->acc_size = float2(0, 0);
+		this->acc_pos = float2(0, 0);
 		this->anim_time = 1;
 
 		this->btn_title = new Button(" " + title, 0, 0, width - 50 + border_width * 2, 20, border_width);

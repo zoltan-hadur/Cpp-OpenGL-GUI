@@ -55,9 +55,13 @@ void onInitialization() {
 	max_fps = 0;
 
 	GLUI::Window* window_0 = new GLUI::Window("Window 0", 10, 10, 800, 500);
-	GLUI::Window* window_1 = new GLUI::Window("Window 1", 500, 10, 800, 500);
+	GLUI::Window* window_1 = new GLUI::Window("Window 1", 110, 110, 800, 500);
+	GLUI::Window* window_10 = new GLUI::Window("ASD", 210, 210, 800, 500);
+	GLUI::Window* window_11 = new GLUI::Window("A very long window name", 310, 310, 800, 500);
 	window->add_component(window_0);
 	window->add_component(window_1);
+	window->add_component(window_10);
+	window->add_component(window_11);
 
 	GLUI::Window* window_2 = new GLUI::Window("Window 2", 10, 30, 300, 300);
 	window_2->set_border_color(255, 0, 0, 255);
@@ -143,6 +147,43 @@ void onDisplay() {
 	glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	//glBegin(GL_QUADS);
+	//for (int i = 0; i < 10; ++i) {
+	//	for (int j = 0; j < 10; ++j) {
+	//		float x = -1.0f + 2.0f / 10.0f * i;
+	//		float y = -1.0f + 2.0f / 10.0f * j;
+	//		float w = 2.0f / 10.0f;
+	//		float h = 2.0f / 10.0f;
+
+	//		if ((i % 2 == 0 && j % 2 == 0) || (i % 2 == 1 && j % 2 == 1)) {
+	//			glColor3f(1, 0, 0);
+	//			glVertex2f(x, y);
+
+	//			glColor3f(0, 1, 0);
+	//			glVertex2f(x, y + h);
+
+	//			glColor3f(1, 0, 0);
+	//			glVertex2f(x + w, y + h);
+
+	//			glColor3f(0, 1, 0);
+	//			glVertex2f(x + w, y);
+	//		} else {
+	//			glColor3f(0, 1, 0);
+	//			glVertex2f(x, y);
+
+	//			glColor3f(1, 0, 0);
+	//			glVertex2f(x, y + h);
+
+	//			glColor3f(0, 1, 0);
+	//			glVertex2f(x + w, y + h);
+
+	//			glColor3f(1, 0, 0);
+	//			glVertex2f(x + w, y);
+	//		}
+	//	}
+	//}
+	//glEnd();
+
 	glBegin(GL_QUADS);
 	for (int i = 0; i < 10; ++i) {
 		for (int j = 0; j < 10; ++j) {
@@ -154,26 +195,14 @@ void onDisplay() {
 			if ((i % 2 == 0 && j % 2 == 0) || (i % 2 == 1 && j % 2 == 1)) {
 				glColor3f(1, 0, 0);
 				glVertex2f(x, y);
-
-				glColor3f(0, 1, 0);
 				glVertex2f(x, y + h);
-
-				glColor3f(1, 0, 0);
 				glVertex2f(x + w, y + h);
-
-				glColor3f(0, 1, 0);
 				glVertex2f(x + w, y);
 			} else {
 				glColor3f(0, 1, 0);
 				glVertex2f(x, y);
-
-				glColor3f(1, 0, 0);
 				glVertex2f(x, y + h);
-
-				glColor3f(0, 1, 0);
 				glVertex2f(x + w, y + h);
-
-				glColor3f(1, 0, 0);
 				glVertex2f(x + w, y);
 			}
 		}
