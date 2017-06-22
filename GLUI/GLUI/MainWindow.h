@@ -6,9 +6,10 @@
 
 namespace GLUI {
 
+	// A top level window, created by glut
 	class MainWindow : public Component {
 	private:
-		int id;
+		int id;	// Window id created by glut
 	protected:
 		virtual float get_width() override;
 		virtual float get_height() override;
@@ -33,7 +34,7 @@ namespace GLUI {
 
 	}
 
-	MainWindow::MainWindow(std::string title, float pos_x, float pos_y, float width, float height) : Component(0, 0, width, height, 0) {
+	MainWindow::MainWindow(std::string title, float pos_x, float pos_y, float width, float height) : Component(0, 0, 0, 0, 0) {
 		glutInitWindowSize(width, height);
 		glutInitWindowPosition(pos_x, pos_y);
 		id = glutCreateWindow(title.c_str());
@@ -44,10 +45,18 @@ namespace GLUI {
 	}
 
 	void MainWindow::render() {
-		//glScissor(-10, -10, glutGet(GLUT_WINDOW_WIDTH) + 20, glutGet(GLUT_WINDOW_HEIGHT) + 20);
-		glScissor(0, 0, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
+		glMatrixMode(GL_PROJECTION); glPushMatrix(); glLoadIdentity();								// Save current projection matrix
+		glOrtho(0.0f, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), 0.0f, -1.0f, 1.0f);	// Transform it to able to draw in pixel coordinates
+		glMatrixMode(GL_MODELVIEW); glPushMatrix(); glLoadIdentity();								// Save current modelview matrix
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); glEnable(GL_BLEND);						// Enable transparency
+
+		glScissor(0, 0, this->get_width(), this->get_height());
 		glEnable(GL_SCISSOR_TEST);
 		Component::render();
+
+		glDisable(GL_BLEND);
+		glPopMatrix(); glMatrixMode(GL_PROJECTION);
+		glPopMatrix(); glMatrixMode(GL_MODELVIEW);
 	}
 
 	// Handles input events (keyboard, mouse)
