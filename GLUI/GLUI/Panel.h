@@ -30,11 +30,6 @@ namespace GLUI {
 
 	void Panel::render() {
 		if (this->visible) {
-			glMatrixMode(GL_PROJECTION); glPushMatrix(); glLoadIdentity();								// Save current projection matrix
-			glOrtho(0.0f, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), 0.0f, -1.0f, 1.0f);	// Transform it to able to draw in pixel coordinates
-			glMatrixMode(GL_MODELVIEW); glPushMatrix(); glLoadIdentity();								// Save current modelview matrix
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); glEnable(GL_BLEND);						// Enable transparency
-
 			this->draw(this->draw_background);
 
 			if (this->use_scissor && this->parent) {
@@ -103,10 +98,6 @@ namespace GLUI {
 			//if (this->use_scissor) {
 			//	glDisable(GL_SCISSOR_TEST);
 			//}
-
-			glDisable(GL_BLEND);
-			glPopMatrix(); glMatrixMode(GL_PROJECTION);
-			glPopMatrix(); glMatrixMode(GL_MODELVIEW);
 		}
 	}
 
