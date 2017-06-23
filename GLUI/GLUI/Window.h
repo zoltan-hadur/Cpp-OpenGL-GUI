@@ -67,8 +67,6 @@ namespace GLUI {
 		this->btn_minimize->bring_front();																				// Bring to the front
 		this->btn_title->bring_front();																					// Bring to the front to draw last (hence it is in front of every object in the window)
 
-		this->set_use_scissor(true);
-
 		if (this->m_state == M_STATE::MINIMIZED) {																		// If the window is minimized
 			float offset = 0;
 			for (int i = 0; i < this->parent->get_minimized_windows().size(); ++i) {									// Get how far the window needs to be from the parent component's left side according to the minimized windows that the parent holds
@@ -161,7 +159,7 @@ namespace GLUI {
 				}
 			}
 		}
-		Panel::draw(this->draw_background);
+		Panel::draw(draw_background);
 	}
 
 	// To listen on inner component events
@@ -276,9 +274,6 @@ namespace GLUI {
 		this->btn_minimize->set_wait_time(std::numeric_limits<float>::max());
 		this->btn_minimize->add_event_listener(this);
 		this->add_component(this->btn_minimize);
-
-		this->set_draw_background(true);
-		this->set_use_scissor(true);
 	}
 
 	// Sets the title of the panel

@@ -61,14 +61,10 @@ namespace GLUI {
 		if (tab == nullptr) {
 			tab = new Panel();
 		}
-		//tab->set_position(0, 20);
-		//tab->set_size(width, height - 20);
 		tab->set_background_color(tab->get_background_color().get_r(),
 								  tab->get_background_color().get_g(),
 								  tab->get_background_color().get_b(),
 								  0);
-		tab->set_draw_background(false);
-		//tab->set_use_scissor(true);
 		tab->set_visible(false);
 		tabs.push_back(tab);
 		this->main_tab->add_component(tab);
@@ -155,8 +151,7 @@ namespace GLUI {
 	}
 
 	void TabbedPanel::draw(bool draw_background) {
-		Panel::draw(this->draw_background);
-		//((TabbedPanel*)main_tab)->draw(this->draw_background);
+		Panel::draw(draw_background);
 
 		float2 offset = float2(0, 0);
 		for (int i = 0; i < tab_selectors.size(); ++i) {
@@ -177,8 +172,6 @@ namespace GLUI {
 
 		this->main_tab->set_position(0, offset.y + 20 - this->default_border_width);
 		this->main_tab->set_size(this->width, this->height - (offset.y + 20 - this->default_border_width));
-		//this->set_use_scissor(true);
-		this->main_tab->set_use_scissor(true);
 
 		for (int i = 0; i < this->tabs.size(); ++i) {
 			this->tabs[i]->set_position(i*this->main_tab->get_width(), 0);
@@ -201,9 +194,6 @@ namespace GLUI {
 
 		for (int i = 0; i < this->tabs.size(); ++i) {
 			this->tabs[i]->set_visible(this->animating || i == this->selected);
-			//this->tabs[i]->set_visible(true);
-			this->tabs[i]->set_use_scissor(true);
-			//this->tabs[i]->set_draw_background(true);
 			this->tabs[i]->set_size(this->main_tab->get_width(), this->main_tab->get_height());
 			this->tabs[i]->set_position(this->tabs[i]->get_position() + float2(acc, 0));
 		}

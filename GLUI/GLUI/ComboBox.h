@@ -57,7 +57,6 @@ namespace GLUI {
 	}
 
 	void ComboBox::draw(bool draw_background) {
-		this->set_use_scissor(true);
 		this->scp_list->set_visible(d_state != D_STATE::ROLLED_UP);											// Hide the scroll panel when the combobox is rolled up
 
 		if (this->watch.is_running()) {																		// Animate if the watch is running
@@ -93,7 +92,7 @@ namespace GLUI {
 			}
 		}
 
-		Component::draw();
+		Panel::draw(draw_background);
 	}
 
 	// To listen on the children component's events

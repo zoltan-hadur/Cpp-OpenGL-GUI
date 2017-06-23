@@ -47,9 +47,6 @@ namespace GLUI {
 	}
 
 	void ScrollPanel::draw(bool draw_background) {
-		this->set_use_scissor(true);
-		this->set_draw_background(true);
-
 		switch (this->align) {	// Position the slider in the panel according to it's alignment and it's size
 			case ALIGN::HORIZONTAL:
 				this->sld_scroll_bar->set_position(0,					// X
@@ -108,7 +105,7 @@ namespace GLUI {
 			}
 		}
 
-		Panel::draw();
+		Panel::draw(draw_background);
 	}
 
 	// To listen on the children component's events

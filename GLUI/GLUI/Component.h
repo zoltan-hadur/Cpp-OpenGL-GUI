@@ -97,7 +97,6 @@ namespace GLUI {
 		float default_border_width;						// Default border width of the component
 		bool visible;									// Determines if the component is visible (if set to false, no children will be drawn)
 		bool highlighted;								// Determines if the component is highlighted (i.e. mouse is above the component, if the derived class handles it)
-		bool use_scissor;
 		Color background_color;							// Color of the component's background
 		Color border_color;								// Color of the component's border
 		Color highlight_color;							// Color of the component's background when highlighted
@@ -148,8 +147,6 @@ namespace GLUI {
 		virtual void set_highlight_color(unsigned char R = 0U, unsigned char G = 0U, unsigned char B = 0U, unsigned char A = 255U);
 		// Sets the visibility of the component (if set to false, no children will be drawn)
 		virtual void set_visible(bool visible);
-		//
-		virtual void set_use_scissor(bool use_scissor);
 		// Gets a minimized window list
 		virtual std::vector<Window*> get_minimized_windows();
 		// Gets the position of the component relative to the parent component
@@ -170,8 +167,6 @@ namespace GLUI {
 		virtual Color get_highlight_color();
 		// Gets visibility of the component
 		virtual bool is_visible();
-		//
-		virtual bool is_use_scissor();
 
 		// Handles input events (keyboard, mouse)
 		// Just create events in the main loop and pass them to the top-level window
@@ -192,7 +187,6 @@ namespace GLUI {
 		this->active_border_width = border_width + 2;
 		this->visible = true;
 		this->highlighted = false;
-		this->use_scissor = false;
 		this->background_color = Color(100, 100, 100, 180);
 		this->border_color = Color(200, 200, 200, 255);
 		//this->highlight_color = Color(66, 134, 244, 255);
@@ -480,14 +474,6 @@ namespace GLUI {
 		}
 	}
 
-	//
-	void Component::set_use_scissor(bool use_scissor) {
-		this->use_scissor = use_scissor;
-		for (auto c : children) {
-			c->set_use_scissor(use_scissor);
-		}
-	}
-
 	// Gets a minimized window list
 	std::vector<Window*> Component::get_minimized_windows() {
 		return this->minimized_windows;
@@ -540,11 +526,6 @@ namespace GLUI {
 	// Gets visibility of the component
 	bool Component::is_visible() {
 		return this->visible;
-	}
-
-	//
-	bool Component::is_use_scissor() {
-		return this->use_scissor;
 	}
 
 	// Handles input events (keyboard, mouse)
