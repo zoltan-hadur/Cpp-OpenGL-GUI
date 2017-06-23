@@ -76,11 +76,11 @@ namespace GLUI {
 		this->dropped_down_height = height;
 		this->background_color = Color(120, 120, 120, 255);		// Default grey color
 		this->lbl_selected = new Label("", 0, 0, width - 20, 20);
-		this->btn_drop_down = new Button(R"(\/)", width - 20 - border_width / 2, border_width / 2, 20, 20 - border_width);
+		this->btn_drop_down = new Button(R"(\/)", width - 20, 0, 20, 20);
 		this->btn_drop_down->add_event_listener(this);
 		//this->scp_list = new ScrollPanel(ScrollPanel::ALIGN::VERTICAL, 0, height-border_width, width, 181, border_width);
-		this->scp_list = new ScrollPanel(ScrollPanel::ALIGN::VERTICAL, 0, 20-border_width, width, height - 20 + border_width, border_width);
-		this->scp_list->get_scroll_bar()->set_increment(20 + border_width);
+		this->scp_list = new ScrollPanel(ScrollPanel::ALIGN::VERTICAL, 0, 19, width, height - 20, border_width);
+		this->scp_list->get_scroll_bar()->set_increment(20 + border_width * 2);
 		this->scp_list->set_visible(false);
 		this->add_component(this->lbl_selected);
 		this->add_component(this->btn_drop_down);
@@ -94,7 +94,7 @@ namespace GLUI {
 								 this->width - this->default_border_width*2 - 3 - 20, 20);								// Width, height
 		btn->set_wait_time(std::numeric_limits<float>::max());
 		btn->add_event_listener(this);
-		this->element_offset = this->element_offset + 20 + this->default_border_width;
+		this->element_offset = this->element_offset + this->scp_list->get_scroll_bar()->get_increment();
 		this->btn_elements.push_back(btn);
 		this->scp_list->add_component(btn);
 	}

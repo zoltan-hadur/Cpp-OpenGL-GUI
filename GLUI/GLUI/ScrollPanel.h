@@ -52,16 +52,16 @@ namespace GLUI {
 
 		switch (this->align) {	// Position the slider in the panel according to it's alignment and it's size
 			case ALIGN::HORIZONTAL:
-				this->sld_scroll_bar->set_position(this->default_border_width / 2,						// X
-											   this->height - 20 - this->default_border_width / 2);		// Y
-				this->sld_scroll_bar->set_size(this->width - this->default_border_width,				// Width
-										   20);															// Height
+				this->sld_scroll_bar->set_position(0,					// X
+												   this->height - 20);	// Y
+				this->sld_scroll_bar->set_size(this->width,				// Width
+											   20);						// Height
 				break;
 			case ALIGN::VERTICAL:
-				this->sld_scroll_bar->set_position(this->width - 20 - this->default_border_width / 2,	// X
-											   this->default_border_width / 2);							// Y
-				this->sld_scroll_bar->set_size(20,														// Width
-										   this->height - this->default_border_width);					// Height
+				this->sld_scroll_bar->set_position(this->width - 20,	// X
+												   0);					// Y
+				this->sld_scroll_bar->set_size(20,						// Width
+											   this->height);			// Height
 				break;
 		}
 
@@ -134,10 +134,10 @@ namespace GLUI {
 		this->align = align;
 		switch (this->align) {						// Position the slider in the panel according to it's alignment
 			case ALIGN::HORIZONTAL:
-				this->sld_scroll_bar = new Slider(0, 0, border_width / 2, height - 20 - border_width / 2, width - border_width, 20);
+				this->sld_scroll_bar = new Slider(0, 0, 0, height - 20, width, 20);
 				break;
 			case ALIGN::VERTICAL:
-				this->sld_scroll_bar = new Slider(0, 0, width - 20 - border_width / 2, border_width / 2, 20, height - border_width);
+				this->sld_scroll_bar = new Slider(0, 0, width - 20, 0, 20, height);
 				break;
 		}
 		sld_scroll_bar->set_increment(20);			// 20 pixel is not too small, not too big
