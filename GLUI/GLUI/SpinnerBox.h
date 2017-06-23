@@ -126,6 +126,8 @@ namespace GLUI {
 		this->set_repeat_time(0.01);
 
 		this->txt_box->set_text(std::to_string(this->value));
+
+		this->background_color = Color(120, 120, 120, 255);
 	}
 
 	// Sets the wait time

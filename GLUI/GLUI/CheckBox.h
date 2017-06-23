@@ -50,11 +50,7 @@ namespace GLUI {
 	}
 
 	void CheckBox::draw(bool draw_background) {
-		if (checked) {
-			this->btn_check->get_label()->set_text("X");
-		} else {
-			this->btn_check->get_label()->set_text("");
-		}
+		this->btn_check->get_label()->set_text(checked ? "X" : "");
 	}
 
 	// To listen on inner component events
@@ -74,6 +70,7 @@ namespace GLUI {
 	CheckBox::CheckBox(float x, float y, float width, float height, float border_width) : Component(x, y, width, height, border_width) {
 		this->checked = false;
 		this->btn_check = new Button("", 0, 0, width, height, border_width);
+		this->btn_check->set_background_color(120, 120, 120, 255);				// Default grey color
 		this->btn_check->add_event_listener(this);
 		this->add_component(this->btn_check);
 	}
