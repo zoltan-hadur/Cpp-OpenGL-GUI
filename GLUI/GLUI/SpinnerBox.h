@@ -15,15 +15,15 @@ namespace GLUI {
 		Button* btn_right;
 		TextBox* txt_box;
 
-		Stopwatch watch_wait;							// Timer to watch when should the button start repeating button presses
-		Stopwatch watch_repeat;							// Timer to watch when should the button raise the next button press event
-		float wait_time;								// Time until repeating button presses after the first button press
-		float repeat_time;								// Time between repeated button presses
+		Stopwatch watch_wait;		// Timer to watch when should the button start repeating button presses
+		Stopwatch watch_repeat;		// Timer to watch when should the button raise the next button press event
+		float wait_time;			// Time until repeating button presses after the first button press
+		float repeat_time;			// Time between repeated button presses
 
-		T min;
-		T max;
-		T value;
-		T increment;
+		T min;						// Allowed minimal value
+		T max;						// Allowed maximal value
+		T value;					// Current value, it's between min and max
+		T increment;				// Increases or decreases the value by this value on left or right button press
 
 		virtual void handle_event(Event& e) override;
 		virtual void draw(bool draw_background = true) override;
@@ -38,69 +38,68 @@ namespace GLUI {
 		void set_wait_time(float wait_time);
 		// Sets the repeat time
 		void set_repeat_time(float repeat_time);
+		// Sets the min value
 		void set_min(T min);
+		// Sets the max value
 		void set_max(T max);
+		// Sets the current value
 		void set_value(T value);
+		// Sets the increment value
 		void set_increment(T increment);
 		// Gets the wait time
 		float get_wait_time();
 		// Gets the repeat time
 		float get_repeat_time();
+		// Gets the min value
 		T get_min();
+		// Gets the max value
 		T get_max();
+		// Gets the current calue
 		T get_value();
+		// Gets the increment value
 		T get_increment();
 	};
-
-	// To listen on inner component events
-	template<typename T> void SpinnerBox<T>::action_performed(void* sender, Event& e) {
-		if (e.button_pressed) {
-			if (sender == this->btn_left) {
-				this->set_value(this->value - this->increment);
-			} else if (sender == this->btn_right) {
-				this->set_value(this->value + this->increment);
-			}
-			this->txt_box->set_text(std::to_string(this->value));
-		}
-	}
 
 	template<typename T> void SpinnerBox<T>::handle_event(Event& e) {
 
 	}
 
 	template<typename T> void SpinnerBox<T>::draw(bool draw_background) {
-		//this->btn_left->set_position(this->default_border_width / 2, this->default_border_width / 2);
-		//this->btn_left->set_size(20, this->height - this->default_border_width);
-
-		//this->btn_right->set_position(this->width - 20 - this->default_border_width / 2, this->default_border_width / 2);
-		//this->btn_right->set_size(20, this->height - this->default_border_width);
-
-		//this->txt_box->set_position(20, this->default_border_width / 2);
-		//this->txt_box->set_size(this->width - 40, this->height - this->default_border_width);
-
-		this->btn_left->set_position(0, 0);
+		this->btn_left->set_position(0, 0);																// Left button is always on the left side
 		this->btn_left->set_size(20, this->height);
 
-		this->btn_right->set_position(this->width - 20, 0);
+		this->btn_right->set_position(this->width - 20, 0);												// Right button is always on the right side
 		this->btn_right->set_size(20, this->height);
 
-		this->txt_box->set_position(20-default_border_width, 0);
+		this->txt_box->set_position(20-default_border_width, 0);										// Text box is always in the middle
 		this->txt_box->set_size(this->width - 40 + default_border_width*2, this->height);
 
-		std::string value = this->txt_box->get_text();
-		if (std::regex_match(value, std::regex(R"(^[+-]?(\d+(\.\d+)?|\.\d+)([eE][+-]?\d+)?$)"))) {
-			this->txt_box->set_background_color(this->get_background_color());
+		std::string value = this->txt_box->get_text();													// Current string in the text box
+		if (std::regex_match(value, std::regex(R"(^[+-]?(\d+(\.\d+)?|\.\d+)([eE][+-]?\d+)?$)"))) {		// If it's a valid number
+			this->txt_box->set_background_color(this->get_background_color());							// Set the color to normal
 			T val;
-			std::stringstream(value) >> val;
+			std::stringstream(value) >> val;															// Read the string into the variable
 			this->set_value(val);
 		} else {
-			this->txt_box->set_background_color(255, 0, 0, 255);
+			this->txt_box->set_background_color(255, 0, 0, 255);										// Red background if number is not valid
 		}
-		if (!this->txt_box->has_focus()) {
+		if (!this->txt_box->has_focus()) {																// Update the string in the text box according to the current value if it's not focused (because when focused, the user probably typing in it)
 			this->txt_box->set_text(std::to_string(this->value));
 		}
 
 		Component::draw(draw_background);
+	}
+
+	// To listen on inner component events
+	template<typename T> void SpinnerBox<T>::action_performed(void* sender, Event& e) {
+		if (e.button_pressed) {
+			if (sender == this->btn_left) {																// When the left button was pressed
+				this->set_value(this->value - this->increment);											// Decrease the current value
+			} else if (sender == this->btn_right) {														// When the right button was pressed
+				this->set_value(this->value + this->increment);											// Increase the current value
+			}
+			this->txt_box->set_text(std::to_string(this->value));										// Update the text box's string
+		}
 	}
 
 	// Min, max, coordinates, size, border's width
@@ -144,20 +143,24 @@ namespace GLUI {
 		this->repeat_time = this->btn_left->get_repeat_time();
 	}
 
+	// Sets the min value
 	template<typename T> void SpinnerBox<T>::set_min(T min) {
 		this->min = std::min(min, this->max);			// Can't be bigger than max
 		this->value = std::max(this->value, min);		// Adjust the value if new min is bigger than value
 	}
 
+	// Sets the max value
 	template<typename T> void SpinnerBox<T>::set_max(T max) {
 		this->max = std::max(max, this->min);			// Can't be smaller than min
 		this->value = std::min(this->value, max);		// Adjust eh value if new max is smaller than value
 	}
 
+	// Sets the current value (will be between min and max)
 	template<typename T> void SpinnerBox<T>::set_value(T value) {
 		this->value = std::max(std::min(value, this->max), this->min);	// Must be between min and max
 	}
 
+	// Sets the increment (min 0)
 	template<typename T> void SpinnerBox<T>::set_increment(T increment) {
 		this->increment = std::max(increment, T(0));	// Can't be smaller than 0
 	}
@@ -172,18 +175,22 @@ namespace GLUI {
 		return this->repeat_time;
 	}
 
+	// Gets the min value
 	template<typename T> T SpinnerBox<T>::get_min() {
 		return this->min;
 	}
 
+	// Gets the max value
 	template<typename T> T SpinnerBox<T>::get_max() {
 		return this->max;
 	}
 
+	// Gets the current value
 	template<typename T> T SpinnerBox<T>::get_value() {
 		return this->value;
 	}
 
+	// Gets the increment value
 	template<typename T> T SpinnerBox<T>::get_increment() {
 		return this->increment;
 	}

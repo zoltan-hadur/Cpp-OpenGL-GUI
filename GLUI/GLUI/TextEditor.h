@@ -546,7 +546,7 @@ namespace GLUI {
 	}
 
 	void TextEditor::draw(bool draw_background) {
-		Component::draw();
+		Component::draw(draw_background);
 
 		float dt = watch.get_delta_time();
 

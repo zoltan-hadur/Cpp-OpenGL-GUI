@@ -79,6 +79,13 @@ namespace GLUI {
 		float get_a() {
 			return this->A;
 		}
+		Color operator*(float f) {
+			float r = std::min(255.0f, this->R * 255 * f);
+			float g = std::min(255.0f, this->G * 255 * f);
+			float b = std::min(255.0f, this->B * 255 * f);
+			float a = std::min(255.0f, this->A * 255);
+			return Color(r, g, b, a);
+		}
 	};
 
 	// Abstract class, every gui element is a component

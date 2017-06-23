@@ -66,21 +66,6 @@ namespace GLUI {
 		float get_speed();
 	};
 
-	// To listen on inner component events
-	void Slider::action_performed(void* sender, Event& e) {
-		if (e.button_pressed) {																			// Check if any component button was pressed
-			if (sender == this->btn_left) {																// If the left button was pressed,
-				this->dec_value();																		// Decrease the value
-			} else if (sender == this->btn_right) {														// If the right button was pressed,
-				this->inc_value();																		// Increase the value
-			} else if (sender == this->btn_indicator) {													// If the indicator button was pressed
-				this->dragged = true;																	// The user possibly wants to drag it with the mouse
-				float2 pos = this->get_position();
-				this->indicator_pos_offset = float2(e.x, e.y) - this->btn_indicator->get_position();	// Thus the offset
-			}
-		}
-	}
-
 	void Slider::handle_event(Event& e) {
 		float old_val = this->value;																	// To determine at the end of this method if the value has changed
 		float2 pos = this->get_absolute_position();
@@ -106,12 +91,12 @@ namespace GLUI {
 			}
 			// This long one checks if the mouse is above the slider, and it's position is between the left and right buttons and the slider is not behind a component
 		} else if (pos.x + pos_offset.x < e.x && e.x < pos.x + this->width - pos_offset.x && pos.y + pos_offset.y < e.y && e.y < pos.y + this->height - pos_offset.y && !e.mouse_covered) {
-			if (e.mouse_left && e.mouse_pressed) {																					// Start a watch
-				this->watch.start();																								// If the user pressed the left mouse button
-			} else if (e.mouse_left_down) {																							// If the user still holds the left mouse button down
+			if (e.mouse_left && e.mouse_pressed) {														// Start a watch
+				this->watch.start();																	// If the user pressed the left mouse button
+			} else if (e.mouse_left_down) {																// If the user still holds the left mouse button down
 				if (this->watch.is_running()) {
 					float dt = this->watch.get_delta_time() * this->speed;
-					if (this->watch.get_elapsed_time() > this->wait_time) {															// If enough time elapsed for the indicator to starts moving towards the mouse
+					if (this->watch.get_elapsed_time() > this->wait_time) {								// If enough time elapsed for the indicator to starts moving towards the mouse
 						switch (this->align) {
 							case ALIGN::HORIZONTAL:
 							{
@@ -134,27 +119,30 @@ namespace GLUI {
 						}
 					}
 				}
-			} else if (e.mouse_left && e.mouse_released) {	// The indicator not moving towards to the mouse
+			} else if (e.mouse_left && e.mouse_released) {												// The indicator not moving towards to the mouse
 				this->dragged = false;
 				this->watch.stop();
 			}
-		} else {											// The indicator not moving towards to the mouse
+		} else {																						// The indicator not moving towards to the mouse
 			this->watch.stop();
 		}
-		if (!e.mouse_left_down) {							// The indicator not moving towards to the mouse
+		if (!e.mouse_left_down) {																		// The indicator not moving towards to the mouse
 			this->dragged = false;
 			this->watch.stop();
 		}
+
 		if (old_val - this->value != 0) {
-			e.slider_value = this->value;
-			e.slider_dvalue = old_val - this->value;
-			this->raise_event(this, e);						// Raise an event if the value has changed
-			e.slider_dvalue = 0;
+			e.slider_changed = true;
 		}
+		e.slider_value = this->value;
+		e.slider_dvalue = old_val - this->value;
+		this->raise_event(this, e);																		// Raise an event
+		e.slider_changed = false;
+		e.slider_dvalue = 0;
 	}
 
 	void Slider::draw(bool draw_background) {
-		switch (this->align) {
+		switch (this->align) {																			// Set the position and size of the slider components according to it's alignment
 			case ALIGN::HORIZONTAL:
 			{
 				this->btn_left->get_label()->set_text("<");
@@ -187,21 +175,22 @@ namespace GLUI {
 			}
 		}
 
-		Component::draw();
+		Component::draw(draw_background);
+	}
 
-		// Draw the dashed lines
-		//float2 pos = this->get_absolute_position() + float2(this->default_border_width, this->default_border_width);
-		//glColor4f(1, 1, 1, 0.5);
-		//glLineWidth(1);
-		//glLineStipple(1, 0b0101010101010101);
-		//glEnable(GL_LINE_STIPPLE);
-		//glBegin(GL_LINES);
-		//for (int i = 0; i < this->width - this->default_border_width; i = i + 2) {
-		//	glVertex2f(pos.x + i, pos.y + (i / 2) % 2);
-		//	glVertex2f(pos.x + i, pos.y + (i / 2) % 2 + this->height - this->default_border_width * 2);
-		//}
-		//glEnd();
-		//glDisable(GL_LINE_STIPPLE);
+	// To listen on inner component events
+	void Slider::action_performed(void* sender, Event& e) {
+		if (e.button_pressed) {																			// Check if any component button was pressed
+			if (sender == this->btn_left) {																// If the left button was pressed,
+				this->dec_value();																		// Decrease the value
+			} else if (sender == this->btn_right) {														// If the right button was pressed,
+				this->inc_value();																		// Increase the value
+			} else if (sender == this->btn_indicator) {													// If the indicator button was pressed
+				this->dragged = true;																	// The user possibly wants to drag it with the mouse
+				float2 pos = this->get_position();
+				this->indicator_pos_offset = float2(e.x, e.y) - this->btn_indicator->get_position();	// Thus the offset
+			}
+		}
 	}
 
 	// Min, max, coordinates, size, border's width
@@ -218,12 +207,14 @@ namespace GLUI {
 		this->btn_left = new Button();
 		this->btn_right = new Button();
 		this->btn_indicator = new Button();
-		this->add_component(this->btn_left);
-		this->add_component(this->btn_right);
-		this->add_component(this->btn_indicator);
+
 		this->btn_left->add_event_listener(this);
 		this->btn_right->add_event_listener(this);
 		this->btn_indicator->add_event_listener(this);
+
+		this->add_component(this->btn_left);
+		this->add_component(this->btn_right);
+		this->add_component(this->btn_indicator);
 
 		if (height <= width) {
 			this->align = ALIGN::HORIZONTAL;
@@ -235,7 +226,7 @@ namespace GLUI {
 	// Increases the value defined by increment
 	void Slider::inc_value() {
 		float old_val = this->value;
-		this->value = std::min(this->value + this->increment, this->max);	// Can't be bigger than max
+		this->set_value(this->value + this->increment);
 		Event e;
 		e.slider_value = this->value;
 		e.slider_dvalue = old_val - this->value;
@@ -245,7 +236,7 @@ namespace GLUI {
 	// Decreases the value defined by increment
 	void Slider::dec_value() {
 		float old_val = this->value;
-		this->value = std::max(this->value - this->increment, this->min);	// Can't be smaller than min
+		this->set_value(this->value - this->increment);
 		Event e;
 		e.slider_value = this->value;
 		e.slider_dvalue = old_val - this->value;
@@ -254,14 +245,14 @@ namespace GLUI {
 
 	// Sets the min
 	void Slider::set_min(float min) {
-		this->min = std::min(min, this->max);			// Can't be bigger than max
-		this->value = std::max(this->value, min);		// Adjust the value if new min is bigger than value
+		this->min = std::min(min, this->max);							// Can't be bigger than max
+		this->value = std::max(this->value, min);						// Adjust the value if new min is bigger than value
 	}
 
 	// Sets the max
 	void Slider::set_max(float max) {
-		this->max = std::max(max, this->min);			// Can't be smaller than min
-		this->value = std::min(this->value, max);		// Adjust eh value if new max is smaller than value
+		this->max = std::max(max, this->min);							// Can't be smaller than min
+		this->value = std::min(this->value, max);						// Adjust eh value if new max is smaller than value
 	}
 
 	// Sets the value (will be between min and max)
@@ -269,19 +260,19 @@ namespace GLUI {
 		this->value = std::max(std::min(value, this->max), this->min);	// Must be between min and max
 	}
 
-	// Sets the increment
+	// Sets the increment (min 1)
 	void Slider::set_increment(float increment) {
-		this->increment = std::max(increment, 1.0f);	// Can't be smaller than 1
+		this->increment = std::max(increment, 1.0f);					// Can't be smaller than 1
 	}
 
-	// Sets the wait time
+	// Sets the wait time (min 0)
 	void Slider::set_wait_time(float wait_time) {
-		this->wait_time = std::max(wait_time, 0.0f);	// Can't be smaller than 0
+		this->wait_time = std::max(wait_time, 0.0f);					// Can't be smaller than 0
 	}
 
-	// Sets the speed
+	// Sets the speed (min 10)
 	void Slider::set_speed(float speed) {
-		this->speed = std::max(speed, 10.0f);			// Can't be smaller than 10
+		this->speed = std::max(speed, 10.0f);							// Can't be smaller than 10
 	}
 
 	// Gets the min

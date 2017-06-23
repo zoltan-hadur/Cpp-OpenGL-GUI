@@ -19,9 +19,9 @@ namespace GLUI {
 		float period_time;			// Progressing animation's period
 		bool progressing;			// True if progressing, false if not
 
-		float min;
-		float max;
-		float value;				// Calculate percentage based on this value (0% if value==min and 100% if value==max)
+		float min;					// The start point, 0 %
+		float max;					// The end point, 100 %
+		float value;				// Calculate percentage based on this value (0 % if value==min and 100 % if value==max)
 
 		virtual void handle_event(Event& e) override;
 		virtual void draw(bool draw_background = true) override;
@@ -75,7 +75,7 @@ namespace GLUI {
 	}
 
 	void ProgressBar::draw(bool draw_background) {
-		Component::draw();																											// Draw base
+		Component::draw(draw_background);																							// Draw base
 
 		float percent = (this->value - this->min) / (this->max - this->min);														// Calculate percentage (range: 0-1)
 
@@ -151,46 +151,40 @@ namespace GLUI {
 			// Draw animation
 			if (this->progressing) {
 				GLint scissor_pos[4];
-				glGetIntegerv(GL_SCISSOR_BOX, scissor_pos);
-				GLint scissor_test;
-				glGetIntegerv(GL_SCISSOR_TEST, &scissor_test);
+				glGetIntegerv(GL_SCISSOR_BOX, scissor_pos);																			// Get the current scissor position and size
 
-				float2 posp = this->parent->get_absolute_position();
-				float2 sizep = float2(this->parent->get_width(), this->parent->get_height());
+				float2 posp = float2(scissor_pos[0], glutGet(GLUT_WINDOW_HEIGHT) - (scissor_pos[1] + scissor_pos[3]));				// Parent's position
+				float2 sizep = float2(scissor_pos[2], scissor_pos[3]);																// Parent's size
 				float2 posc = this->get_absolute_position();
 				float2 sizec = float2(this->get_width() * percent, this->get_height());
 
-				if (scissor_test) {
-					posp.x = scissor_pos[0];
-					posp.y = glutGet(GLUT_WINDOW_HEIGHT) - (scissor_pos[1] + scissor_pos[3]);
-					sizep.x = scissor_pos[2];
-					sizep.y = scissor_pos[3];
-				}
-
-				float2 posi = float2(std::max(posp.x, posc.x), std::max(posp.y, posc.y));
-				float2 posi2 = float2(std::min(posp.x + sizep.x, posc.x + sizec.x), std::min(posp.y + sizep.y, posc.y + sizec.y));
-				float2 sizei = float2(posi2.x - posi.x, posi2.y - posi.y);
+				float2 posi = float2(std::max(posp.x, posc.x + this->default_border_width),											// Calculate the rectangle intersection bottom right corner
+									 std::max(posp.y, posc.y + this->default_border_width));
+				float2 posi2 = float2(std::min(posp.x + sizep.x, posc.x + sizec.x),													// Calculate the rectangle intersection top left corner
+									  std::min(posp.y + sizep.y, posc.y + sizec.y - this->default_border_width));
+				float2 sizei = float2(posi2.x - posi.x, posi2.y - posi.y);															// Calculate the rectangle intersection size
 
 				if (sizei.x > 5.0 && sizei.y > 5.0) {
-					float2 pos = posi;
-					pos.x = pos.x + this->default_border_width;
-					pos.y = glutGet(GLUT_WINDOW_HEIGHT) - (pos.y + sizei.y - this->default_border_width);								// y is inverted
-					glScissor(pos.x, pos.y, sizei.x - this->default_border_width * 2, sizei.y - this->default_border_width * 2);	// Allows partially drawing components
-					glEnable(GL_SCISSOR_TEST);
+					float x = posi.x;
+					float y = glutGet(GLUT_WINDOW_HEIGHT) - (posi.y + sizei.y);														// The scissor is using an other coordinate system
+					float w = sizei.x;
+					float h = sizei.y;
+
+					glScissor(std::ceilf(x), std::ceilf(y), w, h);																	// Use ceil to avoid some glitches
 
 					switch (this->anim) {
 						case ANIMATION::STRIPES:
 						{
 							if (this->watch.is_running()) {
-								if (this->watch.get_elapsed_time() > this->period_time) {					// Reset watch if a full period has elapsed
+								if (this->watch.get_elapsed_time() > this->period_time) {											// Reset watch if a full period has elapsed
 									this->watch.reset();
 								}
 							}
 
-							float offset = this->watch.get_elapsed_time() / period_time;					// How much needed to be translated
-							pos = this->get_absolute_position() - float2(15, 0) + float2(20 * offset, 0);	// -15 so the bottom left vertex starts from 0, and 20 becouse the drawable parallelogram is 20 wide
+							float offset = this->watch.get_elapsed_time() / period_time;											// How much needed to be translated
+							pos = this->get_absolute_position() - float2(15, 0) + float2(20 * offset, 0);							// -15 so the bottom left vertex starts from 0, and 20 becouse the drawable parallelogram is 20 wide
 							glBegin(GL_QUADS);
-							for (int i = 0; i <= (this->width / 20 + 1)*percent; ++i) {						// Draw the parallelogram n times
+							for (int i = 0; i <= (this->width / 20 + 1)*percent; ++i) {												// Draw the parallelogram n times
 								glColor4f(this->fill_color.get_r(),
 										  this->fill_color.get_g(),
 										  this->fill_color.get_b(),
@@ -201,10 +195,11 @@ namespace GLUI {
 								glVertex2f(pos.x - 5, pos.y + this->height);
 								pos = pos + float2(10, 0);
 
-								glColor4f(this->highlight_color.get_r(),
-										  this->highlight_color.get_g(),
-										  this->highlight_color.get_b(),
-										  this->highlight_color.get_a());
+								Color fill_color_darker = this->fill_color * 0.9;
+								glColor4f(fill_color_darker.get_r(),
+										  fill_color_darker.get_g(),
+										  fill_color_darker.get_b(),
+										  fill_color_darker.get_a());
 								glVertex2f(pos.x, pos.y);
 								glVertex2f(pos.x + 10, pos.y);
 								glVertex2f(pos.x + 5, pos.y + this->height);
@@ -216,12 +211,12 @@ namespace GLUI {
 						}
 						case ANIMATION::WINDOWS:
 						{
-							float speed = (60 + this->width) / 3.0;		// Speed of the travelling birghter area
+							float speed = (60 + this->width) / 3.0;																	// Speed of the travelling brighter area
 							if (this->watch.is_running()) {
-								float dist_over = this->watch.get_elapsed_time() * speed - (60 + this->width*percent);	// How much the brighter area travelled outside the progress bar
+								float dist_over = this->watch.get_elapsed_time() * speed - (60 + this->width*percent);				// How much the brighter area travelled outside the progress bar
 								if (dist_over > 0) {
-									if (dist_over / speed > this->period_time) {	// If travelled outside more than the period time,
-										this->watch.reset();						// Reset the watch
+									if (dist_over / speed > this->period_time) {													// If travelled outside longer than the period time,
+										this->watch.reset();																		// Reset the watch
 									}
 								}
 							}
@@ -234,7 +229,12 @@ namespace GLUI {
 									  this->fill_color.get_a());																	// And from 30, brighter color to 60, fill_color
 							glVertex2f(pos.x, pos.y + this->height);																// So the 60 wide rectangle's 2 edge has fill_color
 							glVertex2f(pos.x, pos.y);																				// While the middle has a brighter color
-							glColor4f(0.9, 0.9, 0.9, 1);
+
+							Color fill_color_brighter = this->fill_color * 1.3;
+							glColor4f(fill_color_brighter.get_r(),
+									  fill_color_brighter.get_g(),
+									  fill_color_brighter.get_b(),
+									  fill_color_brighter.get_a());
 							glVertex2f(pos.x + 30, pos.y);
 							glVertex2f(pos.x + 30, pos.y + this->height);
 							pos = pos + float2(30, 0);
@@ -249,7 +249,7 @@ namespace GLUI {
 							glVertex2f(pos.x + 30, pos.y + this->height);
 
 							glEnd();
-							glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+							glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 							break;
 						}
 						default:
@@ -257,17 +257,14 @@ namespace GLUI {
 							break;
 						}
 					}
-					if (!scissor_test) {
-						glDisable(GL_SCISSOR_TEST);
-					}
-					glScissor(scissor_pos[0], scissor_pos[1], scissor_pos[2], scissor_pos[3]);
+					glScissor(scissor_pos[0], scissor_pos[1], scissor_pos[2], scissor_pos[3]);										// Restore the parent's scissor
 				}
 			}
 		}
 	}
 
 	ProgressBar::ProgressBar(float min, float max, float x, float y, float width, float height, float border_width) : Component(x, y, width, height, border_width) {
-		this->anim = ANIMATION::STRIPES;
+		this->anim = ANIMATION::WINDOWS;
 		this->period_time = 1.0;
 		this->progressing = false;
 		this->min = min;
@@ -309,16 +306,16 @@ namespace GLUI {
 	// Sets the min (only when not progressing)
 	void ProgressBar::set_min(float min) {
 		if (!this->progressing) {
-			this->min = std::min(min, this->max);		// Can't be bigger than max
-			this->value = std::max(this->value, min);	// Adjust the value if new min is bigger than value
+			this->min = std::min(min, this->max);							// Can't be bigger than max
+			this->value = std::max(this->value, min);						// Adjust the value if new min is bigger than value
 		}
 	}
 
 	// Sets the max (only when not progressing)
 	void ProgressBar::set_max(float max) {
 		if (!this->progressing) {
-			this->max = std::max(max, this->min);		// Can't be smaller than min
-			this->value = std::min(this->value, max);	// Adjust eh value if new max is smaller than value
+			this->max = std::max(max, this->min);							// Can't be smaller than min
+			this->value = std::min(this->value, max);						// Adjust eh value if new max is smaller than value
 		}
 	}
 

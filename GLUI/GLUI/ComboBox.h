@@ -123,10 +123,11 @@ namespace GLUI {
 				if (text != this->lbl_selected->get_text()) {												// If the previously selected item differs from the one selected now
 					this->lbl_selected->set_text(text);														// Change the text
 					e.combobox_changed = true;
-					e.combobox_selected = text;
-					this->raise_event(this, e);																// Raise an event that the selected item changed
-					e.combobox_changed = false;
 				}
+				e.combobox_selected_element = text;
+				e.combobox_selected_index = this->get_selected_index();
+				this->raise_event(this, e);																	// Raise an event
+				e.combobox_changed = false;
 
 				this->size_offset = float2(this->width, 20) - this->orig_size;								// Start rolling up the list
 				this->d_state = D_STATE::ROLLING_UP;

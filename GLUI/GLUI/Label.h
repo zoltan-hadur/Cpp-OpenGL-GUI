@@ -54,10 +54,10 @@ namespace GLUI {
 
 			int x = pos.x;
 			int y = pos.y + char_height - 4;
-			int w = text.size() * char_width;	// Width of the text in pixels
+			int w = text.size() * char_width;																									// Width of the text in pixels
 
-			x = (h_align == H_ALIGN::RIGHT) ? (x + width - w) : ((h_align == H_ALIGN::MID) ? (x + (width - w) / 2) : x);						// Align
-			y = (v_align == V_ALIGN::BOT) ? (y + height - char_height) : ((v_align == V_ALIGN::MID) ? (y + (height - char_height) / 2) : y);	// Align
+			x = (h_align == H_ALIGN::RIGHT) ? (x + width - w) : ((h_align == H_ALIGN::MID) ? (x + (width - w) / 2) : x);						// Horizontal alignment
+			y = (v_align == V_ALIGN::BOT) ? (y + height - char_height) : ((v_align == V_ALIGN::MID) ? (y + (height - char_height) / 2) : y);	// Vertical alignment
 
 			glColor4f(1, 1, 1, 1);
 			glRasterPos2f(x, y);
@@ -67,18 +67,16 @@ namespace GLUI {
 
 	// The label itself, it's position, and size
 	Label::Label(std::string text, float x, float y, float width, float height) : Component(x, y, width, height) {
-		this->text = text;
-		this->h_align = H_ALIGN::MID;										// Default mid
+		this->h_align = H_ALIGN::MID;																											// Default mid
 		this->v_align = V_ALIGN::MID;
-		this->width = std::max(width, (float)(text.size() * char_width));	// Minimum width is the width of the text in pixels
-		this->height = std::max(height, (float)char_height);				// Minimum height is the width of the text in pixels
+		this->set_text(text);
 	}
 
-	// Sets the label
+	// Sets the label, also changes the size if the new text not fit in
 	void Label::set_text(std::string text) {
 		this->text = text;
-		this->width = std::max(width, (float)(text.size() * char_width));	// Minimum width is the width of the text in pixels
-		this->height = std::max(height, (float)char_height);				// Minimum height is the width of the text in pixels
+		this->width = std::max(width, (float)(text.size() * char_width));																		// Minimum width is the width of the text in pixels
+		this->height = std::max(height, (float)char_height);																					// Minimum height is the width of the text in pixels
 	}
 
 	// Sets the horizontal alignment

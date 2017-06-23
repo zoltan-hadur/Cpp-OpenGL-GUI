@@ -41,9 +41,11 @@ struct Event {
 
 	// ComboBox
 	bool combobox_changed;
-	std::string combobox_selected;
+	int combobox_selected_index;
+	std::string combobox_selected_element;
 
 	// Slider
+	bool slider_changed;
 	float slider_dvalue;
 	float slider_value;
 

@@ -318,6 +318,7 @@ namespace GLUI {
 		glTexCoord2f(0, 1); glVertex2f(-1, 1);
 		glEnd();
 		glBindTexture(GL_TEXTURE_2D, 0);
+		glDisable(GL_TEXTURE_2D);
 		glDisable(GL_BLEND);
 	}
 

@@ -47,18 +47,18 @@ namespace GLUI {
 	}
 
 	void ScrollPanel::draw(bool draw_background) {
-		switch (this->align) {	// Position the slider in the panel according to it's alignment and it's size
+		switch (this->align) {																			// Position the slider in the panel according to it's alignment and it's size
 			case ALIGN::HORIZONTAL:
-				this->sld_scroll_bar->set_position(0,					// X
-												   this->height - 20);	// Y
-				this->sld_scroll_bar->set_size(this->width,				// Width
-											   20);						// Height
+				this->sld_scroll_bar->set_position(0,													// X
+												   this->height - 20);									// Y
+				this->sld_scroll_bar->set_size(this->width,												// Width
+											   20);														// Height
 				break;
 			case ALIGN::VERTICAL:
-				this->sld_scroll_bar->set_position(this->width - 20,	// X
-												   0);					// Y
-				this->sld_scroll_bar->set_size(20,						// Width
-											   this->height);			// Height
+				this->sld_scroll_bar->set_position(this->width - 20,									// X
+												   0);													// Y
+				this->sld_scroll_bar->set_size(20,														// Width
+											   this->height);											// Height
 				break;
 		}
 
@@ -110,16 +110,19 @@ namespace GLUI {
 
 	// To listen on the children component's events
 	void ScrollPanel::action_performed(void* sender, Event& e) {
-		for (auto c : this->children) {										// Translate every component
-			if (c != this->sld_scroll_bar) {								// Except the scroll bar
-				float2 pos = c->get_position();								// According to the delta x/y of the slider
-				switch (this->align) {
-					case ALIGN::HORIZONTAL:
-						c->set_position(pos.x + e.slider_dvalue, pos.y);
-						break;
-					case ALIGN::VERTICAL:
-						c->set_position(pos.x, pos.y + e.slider_dvalue);
-						break;
+		if (e.slider_changed) {																			// If the slider changed
+			float2 dpos;
+			switch (this->align) {
+				case ALIGN::HORIZONTAL:
+					dpos = float2(e.slider_dvalue, 0);
+					break;
+				case ALIGN::VERTICAL:
+					dpos = float2(0, e.slider_dvalue);
+					break;
+			}
+			for (auto c : this->children) {																// Translate every children component
+				if (c != this->sld_scroll_bar) {														// Except the scroll bar itself
+					c->set_position(c->get_position() + dpos);											// By the according dx dy value of the slider
 				}
 			}
 		}
@@ -129,7 +132,7 @@ namespace GLUI {
 	ScrollPanel::ScrollPanel(ALIGN align, float x, float y, float width, float height, float border_width) : Panel(true, x, y, width, height, border_width) {
 		this->max_pos = float2(0, 0);
 		this->align = align;
-		switch (this->align) {						// Position the slider in the panel according to it's alignment
+		switch (this->align) {																			// Position the slider in the panel according to it's alignment
 			case ALIGN::HORIZONTAL:
 				this->sld_scroll_bar = new Slider(0, 0, 0, height - 20, width, 20);
 				break;
@@ -137,8 +140,8 @@ namespace GLUI {
 				this->sld_scroll_bar = new Slider(0, 0, width - 20, 0, 20, height);
 				break;
 		}
-		sld_scroll_bar->set_increment(20);			// 20 pixel is not too small, not too big
-		sld_scroll_bar->add_event_listener(this);	// To listen the slider's events
+		sld_scroll_bar->set_increment(20);																// 20 pixel is not too small, not too big
+		sld_scroll_bar->add_event_listener(this);														// To listen the slider's events
 		this->add_component(sld_scroll_bar);
 	}
 
