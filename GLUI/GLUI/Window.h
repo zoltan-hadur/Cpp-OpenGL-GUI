@@ -201,9 +201,11 @@ namespace GLUI {
 				if (this->c_state == C_STATE::EXPANDED || this->c_state == C_STATE::EXPANDING) {						// Start collapsing the window if it was expanded or it was expanding
 					this->size_offset = float2(this->width, 20) - this->orig_size;										// The height is 20 while collapsed, so the offset in y is orig height - 20
 					this->c_state = C_STATE::COLLAPSING;
+					this->btn_collapse->get_label()->set_text(R"(\/)");
 				} else {																								// Start expanding the window if it was collapsed or it was collapsing
 					this->size_offset = float2(0, 0);																	// The height is orig height while expanded or expanding, so the offset in y is 0 (because orig height (target value) minus orig height (initial value) is zero)
 					this->c_state = C_STATE::EXPANDING;
+					this->btn_collapse->get_label()->set_text(R"(/\)");
 				}
 																														// Reset the watch at every button press
 				if (this->watch.is_running()) {																			// If the watch is running
@@ -265,7 +267,7 @@ namespace GLUI {
 		this->btn_title->add_event_listener(this);
 		this->add_component(this->btn_title);
 
-		this->btn_collapse = new Button(R"(\/)", width - 25, 0, 25, 20, border_width);
+		this->btn_collapse = new Button(R"(/\)", width - 25, 0, 25, 20, border_width);
 		this->btn_collapse->set_wait_time(std::numeric_limits<float>::max());
 		this->btn_collapse->add_event_listener(this);
 		this->add_component(this->btn_collapse);
