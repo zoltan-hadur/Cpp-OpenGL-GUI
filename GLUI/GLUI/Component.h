@@ -50,7 +50,7 @@ namespace GLUI {
 		}
 	};
 
-	// Struct to store colors, in RGBA form
+	// Struct to store colors in RGBA form
 	// Constructor takes the usual variables in 0-255 range,
 	// but it stores them in the 0-1 range for OpenGL use
 	class Color {
@@ -102,20 +102,20 @@ namespace GLUI {
 		Color border_color;								// Color of the component's border
 		Color highlight_color;							// Color of the component's background when highlighted
 
-		// x,y coordinates of the top left corner, relative to the parent component, width and height, and border width
+		// x,y coordinates of the top left corner, relative to the parent component's top left corner, width and height, and border width
 		Component(float x = 0, float y = 0, float width = 100, float height = 100, float border_width = 2);
-		// Raises events according to the input events
+		// Modifies states and raises events according to the input events
 		virtual void handle_event(Event& e);
 		// Draws the component
 		virtual void draw(bool draw_background = true);
 	public:
-		// 
+		// Brings the component in front of other components, if the mouse was above the component when the event happend
 		void bring_front(Event& e);
-		//
+		// Brings the component in front of other components
 		void bring_front();
-		//
+		// Returns true when the mouse is above of the component, but an other component is between them (an other component covers the component under the mouse)
 		bool is_covered(Event& e);
-		//
+		// Return true if the given component is is an ancestor of this component
 		bool is_parent(Component* c);
 		// Adds a component
 		virtual void add_component(Component* c);
@@ -212,74 +212,93 @@ namespace GLUI {
 
 		float2 pos = this->get_absolute_position();
 
+		//// Draw border
+		//// Top left quarter-circle
+		//glColor4f(this->border_color.get_r(),
+		//		  this->border_color.get_g(),
+		//		  this->border_color.get_b(),
+		//		  this->border_color.get_a());
+		//glBegin(GL_POLYGON);
+		//for (int i = 0; i <= this->border_width; ++i) {
+		//	float t = M_PI + i * M_PI / 2.0f / this->border_width;
+		//	float r = this->border_width;
+		//	float x = r*cos(t) + pos.x + this->border_width;
+		//	float y = r*sin(t) + pos.y + this->border_width;
+		//	glVertex2f(x, y);
+		//}
+		//// Top bar
+		//glVertex2f(pos.x + this->border_width, pos.y);
+		//glVertex2f(pos.x + this->width - this->border_width, pos.y);
+		//// Top right quarter-circle
+		//for (int i = 0; i <= this->border_width; ++i) {
+		//	float t = -M_PI / 2.0f + i * M_PI / 2.0f / this->border_width;
+		//	float r = this->border_width;
+		//	float x = r*cos(t) + pos.x + this->width - this->border_width;
+		//	float y = r*sin(t) + pos.y + this->border_width;
+		//	glVertex2f(x, y);
+		//}
+		//glEnd();
+		//// Bot right quarter-circle
+		//glBegin(GL_POLYGON);
+		//for (int i = 0; i <= this->border_width; ++i) {
+		//	float t = i * M_PI / 2.0f / this->border_width;
+		//	float r = this->border_width;
+		//	float x = r*cos(t) + pos.x + this->width - this->border_width;
+		//	float y = r*sin(t) + pos.y + this->height - this->border_width;
+		//	glVertex2f(x, y);
+		//}
+		//// Bot bar
+		//glVertex2f(pos.x + this->width - this->border_width, pos.y + this->height);
+		//glVertex2f(pos.x + this->border_width, pos.y + this->height);
+		//// Bot left quarter-circle
+		//for (int i = 0; i <= this->border_width; ++i) {
+		//	float t = M_PI / 2.0f + i * M_PI / 2.0f / this->border_width;
+		//	float r = this->border_width;
+		//	float x = r*cos(t) + pos.x + this->border_width;
+		//	float y = r*sin(t) + pos.y + this->height - this->border_width;
+		//	glVertex2f(x, y);
+		//}
+		//glEnd();
+		//// Left bar
+		//glBegin(GL_QUADS);
+		//glVertex2f(pos.x, pos.y + this->border_width);
+		//glVertex2f(pos.x + this->border_width, pos.y + this->border_width);
+		//glVertex2f(pos.x + this->border_width, pos.y + this->height - this->border_width);
+		//glVertex2f(pos.x, pos.y + this->height - this->border_width);
+		//// Right bar
+		//glVertex2f(pos.x + this->width - this->border_width, pos.y + this->border_width);
+		//glVertex2f(pos.x + this->width, pos.y + this->border_width);
+		//glVertex2f(pos.x + this->width, pos.y + this->height - this->border_width);
+		//glVertex2f(pos.x + this->width - this->border_width, pos.y + this->height - this->border_width);
+		//glEnd();
+
 		// Draw border
-		// Top left quarter-circle
 		glColor4f(this->border_color.get_r(),
 				  this->border_color.get_g(),
 				  this->border_color.get_b(),
 				  this->border_color.get_a());
-		glBegin(GL_POLYGON);
-		for (int i = 0; i <= this->border_width; ++i) {
-			float t = M_PI + i * M_PI / 2.0f / this->border_width;
-			float r = this->border_width;
-			float x = r*cos(t) + pos.x + this->border_width;
-			float y = r*sin(t) + pos.y + this->border_width;
-			glVertex2f(x, y);
-		}
-		// Top bar
-		glVertex2f(pos.x + this->border_width, pos.y);
-		glVertex2f(pos.x + this->width - this->border_width, pos.y);
-		// Top right quarter-circle
-		for (int i = 0; i <= this->border_width; ++i) {
-			float t = -M_PI / 2.0f + i * M_PI / 2.0f / this->border_width;
-			float r = this->border_width;
-			float x = r*cos(t) + pos.x + this->width - this->border_width;
-			float y = r*sin(t) + pos.y + this->border_width;
-			glVertex2f(x, y);
-		}
-		glEnd();
-		// Bot right quarter-circle
-		glBegin(GL_POLYGON);
-		for (int i = 0; i <= this->border_width; ++i) {
-			float t = i * M_PI / 2.0f / this->border_width;
-			float r = this->border_width;
-			float x = r*cos(t) + pos.x + this->width - this->border_width;
-			float y = r*sin(t) + pos.y + this->height - this->border_width;
-			glVertex2f(x, y);
-		}
-		// Bot bar
-		glVertex2f(pos.x + this->width - this->border_width, pos.y + this->height);
-		glVertex2f(pos.x + this->border_width, pos.y + this->height);
-		// Bot left quarter-circle
-		for (int i = 0; i <= this->border_width; ++i) {
-			float t = M_PI / 2.0f + i * M_PI / 2.0f / this->border_width;
-			float r = this->border_width;
-			float x = r*cos(t) + pos.x + this->border_width;
-			float y = r*sin(t) + pos.y + this->height - this->border_width;
-			glVertex2f(x, y);
-		}
-		glEnd();
-		// Left bar
 		glBegin(GL_QUADS);
-		glVertex2f(pos.x, pos.y + this->border_width);
-		glVertex2f(pos.x + this->border_width, pos.y + this->border_width);
-		glVertex2f(pos.x + this->border_width, pos.y + this->height - this->border_width);
-		glVertex2f(pos.x, pos.y + this->height - this->border_width);
-		// Right bar
-		glVertex2f(pos.x + this->width - this->border_width, pos.y + this->border_width);
+		// Left
+		glVertex2f(pos.x, pos.y);
+		glVertex2f(pos.x + this->border_width, pos.y);
+		glVertex2f(pos.x + this->border_width, pos.y + this->height);
+		glVertex2f(pos.x, pos.y + this->height);
+		// Right
+		glVertex2f(pos.x + this->width - this->border_width, pos.y);
+		glVertex2f(pos.x + this->width, pos.y);
+		glVertex2f(pos.x + this->width, pos.y + this->height);
+		glVertex2f(pos.x + this->width - this->border_width, pos.y + this->height);
+		// Up
+		glVertex2f(pos.x, pos.y);
+		glVertex2f(pos.x + this->width, pos.y);
 		glVertex2f(pos.x + this->width, pos.y + this->border_width);
+		glVertex2f(pos.x, pos.y + this->border_width);
+		// Down
+		glVertex2f(pos.x, pos.y + this->height - this->border_width);
 		glVertex2f(pos.x + this->width, pos.y + this->height - this->border_width);
-		glVertex2f(pos.x + this->width - this->border_width, pos.y + this->height - this->border_width);
+		glVertex2f(pos.x + this->width, pos.y + this->height);
+		glVertex2f(pos.x, pos.y + this->height);
 		glEnd();
-
-		//// Draw border
-		//glColor4f(1.0, 1.0, 1.0, 1);
-		//glBegin(GL_QUADS);
-		//glVertex2f(pos.x, pos.y);
-		//glVertex2f(pos.x + width, pos.y);
-		//glVertex2f(pos.x + width, pos.y + height);
-		//glVertex2f(pos.x, pos.y + height);
-		//glEnd();
 
 		// Draw background
 		if (highlighted) {
@@ -301,49 +320,50 @@ namespace GLUI {
 		glEnd();
 	}
 
-	// 
+	// Brings the component in front of other components, if the mouse was above the component when the event happend
 	void Component::bring_front(Event& e) {
 		bool found = false;
-		auto children = this->children;
+		auto children = this->children;																			// A seperate container because it will be modified during the iteration
 		do {
 			found = false;
-			for (int i = children.size() - 1; i >= 0 && !found; --i) {
+			for (int i = children.size() - 1; i >= 0 && !found; --i) {											// Iterate through the children component backward (because the drawing happens forward, hence the last component is above of every component)
 				auto c = children[i];
 				if (c->is_visible()) {
 					float2 pos = c->get_absolute_position();
-					if (pos.x < e.x && e.x < pos.x + c->width && pos.y < e.y && e.y < pos.y + c->height) {
+					if (pos.x < e.x && e.x < pos.x + c->width && pos.y < e.y && e.y < pos.y + c->height) {		// If the component is visible and below of the mouse
 						if (c->parent) {
-							c->parent->remove_component(c);
-							c->parent->add_component(c);
+							c->parent->remove_component(c);														// A remove
+							c->parent->add_component(c);														// And then an add moves the component to the end of the list
 						}
 						children = children[i]->children;
 						found = true;
 					}
 				}
 			}
-		} while (children.size() > 1 && found);
+		} while (children.size() > 1 && found);																	// Do until there is no more children, or not found any component that could be bring front
 	}
 
-	// 
+	// Brings the component in front of other components
 	void Component::bring_front() {
-		if (this->parent) {
-			this->parent->remove_component(this);
-			this->parent->add_component(this);
-			this->parent->bring_front();
+		if (this->parent) {																						// If the component has a parent
+			this->parent->remove_component(this);																// Move this component
+			this->parent->add_component(this);																	// To the end of the list
+			this->parent->bring_front();																		// And do this recursively
 		}
 	}
 
-	//
+	// Returns true when the mouse is above of the component, but an other component is between them (an other component covers the component under the mouse)
 	bool Component::is_covered(Event& e) {
-		if (this->parent == nullptr) {
+		if (this->parent == nullptr) {																			// A top level window cannot be covered
 			return false;
 		}
 		Component* parent = this;
-		while (parent->parent) {
+		while (parent->parent) {																				// Get one of the top level window's children
 			parent = parent->parent;
 		}
+
+		bool covered = false;																					// From this point, it's nearly the same as bring front
 		auto children = parent->children;
-		bool covered = false;
 		do {
 			covered = false;
 			for (int i = children.size() - 1; i >= 0 && !covered; --i) {
@@ -366,7 +386,7 @@ namespace GLUI {
 		return covered;
 	}
 
-	//
+	// Return true if the given component is is an ancestor of this component
 	bool Component::is_parent(Component* c) {
 		Component* parent = this;
 		while (parent) {
@@ -455,8 +475,7 @@ namespace GLUI {
 	// Sets the visibility of the component (if set to false, no children will be drawn)
 	void Component::set_visible(bool visible) {
 		this->visible = visible;
-		auto children = this->children;
-		for (auto c : children) {
+		for (auto c : this->children) {
 			c->set_visible(visible);
 		}
 	}
@@ -544,20 +563,11 @@ namespace GLUI {
 	// Just call it on a window object, and all children components will be drawn
 	void Component::render() {
 		if (this->visible) {
-			//glMatrixMode(GL_PROJECTION); glPushMatrix(); glLoadIdentity();								// Save current projection matrix
-			//glOrtho(0.0f, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), 0.0f, -1.0f, 1.0f);	// Transform it to able to draw in pixel coordinates
-			//glMatrixMode(GL_MODELVIEW); glPushMatrix(); glLoadIdentity();								// Save current modelview matrix
-			//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); glEnable(GL_BLEND);						// Enable transparency
-
 			this->draw();
 			auto children = this->children;
 			for (auto c : children) {
 				c->render();
 			}
-
-			//glDisable(GL_BLEND);
-			//glPopMatrix(); glMatrixMode(GL_PROJECTION);
-			//glPopMatrix(); glMatrixMode(GL_MODELVIEW);
 		}
 	}
 
