@@ -3,6 +3,7 @@
 #define _USE_MATH_DEFINES
 #include <GL\freeglut.h>
 #include <vector>
+#include <algorithm>
 #include "math.h"
 #include "../Event/EventRaiser.h"
 
@@ -363,27 +364,44 @@ namespace GLUI {
 			parent = parent->parent;
 		}
 
-		bool covered = false;																					// From this point, it's nearly the same as bring front
+		bool covered = false;
 		auto children = parent->children;
 		do {
 			covered = false;
 			for (int i = children.size() - 1; i >= 0 && !covered; --i) {
 				auto c = children[i];
-				if (c->is_visible()) {
-					float2 pos = c->get_absolute_position();
-					if (pos.x < e.x && e.x < pos.x + c->width && pos.y < e.y && e.y < pos.y + c->height) {
-						children = children[i]->children;
-						if (this->is_parent(c)) {
-							return false;
-						} else {
-							covered = true;
+				if (c != this) {
+
+					float2 posp = c->get_absolute_position();
+					float2 sizep = float2(c->get_width(), c->get_height());
+					float2 post = this->get_absolute_position();
+					float2 sizet = float2(this->get_width(), this->get_height());
+
+					float2 posi = float2(std::max(posp.x, post.x),
+										 std::max(posp.y, post.y));
+					float2 posi2 = float2(std::min(posp.x + sizep.x, post.x + sizet.x),
+										  std::min(posp.y + sizep.y, post.y + sizet.y));
+					float2 sizei = float2(posi2.x - posi.x, posi2.y - posi.y);
+
+					if (posi.x < e.x && e.x < posi.x + sizei.x && posi.y < e.y && e.y < posi.y + sizei.y) {		// The mouse is inside the intersected rectangle (i.e. above of this component and the potential covering component)
+						if (this->is_parent(c)) {																// If the potential covering component contains this component
+							covered = false;																	// Then of course it's not covering it's own component
+							children = c->children;																// Get it's children for iterating through them
+							break;
+						} else {																				// If the potential covering component does not contain this component
+							return true;																		// Return true, because then it is a covering component
 						}
-					} else {
-						children.erase(children.begin() + i);
+					} else {																					// The potential covering component has no
+						covered = false;																		// intersection with this component, thus the false value
 					}
+				} else {																						// Because the loop goes in z depth (from last drawen to first drawen)
+					return false;																				// If it's reached itself, return false, because it does not cover itself, and all the remain children should be drawen earlier than this component
+				}
+				if (children.size() <= 1 || i == 0) {
+					return covered;
 				}
 			}
-		} while (children.size() > 1 && !covered);
+		} while (!covered && children.size() > 1);
 		return covered;
 	}
 

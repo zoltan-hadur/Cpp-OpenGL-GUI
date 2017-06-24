@@ -17,33 +17,56 @@ private:
 	GLUI::Button* btn_start_progress;
 	GLUI::Button* btn_progress;
 	GLUI::Button* btn_stop_progress;
+	GLUI::Button* btn_next_anim;
 	GLUI::ProgressBar* bar;
+
 	int value;
+	int anim_id;
 public:
-	ASD(GLUI::Button* start, GLUI::Button* progress, GLUI::Button* stop, GLUI::ProgressBar* bar) {
+	ASD(GLUI::Button* start, GLUI::Button* progress, GLUI::Button* stop, GLUI::Button* anim, GLUI::ProgressBar* bar) {
 		this->value = 0;
+		this->anim_id = 0;
 
 		this->btn_start_progress = start;
 		this->btn_progress = progress;
 		this->btn_stop_progress = stop;
+		this->btn_next_anim = anim;
 		this->bar = bar;
 		this->bar->set_min(0);
 		this->bar->set_max(13);
+		this->bar->set_animation(GLUI::ProgressBar::ANIMATION::TEXT_DOTS);
 	}
 	void action_performed(void* sender, Event& e) override {
 		if (e.button_pressed) {
-			if (sender == btn_start_progress) {
+			if (sender == btn_start_progress && !e.mouse_covered) {
 				bar->start_progress();
 				this->value = 0;
 			}
-			if (sender == btn_progress) {
+			if (sender == btn_progress && !e.mouse_covered) {
 				bar->set_value(++value);
 				if (value == 13) {
 					bar->stop_progress();
 				}
 			}
-			if (sender == btn_stop_progress) {
+			if (sender == btn_stop_progress && !e.mouse_covered) {
 				bar->stop_progress();
+			}
+			if (sender == btn_next_anim && !e.mouse_covered) {
+				this->anim_id = ++this->anim_id % 4;
+				switch (this->anim_id) {
+					case 0:
+						this->bar->set_animation(GLUI::ProgressBar::ANIMATION::TEXT_DOTS);
+						break;
+					case 1:
+						this->bar->set_animation(GLUI::ProgressBar::ANIMATION::TEXT_SPINNING);
+						break;
+					case 2:
+						this->bar->set_animation(GLUI::ProgressBar::ANIMATION::STRIPES);
+						break;
+					case 3:
+						this->bar->set_animation(GLUI::ProgressBar::ANIMATION::WINDOWS);
+						break;
+				}
 			}
 		}
 	}
@@ -123,14 +146,17 @@ void on_initialization() {
 	GLUI::Button* btn_start_progress = new GLUI::Button("Start progress", 10, 260, 150, 20);
 	GLUI::Button* btn_progress = new GLUI::Button("Progress", 185, 260, 150, 20);
 	GLUI::Button* btn_stop_progress = new GLUI::Button("Stop progress", 360, 260, 150, 20);
+	GLUI::Button* btn_next_anim = new GLUI::Button("Next animation", 10, 200, 150, 20);
 	tab2->add_component(btn_start_progress);
 	tab2->add_component(btn_progress);
 	tab2->add_component(btn_stop_progress);
+	tab2->add_component(btn_next_anim);
 
-	ASD* asd = new ASD(btn_start_progress, btn_progress, btn_stop_progress, bar);
+	ASD* asd = new ASD(btn_start_progress, btn_progress, btn_stop_progress, btn_next_anim, bar);
 	btn_start_progress->add_event_listener(asd);
 	btn_progress->add_event_listener(asd);
 	btn_stop_progress->add_event_listener(asd);
+	btn_next_anim->add_event_listener(asd);
 
 	GLUI::SpinnerBox<int>* spb_spinner = new GLUI::SpinnerBox<int>(0, 255, 10, 290, 200, 20);
 	tab2->add_component(spb_spinner);
@@ -144,126 +170,26 @@ void on_initialization() {
 }
 
 void on_keyboard_down(unsigned char key, int x, int y) {
-	//event.active_alt = (glutGetModifiers() & GLUT_ACTIVE_ALT);
-	//event.active_ctrl = (glutGetModifiers() & GLUT_ACTIVE_CTRL);
-	//event.active_shift = (glutGetModifiers() & GLUT_ACTIVE_SHIFT);
-	//event.keys_down[key] = true;
-	//event.key_code = key;
-	//event.key_pressed = true;
-	//event.key_released = false;
-	//event.special_pressed = false;
-	//event.special_released = false;
-	//event.x = x;
-	//event.y = y;
-	//window->event_handler(event);
-	//event.key_pressed = false;
-	//event.key_released = false;
-	//event.special_pressed = false;
-	//event.special_released = false;
 	window->on_keyboard_down(key, x, y);
 }
 
 void on_keyboard_up(unsigned char key, int x, int y) {
-	//event.active_alt = (glutGetModifiers() & GLUT_ACTIVE_ALT);
-	//event.active_ctrl = (glutGetModifiers() & GLUT_ACTIVE_CTRL);
-	//event.active_shift = (glutGetModifiers() & GLUT_ACTIVE_SHIFT);
-	//event.keys_down[key] = false;
-	//event.key_code = key;
-	//event.key_pressed = false;
-	//event.key_released = true;
-	//event.special_pressed = false;
-	//event.special_released = false;
-	//event.x = x;
-	//event.y = y;
-	//window->event_handler(event);
-	//event.key_pressed = false;
-	//event.key_released = false;
-	//event.special_pressed = false;
-	//event.special_released = false;
 	window->on_keyboard_up(key, x, y);
 }
 
 void on_special_down(int key, int x, int y) {
-	//event.active_alt = (glutGetModifiers() & GLUT_ACTIVE_ALT);
-	//event.active_ctrl = (glutGetModifiers() & GLUT_ACTIVE_CTRL);
-	//event.active_shift = (glutGetModifiers() & GLUT_ACTIVE_SHIFT);
-	//event.special_key_code = key;
-	//event.key_pressed = false;
-	//event.key_released = false;
-	//event.special_pressed = true;
-	//event.special_released = false;
-	//event.x = x;
-	//event.y = y;
-	//window->event_handler(event);
-	//event.key_pressed = false;
-	//event.key_released = false;
-	//event.special_pressed = false;
-	//event.special_released = false;
 	window->on_special_down(key, x, y);
 }
 
 void on_special_up(int key, int x, int y) {
-	//event.active_alt = (glutGetModifiers() & GLUT_ACTIVE_ALT);
-	//event.active_ctrl = (glutGetModifiers() & GLUT_ACTIVE_CTRL);
-	//event.active_shift = (glutGetModifiers() & GLUT_ACTIVE_SHIFT);
-	//event.special_key_code = key;
-	//event.key_pressed = false;
-	//event.key_released = false;
-	//event.special_pressed = false;
-	//event.special_released = true;
-	//event.x = x;
-	//event.y = y;
-	//window->event_handler(event);
-	//event.key_pressed = false;
-	//event.key_released = false;
-	//event.special_pressed = false;
-	//event.special_released = false;
 	window->on_special_up(key, x, y);
 }
 
-int last_x, last_y;
 void on_mouse(int button, int state, int x, int y) {
-	//last_x = x; last_y = y;
-
-	//event.active_alt = (glutGetModifiers() & GLUT_ACTIVE_ALT);
-	//event.active_ctrl = (glutGetModifiers() & GLUT_ACTIVE_CTRL);
-	//event.active_shift = (glutGetModifiers() & GLUT_ACTIVE_SHIFT);
-	//event.mouse_left = (button == GLUT_LEFT_BUTTON);
-	//event.mouse_middle = (button == GLUT_MIDDLE_BUTTON);
-	//event.mouse_right = (button == GLUT_RIGHT_BUTTON);
-	//event.mouse_scroll_up = (button == 3);
-	//event.mouse_scroll_down = (button == 4);
-	//event.mouse_pressed = (state == GLUT_DOWN);
-	//event.mouse_released = (state == GLUT_UP);
-	//event.mouse_left_down = (state == GLUT_DOWN && button == GLUT_LEFT_BUTTON);
-	//event.mouse_middle_down = (state == GLUT_DOWN && button == GLUT_MIDDLE_BUTTON);
-	//event.mouse_right_down = (state == GLUT_DOWN && button == GLUT_RIGHT_BUTTON);
-	//event.x = x;
-	//event.y = y;
-	//window->event_handler(event);
-	//event.mouse_pressed = false;
-	//event.mouse_released = false;
 	window->on_mouse(button, state, x, y);
 }
 
 void on_mouse_motion(int x, int y) {
-	//int dx = x - last_x;
-	//int dy = y - last_y;
-	//last_x = x;
-	//last_y = y;
-
-	//event.active_alt = (glutGetModifiers() & GLUT_ACTIVE_ALT);
-	//event.active_ctrl = (glutGetModifiers() & GLUT_ACTIVE_CTRL);
-	//event.active_shift = (glutGetModifiers() & GLUT_ACTIVE_SHIFT);
-	//event.mouse_moved = true;
-	//event.x = x;
-	//event.y = y;
-	//event.dx = dx;
-	//event.dy = dy;
-	//window->event_handler(event);
-	//event.dx = 0;
-	//event.dy = 0;
-	//event.mouse_moved = false;
 	window->on_mouse_motion(x, y);
 }
 
@@ -271,7 +197,7 @@ void on_mouse_motion_passive(int x, int y) {
 	window->on_mouse_motion_passive(x, y);
 }
 
-void onDisplay() {
+void on_display() {
 	glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -344,7 +270,7 @@ void onDisplay() {
 
 float wait_time = 0;
 float time_elapsed = 0;
-void onIdle() {
+void on_idle() {
 	float dt = watch.get_delta_time();
 	time_elapsed = time_elapsed + dt;
 
@@ -383,8 +309,8 @@ int main(int argc, char **argv) {
 	glutMouseFunc(on_mouse);
 	glutMotionFunc(on_mouse_motion);
 	glutPassiveMotionFunc(on_mouse_motion_passive);
-	glutDisplayFunc(onDisplay);
-	glutIdleFunc(onIdle);
+	glutDisplayFunc(on_display);
+	glutIdleFunc(on_idle);
 
 	glutMainLoop();
 

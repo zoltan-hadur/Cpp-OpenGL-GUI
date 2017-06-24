@@ -63,9 +63,16 @@ namespace GLUI {
 	}
 
 	void Window::draw(bool draw_background) {
-		this->btn_collapse->bring_front();																				// Bring to the front
-		this->btn_minimize->bring_front();																				// Bring to the front
-		this->btn_title->bring_front();																					// Bring to the front to draw last (hence it is in front of every object in the window)
+		// Bring to the front to draw last(hence it is in front of every object in the window)
+		this->remove_component(this->btn_collapse);
+		this->remove_component(this->btn_minimize);
+		this->remove_component(this->btn_title);
+		this->add_component(this->btn_collapse);
+		this->add_component(this->btn_minimize);
+		this->add_component(this->btn_title);
+
+
+
 
 		if (this->m_state == M_STATE::MINIMIZED) {																		// If the window is minimized
 			float offset = 0;
