@@ -338,7 +338,7 @@ namespace GLUI {
 
 	// Sets the animation
 	void ProgressBar::set_animation(ANIMATION anim) {
-
+		this->anim = anim;
 	}
 
 	// Gets the animation period
