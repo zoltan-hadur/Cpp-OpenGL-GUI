@@ -228,9 +228,14 @@ namespace GLUI {
 		float old_val = this->value;
 		this->set_value(this->value + this->increment);
 		Event e;
+		if (old_val - this->value != 0) {
+			e.slider_changed = true;
+		}
 		e.slider_value = this->value;
 		e.slider_dvalue = old_val - this->value;
-		this->raise_event(this, e);
+		this->raise_event(this, e);																		// Raise an event
+		e.slider_changed = false;
+		e.slider_dvalue = 0;
 	}
 
 	// Decreases the value defined by increment
@@ -238,9 +243,14 @@ namespace GLUI {
 		float old_val = this->value;
 		this->set_value(this->value - this->increment);
 		Event e;
+		if (old_val - this->value != 0) {
+			e.slider_changed = true;
+		}
 		e.slider_value = this->value;
 		e.slider_dvalue = old_val - this->value;
-		this->raise_event(this, e);
+		this->raise_event(this, e);																		// Raise an event
+		e.slider_changed = false;
+		e.slider_dvalue = 0;
 	}
 
 	// Sets the min
