@@ -105,6 +105,7 @@
     <ClInclude Include="Event\EventRaiser.h" />
     <ClInclude Include="GLUI\Button.h" />
     <ClInclude Include="GLUI\CheckBox.h" />
+    <ClInclude Include="GLUI\ColorPicker.h" />
     <ClInclude Include="GLUI\ComboBox.h" />
     <ClInclude Include="GLUI\Component.h" />
     <ClInclude Include="GLUI\GLUI.h" />

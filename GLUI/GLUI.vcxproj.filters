@@ -91,5 +91,8 @@
     <ClInclude Include="GLUI\Panel.h">
       <Filter>Header Files\GLUI</Filter>
     </ClInclude>
+    <ClInclude Include="GLUI\ColorPicker.h">
+      <Filter>Header Files\GLUI</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

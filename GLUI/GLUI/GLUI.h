@@ -4,6 +4,7 @@
 #include "../Event/EventRaiser.h"
 #include "Button.h";
 #include "CheckBox.h";
+#include "ColorPicker.h"
 #include "ComboBox.h";
 #include "Component.h";
 #include "Label.h";

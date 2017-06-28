@@ -159,7 +159,10 @@ void on_initialization() {
 	btn_next_anim->add_event_listener(asd);
 
 	GLUI::SpinnerBox<int>* spb_spinner = new GLUI::SpinnerBox<int>(0, 255, 10, 290, 200, 20);
-	tab2->add_component(spb_spinner);
+	//tab2->add_component(spb_spinner);
+
+	GLUI::ColorPicker* color_picker = new GLUI::ColorPicker(10, 50, 50, 50, 1);
+	tab2->add_component(color_picker);
 
 	tabbed_panel->add_tab("long tab name 0");
 	tabbed_panel->get_tab("long tab name 0")->add_component(window_3);
