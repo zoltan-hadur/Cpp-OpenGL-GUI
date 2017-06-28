@@ -79,7 +79,7 @@ namespace GLUI {
 			this->txt_box->set_background_color(this->get_background_color());							// Set the color to normal
 			T val;
 			std::stringstream(value) >> val;															// Read the string into the variable
-			this->set_value(val);
+			this->value = std::max(std::min(val, this->max), this->min);
 		} else {
 			this->txt_box->set_background_color(255, 0, 0, 255);										// Red background if number is not valid
 		}
@@ -94,9 +94,23 @@ namespace GLUI {
 	template<typename T> void SpinnerBox<T>::action_performed(void* sender, Event& e) {
 		if (e.button_pressed) {
 			if (sender == this->btn_left) {																// When the left button was pressed
+				T old_val = this->value;
 				this->set_value(this->value - this->increment);											// Decrease the current value
+				e.spinnerbox_changed = old_val != this->value;
+				e.spinnerbox_dvalue = old_val - this->value;
+				e.spinnerbox_value = this->value;
+				this->raise_event(this, e);
+				e.spinnerbox_changed = false;
+				e.spinnerbox_dvalue = 0;
 			} else if (sender == this->btn_right) {														// When the right button was pressed
+				T old_val = this->value;
 				this->set_value(this->value + this->increment);											// Increase the current value
+				e.spinnerbox_changed = old_val != this->value;
+				e.spinnerbox_dvalue = old_val - this->value;
+				e.spinnerbox_value = this->value;
+				this->raise_event(this, e);
+				e.spinnerbox_changed = false;
+				e.spinnerbox_dvalue = 0;
 			}
 			this->txt_box->set_text(std::to_string(this->value));										// Update the text box's string
 		}
@@ -158,6 +172,7 @@ namespace GLUI {
 	// Sets the current value (will be between min and max)
 	template<typename T> void SpinnerBox<T>::set_value(T value) {
 		this->value = std::max(std::min(value, this->max), this->min);	// Must be between min and max
+		this->txt_box->set_text(std::to_string(this->value));
 	}
 
 	// Sets the increment (min 0)
