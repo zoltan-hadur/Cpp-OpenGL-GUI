@@ -71,14 +71,26 @@ namespace GLUI {
 		float get_r() {
 			return this->R;
 		}
+		unsigned char get_ur(){
+			return this->R * 255;
+		}
 		float get_g() {
 			return this->G;
+		}
+		unsigned char get_ug() {
+			return this->G * 255;
 		}
 		float get_b() {
 			return this->B;
 		}
+		unsigned char get_ub() {
+			return this->B * 255;
+		}
 		float get_a() {
 			return this->A;
+		}
+		unsigned char get_ua() {
+			return this->A * 255;
 		}
 		Color operator*(float f) {
 			float r = std::min(255.0f, this->R * 255 * f);
@@ -150,7 +162,7 @@ namespace GLUI {
 		// Sets the border color
 		virtual void set_border_color(unsigned char R = 0U, unsigned char G = 0U, unsigned char B = 0U, unsigned char A = 255U);
 		// Sets the highlight color
-		virtual void set_highlight_color(Color background_color);
+		virtual void set_highlight_color(Color highlight_color);
 		// Sets the highlight color
 		virtual void set_highlight_color(unsigned char R = 0U, unsigned char G = 0U, unsigned char B = 0U, unsigned char A = 255U);
 		// Sets the visibility of the component (if set to false, no children will be drawn)
@@ -482,7 +494,7 @@ namespace GLUI {
 	}
 
 	// Sets the highlight color
-	void Component::set_highlight_color(Color background_color) {
+	void Component::set_highlight_color(Color highlight_color) {
 		this->highlight_color = highlight_color;
 	}
 
