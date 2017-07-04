@@ -59,4 +59,10 @@ struct Event {
 	template<typename T> T get_spinnerbox_value() {
 		return (T)spinnerbox_value;
 	}
+
+	// TextBox
+	bool textbox_focus_gained;
+	bool textbox_focus_lost;
+	bool textbox_enter_pressed;
+	std::string textbox_text;
 };

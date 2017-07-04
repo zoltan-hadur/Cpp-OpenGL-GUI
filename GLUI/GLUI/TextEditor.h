@@ -10,13 +10,9 @@ namespace GLUI {
 
 	class TextEditor : public Component {
 	private:
-		enum class TYPE;
-
-		TYPE type;
 		Stopwatch watch;
 		float acc;
 
-		bool focused;
 		int window_start;
 		int window_end;
 		int window_width;
@@ -41,6 +37,11 @@ namespace GLUI {
 		void cursor_jump_right();					// Moves the cursor to the top right (like pressing end in a text editor)
 		void draw_selection(float x, float y);		// Draws quads upon selected text in the buffer
 	protected:
+		enum class TYPE;
+
+		TYPE type;
+		bool focused;
+
 		TextEditor(TYPE type, float x = 0, float y = 0, float width = 100, float height = 20);
 
 		virtual void handle_event(Event& e) override;
@@ -52,9 +53,7 @@ namespace GLUI {
 		};
 
 		void set_text(std::string text);
-		void set_focus(bool focused);
 		std::string get_text();
-		bool has_focus();
 	};
 
 	void TextEditor::insert_char(unsigned char key) {
@@ -654,16 +653,8 @@ namespace GLUI {
 		window_end =  window_width;
 	}
 
-	void TextEditor::set_focus(bool focused) {
-		this->focused = focused;
-	}
-
 	std::string TextEditor::get_text() {
 		return std::string(this->buffer.begin(), this->buffer.end());
-	}
-
-	bool TextEditor::has_focus() {
-		return this->focused;
 	}
 
 }

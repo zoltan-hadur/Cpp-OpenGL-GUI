@@ -113,6 +113,8 @@ namespace GLUI {
 				e.spinnerbox_dvalue = 0;
 			}
 			this->txt_box->set_text(std::to_string(this->value));										// Update the text box's string
+		} else if (sender == this->txt_box) {
+			this->raise_event(this, e);
 		}
 	}
 

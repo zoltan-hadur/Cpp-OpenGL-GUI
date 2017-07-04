@@ -106,7 +106,7 @@ namespace GLUI {
 			}
 		}
 
-		this->color = Color(this->spb_r->get_value(), this->spb_g->get_value(), this->spb_b->get_value(), 255);
+		//this->color = Color(this->spb_r->get_value(), this->spb_g->get_value(), this->spb_b->get_value(), 255);
 
 		this->btn_indicator->set_background_color(this->color);
 		this->btn_indicator->set_highlight_color(this->color);
@@ -133,6 +133,8 @@ namespace GLUI {
 					this->watch.start();																			// Start it
 				}
 			}
+		} else if (sender == this->spb_r || sender == this->spb_g || sender == this->spb_b) {
+			this->color = Color(this->spb_r->get_value(), this->spb_g->get_value(), this->spb_b->get_value(), 255);
 		}
 		//else {
 		//	//this->color = Color(this->spb_r->get_value(), this->spb_g->get_value(), this->spb_b->get_value(), 255);
