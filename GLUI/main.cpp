@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <iostream>
 #include "GLUI\GLUI.h"
-#include "Stopwatch.h"
+#include "Utility\Stopwatch.h"
 
 Stopwatch watch;							// Stopper for controlling fps
 const int screen_width = 192 * 5;			// Width of the window

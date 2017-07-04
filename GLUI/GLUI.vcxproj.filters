@@ -19,6 +19,9 @@
     <Filter Include="Header Files\Event">
       <UniqueIdentifier>{43113d48-c1f8-4e74-8fa2-8027d477dc00}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Utility">
+      <UniqueIdentifier>{398da1c8-3887-4097-9824-8d2adaea1d42}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="freeglut.dll">
@@ -31,9 +34,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Stopwatch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GLUI\Component.h">
       <Filter>Header Files\GLUI</Filter>
     </ClInclude>
@@ -93,6 +93,12 @@
     </ClInclude>
     <ClInclude Include="GLUI\ColorPicker.h">
       <Filter>Header Files\GLUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\BMP.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\Stopwatch.h">
+      <Filter>Header Files\Utility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

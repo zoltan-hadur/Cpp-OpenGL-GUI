@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Component.h"
-#include "../Stopwatch.h"
+#include "..\Utility\Stopwatch.h"
 
 namespace GLUI {
 

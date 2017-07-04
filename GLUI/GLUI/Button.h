@@ -2,7 +2,7 @@
 
 #include "Component.h"
 #include "Label.h"
-#include "../Stopwatch.h"
+#include "..\Utility\Stopwatch.h"
 
 namespace GLUI {
 

@@ -5,7 +5,7 @@
 #include "Component.h"
 #include "TextBox.h"
 #include "Button.h"
-#include "../Stopwatch.h"
+#include "..\Utility\Stopwatch.h"
 
 namespace GLUI {
 

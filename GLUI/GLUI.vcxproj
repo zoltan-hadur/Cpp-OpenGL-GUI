@@ -120,7 +120,8 @@
     <ClInclude Include="GLUI\TextBox.h" />
     <ClInclude Include="GLUI\TextEditor.h" />
     <ClInclude Include="GLUI\MainWindow.h" />
-    <ClInclude Include="Stopwatch.h" />
+    <ClInclude Include="Utility\BMP.h" />
+    <ClInclude Include="Utility\Stopwatch.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

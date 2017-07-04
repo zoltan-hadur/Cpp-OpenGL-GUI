@@ -3,7 +3,7 @@
 #include "Panel.h"
 #include "Button.h"
 #include "SpinnerBox.h"
-#include "../Stopwatch.h"
+#include "..\Utility\Stopwatch.h"
 
 namespace GLUI {
 
