@@ -34,8 +34,10 @@ namespace GLUI {
 		float2 orig_pos;		// Original position for animation
 		float2 orig_size;		// Original size for animation
 		float2 move_offset;		// Position offset for moving window
+		float2 resize_offset;	// Size offset for resizing the window
 
-		bool grabbed;			// Indicates that the window is grabbed by the mouse or not
+		bool grabbed_move;		// Indicates that the window is grabbed by the mouse or not for later move
+		bool grabbed_resize;	// Indicates that the window is grabbed by the mouse or not for later resize
 		bool movable;			// Indicates that the window is movable or not
 		bool resizable;			// Indicates that the window is resizable or not
 
@@ -66,9 +68,35 @@ namespace GLUI {
 	};
 
 	void Window::handle_event(Event& e) {
-		if (this->grabbed && e.mouse_moved) {																			// If the user grabbed the window and moved the mouse
-			this->set_position(float2(e.x, e.y) - this->move_offset);													// Reposition the panel
+		if (this->grabbed_move && e.mouse_moved) {																		// If the user grabbed the window and moved the mouse
+			this->set_position(float2(e.x, e.y) - this->move_offset);													// Reposition the window
 			this->orig_pos = this->get_position();																		// To enlarge the window to the new position from minimized state
+		}
+		if (this->grabbed_resize && e.mouse_moved) {																	// Ift he user grabbed the little triangle in the window's bottom right right corner and moved the mouse
+			float2 min_size = float2(this->btn_title->get_label()->get_text().size() * this->char_width + 2 * this->char_width + 50, 30);
+			float2 temp = float2(e.x, e.y) - this->resize_offset;
+			this->set_size(std::max(temp.x, min_size.x), std::max(temp.y, min_size.y));									// Resize the window
+			this->orig_size = float2(this->width, this->height);
+		}
+		if (e.mouse_pressed && e.mouse_left && this->resizable) {														// Check if the user clicked with the left mosue on the triangle in the window's bottom right corner to start resizing
+			float2 p0 = this->get_absolute_position() +
+				float2(this->width, this->height) -
+				float2(this->default_border_width, this->default_border_width);
+
+			float2 p1 = p0 - float2(10, 0);
+			float2 p2 = p0 - float2(0, 10);
+
+			float A = 0.5 *(-p1.y*p2.x + p0.y*(-p1.x + p2.x) + p0.x*(p1.y - p2.y) + p1.x*p2.y);
+			float s = 1 / (2 * A)*(p0.y*p2.x - p0.x*p2.y + (p2.y - p0.y)*e.x + (p0.x - p2.x)*e.y);
+			float t = 1 / (2 * A)*(p0.x*p1.y - p0.y*p1.x + (p0.y - p1.y)*e.x + (p1.x - p0.x)*e.y);
+
+			if (s > 0 && t > 0 && 1 - s - t > 0) {																		// Check if the point is inside the triangle (barycentric)
+				this->resize_offset = float2(e.x, e.y) - float2(this->width, this->height);
+				this->grabbed_resize = true;
+			}
+		}
+		if (e.mouse_released && e.mouse_left) {
+			this->grabbed_resize = false;
 		}
 	}
 
@@ -113,6 +141,9 @@ namespace GLUI {
 		} else {																										// If the window is not minimized
 			this->set_visible(this->is_visible());																		// Update the visibility tree
 			this->btn_title->set_size(this->orig_size.x - 50 + this->default_border_width * 2, 20);						// Set the original size of the title
+			this->btn_minimize->set_position(this->width - 50 + this->default_border_width, 0);							// Update the minimize button's position according to the window's size
+			this->btn_collapse->set_position(this->width - 25, 0);														// Update the collapse button's position according to the window's size
+
 			if (this->c_state == C_STATE::COLLAPSED) {																	// If the window was collapsed
 				bool visibility = this->is_visible();
 				this->set_visible(false);																				// Every component is invisible
@@ -177,6 +208,20 @@ namespace GLUI {
 			}
 		}
 		Panel::draw(draw_background);
+
+		if (this->resizable) {																							// Draw a triangle in the bottom right corner to indicate that the window is resizable
+			float2 pos = this->get_absolute_position() +																// Bottom right corner's position
+				float2(this->width, this->height) -
+				float2(this->default_border_width, this->default_border_width);
+
+			Color c = this->get_border_color();
+			glColor4f(c.get_r(), c.get_g(), c.get_b(), c.get_a());
+			glBegin(GL_TRIANGLES);
+			glVertex2f(pos.x, pos.y);
+			glVertex2f(pos.x-10, pos.y);
+			glVertex2f(pos.x, pos.y-10);
+			glEnd();
+		}
 	}
 
 	// To listen on inner component events
@@ -187,11 +232,11 @@ namespace GLUI {
 					if (this->movable) {
 						this->move_offset = (float2(e.x, e.y) - this->get_absolute_position() +							// Calculate the mouse position relative the window's parent's absolute position
 							this->parent->get_absolute_position());
-						this->grabbed = true;																			// Because the user possibly wants to move the window with the mouse
+						this->grabbed_move = true;																		// Because the user possibly wants to move the window with the mouse
 					}
 				}
 			} else if (e.button_released) {																				// If the title was released
-				this->grabbed = false;																					// The user finished moving the window
+				this->grabbed_move = false;																					// The user finished moving the window
 
 				if (this->m_state == M_STATE::MINIMIZED || this->m_state == M_STATE::MINIMIZING) {						// If the window is minimized or minimizing
 					this->pos_offset = float2(0, 0);																	// Start enlarging it (a (0,0) offset means there is no difference between the original and the destination values, so the window will animate to it's original state from it's current state)
@@ -271,7 +316,8 @@ namespace GLUI {
 		this->orig_pos = float2(x, y);
 		this->orig_size = float2(width, height);
 		this->move_offset = float2(0, 0);
-		this->grabbed = false;
+		this->grabbed_move = false;
+		this->grabbed_resize = false;
 		this->movable = true;
 		this->resizable = true;
 
