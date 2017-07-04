@@ -4,6 +4,7 @@
 
 namespace GLUI {
 
+	// Classic textbox, can be either single or multi lined
 	class TextBox : public TextEditor {
 	protected:
 		void gain_focus(Event& e);

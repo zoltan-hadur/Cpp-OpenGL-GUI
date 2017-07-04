@@ -7,6 +7,7 @@
 
 namespace GLUI {
 
+	// The ColorPicker user control lets you set a color with 3 spinner box (RGB)
 	class ColorPicker : public EventListener, public Panel {
 	protected:
 		enum class STATE {

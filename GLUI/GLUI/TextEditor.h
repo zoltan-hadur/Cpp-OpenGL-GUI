@@ -8,6 +8,9 @@
 
 namespace GLUI {
 
+	// Handles the massive bullshit:
+	// inner buffer, cursor position, text selection, character insertion/deletion
+	// copy paste, home/end buttons, etc
 	class TextEditor : public Component {
 	private:
 		Stopwatch watch;

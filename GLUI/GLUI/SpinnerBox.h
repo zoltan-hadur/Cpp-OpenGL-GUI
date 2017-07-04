@@ -9,6 +9,8 @@
 
 namespace GLUI {
 
+	// SpinnerBox that lets you increase/decrease a value in a range, and also lets you to directly edit the value like a text box
+	// Use usual types, like char, short, int, long, float, double, etc
 	template<typename T> class SpinnerBox : public EventListener, public Component {
 	protected:
 		Button* btn_left;

@@ -5,6 +5,7 @@
 
 namespace GLUI {
 
+	// Slider / ScrollBar
 	class Slider : public EventListener, public Component {
 	protected:
 		enum class ALIGN;				// Forward declaration

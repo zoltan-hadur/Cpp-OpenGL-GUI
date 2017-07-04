@@ -6,6 +6,7 @@
 
 namespace GLUI {
 
+	// A progress bar that lets you display the progress of something
 	class ProgressBar : public Component {
 	protected:
 		enum class ANIMATION;

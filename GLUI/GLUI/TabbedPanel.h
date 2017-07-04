@@ -6,6 +6,7 @@
 
 namespace GLUI {
 
+	// A panel that can has multiplte tabs, and each tab has it's own components
 	class TabbedPanel : public EventListener, public Panel {
 	protected:
 		std::vector<Button*> btn_selectors;		// Stores the tab titles, who responsible for navigation between the tabs
