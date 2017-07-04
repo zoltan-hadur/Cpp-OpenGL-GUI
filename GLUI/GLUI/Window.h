@@ -36,6 +36,8 @@ namespace GLUI {
 		float2 move_offset;		// Position offset for moving window
 
 		bool grabbed;			// Indicates that the window is grabbed by the mouse or not
+		bool movable;			// Indicates that the window is movable or not
+		bool resizable;			// Indicates that the window is resizable or not
 
 		Stopwatch watch;		// Timer for animations
 		float2 acc_size;		// Stores accumulated size value for animation
@@ -49,10 +51,18 @@ namespace GLUI {
 		virtual void action_performed(void* sender, Event& e) override;
 		// Title, the coordinates, the size, and the border's width
 		Window(std::string title = "", float x = 0, float y = 0, float width = 100, float height = 100, float border_width = 2);
+		// Sets the movability
+		void set_movable(bool movable);
+		// Sets the resizability
+		void set_resizable(bool resizable);
 		// Sets the title of the panel
 		void set_title(std::string title);
 		// Gets the title of the panel
 		std::string get_title();
+		// Return true if movable
+		bool is_movalbe();
+		// Returns true resizable
+		bool is_resizable();
 	};
 
 	void Window::handle_event(Event& e) {
@@ -174,9 +184,11 @@ namespace GLUI {
 		if (sender == this->btn_title) {																				// If the title
 			if (e.button_pressed) {																						// Was pressed
 				if (this->m_state == M_STATE::ENLARGED) {																// And the window is fully enlarged
-					this->move_offset = (float2(e.x, e.y) - this->get_absolute_position() +								// Calculate the mouse position relative the window's parent's absolute position
-										 this->parent->get_absolute_position());
-					this->grabbed = true;																				// Because the user possibly wants to move the window with the mouse
+					if (this->movable) {
+						this->move_offset = (float2(e.x, e.y) - this->get_absolute_position() +							// Calculate the mouse position relative the window's parent's absolute position
+							this->parent->get_absolute_position());
+						this->grabbed = true;																			// Because the user possibly wants to move the window with the mouse
+					}
 				}
 			} else if (e.button_released) {																				// If the title was released
 				this->grabbed = false;																					// The user finished moving the window
@@ -260,6 +272,8 @@ namespace GLUI {
 		this->orig_size = float2(width, height);
 		this->move_offset = float2(0, 0);
 		this->grabbed = false;
+		this->movable = true;
+		this->resizable = true;
 
 		this->watch = Stopwatch();
 		this->acc_size = float2(0, 0);
@@ -283,6 +297,16 @@ namespace GLUI {
 		this->add_component(this->btn_minimize);
 	}
 
+	// Sets the movability
+	void Window::set_movable(bool movable) {
+		this->movable = movable;
+	}
+
+	// Sets the resizability
+	void Window::set_resizable(bool resizable) {
+		this->resizable = resizable;
+	}
+
 	// Sets the title of the panel
 	void Window::set_title(std::string title) {
 		this->btn_title->get_label()->set_text(" " + title);
@@ -291,6 +315,16 @@ namespace GLUI {
 	// Gets the title of the panel
 	std::string Window::get_title() {
 		return this->btn_title->get_label()->get_text().substr(1);
+	}
+
+	// Return true if movable
+	bool Window::is_movalbe() {
+		return this->movable;
+	}
+
+	// Returns true resizable
+	bool Window::is_resizable() {
+		return this->resizable;
 	}
 
 }
