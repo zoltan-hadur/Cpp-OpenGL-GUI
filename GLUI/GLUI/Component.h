@@ -117,6 +117,7 @@ namespace GLUI {
 		float default_border_width;						// Default border width of the component
 		bool visible;									// Determines if the component is visible (if set to false, no children will be drawn)
 		bool highlighted;								// Determines if the component is highlighted (i.e. mouse is above the component, if the derived class handles it)
+		bool enabled;									// Determines if the component is enabled or disabled
 		Color background_color;							// Color of the component's background
 		Color border_color;								// Color of the component's border
 		Color highlight_color;							// Color of the component's background when highlighted
@@ -128,6 +129,10 @@ namespace GLUI {
 		// Draws the component
 		virtual void draw(bool draw_background = true);
 	public:
+		// Enables the component
+		void enable();
+		// Disables the component
+		void disable();
 		// Brings the component in front of other components, if the mouse was above the component when the event happend
 		void bring_front(Event& e);
 		// Brings the component in front of other components
@@ -187,6 +192,8 @@ namespace GLUI {
 		virtual Color get_highlight_color();
 		// Gets visibility of the component
 		virtual bool is_visible();
+		// Returns true if the component is enabled, else false
+		bool is_enabled();
 
 		// Handles input events (keyboard, mouse)
 		// Just create events in the main loop and pass them to the top-level window
@@ -207,6 +214,7 @@ namespace GLUI {
 		this->active_border_width = border_width + 2;
 		this->visible = true;
 		this->highlighted = false;
+		this->enabled = true;
 		this->background_color = Color(100, 100, 100, 180);
 		this->border_color = Color(200, 200, 200, 255);
 		//this->highlight_color = Color(66, 134, 244, 255);
@@ -222,6 +230,11 @@ namespace GLUI {
 	void Component::draw(bool draw_background) {
 		if (!draw_background) {
 			return;
+		}
+
+		Color pre = this->background_color;
+		if (!this->enabled) {
+			this->set_background_color(this->get_background_color()*1.2f);
 		}
 
 		float2 pos = this->get_absolute_position();
@@ -332,6 +345,25 @@ namespace GLUI {
 		glVertex2f(pos.x + this->width - this->border_width, pos.y + this->height - this->border_width);
 		glVertex2f(pos.x + this->border_width, pos.y + this->height - this->border_width);
 		glEnd();
+
+		this->set_background_color(pre);
+	}
+
+	// Enables the component
+	void Component::enable() {
+		this->enabled = true;
+		for (auto c : this->children) {
+			c->enable();
+		}
+
+	}
+
+	// Disables the component
+	void Component::disable() {
+		this->enabled = false;
+		for (auto c : this->children) {
+			c->disable();
+		}
 	}
 
 	// Brings the component in front of other components, if the mouse was above the component when the event happend
@@ -565,9 +597,14 @@ namespace GLUI {
 		return this->visible;
 	}
 
+	// Returns true if the component is enabled, else false
+	bool Component::is_enabled() {
+		return this->enabled;
+	}
+
 	// Handles input events (keyboard, mouse)
 	void Component::event_handler(Event& e) {
-		if (this->visible) {
+		if (this->visible && this->enabled) {
 			e.mouse_covered = this->is_covered(e);
 			this->handle_event(e);
 			auto children = this->children;

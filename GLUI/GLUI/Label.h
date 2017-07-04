@@ -59,7 +59,12 @@ namespace GLUI {
 			x = (h_align == H_ALIGN::RIGHT) ? (x + width - w) : ((h_align == H_ALIGN::MID) ? (x + (width - w) / 2) : x);						// Horizontal alignment
 			y = (v_align == V_ALIGN::BOT) ? (y + height - char_height) : ((v_align == V_ALIGN::MID) ? (y + (height - char_height) / 2) : y);	// Vertical alignment
 
-			glColor4f(1, 1, 1, 1);
+			Color c = Color(255,255,255,255);
+			if (!this->enabled) {
+				c = Color(180, 180, 180, 255);
+			}
+
+			glColor4f(c.get_r(), c.get_g(), c.get_b(), c.get_a());
 			glRasterPos2f(x, y);
 			glutBitmapString(GLUT_BITMAP_9_BY_15, (const unsigned char*)text.c_str());
 		}
