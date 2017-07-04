@@ -109,6 +109,7 @@
     <ClInclude Include="GLUI\ComboBox.h" />
     <ClInclude Include="GLUI\Component.h" />
     <ClInclude Include="GLUI\GLUI.h" />
+    <ClInclude Include="GLUI\Image.h" />
     <ClInclude Include="GLUI\Label.h" />
     <ClInclude Include="GLUI\Panel.h" />
     <ClInclude Include="GLUI\Window.h" />

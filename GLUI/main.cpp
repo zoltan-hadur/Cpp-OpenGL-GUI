@@ -4,7 +4,7 @@
 #include "GLUI\GLUI.h"
 #include "Utility\Stopwatch.h"
 
-Stopwatch watch;							// Stopper for controlling fps
+GLUI::Stopwatch watch;						// Stopper for controlling fps
 const int screen_width = 192 * 5;			// Width of the window
 const int screen_height = 108 * 5;			// Height of the window
 int keys_down[256];							// For easy check of pressed keys
@@ -85,6 +85,9 @@ void on_initialization() {
 	window->add_component(window_1);
 	window->add_component(window_10);
 	window->add_component(window_11);
+
+	GLUI::Image* image = new GLUI::Image("cat.bmp", 10, 30);
+	window_10->add_component(image);
 
 	GLUI::Window* window_2 = new GLUI::Window("Window 2", 10, 30, 300, 300);
 	window_2->set_border_color(255, 0, 0, 255);

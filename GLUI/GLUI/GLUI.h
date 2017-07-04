@@ -1,12 +1,13 @@
 #pragma once
 
 #include <GL\freeglut.h>
-#include "../Event/EventRaiser.h"
+#include "..\Event\EventRaiser.h"
 #include "Button.h";
 #include "CheckBox.h";
 #include "ColorPicker.h"
 #include "ComboBox.h";
 #include "Component.h";
+#include "Image.h";
 #include "Label.h";
 #include "Panel.h";
 #include "Window.h";

@@ -100,5 +100,8 @@
     <ClInclude Include="Utility\Stopwatch.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="GLUI\Image.h">
+      <Filter>Header Files\GLUI</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
