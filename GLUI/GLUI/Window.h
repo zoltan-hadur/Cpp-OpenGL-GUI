@@ -79,7 +79,8 @@ namespace GLUI {
 			this->set_size(std::max(temp.x, min_size.x), std::max(temp.y, min_size.y));									// Resize the window
 			this->orig_size = float2(this->width, this->height);
 		}
-		if (e.mouse_pressed && e.mouse_left && this->resizable) {														// Check if the user clicked with the left mosue on the triangle in the window's bottom right corner to start resizing
+		if (e.mouse_pressed && e.mouse_left && this->resizable &&
+			this->m_state == M_STATE::ENLARGED && this->c_state == C_STATE::EXPANDED) {									// Check if the user clicked with the left mosue on the triangle in the window's bottom right corner to start resizing
 			float2 p0 = this->get_absolute_position() +
 				float2(this->width, this->height) -
 				float2(this->default_border_width, this->default_border_width);
