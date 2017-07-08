@@ -1,14 +1,22 @@
 #pragma once
 
-#include "Component.h"
-#include "Button.h"
+#include <vector>
+#include "Panel.h"
 #include "Label.h"
+#include "Button.h"
 #include "ScrollPanel.h"
+#include "..\Event\ActionEvent.h"
+#include "..\Event\ActionListener.h"
+#include "..\Event\ActionPerformer.h"
+#include "..\Event\Event.h"
+#include "..\Utility\float2.h"
+#include "..\Utility\Color.h"
+#include "..\Utility\Stopwatch.h"
 
 namespace GLUI {
 
-	// Combobox with selectable drop down list, that can raise events when selected changes
-	class ComboBox : public EventListener, public Panel {
+	// Combobox with selectable drop down list, that can perform actions when selected item changes
+	class ComboBox : public ActionListener, public Panel {
 	protected:
 		enum class D_STATE {				// States of combobox list dropping down
 			DROPPED_DOWN,
@@ -19,12 +27,12 @@ namespace GLUI {
 
 		D_STATE d_state;					// Stores that the drop down list is dropped down, dropping down, rolled up or rolling up
 
-		Label* lbl_selected;				// Displays the selected value
+		Label* lbl_selected;				// Displays the selected item's value
 		Button* btn_drop_down;				// The drop down list drops when pressed, and rolls up when pressed again
-		ScrollPanel* scp_list;				// The scrollable drop down panel with the selectable elements
-		std::list<Button*> btn_elements;	// The selectable elements from the drop down list
+		ScrollPanel* scp_list;				// The scrollable drop down panel with the selectable items
+		std::vector<Button*> btn_items;		// The selectable items from the drop down list
 
-		float element_offset;				// For element addition alignment
+		float item_offset;					// For item addition alignment
 
 		float2 size_offset;					// Size offset for animation
 		float2 orig_size;					// Original size for animation
@@ -36,20 +44,31 @@ namespace GLUI {
 		virtual void handle_event(Event& e) override;
 		virtual void draw(bool draw_background = true) override;
 	public:
-		// To listen on the children component's events
-		virtual void action_performed(void* sender, Event& e) override;
+		// To listen on the children component's actions
+		virtual void action_performed(void* sender, ActionEvent& e) override;
+
 		// The coordinates of the combo box, the size of the combo box, and the border's width of the combo box
 		ComboBox(float x = 0, float y = 0, float width = 100, float height = 20, float border_width = 1);
-		// Adds an element to the combo box
-		void add_element(std::string text);
-		// Removes an element from the combo box (or multiple, if there are multiplte elements with the same name)
-		void remove_element(std::string text);
-		// Returns the selected element's index
-		int get_selected_index();
-		// Return the selected element
-		std::string get_selected_element();
-		// Return the index-th element
-		std::string get_selected_element(int index);
+
+		// Adds an item to the combo box
+		void add_item(std::string text);
+		// Removes an item from the combo box (or multiple, if there are multiplte items with the same value)
+		void remove_item(std::string text);
+		// Selects item by index (DOES NOT performs any action)
+		void select_item(int index);
+		// Selects item by value (DOES NOT performs any action)
+		void select_item(std::string text);
+		// Returns the selected item
+		std::string get_selected_item();
+		// Returns the index-th item
+		std::string get_item(int index);
+		// Returns the selected item's index
+		int get_selected_item_index();
+
+		// Performs a selected item changed action
+		void change_selected_item(int index);
+		// Performs a selected item changed action
+		void change_selected_item(std::string text);
 	};
 
 	void ComboBox::handle_event(Event& e) {
@@ -95,49 +114,39 @@ namespace GLUI {
 		Panel::draw(draw_background);
 	}
 
-	// To listen on the children component's events
-	void ComboBox::action_performed(void* sender, Event& e) {
-		if (sender == this->btn_drop_down) {																// If the drop down button
-			if (e.button_released) {																		// Was pressed
-				if (this->d_state == D_STATE::ROLLED_UP || this->d_state == D_STATE::ROLLING_UP) {			// Start dropping down the list if it was rolling up or rolled up
-					this->size_offset = float2(0, 0);
-					this->d_state = D_STATE::DROPPING_DOWN;
-					this->btn_drop_down->get_label()->set_text(R"(/\)");
-				} else {																					// Else start rolling up the list
-					this->size_offset = float2(this->width, 20) - this->orig_size;
-					this->d_state = D_STATE::ROLLING_UP;
-					this->btn_drop_down->get_label()->set_text(R"(\/)");
-				}
-
-																											// Reset the watch at every button press
-				if (this->watch.is_running()) {																// If the watch is running
-					this->watch.reset();																	// Reset it
-				} else {																					// Else
-					this->watch.start();																	// Start it
-				}
-			}
-		} else {																							// If some of the buttons in the list
-			if (e.button_released) {																		// Was pressed
-				std::string text =
-					((Button*)sender)->get_label()->get_text();												// Get the selected item's text
-				if (text != this->lbl_selected->get_text()) {												// If the previously selected item differs from the one selected now
-					this->lbl_selected->set_text(text);														// Change the text
-					e.combobox_changed = true;
-				}
-				e.combobox_selected_element = text;
-				e.combobox_selected_index = this->get_selected_index();
-				this->raise_event(this, e);																	// Raise an event
-				e.combobox_changed = false;
-
-				this->size_offset = float2(this->width, 20) - this->orig_size;								// Start rolling up the list
+	// To listen on the children component's actions
+	void ComboBox::action_performed(void* sender, ActionEvent& e) {
+		if (sender == this->btn_drop_down && e.button_released) {											// If the drop down button was pressed
+			if (this->d_state == D_STATE::ROLLED_UP || this->d_state == D_STATE::ROLLING_UP) {				// Start dropping down the list if it was rolling up or rolled up
+				this->size_offset = float2(0, 0);
+				this->d_state = D_STATE::DROPPING_DOWN;
+				this->btn_drop_down->get_label()->set_text(R"(/\)");
+			} else {																						// Else start rolling up the list
+				this->size_offset = float2(this->width, 20) - this->orig_size;
 				this->d_state = D_STATE::ROLLING_UP;
 				this->btn_drop_down->get_label()->set_text(R"(\/)");
+			}
 
-																											// Reset the watch at every button press
-				if (this->watch.is_running()) {																// If the watch is running
-					this->watch.reset();																	// Reset it
-				} else {																					// Else
-					this->watch.start();																	// Start it
+			if (this->watch.is_running()) {																	// If the watch is running
+				this->watch.reset();																		// Reset it
+			} else {																						// Else
+				this->watch.start();																		// Start it
+			}
+		} else {																							// Else
+			for (auto item : this->btn_items) {																// Find
+				if (item == sender && e.button_released) {													// Wich button was pressed
+					this->change_selected_item(item->get_label()->get_text());								// And then change the selected item
+
+					this->size_offset = float2(this->width, 20) - this->orig_size;							// Start rolling up the list
+					this->d_state = D_STATE::ROLLING_UP;
+					this->btn_drop_down->get_label()->set_text(R"(\/)");
+
+					if (this->watch.is_running()) {															// If the watch is running
+						this->watch.reset();																// Reset it
+					} else {																				// Else
+						this->watch.start();																// Start it
+					}
+					break;
 				}
 			}
 		}
@@ -146,17 +155,18 @@ namespace GLUI {
 	// The coordinates of the combo box, the size of the combo box, and the border's width the of the combo box
 	ComboBox::ComboBox(float x, float y, float width, float height, float border_width) : Panel(true, x, y, width, 20, border_width) {
 		this->d_state = D_STATE::ROLLED_UP;
-		this->element_offset = 0;
+		this->item_offset = 0;
 		this->orig_size = float2(width, height);
-		this->size_offset = float2(this->width, 20)- this->orig_size;
+		this->size_offset = float2(this->width, 20) - this->orig_size;
 		this->watch = Stopwatch();
 		this->acc_size = this->size_offset;
 		this->anim_time = 0.5;
 
-		this->background_color = Color(120, 120, 120, 255);		// Default grey color
+		this->background_color = Color(120, 120, 120, 255) / 255;	// Default grey color
 		this->lbl_selected = new Label("", 0, 0, width - 20, 20);
 		this->btn_drop_down = new Button(R"(\/)", width - 20, 0, 20, 20);
-		this->btn_drop_down->add_event_listener(this);
+		this->btn_drop_down->set_wait_time(std::numeric_limits<float>::max());
+		this->btn_drop_down->add_action_listener(this);
 		this->scp_list = new ScrollPanel(ScrollPanel::ALIGN::VERTICAL, 0, 19, width, height - 19, border_width);
 		this->scp_list->get_scroll_bar()->set_increment(20 + border_width * 2);
 		this->scp_list->set_visible(false);
@@ -165,57 +175,88 @@ namespace GLUI {
 		this->add_component(this->scp_list);
 	}
 
-	// Adds an element to the combo box
-	void ComboBox::add_element(std::string text) {
+	// Adds an item to the combo box
+	void ComboBox::add_item(std::string text) {
 		Button* btn = new Button(text,
-								 this->default_border_width + 2, this->default_border_width + this->element_offset + 2,	// X, y
+								 this->default_border_width + 2, this->default_border_width + this->item_offset + 2,	// X, y
 								 this->width - this->default_border_width * 2 - 3 - 20, 20);							// Width, height
 		btn->set_wait_time(std::numeric_limits<float>::max());
-		btn->add_event_listener(this);
-		this->element_offset = this->element_offset + this->scp_list->get_scroll_bar()->get_increment();
-		this->btn_elements.push_back(btn);
+		btn->add_action_listener(this);
+		this->item_offset = this->item_offset + this->scp_list->get_scroll_bar()->get_increment();
+		this->btn_items.push_back(btn);
 		this->scp_list->add_component(btn);
 	}
 
-	// Removes an element from the combo box (or multiple, if there are multiplte elements with the same name)
-	void ComboBox::remove_element(std::string text) {
-		for (auto c : this->btn_elements) {						// Iterate through all the elements
-			if (c->get_label()->get_text() == text) {			// If the texts are matching
-				c->remove_event_listener(this);					// Remove the event listener from the combobox
-				this->remove_component(c);						// Remove the component from the combobox
-				this->btn_elements.remove(c);					// Remove the element from the combobox
-				break;
+	// Removes an item from the combo box (or multiple, if there are multiplte item with the same name)
+	void ComboBox::remove_item(std::string text) {
+		auto items = this->btn_items;
+		for (auto item : items) {							// Iterate through all item
+			if (item->get_label()->get_text() == text) {	// If the values are equals
+				item->remove_action_listener(this);			// Remove the action listener from the combobox
+				this->remove_component(item);				// Remove the item from the combobox
+															// And remove the item from the items
+				this->btn_items.erase(std::remove(this->btn_items.begin(), this->btn_items.end(), item), this->btn_items.end());
 			}
+		}
+		if (items.size() == this->btn_items.size()) {
+			throw "Item could not be removed, because the combobox does not contained the item!";
 		}
 	}
 
-	// Returns the selected element's index
-	int ComboBox::get_selected_index() {
-		int i = -1;
-		for (auto btn : this->btn_elements) {
-			++i;
-			if (btn->get_label()->get_text() == this->lbl_selected->get_text()) {
-				return i;
-			}
-		}
-		return i;
+	// Selects item by index (DOES NOT performs any action)
+	void ComboBox::select_item(int index) {
+		this->lbl_selected->set_text(this->btn_items[index]->get_label()->get_text());
 	}
 
-	// Return the selected element
-	std::string ComboBox::get_selected_element() {
+	// Selects item by value (DOES NOT performs any action)
+	void ComboBox::select_item(std::string text) {
+		for (int i = 0; i < this->btn_items.size(); ++i) {
+			if (this->btn_items[i]->get_label()->get_text() == text) {
+				this->select_item(i);
+				return;
+			}
+		}
+		throw "Item could not be removed, because the combobox does not contained the item!";
+	}
+
+	// Returns the selected item
+	std::string ComboBox::get_selected_item() {
 		return this->lbl_selected->get_text();
 	}
 
-	// Return the index-th element
-	std::string ComboBox::get_selected_element(int index) {
-		int i = -1;
-		for (auto btn : this->btn_elements) {
-			++i;
-			if (i == index) {
-				return btn->get_label()->get_text();
+	// Returns the index-th item
+	std::string ComboBox::get_item(int index) {
+		return this->btn_items[index]->get_label()->get_text();
+	}
+
+	// Returns the selected item's index
+	int ComboBox::get_selected_item_index() {
+		for (int i = 0; i < this->btn_items.size(); ++i) {
+			if (this->btn_items[i]->get_label()->get_text() == this->lbl_selected->get_text()) {
+				return i;
 			}
 		}
-		throw "Index out of array";
+		throw "Selected item's index not found, probably not initialized?";
+	}
+
+	// Performs a selected item changed action
+	void ComboBox::change_selected_item(int index) {
+		ActionEvent e;
+		e.combobox_changed = this->get_item(index) != this->lbl_selected->get_text();
+		this->select_item(index);
+		e.combobox_selected_item = this->lbl_selected->get_text();
+		e.combobox_selected_index = index;
+		this->perform_action(this, e);
+	}
+
+	// Performs a selected item changed action
+	void ComboBox::change_selected_item(std::string text) {
+		ActionEvent e;
+		e.combobox_changed = text != this->lbl_selected->get_text();
+		this->select_item(text);
+		e.combobox_selected_item = text;
+		e.combobox_selected_index = this->get_selected_item_index();
+		this->perform_action(this, e);
 	}
 
 }

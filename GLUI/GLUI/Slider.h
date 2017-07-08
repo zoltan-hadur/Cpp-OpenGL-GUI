@@ -1,28 +1,41 @@
 #pragma once
 
 #include "Component.h"
+#include "Button.h"
+#include "..\Event\ActionEvent.h"
+#include "..\Event\ActionListener.h"
+#include "..\Event\ActionPerformer.h"
+#include "..\Event\Event.h"
+#include "..\Utility\float2.h"
 #include "..\Utility\Stopwatch.h"
 
 namespace GLUI {
 
 	// Slider / ScrollBar
-	class Slider : public EventListener, public Component {
+	class Slider : public ActionListener, public Component {
+	private:
+		float calc_percent();
 	protected:
 		enum class ALIGN;				// Forward declaration
 
 		ALIGN align;					// Determines the alignment, either horizontal of vertical
+
 		Button* btn_left;				// Button on the left when horizontal
 		Button* btn_right;				// Button on the right when horizontal
 		Button* btn_indicator;			// Button between left and right, the slider itself
+
+		float2 indicator_pos_offset;	// For moving the indicator with the mouse
+
+		bool dragged;					// Becomes true when the user clicks on the indicator button, and false when releases the left mouse button
+
 		Stopwatch watch;				// Timer to watch when should the indicator start moving towards the mouse
 		float wait_time;				// Time until the indicator starts to move towards the mouse
 		float speed;					// Determines how fast the indicator moves towards the mouse
-		bool dragged;					// Becomes true when the user clicks on the indicator button, and false when releases the left mouse button
+
 		float min;						// The minimum value that the slider can hold
 		float max;						// The maximum value that the slider can hold
 		float value;					// The value that the slider holds, between min and max
 		float increment;				// Determines how much the value changes
-		float2 indicator_pos_offset;	// For moving the indicator with the mouse
 
 		virtual void handle_event(Event& e) override;
 		virtual void draw(bool draw_background = true) override;
@@ -32,15 +45,11 @@ namespace GLUI {
 			VERTICAL					// Vertical alignment
 		};
 
-		// To listen on inner component events
-		virtual void action_performed(void* sender, Event& e) override;
+		// To listen on inner component actions
+		virtual void action_performed(void* sender, ActionEvent& e) override;
 
 		// Min, max, coordinates, size, border's width
 		Slider(float min = 0, float max = 1, float x = 0, float y = 0, float width = 100, float height = 20, float border_width = 1);
-		// Increases the value defined by increment
-		void inc_value();
-		// Decreases the value defined by increment
-		void dec_value();
 		// Sets the min
 		void set_min(float min);
 		// Sets the max
@@ -65,81 +74,72 @@ namespace GLUI {
 		float get_wait_time();
 		// Gets the speed
 		float get_speed();
+
+		// Increases the value defined by increment and performs an action
+		void inc_value();
+		// Decreases the value defined by increment and performs an action
+		void dec_value();
+		// Changes the value and performs a slider changed action
+		void change_value(float value);
 	};
 
-	void Slider::handle_event(Event& e) {
-		float old_val = this->value;																	// To determine at the end of this method if the value has changed
-		float2 pos = this->get_absolute_position();
-		float2 pos_offset = (this->align == ALIGN::HORIZONTAL) ? float2(15, 0) : float2(0, 15);			// The left and right buttons has a 15 width/height according to the alignment
+	float Slider::calc_percent() {
+		return (this->value - this->min) / (this->max - this->min);
+	}
 
+	void Slider::handle_event(Event& e) {
 		if (this->dragged) {																			// If the indicator is dragged
 			float2 pos = float2(e.x, e.y) - this->indicator_pos_offset;
-			switch (this->align) {																		// Move it according to the mouse positios
+			switch (this->align) {																		// Move it according to the mouse position
 				case ALIGN::HORIZONTAL:
 				{
 					pos.x = std::min(pos.x, (float)(this->width - 15 - 20));							// The indicator has a 20 width/height according to the alignment
 					pos.x = std::max(pos.x, (float)15);
-					this->value = (this->max - this->min)*(pos.x - 15) / (this->width - 50);
+					this->change_value((this->max - this->min)*(pos.x - 15) / (this->width - 50));
 					break;
 				}
 				case ALIGN::VERTICAL:
 				{
 					pos.y = std::min(pos.y, (float)(this->height - 15 - 20));
 					pos.y = std::max(pos.y, (float)15);
-					this->value = (this->max - this->min)*(pos.y - 15) / (this->height - 50);
+					this->change_value((this->max - this->min)*(pos.y - 15) / (this->height - 50));
 					break;
 				}
 			}
-			// This long one checks if the mouse is above the slider, and it's position is between the left and right buttons and the slider is not behind a component
-		} else if (pos.x + pos_offset.x < e.x && e.x < pos.x + this->width - pos_offset.x && pos.y + pos_offset.y < e.y && e.y < pos.y + this->height - pos_offset.y && !e.mouse_covered) {
-			if (e.mouse_left && e.mouse_pressed) {														// Start a watch
-				this->watch.start();																	// If the user pressed the left mouse button
-			} else if (e.mouse_left_down) {																// If the user still holds the left mouse button down
-				if (this->watch.is_running()) {
-					float dt = this->watch.get_delta_time() * this->speed;
+		} else if (e.mouse_is_inside && !this->btn_left->is_inside(e) && !this->btn_right->is_inside(e) &&
+				   !this->btn_indicator->is_inside(e) && !e.mouse_is_covered) {							// Else if the mouse is inside the slider, but not above the left/right/indicator buttons
+			if (e.mouse_pressed && e.mouse_left) {														// And if the user pressed the left mouse button
+				this->watch.start();																	// Then start the watch to animate slider moving
+			} else if (e.mouse_left_down) {																// If the user still holds down the left mouse button
+				if (this->watch.is_running()) {															// And the watch is running
+					float dt = this->watch.get_delta_time() * this->speed;								// Then calc a dt to how much move the slider towards the mouse
 					if (this->watch.get_elapsed_time() > this->wait_time) {								// If enough time elapsed for the indicator to starts moving towards the mouse
 						switch (this->align) {
 							case ALIGN::HORIZONTAL:
 							{
 								if (e.x < this->btn_indicator->get_absolute_position().x) {
-									this->set_value(this->get_value() - dt);
+									this->change_value(this->get_value() - dt);
 								} else if (e.x > this->btn_indicator->get_absolute_position().x + this->btn_indicator->get_width()) {
-									this->set_value(this->get_value() + dt);
+									this->change_value(this->get_value() + dt);
 								}
 								break;
 							}
 							case ALIGN::VERTICAL:
 							{
 								if (e.y < this->btn_indicator->get_absolute_position().y) {
-									this->set_value(this->get_value() - dt);
+									this->change_value(this->get_value() - dt);
 								} else if (e.y > this->btn_indicator->get_absolute_position().y + this->btn_indicator->get_height()) {
-									this->set_value(this->get_value() + dt);
+									this->change_value(this->get_value() + dt);
 								}
 								break;
 							}
 						}
 					}
 				}
-			} else if (e.mouse_left && e.mouse_released) {												// The indicator not moving towards to the mouse
-				this->dragged = false;
-				this->watch.stop();
 			}
-		} else {																						// The indicator not moving towards to the mouse
-			this->watch.stop();
+		} else {																						// If the mouse is not inside the scroll bar
+			this->watch.stop();																			// Stop moving the slider towards the mouse
 		}
-		if (!e.mouse_left_down) {																		// The indicator not moving towards to the mouse
-			this->dragged = false;
-			this->watch.stop();
-		}
-
-		if (old_val - this->value != 0) {
-			e.slider_changed = true;
-		}
-		e.slider_value = this->value;
-		e.slider_dvalue = old_val - this->value;
-		this->raise_event(this, e);																		// Raise an event
-		e.slider_changed = false;
-		e.slider_dvalue = 0;
 	}
 
 	void Slider::draw(bool draw_background) {
@@ -156,7 +156,7 @@ namespace GLUI {
 
 				this->btn_indicator->get_label()->set_text("|");
 				this->btn_indicator->set_size(20, this->height);
-				this->btn_indicator->set_position(15 + (this->width - 50)*(this->value + this->min) / (this->max - this->min), 0);
+				this->btn_indicator->set_position(15 + (this->width - 50) * this->calc_percent(), 0);
 				break;
 			}
 			case ALIGN::VERTICAL:
@@ -171,7 +171,7 @@ namespace GLUI {
 
 				this->btn_indicator->get_label()->set_text("-");
 				this->btn_indicator->set_size(this->width, 20);
-				this->btn_indicator->set_position(0, 15 + (this->height - 50)*(this->value + this->min) / (this->max - this->min));
+				this->btn_indicator->set_position(0, 15 + (this->height - 50) * this->calc_percent());
 				break;
 			}
 		}
@@ -179,18 +179,17 @@ namespace GLUI {
 		Component::draw(draw_background);
 	}
 
-	// To listen on inner component events
-	void Slider::action_performed(void* sender, Event& e) {
-		if (e.button_pressed) {																			// Check if any component button was pressed
-			if (sender == this->btn_left) {																// If the left button was pressed,
-				this->dec_value();																		// Decrease the value
-			} else if (sender == this->btn_right) {														// If the right button was pressed,
-				this->inc_value();																		// Increase the value
-			} else if (sender == this->btn_indicator) {													// If the indicator button was pressed
-				this->dragged = true;																	// The user possibly wants to drag it with the mouse
-				float2 pos = this->get_position();
-				this->indicator_pos_offset = float2(e.x, e.y) - this->btn_indicator->get_position();	// Thus the offset
-			}
+	// To listen on inner component actions
+	void Slider::action_performed(void* sender, ActionEvent& e) {
+		if (sender == this->btn_left && e.button_pressed) {											// If the left button was pressed
+			this->dec_value();																		// Decrease the value
+		} else if (sender == this->btn_right && e.button_pressed) {									// Else if right button was pressed
+			this->inc_value();																		// Increase the value
+		} else if (sender == this->btn_indicator && e.button_pressed) {								// Else if the indicator button was pressed
+			this->dragged = true;																	// The indicator is grabbed
+			this->indicator_pos_offset = float2(e.x, e.y) - this->btn_indicator->get_position();
+		} else if (sender == this->btn_indicator && e.button_released) {							// Else if the indicator button was released
+			this->dragged = false;																	// The indicator is not grabbed anymore
 		}
 	}
 
@@ -209,9 +208,9 @@ namespace GLUI {
 		this->btn_right = new Button();
 		this->btn_indicator = new Button();
 
-		this->btn_left->add_event_listener(this);
-		this->btn_right->add_event_listener(this);
-		this->btn_indicator->add_event_listener(this);
+		this->btn_left->add_action_listener(this);
+		this->btn_right->add_action_listener(this);
+		this->btn_indicator->add_action_listener(this);
 
 		this->add_component(this->btn_left);
 		this->add_component(this->btn_right);
@@ -222,36 +221,6 @@ namespace GLUI {
 		} else {
 			this->align = ALIGN::VERTICAL;
 		}
-	}
-
-	// Increases the value defined by increment
-	void Slider::inc_value() {
-		float old_val = this->value;
-		this->set_value(this->value + this->increment);
-		Event e;
-		if (old_val - this->value != 0) {
-			e.slider_changed = true;
-		}
-		e.slider_value = this->value;
-		e.slider_dvalue = old_val - this->value;
-		this->raise_event(this, e);																		// Raise an event
-		e.slider_changed = false;
-		e.slider_dvalue = 0;
-	}
-
-	// Decreases the value defined by increment
-	void Slider::dec_value() {
-		float old_val = this->value;
-		this->set_value(this->value - this->increment);
-		Event e;
-		if (old_val - this->value != 0) {
-			e.slider_changed = true;
-		}
-		e.slider_value = this->value;
-		e.slider_dvalue = old_val - this->value;
-		this->raise_event(this, e);																		// Raise an event
-		e.slider_changed = false;
-		e.slider_dvalue = 0;
 	}
 
 	// Sets the min
@@ -314,6 +283,28 @@ namespace GLUI {
 	// Gets the speed
 	float Slider::get_speed() {
 		return this->speed;
+	}
+
+	// Increases the value defined by increment and performs an action
+	void Slider::inc_value() {
+		this->change_value(this->value + this->increment);
+	}
+
+	// Decreases the value defined by increment and performs an action
+	void Slider::dec_value() {
+		this->change_value(this->value - this->increment);
+	}
+
+	// Changes the value and performs a slider changed action
+	void Slider::change_value(float value) {
+		float old_value = this->value;
+		this->set_value(value);
+
+		ActionEvent e;
+		e.slider_changed = old_value != this->value;
+		e.slider_value = this->value;
+		e.slider_dvalue = this->value - old_value;
+		this->perform_action(this, e);
 	}
 
 }

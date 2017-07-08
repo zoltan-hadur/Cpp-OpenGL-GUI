@@ -6,6 +6,9 @@
 #include <GL\glext.h>
 #include <string>
 #include "Component.h"
+#include "..\Event\Event.h"
+#include "..\Event\EventHandler.h"
+#include "..\Utility\Stopwatch.h"
 
 namespace GLUI {
 
@@ -36,9 +39,13 @@ namespace GLUI {
 	protected:
 		virtual float get_width() override;
 		virtual float get_height() override;
+
+		virtual void handle_event(Event& e) override;
+		virtual void draw(bool draw_background = true) override;
 	public:
 		// Title, position, size
 		MainWindow(std::string title = "MainWindow", float x = 100, float y = 100, float width = 960, float height = 540);
+
 		// Destroys the window
 		void destroy();
 		// Sets the max fps (min 30 or 0=unlimited)
@@ -53,6 +60,7 @@ namespace GLUI {
 		void on_mouse(int button, int state, int x, int y);
 		void on_mouse_motion(int x, int y);
 		void on_mouse_motion_passive(int x, int y);
+
 		// Renders the gui
 		virtual void render() override;
 		// Handles the events
@@ -65,6 +73,14 @@ namespace GLUI {
 
 	float MainWindow::get_height() {
 		return glutGet(GLUT_WINDOW_HEIGHT);
+	}
+
+	void MainWindow::handle_event(Event& e) {
+
+	}
+
+	void MainWindow::draw(bool draw_background) {
+
 	}
 
 	// Title, position, size
@@ -156,6 +172,7 @@ namespace GLUI {
 		this->event.x = x;
 		this->event.y = y;
 		this->event_handler(event);
+
 		this->event.key_pressed = false;
 		this->event.key_released = false;
 		this->event.special_pressed = false;
@@ -175,6 +192,7 @@ namespace GLUI {
 		this->event.x = x;
 		this->event.y = y;
 		this->event_handler(event);
+
 		this->event.key_pressed = false;
 		this->event.key_released = false;
 		this->event.special_pressed = false;
@@ -193,6 +211,7 @@ namespace GLUI {
 		this->event.x = x;
 		this->event.y = y;
 		this->event_handler(event);
+
 		this->event.key_pressed = false;
 		this->event.key_released = false;
 		this->event.special_pressed = false;
@@ -211,6 +230,7 @@ namespace GLUI {
 		this->event.x = x;
 		this->event.y = y;
 		this->event_handler(event);
+
 		this->event.key_pressed = false;
 		this->event.key_released = false;
 		this->event.special_pressed = false;
@@ -237,6 +257,7 @@ namespace GLUI {
 		this->event.x = x;
 		this->event.y = y;
 		this->event_handler(event);
+
 		this->event.mouse_pressed = false;
 		this->event.mouse_released = false;
 	}
@@ -256,6 +277,7 @@ namespace GLUI {
 		this->event.dx = dx;
 		this->event.dy = dy;
 		this->event_handler(event);
+
 		this->event.dx = 0;
 		this->event.dy = 0;
 		this->event.mouse_moved = false;

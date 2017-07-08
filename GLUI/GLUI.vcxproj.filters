@@ -34,16 +34,25 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GLUI\Component.h">
-      <Filter>Header Files\GLUI</Filter>
+    <ClInclude Include="Utility\BMP.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\Stopwatch.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Event\ActionEvent.h">
+      <Filter>Header Files\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Event\ActionListener.h">
+      <Filter>Header Files\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Event\ActionPerformer.h">
+      <Filter>Header Files\Event</Filter>
     </ClInclude>
     <ClInclude Include="Event\Event.h">
       <Filter>Header Files\Event</Filter>
     </ClInclude>
-    <ClInclude Include="Event\EventListener.h">
-      <Filter>Header Files\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="Event\EventRaiser.h">
+    <ClInclude Include="Event\EventHandler.h">
       <Filter>Header Files\Event</Filter>
     </ClInclude>
     <ClInclude Include="GLUI\Button.h">
@@ -52,19 +61,40 @@
     <ClInclude Include="GLUI\CheckBox.h">
       <Filter>Header Files\GLUI</Filter>
     </ClInclude>
+    <ClInclude Include="GLUI\ColorPicker.h">
+      <Filter>Header Files\GLUI</Filter>
+    </ClInclude>
     <ClInclude Include="GLUI\ComboBox.h">
       <Filter>Header Files\GLUI</Filter>
     </ClInclude>
-    <ClInclude Include="GLUI\Slider.h">
-      <Filter>Header Files\GLUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GLUI\Label.h">
+    <ClInclude Include="GLUI\Component.h">
       <Filter>Header Files\GLUI</Filter>
     </ClInclude>
     <ClInclude Include="GLUI\GLUI.h">
       <Filter>Header Files\GLUI</Filter>
     </ClInclude>
+    <ClInclude Include="GLUI\Image.h">
+      <Filter>Header Files\GLUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GLUI\Label.h">
+      <Filter>Header Files\GLUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GLUI\MainWindow.h">
+      <Filter>Header Files\GLUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GLUI\Panel.h">
+      <Filter>Header Files\GLUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GLUI\ProgressBar.h">
+      <Filter>Header Files\GLUI</Filter>
+    </ClInclude>
     <ClInclude Include="GLUI\ScrollPanel.h">
+      <Filter>Header Files\GLUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GLUI\Slider.h">
+      <Filter>Header Files\GLUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GLUI\SpinnerBox.h">
       <Filter>Header Files\GLUI</Filter>
     </ClInclude>
     <ClInclude Include="GLUI\TabbedPanel.h">
@@ -76,32 +106,14 @@
     <ClInclude Include="GLUI\TextEditor.h">
       <Filter>Header Files\GLUI</Filter>
     </ClInclude>
-    <ClInclude Include="GLUI\ProgressBar.h">
-      <Filter>Header Files\GLUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GLUI\SpinnerBox.h">
-      <Filter>Header Files\GLUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GLUI\MainWindow.h">
-      <Filter>Header Files\GLUI</Filter>
-    </ClInclude>
     <ClInclude Include="GLUI\Window.h">
       <Filter>Header Files\GLUI</Filter>
     </ClInclude>
-    <ClInclude Include="GLUI\Panel.h">
-      <Filter>Header Files\GLUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GLUI\ColorPicker.h">
-      <Filter>Header Files\GLUI</Filter>
-    </ClInclude>
-    <ClInclude Include="Utility\BMP.h">
+    <ClInclude Include="Utility\Color.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Utility\Stopwatch.h">
+    <ClInclude Include="Utility\float2.h">
       <Filter>Header Files\Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="GLUI\Image.h">
-      <Filter>Header Files\GLUI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

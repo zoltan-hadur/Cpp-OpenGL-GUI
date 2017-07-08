@@ -1,6 +1,8 @@
 #pragma once
 
+#include <GL\freeglut.h>
 #include "Component.h"
+#include "..\Event\Event.h"
 
 namespace GLUI {
 
@@ -11,7 +13,6 @@ namespace GLUI {
 
 		virtual void handle_event(Event& e) override;
 		virtual void draw(bool draw_background = true) override;
-		virtual void render() override;
 	public:
 		// Draw background or not, the coordinates, the size, and the border's width
 		Panel(bool draw_background = true, float x = 0, float y = 0, float width = 100, float height = 100, float border_width = 2);
@@ -20,6 +21,8 @@ namespace GLUI {
 		void set_draw_background(bool draw_background);
 		// True when the panel draws it's background and border, else false
 		bool is_draw_background();
+
+		virtual void render() override;
 	};
 
 	void Panel::handle_event(Event& e) {
@@ -28,6 +31,21 @@ namespace GLUI {
 
 	void Panel::draw(bool draw_background) {
 		Component::draw(draw_background);
+	}
+
+	// Draw background or not, the coordinates, the size, and the border's width
+	Panel::Panel(bool draw_background, float x, float y, float width, float height, float border_width) : Component(x, y, width, height, border_width) {
+		this->draw_background = draw_background;
+	}
+
+	// Sets draw background
+	void Panel::set_draw_background(bool draw_background) {
+		this->draw_background = draw_background;
+	}
+
+	// True when the panel draws it's background and border, else false
+	bool Panel::is_draw_background() {
+		return this->draw_background;
 	}
 
 	// Overrided for scissor usage
@@ -44,9 +62,9 @@ namespace GLUI {
 			float2 sizec = float2(this->get_width(), this->get_height());																			// This panel's size
 
 			float2 posi = float2(std::max(posp.x, posc.x + (this->draw_background ? this->default_border_width : 0)),								// Calculate the rectangle intersection bottom right corner
-									std::max(posp.y, posc.y + (this->draw_background ? this->default_border_width : 0)));
+								 std::max(posp.y, posc.y + (this->draw_background ? this->default_border_width : 0)));
 			float2 posi2 = float2(std::min(posp.x + sizep.x, posc.x + sizec.x - (this->draw_background ? this->default_border_width : 0)),			// Calculate the rectangle intersection top left corner
-									std::min(posp.y + sizep.y, posc.y + sizec.y - (this->draw_background ? this->default_border_width : 0)));
+								  std::min(posp.y + sizep.y, posc.y + sizec.y - (this->draw_background ? this->default_border_width : 0)));
 			float2 sizei = float2(posi2.x - posi.x, posi2.y - posi.y);																				// Calculate the rectangle intersection size
 
 			if (sizei.x > 5.0 && sizei.y > 5.0) {																									// There are some glitches without this
@@ -65,21 +83,6 @@ namespace GLUI {
 
 			glScissor(scissor_pos[0], scissor_pos[1], scissor_pos[2], scissor_pos[3]);																// Restore the parent's scissor
 		}
-	}
-
-	// Draw background or not, the coordinates, the size, and the border's width
-	Panel::Panel(bool draw_background, float x, float y, float width, float height, float border_width) : Component(x, y, width, height, border_width) {
-		this->draw_background = draw_background;
-	}
-
-	// Sets draw background
-	void Panel::set_draw_background(bool draw_background) {
-		this->draw_background = draw_background;
-	}
-
-	// True when the panel draws it's background and border, else false
-	bool Panel::is_draw_background() {
-		return this->draw_background;
 	}
 
 }

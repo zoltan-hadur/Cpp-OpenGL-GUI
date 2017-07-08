@@ -2,7 +2,6 @@
 #include <algorithm>
 #include <iostream>
 #include "GLUI\GLUI.h"
-#include "Utility\Stopwatch.h"
 
 GLUI::Stopwatch watch;						// Stopper for controlling fps
 const int screen_width = 192 * 5;			// Width of the window
@@ -10,9 +9,8 @@ const int screen_height = 108 * 5;			// Height of the window
 int keys_down[256];							// For easy check of pressed keys
 float max_fps;								// Maximum allowed fps of the application
 GLUI::MainWindow* window;
-Event event;
 
-class ASD : public EventListener {
+class ASD : public GLUI::ActionListener {
 private:
 	GLUI::Button* btn_start_progress;
 	GLUI::Button* btn_progress;
@@ -36,22 +34,23 @@ public:
 		this->bar->set_max(13);
 		this->bar->set_animation(GLUI::ProgressBar::ANIMATION::TEXT_DOTS);
 	}
-	void action_performed(void* sender, Event& e) override {
+
+	virtual void action_performed(void* sender, GLUI::ActionEvent& e) override {
 		if (e.button_pressed) {
-			if (sender == btn_start_progress && !e.mouse_covered) {
+			if (sender == btn_start_progress) {
 				bar->start_progress();
 				this->value = 0;
 			}
-			if (sender == btn_progress && !e.mouse_covered) {
-				bar->set_value(++value);
+			if (sender == btn_progress) {
+				bar->change_value(++this->value);
 				if (value == 13) {
 					bar->stop_progress();
 				}
 			}
-			if (sender == btn_stop_progress && !e.mouse_covered) {
+			if (sender == btn_stop_progress) {
 				bar->stop_progress();
 			}
-			if (sender == btn_next_anim && !e.mouse_covered) {
+			if (sender == btn_next_anim) {
 				this->anim_id = ++this->anim_id % 4;
 				switch (this->anim_id) {
 					case 0:
@@ -90,7 +89,7 @@ void on_initialization() {
 	window_10->add_component(image);
 
 	GLUI::Window* window_2 = new GLUI::Window("Window 2", 10, 30, 300, 300);
-	window_2->set_border_color(255, 0, 0, 255);
+	window_2->set_border_color(GLUI::Color(255, 0, 0, 255) / 255);
 	GLUI::Window* window_3 = new GLUI::Window("Window 3", 10, 30, 300, 300);
 	window_1->add_component(window_2);
 	//window_1->add_component(window_3);
@@ -119,16 +118,16 @@ void on_initialization() {
 	GLUI::Panel* tab2 = tabbed_panel->get_tab("automatic length");
 
 	GLUI::ComboBox* cbox = new GLUI::ComboBox(10, 10, 200, 200);
-	cbox->add_element("1");
-	cbox->add_element("2");
-	cbox->add_element("3");
-	cbox->add_element("4");
-	cbox->add_element("5");
-	cbox->add_element("6");
-	cbox->add_element("7");
-	cbox->add_element("8");
-	cbox->add_element("9");
-	cbox->add_element("10");
+	cbox->add_item("1");
+	cbox->add_item("2");
+	cbox->add_item("3");
+	cbox->add_item("4");
+	cbox->add_item("5");
+	cbox->add_item("6");
+	cbox->add_item("7");
+	cbox->add_item("8");
+	cbox->add_item("9");
+	cbox->add_item("10");
 	tab2->add_component(cbox);
 
 	GLUI::Label* label = new GLUI::Label("CheckBox", 230, 10, 20, 20);
@@ -156,10 +155,10 @@ void on_initialization() {
 	tab2->add_component(btn_next_anim);
 
 	ASD* asd = new ASD(btn_start_progress, btn_progress, btn_stop_progress, btn_next_anim, bar);
-	btn_start_progress->add_event_listener(asd);
-	btn_progress->add_event_listener(asd);
-	btn_stop_progress->add_event_listener(asd);
-	btn_next_anim->add_event_listener(asd);
+	btn_start_progress->add_action_listener(asd);
+	btn_progress->add_action_listener(asd);
+	btn_stop_progress->add_action_listener(asd);
+	btn_next_anim->add_action_listener(asd);
 
 	GLUI::SpinnerBox<int>* spb_spinner = new GLUI::SpinnerBox<int>(0, 255, 10, 290, 200, 20);
 	//tab2->add_component(spb_spinner);

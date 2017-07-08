@@ -1,6 +1,11 @@
 #pragma once
 
+#include <GL\freeglut.h>
+#include <string>
 #include "Component.h"
+#include "..\Event\Event.h"
+#include "..\Utility\Color.h"
+#include "..\Utility\float2.h"
 
 namespace GLUI {
 
@@ -30,6 +35,7 @@ namespace GLUI {
 
 		// Text to be displayed, it's position, and size
 		Label(std::string text = "Label", float x = 0, float y = 0, float width = 0, float height = 0);
+
 		// Sets the label
 		void set_text(std::string text);
 		// Sets the horizontal alignment
@@ -59,12 +65,12 @@ namespace GLUI {
 			x = (h_align == H_ALIGN::RIGHT) ? (x + width - w) : ((h_align == H_ALIGN::MID) ? (x + (width - w) / 2) : x);						// Horizontal alignment
 			y = (v_align == V_ALIGN::BOT) ? (y + height - char_height) : ((v_align == V_ALIGN::MID) ? (y + (height - char_height) / 2) : y);	// Vertical alignment
 
-			Color c = Color(255,255,255,255);
+			Color c = Color(255,255,255,255) / 255;
 			if (!this->enabled) {
-				c = Color(180, 180, 180, 255);
+				c = Color(180, 180, 180, 255) / 255;
 			}
 
-			glColor4f(c.get_r(), c.get_g(), c.get_b(), c.get_a());
+			glColor4f(c.R, c.G, c.B, c.A);
 			glRasterPos2f(x, y);
 			glutBitmapString(GLUT_BITMAP_9_BY_15, (const unsigned char*)text.c_str());
 		}

@@ -1,13 +1,19 @@
 #pragma once
 
-#include "Component.h"
+#include "Panel.h"
+#include "Button.h"
+#include "..\Event\ActionEvent.h"
+#include "..\Event\ActionListener.h"
+#include "..\Event\Event.h"
+#include "..\Utility\Color.h"
+#include "..\Utility\float2.h"
 #include "..\Utility\Stopwatch.h"
 
 namespace GLUI {
 
 	// Movable, collapsable and minimizable panel, that can store and display various components
 	// Added components needs a (0,20) offset to their positions because of window title
-	class Window : public EventListener, public Panel {
+	class Window : public ActionListener, public Panel {
 	protected:
 		enum class C_STATE {	// States of window collapsing
 			EXPANDED,
@@ -50,8 +56,9 @@ namespace GLUI {
 		virtual void handle_event(Event& e) override;
 		virtual void draw(bool draw_background = true) override;
 	public:
-		// To listen on inner component events
-		virtual void action_performed(void* sender, Event& e) override;
+		// To listen on inner component actions
+		virtual void action_performed(void* sender, ActionEvent& e) override;
+
 		// Title, the coordinates, the size, and the border's width
 		Window(std::string title = "", float x = 0, float y = 0, float width = 100, float height = 100, float border_width = 2);
 		// Sets the movability
@@ -69,18 +76,18 @@ namespace GLUI {
 	};
 
 	void Window::handle_event(Event& e) {
-		if (this->grabbed_move && e.mouse_moved) {																		// If the user grabbed the window and moved the mouse
-			this->set_position(float2(e.x, e.y) - this->move_offset);													// Reposition the window
-			this->orig_pos = this->get_position();																		// To enlarge the window to the new position from minimized state
+		if (this->grabbed_move && e.mouse_moved) {																							// If the user grabbed the window and moved the mouse
+			this->set_position(float2(e.x, e.y) - this->move_offset);																		// Reposition the window
+			this->orig_pos = this->get_position();																							// To enlarge the window to the new position from minimized state
 		}
-		if (this->grabbed_resize && e.mouse_moved) {																	// Ift he user grabbed the little triangle in the window's bottom right right corner and moved the mouse
+		if (this->grabbed_resize && e.mouse_moved) {																						// Ift he user grabbed the little triangle in the window's bottom right right corner and moved the mouse
 			float2 min_size = float2(this->btn_title->get_label()->get_text().size() * this->char_width + 2 * this->char_width + 50, 30);
 			float2 temp = float2(e.x, e.y) - this->resize_offset;
-			this->set_size(std::max(temp.x, min_size.x), std::max(temp.y, min_size.y));									// Resize the window
+			this->set_size(std::max(temp.x, min_size.x), std::max(temp.y, min_size.y));														// Resize the window
 			this->orig_size = float2(this->width, this->height);
 		}
-		if (e.mouse_pressed && e.mouse_left && this->resizable &&
-			this->m_state == M_STATE::ENLARGED && this->c_state == C_STATE::EXPANDED) {									// Check if the user clicked with the left mosue on the triangle in the window's bottom right corner to start resizing
+		if (e.mouse_is_inside && ! e.mouse_is_covered && e.mouse_pressed && e.mouse_left &&
+			this->resizable && this->m_state == M_STATE::ENLARGED && this->c_state == C_STATE::EXPANDED) {									// Check if the user clicked with the left mosue on the triangle in the window's bottom right corner to start resizing
 			float2 p0 = this->get_absolute_position() +
 				float2(this->width, this->height) -
 				float2(this->default_border_width, this->default_border_width);
@@ -92,7 +99,7 @@ namespace GLUI {
 			float s = 1 / (2 * A)*(p0.y*p2.x - p0.x*p2.y + (p2.y - p0.y)*e.x + (p0.x - p2.x)*e.y);
 			float t = 1 / (2 * A)*(p0.x*p1.y - p0.y*p1.x + (p0.y - p1.y)*e.x + (p1.x - p0.x)*e.y);
 
-			if (s > 0 && t > 0 && 1 - s - t > 0) {																		// Check if the point is inside the triangle (barycentric)
+			if (s > 0 && t > 0 && 1 - s - t > 0) {																							// Check if the point is inside the triangle (barycentric)
 				this->resize_offset = float2(e.x, e.y) - float2(this->width, this->height);
 				this->grabbed_resize = true;
 			}
@@ -217,7 +224,7 @@ namespace GLUI {
 				float2(this->default_border_width, this->default_border_width);
 
 			Color c = this->get_border_color();
-			glColor4f(c.get_r(), c.get_g(), c.get_b(), c.get_a());
+			glColor4f(c.R, c.G, c.B, c.A);
 			glBegin(GL_TRIANGLES);
 			glVertex2f(pos.x, pos.y);
 			glVertex2f(pos.x-10, pos.y);
@@ -226,8 +233,8 @@ namespace GLUI {
 		}
 	}
 
-	// To listen on inner component events
-	void Window::action_performed(void* sender, Event& e) {
+	// To listen on inner component actions
+	void Window::action_performed(void* sender, ActionEvent& e) {
 		if (sender == this->btn_title) {																				// If the title
 			if (e.button_pressed) {																						// Was pressed
 				if (this->m_state == M_STATE::ENLARGED) {																// And the window is fully enlarged
@@ -331,17 +338,17 @@ namespace GLUI {
 		this->btn_title = new Button(" " + title, 0, 0, width - 50 + border_width * 2, 20, border_width);
 		this->btn_title->get_label()->set_h_align(Label::H_ALIGN::LEFT);
 		this->btn_title->set_wait_time(std::numeric_limits<float>::max());
-		this->btn_title->add_event_listener(this);
+		this->btn_title->add_action_listener(this);
 		this->add_component(this->btn_title);
 
 		this->btn_collapse = new Button(R"(/\)", width - 25, 0, 25, 20, border_width);
 		this->btn_collapse->set_wait_time(std::numeric_limits<float>::max());
-		this->btn_collapse->add_event_listener(this);
+		this->btn_collapse->add_action_listener(this);
 		this->add_component(this->btn_collapse);
 
 		this->btn_minimize = new Button("_", width - 50 + border_width, 0, 25, 20, border_width);
 		this->btn_minimize->set_wait_time(std::numeric_limits<float>::max());
-		this->btn_minimize->add_event_listener(this);
+		this->btn_minimize->add_action_listener(this);
 		this->add_component(this->btn_minimize);
 	}
 

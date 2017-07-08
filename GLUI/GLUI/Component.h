@@ -1,130 +1,49 @@
 #pragma once
 
 #define _USE_MATH_DEFINES
+#include <cmath>
 #include <GL\freeglut.h>
 #include <vector>
 #include <algorithm>
-#include "math.h"
-#include "../Event/EventRaiser.h"
+#include "..\Event\ActionEvent.h"
+#include "..\Event\ActionPerformer.h"
+#include "..\Event\Event.h"
+#include "..\Event\EventHandler.h"
+#include "..\Utility\Color.h"
+#include "..\Utility\float2.h"
 
 namespace GLUI {
 
 	class Window;
 
-	// Structure to store 2 floating points
-	// Used mainly for positions
-	struct float2 {
-		float x;
-		float y;
-
-		float2() {
-			this->x = 0;
-			this->y = 0;
-		}
-		float2(float x, float y) {
-			this->x = x;
-			this->y = y;
-		}
-		float2 operator+(float2 p) {
-			return float2(x + p.x, y + p.y);
-		}
-		float2 operator+(float p) {
-			return float2(x + p, y + p);
-		}
-		float2 operator-(float2 p) {
-			return float2(x - p.x, y - p.y);
-		}
-		float2 operator-(float p) {
-			return float2(x - p, y - p);
-		}
-		float2 operator*(float2 p) {
-			return float2(x * p.x, y * p.y);
-		}
-		float2 operator*(float p) {
-			return float2(x * p, y * p);
-		}
-		float2 operator/(float2 p) {
-			return float2(x / p.x, y / p.y);
-		}
-		float2 operator/(float p) {
-			return float2(x / p, y / p);
-		}
-	};
-
-	// Struct to store colors in RGBA form
-	// Constructor takes the usual variables in 0-255 range,
-	// but it stores them in the 0-1 range for OpenGL use
-	class Color {
-	private:
-		float R;
-		float G;
-		float B;
-		float A;
-	public:
-		// RGBA, range: 0-255
-		Color(unsigned char R = 0U, unsigned char G = 0U, unsigned char B = 0U, unsigned char A = 255U) {
-			this->R = R / 255.0f;
-			this->G = G / 255.0f;
-			this->B = B / 255.0f;
-			this->A = A / 255.0f;
-		}
-		float get_r() {
-			return this->R;
-		}
-		unsigned char get_ur(){
-			return this->R * 255;
-		}
-		float get_g() {
-			return this->G;
-		}
-		unsigned char get_ug() {
-			return this->G * 255;
-		}
-		float get_b() {
-			return this->B;
-		}
-		unsigned char get_ub() {
-			return this->B * 255;
-		}
-		float get_a() {
-			return this->A;
-		}
-		unsigned char get_ua() {
-			return this->A * 255;
-		}
-		Color operator*(float f) {
-			float r = std::min(255.0f, this->R * 255 * f);
-			float g = std::min(255.0f, this->G * 255 * f);
-			float b = std::min(255.0f, this->B * 255 * f);
-			float a = std::min(255.0f, this->A * 255);
-			return Color(r, g, b, a);
-		}
-	};
-
 	// Abstract class, every gui element is a component
-	class Component : public EventRaiser {
+	class Component : public ActionPerformer, public EventHandler {
 	protected:
 		Component* parent;								// Parent component
 		std::vector<Component*> children;				// Children components
 		std::vector<Window*> minimized_windows;			// For minimizing windows
+
 		static const unsigned char char_width = 9;		// Width of drawable char in pixels
 		static const unsigned char char_height = 16;	// Height of drawable char in pixels
+
 		float2 pos;										// Top left corner's position of the component relative to the parent component
 		float width;									// Width of the component
 		float height;									// Height of the component
 		float border_width;								// Border width of the component
 		float active_border_width;						// Border width of the component on event (if the derived class handles it)
 		float default_border_width;						// Default border width of the component
+
 		bool visible;									// Determines if the component is visible (if set to false, no children will be drawn)
 		bool highlighted;								// Determines if the component is highlighted (i.e. mouse is above the component, if the derived class handles it)
 		bool enabled;									// Determines if the component is enabled or disabled
+
 		Color background_color;							// Color of the component's background
 		Color border_color;								// Color of the component's border
 		Color highlight_color;							// Color of the component's background when highlighted
 
 		// x,y coordinates of the top left corner, relative to the parent component's top left corner, width and height, and border width
 		Component(float x = 0, float y = 0, float width = 100, float height = 100, float border_width = 2);
-		// Modifies states and raises events according to the input events
+		// Modifies states and performs actions according to the input events
 		virtual void handle_event(Event& e);
 		// Draws the component
 		virtual void draw(bool draw_background = true);
@@ -141,6 +60,8 @@ namespace GLUI {
 		bool is_covered(Event& e);
 		// Return true if the given component is is an ancestor of this component
 		bool is_parent(Component* c);
+		// Return true if the mouse is inside the component's visible part
+		bool is_inside(Event& e);
 		// Adds a component
 		virtual void add_component(Component* c);
 		// Adds a minimized window
@@ -160,16 +81,10 @@ namespace GLUI {
 		// Sets the title of the component
 		// Sets the background color
 		virtual void set_background_color(Color background_color);
-		// Sets the background color
-		virtual void set_background_color(unsigned char R = 0U, unsigned char G = 0U, unsigned char B = 0U, unsigned char A = 255U);
 		// Sets the border color
-		virtual void set_border_color(Color background_color);
-		// Sets the border color
-		virtual void set_border_color(unsigned char R = 0U, unsigned char G = 0U, unsigned char B = 0U, unsigned char A = 255U);
+		virtual void set_border_color(Color border_color);
 		// Sets the highlight color
 		virtual void set_highlight_color(Color highlight_color);
-		// Sets the highlight color
-		virtual void set_highlight_color(unsigned char R = 0U, unsigned char G = 0U, unsigned char B = 0U, unsigned char A = 255U);
 		// Sets the visibility of the component (if set to false, no children will be drawn)
 		virtual void set_visible(bool visible);
 		// Gets a minimized window list
@@ -215,13 +130,13 @@ namespace GLUI {
 		this->visible = true;
 		this->highlighted = false;
 		this->enabled = true;
-		this->background_color = Color(100, 100, 100, 180);
-		this->border_color = Color(200, 200, 200, 255);
+		this->background_color = Color(100, 100, 100, 180) / 255;
+		this->border_color = Color(200, 200, 200, 255) / 255;
 		//this->highlight_color = Color(66, 134, 244, 255);
-		this->highlight_color = Color(160, 160, 160, 255);
+		this->highlight_color = Color(160, 160, 160, 255) / 255;
 	}
 
-	// Raises events according to input events
+	// Modifies states and performs actions according to the input events
 	void Component::handle_event(Event& e) {
 
 	}
@@ -241,10 +156,10 @@ namespace GLUI {
 
 		//// Draw border
 		//// Top left quarter-circle
-		//glColor4f(this->border_color.get_r(),
-		//		  this->border_color.get_g(),
-		//		  this->border_color.get_b(),
-		//		  this->border_color.get_a());
+		//glColor4f(this->border_color.R,
+		//		  this->border_color.G,
+		//		  this->border_color.B,
+		//		  this->border_color.A);
 		//glBegin(GL_POLYGON);
 		//for (int i = 0; i <= this->border_width; ++i) {
 		//	float t = M_PI + i * M_PI / 2.0f / this->border_width;
@@ -300,10 +215,10 @@ namespace GLUI {
 		//glEnd();
 
 		// Draw border
-		glColor4f(this->border_color.get_r(),
-				  this->border_color.get_g(),
-				  this->border_color.get_b(),
-				  this->border_color.get_a());
+		glColor4f(this->border_color.R,
+				  this->border_color.G,
+				  this->border_color.B,
+				  this->border_color.A);
 		glBegin(GL_QUADS);
 		// Left
 		glVertex2f(pos.x, pos.y);
@@ -329,15 +244,15 @@ namespace GLUI {
 
 		// Draw background
 		if (highlighted) {
-			glColor4f(this->highlight_color.get_r(),
-					  this->highlight_color.get_g(),
-					  this->highlight_color.get_b(),
-					  this->highlight_color.get_a());
+			glColor4f(this->highlight_color.R,
+					  this->highlight_color.G,
+					  this->highlight_color.B,
+					  this->highlight_color.A);
 		} else {
-			glColor4f(this->background_color.get_r(),
-					  this->background_color.get_g(),
-					  this->background_color.get_b(),
-					  this->background_color.get_a());
+			glColor4f(this->background_color.R,
+					  this->background_color.G,
+					  this->background_color.B,
+					  this->background_color.A);
 		}
 		glBegin(GL_QUADS);
 		glVertex2f(pos.x + this->border_width, pos.y + this->border_width);
@@ -449,7 +364,7 @@ namespace GLUI {
 		return covered;
 	}
 
-	// Return true if the given component is is an ancestor of this component
+	// Returns true if the given component is is an ancestor of this component
 	bool Component::is_parent(Component* c) {
 		Component* parent = this;
 		while (parent) {
@@ -459,6 +374,22 @@ namespace GLUI {
 			parent = parent->parent;
 		}
 		return false;
+	}
+
+	// Returns true if the mouse is inside the component's visible part
+	bool Component::is_inside(Event& e) {
+		//if (15 < e.y && e.y < 25) {
+		//	printf("asd\n");
+		//}
+
+		bool inside = true;
+		Component* c = this;
+		while (c) {																												// Iterate through the ancestors
+			float2 pos = c->get_absolute_position();																			// Get the ancestor's absolute position
+			inside = inside && (pos.x < e.x && e.x < pos.x + c->get_width() && pos.y < e.y && e.y < pos.y + c->get_height());	// Check if the mouse is inside the ancestor
+			c = c->parent;																										// Go to next ancestor
+		}																														// Until the parent is valid
+		return inside;
 	}
 
 	// Adds a component
@@ -510,29 +441,14 @@ namespace GLUI {
 		this->background_color = background_color;
 	}
 
-	// Sets the background color
-	void Component::set_background_color(unsigned char R, unsigned char G, unsigned char B, unsigned char A) {
-		this->background_color = Color(R, G, B, A);
-	}
-
 	// Sets the border color
-	void Component::set_border_color(Color background_color) {
-		this->border_color = background_color;
-	}
-
-	// Sets the border color
-	void Component::set_border_color(unsigned char R, unsigned char G, unsigned char B, unsigned char A) {
-		this->border_color = Color(R, G, B, A);
+	void Component::set_border_color(Color border_color) {
+		this->border_color = border_color;
 	}
 
 	// Sets the highlight color
 	void Component::set_highlight_color(Color highlight_color) {
 		this->highlight_color = highlight_color;
-	}
-
-	// Sets the highlight color
-	void Component::set_highlight_color(unsigned char R, unsigned char G, unsigned char B, unsigned char A) {
-		this->highlight_color = Color(R, G, B, A);
 	}
 
 	// Sets the visibility of the component (if set to false, no children will be drawn)
@@ -605,7 +521,8 @@ namespace GLUI {
 	// Handles input events (keyboard, mouse)
 	void Component::event_handler(Event& e) {
 		if (this->visible && this->enabled) {
-			e.mouse_covered = this->is_covered(e);
+			e.mouse_is_inside = this->is_inside(e);
+			e.mouse_is_covered = this->is_covered(e);
 			this->handle_event(e);
 			auto children = this->children;
 			for (auto c : children) {

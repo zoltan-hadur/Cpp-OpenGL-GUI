@@ -1,10 +1,12 @@
 #pragma once
 
 #include <GL\freeglut.h>
-#include "GL\glext.h"
+#include <GL\glext.h>
 #include <string>
 #include "Component.h"
+#include "..\Event\Event.h"
 #include "..\Utility\BMP.h"
+#include "..\Utility\float2.h"
 
 namespace GLUI {
 
@@ -18,6 +20,7 @@ namespace GLUI {
 	public:
 		// Path to the image, it's position on screen and it's size
 		Image(std::string file_path = "NonExistent", float x = 0, float y = 0, float width = 0, float height = 0);
+
 		// Retores the original size of the image
 		void restore_original_size();
 		// Loads the image from the file
@@ -58,7 +61,7 @@ namespace GLUI {
 	// Path to the image, it's position on screen and it's size
 	Image::Image(std::string file_path, float x, float y, float width, float height) : Component(x, y, width, height, 0) {
 		this->load_image(file_path);
-		this->width = width == 0 ? this->get_image_width() : width;
+		this->width = width == 0 ? this->get_image_width() : width;			// If size was not given explicit, use the image's original size
 		this->height = height == 0 ? this->get_image_height() : height;
 	}
 
@@ -90,6 +93,9 @@ namespace GLUI {
 		GLint width = -1;
 		glBindTexture(GL_TEXTURE_2D, this->tex_id);
 		glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
+		if (width < 0) {
+			throw "Could not get image's width!";
+		}
 		return width;
 	}
 
@@ -98,6 +104,9 @@ namespace GLUI {
 		GLint height = -1;
 		glBindTexture(GL_TEXTURE_2D, this->tex_id);
 		glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);
+		if (height < 0) {
+			throw "Could not get image's height!";
+		}
 		return height;
 	}
 

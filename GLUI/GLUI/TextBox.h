@@ -1,74 +1,96 @@
 #pragma once
 
 #include "TextEditor.h"
+#include "..\Event\ActionEvent.h"
+#include "..\Event\ActionPerformer.h"
+#include "..\Event\Event.h"
+#include "..\Utility\Color.h"
 
 namespace GLUI {
 
 	// Classic textbox, can be either single or multi lined
 	class TextBox : public TextEditor {
 	protected:
-		void gain_focus(Event& e);
-		void lose_focus(Event& e);
-
 		virtual void handle_event(Event& e) override;
 		virtual void draw(bool draw_background = true) override;
 	public:
 		// Type, position, size and border's width
 		TextBox(TYPE type, float x = 0, float y = 0, float width = 100, float height = 20, float border_width = 1);
 
+		// Sets the focus (NOT performs any action)
+		void set_focus(bool focused);
+		// Returns true if has focus, else false
 		bool has_focus();
+
+		// Gains focus and performs text box focus gained action
+		void gain_focus();
+		// Loses focus and performs text box focus losed action
+		void lose_focus();
+		// Simulates enter press and performs text box enter pressed action
+		void press_enter();
 	};
 
-	void TextBox::gain_focus(Event& e) {
-		this->focused = true;
-		e.textbox_focus_gained = true;
-		e.textbox_text = this->get_text();
-		this->raise_event(this, e);
-		e.textbox_focus_gained = false;
-	}
-
-	void TextBox::lose_focus(Event& e) {
-		this->focused = false;
-		e.textbox_focus_lost = true;
-		e.textbox_text = this->get_text();
-		this->raise_event(this, e);
-		e.textbox_focus_lost = false;
-	}
-
 	void TextBox::handle_event(Event& e) {
-		float2 pos = this->get_absolute_position();
-		if (e.mouse_left && e.mouse_pressed) {																			// If the user clicked
-			if (pos.x < e.x && e.x < pos.x + width && pos.y < e.y && e.y < pos.y + height) {							// Inside the text box
-				if (!e.mouse_covered) {																					// And it's not covered by an other component
-					this->gain_focus(e);																				// Set he focus to true
-				}
-			} else {
-				this->lose_focus(e);																					// Else set the focus to false
+		if (e.mouse_pressed && e.mouse_left) {																		// If the user pressed the left mouse button
+			if (e.mouse_is_inside && !e.mouse_is_covered) {															// Inside the text box
+				this->gain_focus();																					// Then gain focus
+			} else {																								// Else
+				this->lose_focus();																					// Lose focus
 			}
 		}
-		if ((e.key_code == '\n' || e.key_code == '\r') && e.key_pressed && !e.active_shift && this->has_focus()) {		// If the text box has focus and the user pressed the enter (shift + enter is the new line in a text box)
-			e.textbox_enter_pressed = true;
-			//this->raise_event(this, e);																					// Raise an event
-			this->lose_focus(e);																						// And set the focus to false
-			e.textbox_enter_pressed = false;
-		} else {
-			TextEditor::handle_event(e);																				// Else handle the input by the text editor
+
+		if (e.key_pressed && (e.key_code == '\n' || e.key_code == '\r') && !e.active_shift && this->has_focus()) {	// If the user pressed enter while the text box had focus (shift+enter is the new line)
+			this->press_enter();
+			this->lose_focus();
+		} else {																									// Else
+			TextEditor::handle_event(e);																			// Handle the input by the text editor
 		}
 	}
 
 	void TextBox::draw(bool draw_background) {
-		//Component::draw(draw_background);
 		TextEditor::draw(draw_background);
 	}
 
 	// Type, position, size and border's width
 	TextBox::TextBox(TYPE type, float x, float y, float width, float height, float border_width) : TextEditor(type, x, y, width, height) {
-		this->background_color = Color(120, 120, 120, 255);
+		this->background_color = Color(120, 120, 120, 255) / 255;
 		this->set_default_border_width(border_width);
 	}
 
+	// Sets the focus (NOT performs any action)
+	void TextBox::set_focus(bool focused) {
+		this->focused = focused;
+	}
+
+	// Returns true if has focus, else false
 	bool TextBox::has_focus() {
 		return this->focused;
+	}
+
+	// Gains focus and performs text box focus gained action
+	void TextBox::gain_focus() {
+		ActionEvent e;
+		this->focused = true;
+		e.textbox_focus_gained = true;
+		e.textbox_text = this->get_text();
+		this->perform_action(this, e);
+	}
+
+	// Loses focus and performs text box focus losed action
+	void TextBox::lose_focus() {
+		ActionEvent e;
+		this->set_focus(false);
+		e.textbox_focus_lost = true;
+		e.textbox_text = this->get_text();
+		this->perform_action(this, e);
+	}
+
+	// Simulates enter press and performs text box enter pressed action
+	void TextBox::press_enter() {
+		ActionEvent e;
+		e.textbox_enter_pressed = true;
+		e.textbox_text = this->get_text();
+		this->perform_action(this, e);
 	}
 
 }

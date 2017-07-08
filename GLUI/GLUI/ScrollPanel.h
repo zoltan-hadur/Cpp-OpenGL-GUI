@@ -2,12 +2,16 @@
 
 #include "Panel.h"
 #include "Slider.h"
+#include "..\Event\ActionEvent.h"
+#include "..\Event\ActionListener.h"
+#include "..\Event\Event.h"
+#include "..\Utility\float2.h"
 
 namespace GLUI {
 
 	// Scrollable panel, with either horizontal or vertical alignment
-	// The scrollable area is dynamic, but only in eaither horizontal or vertical space
-	class ScrollPanel : public EventListener, public Panel {
+	// The scrollable area is dynamic, but only in either horizontal or vertical space
+	class ScrollPanel : public ActionListener, public Panel {
 	protected:
 		enum class ALIGN;		// Forward declaration
 
@@ -23,8 +27,8 @@ namespace GLUI {
 			VERTICAL			// Vertical alignment
 		};
 
-		// To listen on the children component's events
-		virtual void action_performed(void* sender, Event& e) override;
+		// To listen on the children component's actions
+		virtual void action_performed(void* sender, ActionEvent& e) override;
 
 		// Alignment, coordinates, size, border's width
 		ScrollPanel(ALIGN align, float x = 0, float y = 0, float width = 100, float height = 100, float border_width = 2);
@@ -33,15 +37,12 @@ namespace GLUI {
 	};
 
 	void ScrollPanel::handle_event(Event& e) {
-		float2 pos = this->get_absolute_position();														// Get the absolute position relative to the top-level window
-		if (pos.x < e.x && e.x < pos.x + this->width && pos.y < e.y && e.y < pos.y + this->height) {	// Check if the mouse is above the panel
-			if (!e.mouse_covered) {																		// Check if the panel is behind a component
-				if (e.mouse_scroll_up && e.mouse_pressed) {												// Check if the user moved the mouse wheel to scroll
-					this->sld_scroll_bar->dec_value();													// Then scroll
-				}
-				if (e.mouse_scroll_down && e.mouse_pressed) {											// Check if the user moved the mouse wheel to scroll
-					this->sld_scroll_bar->inc_value();													// Then scroll
-				}
+		if (e.mouse_is_inside && !e.mouse_is_covered) {		// If the mouse is inside the scroll panel and it's not behind an other component
+			if (e.mouse_pressed && e.mouse_scroll_up) {		// If the user moved the mouse wheel to scroll
+				this->sld_scroll_bar->dec_value();			// Then scroll
+			}
+			if (e.mouse_pressed && e.mouse_scroll_down) {	// If the user moved the mouse wheel to scroll
+				this->sld_scroll_bar->inc_value();			// Then scroll
 			}
 		}
 	}
@@ -108,16 +109,16 @@ namespace GLUI {
 		Panel::draw(draw_background);
 	}
 
-	// To listen on the children component's events
-	void ScrollPanel::action_performed(void* sender, Event& e) {
-		if (e.slider_changed) {																			// If the slider changed
+	// To listen on the children component's actions
+	void ScrollPanel::action_performed(void* sender, ActionEvent& e) {
+		if (sender == this->sld_scroll_bar && e.slider_changed) {										// If the slider's value changed
 			float2 dpos;
 			switch (this->align) {
 				case ALIGN::HORIZONTAL:
-					dpos = float2(e.slider_dvalue, 0);
+					dpos = float2(-e.slider_dvalue, 0);
 					break;
 				case ALIGN::VERTICAL:
-					dpos = float2(0, e.slider_dvalue);
+					dpos = float2(0, -e.slider_dvalue);
 					break;
 			}
 			for (auto c : this->children) {																// Translate every children component
@@ -141,7 +142,7 @@ namespace GLUI {
 				break;
 		}
 		sld_scroll_bar->set_increment(20);																// 20 pixel is not too small, not too big
-		sld_scroll_bar->add_event_listener(this);														// To listen the slider's events
+		sld_scroll_bar->add_action_listener(this);														// To listen the slider's events
 		this->add_component(sld_scroll_bar);
 	}
 

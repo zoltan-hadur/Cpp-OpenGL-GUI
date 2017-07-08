@@ -100,9 +100,11 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Event\ActionEvent.h" />
+    <ClInclude Include="Event\ActionListener.h" />
+    <ClInclude Include="Event\ActionPerformer.h" />
     <ClInclude Include="Event\Event.h" />
-    <ClInclude Include="Event\EventListener.h" />
-    <ClInclude Include="Event\EventRaiser.h" />
+    <ClInclude Include="Event\EventHandler.h" />
     <ClInclude Include="GLUI\Button.h" />
     <ClInclude Include="GLUI\CheckBox.h" />
     <ClInclude Include="GLUI\ColorPicker.h" />
@@ -111,8 +113,8 @@
     <ClInclude Include="GLUI\GLUI.h" />
     <ClInclude Include="GLUI\Image.h" />
     <ClInclude Include="GLUI\Label.h" />
+    <ClInclude Include="GLUI\MainWindow.h" />
     <ClInclude Include="GLUI\Panel.h" />
-    <ClInclude Include="GLUI\Window.h" />
     <ClInclude Include="GLUI\ProgressBar.h" />
     <ClInclude Include="GLUI\ScrollPanel.h" />
     <ClInclude Include="GLUI\Slider.h" />
@@ -120,8 +122,10 @@
     <ClInclude Include="GLUI\TabbedPanel.h" />
     <ClInclude Include="GLUI\TextBox.h" />
     <ClInclude Include="GLUI\TextEditor.h" />
-    <ClInclude Include="GLUI\MainWindow.h" />
+    <ClInclude Include="GLUI\Window.h" />
     <ClInclude Include="Utility\BMP.h" />
+    <ClInclude Include="Utility\Color.h" />
+    <ClInclude Include="Utility\float2.h" />
     <ClInclude Include="Utility\Stopwatch.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

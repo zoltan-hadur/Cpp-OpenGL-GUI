@@ -1,14 +1,22 @@
 #pragma once
 
+#include <cmath>
 #include "Panel.h"
 #include "Button.h"
 #include "SpinnerBox.h"
+#include "..\Event\ActionEvent.h"
+#include "..\Event\ActionListener.h"
+#include "..\Event\ActionPerformer.h"
+#include "..\Event\Event.h"
+#include "..\Utility\float2.h"
+#include "..\Utility\Color.h"
 #include "..\Utility\Stopwatch.h"
 
 namespace GLUI {
 
 	// The ColorPicker user control lets you set a color with 3 spinner box (RGB)
-	class ColorPicker : public EventListener, public Panel {
+	// and performs actions when the color changes
+	class ColorPicker : public ActionListener, public Panel {
 	protected:
 		enum class STATE {
 			EXPANDED,
@@ -39,31 +47,31 @@ namespace GLUI {
 		virtual void handle_event(Event& e) override;
 		virtual void draw(bool draw_background = true) override;
 	public:
-		// To listen on inner component events
-		virtual void action_performed(void* sender, Event& e) override;
+		// To listen on inner component's actions
+		virtual void action_performed(void* sender, ActionEvent& e) override;
 
 		// Position, size, border's width
 		ColorPicker(float x = 0, float y = 0, float width = 100, float height = 100, float border_width = 1);
-		// Sets color
+
+		// Sets color (NOT performs any action)
 		void set_color(Color c);
 		// Gets color
 		Color get_color();
+
+		// Performs a color changed action
+		void change_color(Color c);
 	};
 
 
 	void ColorPicker::handle_event(Event& e) {
-		float2 pos = this->get_absolute_position();															// The absolute position relative to the top-level window
-		if (!(pos.x < e.x && e.x < pos.x + this->width && pos.y < e.y && e.y < pos.y + this->height)) {		// Check if the mouse is above the button
-			if (e.mouse_pressed && e.mouse_left) {
-				if (this->state != STATE::SHRANK) {
-					this->state = STATE::SHRINKING;
-					this->size_offset = float2(0, 0);
-					if (this->watch.is_running()) {
-						this->watch.reset();
-					}
-					else {
-						this->watch.start();
-					}
+		if (!e.mouse_is_inside && e.mouse_pressed && e.mouse_left) {	// If the user pressed the left mouse button outside the color picker
+			if (this->state != STATE::SHRANK) {							// And if the color picker was not shrank
+				this->state = STATE::SHRINKING;							// Then start shrinking
+				this->size_offset = float2(0, 0);
+				if (this->watch.is_running()) {
+					this->watch.reset();
+				} else {
+					this->watch.start();
 				}
 			}
 		}
@@ -107,52 +115,31 @@ namespace GLUI {
 			}
 		}
 
-		//this->color = Color(this->spb_r->get_value(), this->spb_g->get_value(), this->spb_b->get_value(), 255);
-
 		this->btn_indicator->set_background_color(this->color);
 		this->btn_indicator->set_highlight_color(this->color);
+
 		Panel::draw(draw_background);
 	}
 
-	// To listen on inner component events
-	void ColorPicker::action_performed(void* sender, Event& e) {
-		if (sender == this->btn_indicator) {
-			if (e.button_released) {
-				if (this->state == STATE::SHRANK || this->state == STATE::SHRINKING) {
-					this->state = STATE::EXPANDING;
-					this->size_offset = float2(99, 58-this->orig_size.y);
-				}
-				else {
-					this->state = STATE::SHRINKING;
-					this->size_offset = float2(0, 0);
-				}
-
-				if (this->watch.is_running()) {																		// If the watch is running
-					this->watch.reset();																			// Reset it
-				}
-				else {																							// Else
-					this->watch.start();																			// Start it
-				}
+	// To listen on inner component actions
+	void ColorPicker::action_performed(void* sender, ActionEvent& e) {
+		if (sender == this->btn_indicator && e.button_released) {																	// If the indicator was pressed
+			if (this->state == STATE::SHRANK || this->state == STATE::SHRINKING) {													// And the color picker was shrank
+				this->state = STATE::EXPANDING;																						// Start expanding it
+				this->size_offset = float2(99, 58 - this->orig_size.y);
+			} else {																												// Else start shrinking it
+				this->state = STATE::SHRINKING;
+				this->size_offset = float2(0, 0);
 			}
-		} else if (sender == this->spb_r || sender == this->spb_g || sender == this->spb_b) {
-			this->color = Color(this->spb_r->get_value(), this->spb_g->get_value(), this->spb_b->get_value(), 255);
+
+			if (this->watch.is_running()) {																							// If the watch is running
+				this->watch.reset();																								// Reset it
+			} else {																												// Else
+				this->watch.start();																								// Start it
+			}
+		} else if (sender == this->spb_r || sender == this->spb_g || sender == this->spb_b) {										// If any of the spinner boxes performed an action
+			this->change_color(Color(this->spb_r->get_value(), this->spb_g->get_value(), this->spb_b->get_value(), 255) / 255);		// Change the color
 		}
-		//else {
-		//	//this->color = Color(this->spb_r->get_value(), this->spb_g->get_value(), this->spb_b->get_value(), 255);
-		//	//unsigned char R = this->color.get_ur();
-		//	//unsigned char G = this->color.get_ug();
-		//	//unsigned char B = this->color.get_ub();
-		//	//if (sender == this->spb_r) {
-		//	//	R = e.get_spinnerbox_value<unsigned char>();
-		//	//}
-		//	//if (sender == this->spb_g) {
-		//	//	G = e.get_spinnerbox_value<unsigned char>();
-		//	//}
-		//	//if (sender == this->spb_b) {
-		//	//	B = e.get_spinnerbox_value<unsigned char>();
-		//	//}
-		//	//this->color = Color(R, G, B, 255);
-		//}
 	}
 
 	// Position, size, border's width
@@ -173,14 +160,14 @@ namespace GLUI {
 
 		this->btn_indicator->set_wait_time(std::numeric_limits<float>::max());
 		this->color = this->btn_indicator->get_background_color();
-		this->spb_r->set_value(this->color.get_ur());
-		this->spb_g->set_value(this->color.get_ug());
-		this->spb_b->set_value(this->color.get_ub());
+		this->spb_r->set_value(this->color.R * 255);
+		this->spb_g->set_value(this->color.G * 255);
+		this->spb_b->set_value(this->color.B * 255);
 
-		this->btn_indicator->add_event_listener(this);
-		this->spb_r->add_event_listener(this);
-		this->spb_g->add_event_listener(this);
-		this->spb_b->add_event_listener(this);
+		this->btn_indicator->add_action_listener(this);
+		this->spb_r->add_action_listener(this);
+		this->spb_g->add_action_listener(this);
+		this->spb_b->add_action_listener(this);
 
 		this->add_component(this->btn_indicator);
 		this->add_component(this->spb_r);
@@ -188,7 +175,7 @@ namespace GLUI {
 		this->add_component(this->spb_b);
 	}
 
-	// Sets color
+	// Sets color (NOT performs any action)
 	void ColorPicker::set_color(Color c) {
 		this->color = c;
 	}
@@ -196,6 +183,14 @@ namespace GLUI {
 	// Gets color
 	Color ColorPicker::get_color() {
 		return this->color;
+	}
+
+	// Performs a color changed action
+	void ColorPicker::change_color(Color c) {
+		this->color = c;
+		ActionEvent e;
+		e.colorpicker_color = c;
+		this->perform_action(this, e);
 	}
 
 }
