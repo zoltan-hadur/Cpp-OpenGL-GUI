@@ -6,13 +6,13 @@ Quick overview of the features:<br/>
 
 ## Getting started
 ### MainWindow
-The main window wraps ```glutCreateWindow```, handles the keyboard/mouse input events, and limits the fps of the gui.<br/>
-<br/>
+The main window wraps ```glutCreateWindow```, handles the keyboard/mouse input events, and limits the fps of the gui.
+
 To create the main window with the title "MainWindow" at (100, 100) point on screen with a width of 960 pixels and a height of 540 pixels:
 ```
 GLUI::MainWindow* main_window = new GLUI::MainWindow("MainWindow", 100, 100, 960, 540);
 ```
-<br/>
+
 For proper operation, you must forward the events of glut to the main window:
 ```
 glutKeyboardFunc(on_keyboard_down);
@@ -45,7 +45,7 @@ void on_mouse_motion_passive(int x, int y) {
 	main_window->on_mouse_motion_passive(x, y);
 }
 ```
-<br/>
+
 To render the gui components:
 ```
 glutDisplayFunc(on_display);
@@ -57,10 +57,12 @@ void on_display() {
 	glutSwapBuffers();
 }
 ```
+
 It does not matter how many times you call the ```render``` method, it will draw itself only as many times what it's configured fps defines.
+
 ### Window
-Windows are almost behave like windows in Windows (the OS), you can move/resize/collapse them.<br/>
-<br/>
+Windows are almost behave like windows in Windows (the OS), you can move/resize/collapse them.
+
 To create a window at (10, 10) in the parent component, with a width of 800 pixels and a height of 500 pixels:
 ```
 GLUI::Window* window = new GLUI::Window("Window 0", 10, 10, 800, 500);
