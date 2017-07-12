@@ -70,7 +70,7 @@ namespace GLUI {
 		// Gets the title of the panel
 		std::string get_title();
 		// Return true if movable
-		bool is_movalbe();
+		bool is_movable();
 		// Returns true resizable
 		bool is_resizable();
 	};
@@ -373,7 +373,7 @@ namespace GLUI {
 	}
 
 	// Return true if movable
-	bool Window::is_movalbe() {
+	bool Window::is_movable() {
 		return this->movable;
 	}
 
