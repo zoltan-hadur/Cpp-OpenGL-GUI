@@ -39,6 +39,7 @@ namespace GLUI {
 	protected:
 		virtual float get_width() override;
 		virtual float get_height() override;
+		virtual float2 get_size() override;
 
 		virtual void handle_event(Event& e) override;
 		virtual void draw(bool draw_background = true) override;
@@ -73,6 +74,10 @@ namespace GLUI {
 
 	float MainWindow::get_height() {
 		return glutGet(GLUT_WINDOW_HEIGHT);
+	}
+
+	float2 MainWindow::get_size() {
+		return float2(this->get_width(), this->get_height());
 	}
 
 	void MainWindow::handle_event(Event& e) {
@@ -288,7 +293,7 @@ namespace GLUI {
 	}
 
 	void MainWindow::render() {
-		float time_elapsed = this->watch.get_elapsed_time();
+		float time_elapsed = this->watch.get_elapsed<Time::SECONDS>();
 		bool allowed = false;
 
 		if (this->max_fps == 0) {																												// Maxmimum fps is unlimited

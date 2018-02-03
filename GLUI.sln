@@ -1,22 +1,37 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GLUI", "GLUI\GLUI.vcxproj", "{737E80A8-C0AA-4157-90AB-39341310CECD}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "My.Utilities", "My.Utilities\My.Utilities.vcxproj", "{2CA8DFF0-3C16-4069-82E9-92819B7B7C43}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
 		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{737E80A8-C0AA-4157-90AB-39341310CECD}.Debug|x64.ActiveCfg = Debug|x64
 		{737E80A8-C0AA-4157-90AB-39341310CECD}.Debug|x64.Build.0 = Debug|x64
+		{737E80A8-C0AA-4157-90AB-39341310CECD}.Debug|x86.ActiveCfg = Debug|x64
 		{737E80A8-C0AA-4157-90AB-39341310CECD}.Release|x64.ActiveCfg = Release|x64
 		{737E80A8-C0AA-4157-90AB-39341310CECD}.Release|x64.Build.0 = Release|x64
+		{737E80A8-C0AA-4157-90AB-39341310CECD}.Release|x86.ActiveCfg = Release|x64
+		{2CA8DFF0-3C16-4069-82E9-92819B7B7C43}.Debug|x64.ActiveCfg = Debug|x64
+		{2CA8DFF0-3C16-4069-82E9-92819B7B7C43}.Debug|x64.Build.0 = Debug|x64
+		{2CA8DFF0-3C16-4069-82E9-92819B7B7C43}.Debug|x86.ActiveCfg = Debug|x64
+		{2CA8DFF0-3C16-4069-82E9-92819B7B7C43}.Release|x64.ActiveCfg = Release|x64
+		{2CA8DFF0-3C16-4069-82E9-92819B7B7C43}.Release|x64.Build.0 = Release|x64
+		{2CA8DFF0-3C16-4069-82E9-92819B7B7C43}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CD486167-F5C4-4DF7-8704-BF0BF60705D3}
 	EndGlobalSection
 EndGlobal

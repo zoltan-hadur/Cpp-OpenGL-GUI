@@ -45,15 +45,15 @@ namespace GLUI {
 		glColor4f(1, 1, 1, 1);
 		glBegin(GL_QUADS);								// Draw the image to the screen
 		if (draw_background) {
-			glTexCoord2f(0, 0); glVertex2f(pos.x + this->default_border_width, pos.y + this->height - this->default_border_width);
+			glTexCoord2f(0, 0); glVertex2f(pos.x + this->default_border_width, pos.y + this->get_height() - this->default_border_width);
 			glTexCoord2f(0, 1); glVertex2f(pos.x + this->default_border_width, pos.y + this->default_border_width);
-			glTexCoord2f(1, 1); glVertex2f(pos.x + this->width - this->default_border_width, pos.y + this->default_border_width);
-			glTexCoord2f(1, 0); glVertex2f(pos.x + this->width - this->default_border_width, pos.y + this->height - this->default_border_width);
+			glTexCoord2f(1, 1); glVertex2f(pos.x + this->get_width() - this->default_border_width, pos.y + this->default_border_width);
+			glTexCoord2f(1, 0); glVertex2f(pos.x + this->get_width() - this->default_border_width, pos.y + this->get_height() - this->default_border_width);
 		} else {
-			glTexCoord2f(0, 0); glVertex2f(pos.x, pos.y + this->height);
+			glTexCoord2f(0, 0); glVertex2f(pos.x, pos.y + this->get_height());
 			glTexCoord2f(0, 1); glVertex2f(pos.x, pos.y);
-			glTexCoord2f(1, 1); glVertex2f(pos.x + this->width, pos.y);
-			glTexCoord2f(1, 0); glVertex2f(pos.x + this->width, pos.y + this->height);
+			glTexCoord2f(1, 1); glVertex2f(pos.x + this->get_width(), pos.y);
+			glTexCoord2f(1, 0); glVertex2f(pos.x + this->get_width(), pos.y + this->get_height());
 		}
 		glEnd();
 	}
@@ -61,14 +61,14 @@ namespace GLUI {
 	// Path to the image, it's position on screen and it's size
 	Image::Image(std::string file_path, float x, float y, float width, float height) : Component(x, y, width, height, 0) {
 		this->load_image(file_path);
-		this->width = width == 0 ? this->get_image_width() : width;			// If size was not given explicit, use the image's original size
-		this->height = height == 0 ? this->get_image_height() : height;
+		this->set_size(float2(width == 0 ? this->get_image_width() : width,
+							  height == 0 ? this->get_image_height() : height));
 	}
 
 	// Retores the original size of the image
 	void Image::restore_original_size() {
-		this->width = this->get_image_width();
-		this->height = this->get_image_height();
+		this->set_size(float2(this->get_image_width(),
+							  this->get_image_height()));
 	}
 
 	// Loads the image from the file

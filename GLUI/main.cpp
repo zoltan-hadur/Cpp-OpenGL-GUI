@@ -1,6 +1,7 @@
 #include <GL\freeglut.h>
 #include <algorithm>
 #include <iostream>
+#include <bitset>
 #include "GLUI\GLUI.h"
 
 GLUI::Stopwatch watch;						// Stopper for controlling fps
@@ -76,7 +77,7 @@ void on_initialization() {
 
 	max_fps = 0;
 
-	GLUI::Window* window_0 = new GLUI::Window("Window 0", 10, 10, 800, 500);
+	GLUI::Window* window_0 = new GLUI::Window("(Window 0)", 10, 10, 800, 500);
 	GLUI::Window* window_1 = new GLUI::Window("Window 1", 110, 110, 800, 500);
 	GLUI::Window* window_10 = new GLUI::Window("ASD", 210, 210, 800, 500);
 	GLUI::Window* window_11 = new GLUI::Window("A very long window name", 310, 310, 800, 500);
@@ -84,6 +85,12 @@ void on_initialization() {
 	window->add_component(window_1);
 	window->add_component(window_10);
 	window->add_component(window_11);
+
+	GLUI::ListBox* list_box = new GLUI::ListBox({ {"", "1*"}, {"Column 1", "1*"}, {"Column 2", "2*"} }, 50, 50, 400, 300, 1);
+	for (int i = 0; i < 50; ++i) {
+		list_box->add_element(new GLUI::ListElement({ "asd", "ASD", std::to_string(i) }));
+	}
+	window_11->add_component(list_box);
 
 	GLUI::Image* image = new GLUI::Image("cat.bmp", 10, 30);
 	window_10->add_component(image);
@@ -100,8 +107,8 @@ void on_initialization() {
 
 	GLUI::ScrollPanel* panel0 = new GLUI::ScrollPanel(GLUI::ScrollPanel::ALIGN::VERTICAL, 10, 10, 500, 350);
 	for (int i = 0; i < 6; ++i) {
-		for (int j = 0; j < 20; ++j) {
-			panel0->add_component(new GLUI::Button("B" + std::to_string(j * 6 + i), 10 + 75 * i, 10 + 25 * j, 70, 20));
+		for (int j = 0; j < 2; ++j) {
+			panel0->add_component(new GLUI::Button("(B" + std::to_string(j * 6 + i), 10 + 75 * i, 10 + 25 * j, 70, 20));
 		}
 	}
 	tabbed_panel->add_tab("Tab names", panel0);
@@ -109,7 +116,7 @@ void on_initialization() {
 	GLUI::ScrollPanel* panel1 = new GLUI::ScrollPanel(GLUI::ScrollPanel::ALIGN::HORIZONTAL, 10, 10, 500, 350);
 	for (int i = 0; i < 12; ++i) {
 		for (int j = 0; j < 12; ++j) {
-			panel1->add_component(new GLUI::Button("B" + std::to_string(j * 12 + i), 10 + 75 * i, 10 + 25 * j, 70, 20));
+			panel1->add_component(new GLUI::Button("(B" + std::to_string(j * 12 + i), 10 + 75 * i, 10 + 25 * j, 70, 20));
 		}
 	}
 	tabbed_panel->add_tab("has", panel1);
@@ -117,17 +124,17 @@ void on_initialization() {
 	tabbed_panel->add_tab("automatic length");
 	GLUI::Panel* tab2 = tabbed_panel->get_tab("automatic length");
 
-	GLUI::ComboBox* cbox = new GLUI::ComboBox(10, 10, 200, 200);
+	GLUI::ComboBox* cbox = new GLUI::ComboBox(10, 10, 200, 20);
 	cbox->add_item("1");
 	cbox->add_item("2");
 	cbox->add_item("3");
 	cbox->add_item("4");
-	cbox->add_item("5");
-	cbox->add_item("6");
-	cbox->add_item("7");
-	cbox->add_item("8");
-	cbox->add_item("9");
-	cbox->add_item("10");
+	//cbox->add_item("5");
+	//cbox->add_item("6");
+	//cbox->add_item("7");
+	//cbox->add_item("8");
+	//cbox->add_item("9");
+	//cbox->add_item("10");
 	tab2->add_component(cbox);
 
 	GLUI::Label* label = new GLUI::Label("CheckBox", 230, 10, 20, 20);
@@ -163,7 +170,7 @@ void on_initialization() {
 	GLUI::SpinnerBox<int>* spb_spinner = new GLUI::SpinnerBox<int>(0, 255, 10, 290, 200, 20);
 	//tab2->add_component(spb_spinner);
 
-	GLUI::ColorPicker* color_picker = new GLUI::ColorPicker(10, 50, 50, 50, 1);
+	GLUI::ColorPicker* color_picker = new GLUI::ColorPicker(10, 50, 20, 20, 1);
 	tab2->add_component(color_picker);
 
 	tabbed_panel->add_tab("long tab name 0");
@@ -172,6 +179,23 @@ void on_initialization() {
 	tabbed_panel->add_tab("short 2");
 
 	watch.start();
+
+
+	//GLUI::Animator animator = GLUI::Animator(GLUI::Duration<GLUI::Time::MILLI_SECONDS>(1234));
+	//animator.set_src(GLUI::float2(0, 0));
+	//animator.set_dst(GLUI::float2(100, 500));
+	//animator.set_curr(GLUI::float2(0, 0));
+	//GLUI::Stopwatch w;
+	//w.start(GLUI::Duration<GLUI::Time::SECONDS>(2));
+	//animator.start();
+	//do {
+	//	animator.update();
+	//	printf("%f %f %f seconds\n\r", animator.get_curr().x, animator.get_curr().y, w.get_elapsed<GLUI::Time::SECONDS>());
+	//	//GLUI::Time::wait(GLUI::Duration<GLUI::Time::SECONDS>(1/10.0));
+	//} while (w.is_running());
+
+	//std::initializer_list<std::tuple<std::string, int>> asdasd = { { "asd", 50 },{ "fos", 100 } };
+	//printf("asd");
 }
 
 void on_keyboard_down(unsigned char key, int x, int y) {
@@ -276,7 +300,7 @@ void on_display() {
 float wait_time = 0;
 float time_elapsed = 0;
 void on_idle() {
-	float dt = watch.get_delta_time();
+	float dt = watch.get_delta<GLUI::Time::SECONDS>();
 	time_elapsed = time_elapsed + dt;
 
 	if (max_fps == 0) {						// Maxmimum fps is unlimited

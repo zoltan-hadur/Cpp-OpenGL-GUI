@@ -48,6 +48,9 @@ namespace GLUI {
 		H_ALIGN get_h_align();
 		// Get the vertical alignment
 		V_ALIGN get_v_align();
+
+		// Calculates fitting size
+		float2 calc_fit_size();
 	};
 
 	void Label::handle_event(Event& e) {
@@ -58,14 +61,20 @@ namespace GLUI {
 		if (!text.empty()) {
 			float2 pos = this->get_absolute_position();
 
-			int x = pos.x;
-			int y = pos.y + char_height - 4;
-			int w = text.size() * char_width;																									// Width of the text in pixels
+			float x = pos.x;
+			float y = pos.y + char_height - 4.0f;
+			float w = text.size() * char_width;																									// Width of the text in pixels
+			std::string text = this->text;
 
-			x = (h_align == H_ALIGN::RIGHT) ? (x + width - w) : ((h_align == H_ALIGN::MID) ? (x + (width - w) / 2) : x);						// Horizontal alignment
-			y = (v_align == V_ALIGN::BOT) ? (y + height - char_height) : ((v_align == V_ALIGN::MID) ? (y + (height - char_height) / 2) : y);	// Vertical alignment
+			if (w > this->get_width()) {
+				int count = (this->get_width() - char_width * 3.0f) / char_width;
+				text = text.substr(0, count) + "...";
+			} else {
+				x = (h_align == H_ALIGN::RIGHT) ? (x + this->get_width() - w) : ((h_align == H_ALIGN::MID) ? (x + (this->get_width() - w) / 2.0) : x);						// Horizontal alignment
+			}
+			y = (v_align == V_ALIGN::BOT) ? (y + this->get_height() - char_height) : ((v_align == V_ALIGN::MID) ? (y + (this->get_height() - char_height) / 2.0) : y);	// Vertical alignment
 
-			Color c = Color(255,255,255,255) / 255;
+			Color c = Color(255, 255, 255, 255) / 255;
 			if (!this->enabled) {
 				c = Color(180, 180, 180, 255) / 255;
 			}
@@ -86,8 +95,8 @@ namespace GLUI {
 	// Sets the label, also changes the size if the new text not fit in
 	void Label::set_text(std::string text) {
 		this->text = text;
-		this->width = std::max(width, (float)(text.size() * char_width));																		// Minimum width is the width of the text in pixels
-		this->height = std::max(height, (float)char_height);																					// Minimum height is the width of the text in pixels
+		this->set_size(float2(std::max(this->get_width(), (float)(text.size() * char_width)),	// Minimum width is the width of the text in pixels
+							  std::max(this->get_height(), (float)char_height)));				// Minimum height is the width of the text in pixels
 	}
 
 	// Sets the horizontal alignment
@@ -113,6 +122,11 @@ namespace GLUI {
 	// Get the vertical alignment
 	Label::V_ALIGN Label::get_v_align() {
 		return this->v_align;
+	}
+
+	// Calculates fitting size
+	float2 Label::calc_fit_size() {
+		return float2(this->text.size()*this->char_width, this->char_height);
 	}
 
 }

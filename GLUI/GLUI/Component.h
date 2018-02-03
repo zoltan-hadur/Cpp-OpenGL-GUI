@@ -23,12 +23,12 @@ namespace GLUI {
 		std::vector<Component*> children;				// Children components
 		std::vector<Window*> minimized_windows;			// For minimizing windows
 
-		static const unsigned char char_width = 9;		// Width of drawable char in pixels
-		static const unsigned char char_height = 16;	// Height of drawable char in pixels
+		const float char_width = 9.0f;					// Width of drawable char in pixels
+		const float char_height = 16.0f;				// Height of drawable char in pixels
 
 		float2 pos;										// Top left corner's position of the component relative to the parent component
-		float width;									// Width of the component
-		float height;									// Height of the component
+		float2 size;									// Width and height of the component
+
 		float border_width;								// Border width of the component
 		float active_border_width;						// Border width of the component on event (if the derived class handles it)
 		float default_border_width;						// Default border width of the component
@@ -71,11 +71,9 @@ namespace GLUI {
 		// Removes a minimed window
 		virtual void remove_minimized_window(Window* window);
 		// Sets the position of the component on screen in pixels relative to the parent component
-		virtual void set_position(float x, float y);
-		// Sets the position of the component on screen in pixels relative to the parent component
 		virtual void set_position(float2 pos);
 		// Sets the size of the component on screen in pixels
-		virtual void set_size(float width, float height);
+		virtual void set_size(float2 size);
 		// Sets the width of the border of the component on screen in pixels
 		virtual void set_default_border_width(float border_width);
 		// Sets the title of the component
@@ -93,6 +91,10 @@ namespace GLUI {
 		virtual float2 get_position();
 		// Gets the absolute position of the component
 		virtual float2 get_absolute_position();
+		// Gets the base position
+		virtual float2 get_base();
+		// Gets the size of the component
+		virtual float2 get_size();
 		// Gets the width of the component
 		virtual float get_width();
 		// Gets the height of the component
@@ -122,8 +124,7 @@ namespace GLUI {
 	Component::Component(float x, float y, float width, float height, float border_width) {
 		this->parent = nullptr;
 		this->pos = float2(x, y);
-		this->width = width;
-		this->height = height;
+		this->size = float2(width, height);
 		this->border_width = border_width;
 		this->default_border_width = border_width;
 		this->active_border_width = border_width + 2;
@@ -223,23 +224,23 @@ namespace GLUI {
 		// Left
 		glVertex2f(pos.x, pos.y);
 		glVertex2f(pos.x + this->border_width, pos.y);
-		glVertex2f(pos.x + this->border_width, pos.y + this->height);
-		glVertex2f(pos.x, pos.y + this->height);
+		glVertex2f(pos.x + this->border_width, pos.y + this->get_height());
+		glVertex2f(pos.x, pos.y + this->get_height());
 		// Right
-		glVertex2f(pos.x + this->width - this->border_width, pos.y);
-		glVertex2f(pos.x + this->width, pos.y);
-		glVertex2f(pos.x + this->width, pos.y + this->height);
-		glVertex2f(pos.x + this->width - this->border_width, pos.y + this->height);
+		glVertex2f(pos.x + this->get_width() - this->border_width, pos.y);
+		glVertex2f(pos.x + this->get_width(), pos.y);
+		glVertex2f(pos.x + this->get_width(), pos.y + this->get_height());
+		glVertex2f(pos.x + this->get_width() - this->border_width, pos.y + this->get_height());
 		// Up
 		glVertex2f(pos.x, pos.y);
-		glVertex2f(pos.x + this->width, pos.y);
-		glVertex2f(pos.x + this->width, pos.y + this->border_width);
+		glVertex2f(pos.x + this->get_width(), pos.y);
+		glVertex2f(pos.x + this->get_width(), pos.y + this->border_width);
 		glVertex2f(pos.x, pos.y + this->border_width);
 		// Down
-		glVertex2f(pos.x, pos.y + this->height - this->border_width);
-		glVertex2f(pos.x + this->width, pos.y + this->height - this->border_width);
-		glVertex2f(pos.x + this->width, pos.y + this->height);
-		glVertex2f(pos.x, pos.y + this->height);
+		glVertex2f(pos.x, pos.y + this->get_height() - this->border_width);
+		glVertex2f(pos.x + this->get_width(), pos.y + this->get_height() - this->border_width);
+		glVertex2f(pos.x + this->get_width(), pos.y + this->get_height());
+		glVertex2f(pos.x, pos.y + this->get_height());
 		glEnd();
 
 		// Draw background
@@ -256,9 +257,9 @@ namespace GLUI {
 		}
 		glBegin(GL_QUADS);
 		glVertex2f(pos.x + this->border_width, pos.y + this->border_width);
-		glVertex2f(pos.x + this->width - this->border_width, pos.y + this->border_width);
-		glVertex2f(pos.x + this->width - this->border_width, pos.y + this->height - this->border_width);
-		glVertex2f(pos.x + this->border_width, pos.y + this->height - this->border_width);
+		glVertex2f(pos.x + this->get_width() - this->border_width, pos.y + this->border_width);
+		glVertex2f(pos.x + this->get_width() - this->border_width, pos.y + this->get_height() - this->border_width);
+		glVertex2f(pos.x + this->border_width, pos.y + this->get_height() - this->border_width);
 		glEnd();
 
 		this->set_background_color(pre);
@@ -291,7 +292,7 @@ namespace GLUI {
 				auto c = children[i];
 				if (c->is_visible()) {
 					float2 pos = c->get_absolute_position();
-					if (pos.x < e.x && e.x < pos.x + c->width && pos.y < e.y && e.y < pos.y + c->height) {		// If the component is visible and below of the mouse
+					if (pos.x < e.x && e.x < pos.x + c->get_width() && pos.y < e.y && e.y < pos.y + c->get_height()) {		// If the component is visible and below of the mouse
 						if (c->parent) {
 							c->parent->remove_component(c);														// A remove
 							c->parent->add_component(c);														// And then an add moves the component to the end of the list
@@ -414,19 +415,13 @@ namespace GLUI {
 	}
 
 	// Sets the position of the component on screen in pixels relative to the parent component
-	void Component::set_position(float x, float y) {
-		this->pos = float2(x, y);
-	}
-
-	// Sets the position of the component on screen in pixels relative to the parent component
 	void Component::set_position(float2 pos) {
 		this->pos = pos;
 	}
 
 	// Sets the size of the component on screen in pixels
-	void Component::set_size(float width, float height) {
-		this->width = width;
-		this->height = height;
+	void Component::set_size(float2 size) {
+		this->size = size;
 	}
 
 	// Sets the width of the border of the component on screen in pixels
@@ -478,14 +473,24 @@ namespace GLUI {
 		}
 	}
 
+	// Gets the base position
+	float2 Component::get_base() {
+		return float2(0, 0);
+	}
+
+	// Gets the size of the component
+	float2 Component::get_size() {
+		return this->size;
+	}
+
 	// Gets the width of the component
 	float Component::get_width() {
-		return this->width;
+		return this->size.x;
 	}
 
 	// Gets the height of the component
 	float Component::get_height() {
-		return this->height;
+		return this->size.y;
 	}
 
 	// Gets the border's width of the component

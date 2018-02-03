@@ -58,6 +58,11 @@ namespace GLUI {
 		bool textbox_focus_lost = false;
 		bool textbox_enter_pressed = false;
 		std::string textbox_text = "";
+
+		// Animator
+		bool animator_started = false;
+		bool animator_stopped = false;
+		bool animator_reached = false;
 	};
 
 }

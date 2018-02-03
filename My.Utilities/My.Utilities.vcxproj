@@ -12,9 +12,9 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{737e80a8-c0aa-4157-90ab-39341310cecd}</ProjectGuid>
+    <ProjectGuid>{2ca8dff0-3c16-4069-82e9-92819b7b7c43}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>GLUI</RootNamespace>
+    <RootNamespace>My_Utilities</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -64,7 +64,9 @@
       <AdditionalDependencies>OpenCL.lib;freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /v /y "$(ProjectDir)freeglut.dll" "$(OutDir)"</Command>
+      <Command>xcopy /v /y "$(ProjectDir)kernel.cl" "$(OutDir)"
+xcopy /v /y "$(ProjectDir)freeglut.dll" "$(OutDir)"
+xcopy /v /y "$(ProjectDir)glew64.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -72,15 +74,11 @@
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <Optimization>Full</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\Program Files %28x86%29\AMD APP SDK\3.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <OmitFramePointers>true</OmitFramePointers>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -90,47 +88,21 @@
       <AdditionalDependencies>OpenCL.lib;freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /v /y "$(ProjectDir)freeglut.dll" "$(OutDir)"</Command>
+      <Command>xcopy /v /y "$(ProjectDir)kernel.cl" "$(OutDir)"
+xcopy /v /y "$(ProjectDir)freeglut.dll" "$(OutDir)"
+xcopy /v /y "$(ProjectDir)glew64.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="freeglut.dll" />
+    <None Include="glew64.dll" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Event\ActionEvent.h" />
-    <ClInclude Include="Event\ActionListener.h" />
-    <ClInclude Include="Event\ActionPerformer.h" />
-    <ClInclude Include="Event\Event.h" />
-    <ClInclude Include="Event\EventHandler.h" />
-    <ClInclude Include="GLUI\Button.h" />
-    <ClInclude Include="GLUI\CheckBox.h" />
-    <ClInclude Include="GLUI\ColorPicker.h" />
-    <ClInclude Include="GLUI\ComboBox.h" />
-    <ClInclude Include="GLUI\Component.h" />
-    <ClInclude Include="GLUI\GLUI.h" />
-    <ClInclude Include="GLUI\Image.h" />
-    <ClInclude Include="GLUI\Label.h" />
-    <ClInclude Include="GLUI\ListBox.h" />
-    <ClInclude Include="GLUI\ListElement.h" />
-    <ClInclude Include="GLUI\MainWindow.h" />
-    <ClInclude Include="GLUI\Panel.h" />
-    <ClInclude Include="GLUI\ProgressBar.h" />
-    <ClInclude Include="GLUI\ScrollPanel.h" />
-    <ClInclude Include="GLUI\Slider.h" />
-    <ClInclude Include="GLUI\SpinnerBox.h" />
-    <ClInclude Include="GLUI\TabbedPanel.h" />
-    <ClInclude Include="GLUI\TextBox.h" />
-    <ClInclude Include="GLUI\TextEditor.h" />
-    <ClInclude Include="GLUI\Window.h" />
-    <ClInclude Include="Utility\Animator.h" />
-    <ClInclude Include="Utility\BMP.h" />
-    <ClInclude Include="Utility\Color.h" />
-    <ClInclude Include="Utility\float2.h" />
-    <ClInclude Include="Utility\Stopwatch.h" />
-    <ClInclude Include="Utility\Time.h" />
+    <ClInclude Include="..\GLUI\Utility\Time.h" />
+    <ClInclude Include="Stopwatch.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

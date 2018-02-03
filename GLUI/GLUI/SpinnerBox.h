@@ -18,19 +18,19 @@ namespace GLUI {
 	// Use usual types, like char, short, int, long, float, double, etc
 	template<typename T> class SpinnerBox : public ActionListener, public Component {
 	protected:
-		Button* btn_left;			// Button to decrease the value
-		Button* btn_right;			// Button to increase the value
-		TextBox* txt_box;			// Text box that displays the value and also that allows to edit the value
+		Button* btn_left;						// Button to decrease the value
+		Button* btn_right;						// Button to increase the value
+		TextBox* txt_box;						// Text box that displays the value and also that allows to edit the value
 
-		Stopwatch watch_wait;		// Timer to watch when should the button start repeating button presses
-		Stopwatch watch_repeat;		// Timer to watch when should the button raise the next button press event
-		float wait_time;			// Time until repeating button presses after the first button press
-		float repeat_time;			// Time between repeated button presses
+		Stopwatch watch_wait;					// Timer to watch when should the button start repeating button presses
+		Stopwatch watch_repeat;					// Timer to watch when should the button raise the next button press event
+		Duration<Time::SECONDS> wait_time;		// Time until repeating button presses after the first button press
+		Duration<Time::SECONDS> repeat_time;	// Time between repeated button presses
 
-		T min;						// Allowed minimum value
-		T max;						// Allowed maximum value
-		T value;					// Current value, it's between min and max
-		T increment;				// Increases or decreases the value by this value on left or right button press
+		T min;									// Allowed minimum value
+		T max;									// Allowed maximum value
+		T value;								// Current value, it's between min and max
+		T increment;							// Increases or decreases the value by this value on left or right button press
 
 		virtual void handle_event(Event& e) override;
 		virtual void draw(bool draw_background = true) override;
@@ -42,9 +42,9 @@ namespace GLUI {
 		SpinnerBox(T min, T max, float x = 0, float y = 0, float width = 100, float height = 20, float border_width = 1);
 
 		// Sets the wait time
-		void set_wait_time(float wait_time);
+		template<typename Time_TYPE> void set_wait_time(Duration<Time_TYPE> wait_time);
 		// Sets the repeat time
-		void set_repeat_time(float repeat_time);
+		template<typename Time_TYPE> void set_repeat_time(Duration<Time_TYPE> repeat_time);
 		// Sets the min value
 		void set_min(T min);
 		// Sets the max value
@@ -54,9 +54,9 @@ namespace GLUI {
 		// Sets the increment value
 		void set_increment(T increment);
 		// Gets the wait time
-		float get_wait_time();
+		Duration<Time::SECONDS> get_wait_time();
 		// Gets the repeat time
-		float get_repeat_time();
+		Duration<Time::SECONDS> get_repeat_time();
 		// Gets the min value
 		T get_min();
 		// Gets the max value
@@ -79,14 +79,14 @@ namespace GLUI {
 	}
 
 	template<typename T> void SpinnerBox<T>::draw(bool draw_background) {
-		this->btn_left->set_position(0, 0);																// Left button is always on the left side
-		this->btn_left->set_size(20, this->height);
+		this->btn_left->set_position(float2(0, 0));																// Left button is always on the left side
+		this->btn_left->set_size(float2(20, this->get_height()));
 
-		this->btn_right->set_position(this->width - 20, 0);												// Right button is always on the right side
-		this->btn_right->set_size(20, this->height);
+		this->btn_right->set_position(float2(this->get_width() - 20, 0));												// Right button is always on the right side
+		this->btn_right->set_size(float2(20, this->get_height()));
 
-		this->txt_box->set_position(20 - default_border_width, 0);										// Text box is always in the middle
-		this->txt_box->set_size(this->width - 40 + default_border_width * 2, this->height);
+		this->txt_box->set_position(float2(20 - default_border_width, 0));										// Text box is always in the middle
+		this->txt_box->set_size(this->get_size() + float2(-40 + this->default_border_width * 2, 0));
 
 		std::string value = this->txt_box->get_text();													// Current string in the text box
 		if (std::regex_match(value, std::regex(R"(^[+-]?(\d+(\.\d+)?|\.\d+)([eE][+-]?\d+)?$)"))) {		// If it's a valid number
@@ -133,8 +133,8 @@ namespace GLUI {
 		this->add_component(this->btn_right);
 		this->add_component(this->txt_box);
 
-		this->set_wait_time(0.5);
-		this->set_repeat_time(0.01);
+		this->set_wait_time(Duration<Time::MILLI_SECONDS>(500));
+		this->set_repeat_time(Duration<Time::MILLI_SECONDS>(10));
 
 		this->txt_box->set_text(std::to_string(this->value));
 
@@ -142,14 +142,14 @@ namespace GLUI {
 	}
 
 	// Sets the wait time
-	template<typename T> void SpinnerBox<T>::set_wait_time(float wait_time) {
+	template<typename T> template<typename Time_TYPE> void SpinnerBox<T>::set_wait_time(Duration<Time_TYPE> wait_time) {
 		this->btn_left->set_wait_time(wait_time);
 		this->btn_right->set_wait_time(wait_time);
 		this->wait_time = this->btn_left->get_wait_time();
 	}
 
 	// Sets the repeat time
-	template<typename T> void SpinnerBox<T>::set_repeat_time(float repeat_time) {
+	template<typename T> template<typename Time_TYPE> void SpinnerBox<T>::set_repeat_time(Duration<Time_TYPE> repeat_time) {
 		this->btn_left->set_repeat_time(repeat_time);
 		this->btn_right->set_repeat_time(repeat_time);
 		this->repeat_time = this->btn_left->get_repeat_time();
@@ -179,12 +179,12 @@ namespace GLUI {
 	}
 
 	// Gets the wait time
-	template<typename T> float SpinnerBox<T>::get_wait_time() {
+	template<typename T> Duration<Time::SECONDS> SpinnerBox<T>::get_wait_time() {
 		return this->wait_time;
 	}
 
 	// Gets the repeat time
-	template<typename T> float SpinnerBox<T>::get_repeat_time() {
+	template<typename T> Duration<Time::SECONDS> SpinnerBox<T>::get_repeat_time() {
 		return this->repeat_time;
 	}
 

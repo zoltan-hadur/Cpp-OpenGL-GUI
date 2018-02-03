@@ -115,5 +115,17 @@
     <ClInclude Include="Utility\float2.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="Utility\Animator.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\Time.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="GLUI\ListElement.h">
+      <Filter>Header Files\GLUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GLUI\ListBox.h">
+      <Filter>Header Files\GLUI</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

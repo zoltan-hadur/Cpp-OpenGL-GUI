@@ -62,8 +62,8 @@ namespace GLUI {
 
 		float2 offset = float2(0, 0);
 		for (int i = 0; i < btn_selectors.size(); ++i) {																		// Calculate tab selector buttons' positions
-			btn_selectors[i]->set_size(btn_selectors[i]->get_label()->get_text().size() * char_width + 2 * char_width, 20);		// Automatic width
-			if (offset.x + btn_selectors[i]->get_width() > this->width) {
+			btn_selectors[i]->set_size(float2(btn_selectors[i]->get_label()->get_text().size() * char_width + 2 * char_width, 20));		// Automatic width
+			if (offset.x + btn_selectors[i]->get_width() > this->get_width()) {
 				offset.x = 0;
 				offset.y = offset.y + btn_selectors[i]->get_height() - btn_selectors[i]->get_default_border_width();
 			}
@@ -77,16 +77,16 @@ namespace GLUI {
 			}
 		}
 
-		this->pnl_main_tab->set_position(0, offset.y + 20 - this->default_border_width);										// Position the main tab according to the tab selectors
-		this->pnl_main_tab->set_size(this->width, this->height - (offset.y + 20 - this->default_border_width));					// Resize the main tab according to the tab selectors
+		this->pnl_main_tab->set_position(float2(0, offset.y + 20 - this->default_border_width));										// Position the main tab according to the tab selectors
+		this->pnl_main_tab->set_size(this->get_size() - float2(0, offset.y + 20 - this->default_border_width));
 
 		for (int i = 0; i < this->pnl_tabs.size(); ++i) {
-			this->pnl_tabs[i]->set_position(i*this->pnl_main_tab->get_width(), 0);
+			this->pnl_tabs[i]->set_position(float2(i*this->pnl_main_tab->get_width(), 0));
 		}
 
 		if (this->animating && this->watch.is_running()) {
-			float dt = this->watch.get_delta_time();																			// Get delta time
-			float et = this->watch.get_elapsed_time();																			// Get elapsed time
+			float dt = this->watch.get_delta<Time::SECONDS>();																			// Get delta time
+			float et = this->watch.get_elapsed<Time::SECONDS>();																			// Get elapsed time
 
 			float2 speed_pos = (this->pos_offset - this->acc_pos) * 20 * et / this->anim_time;									// Calculate the current speed to modify the tab positions
 
@@ -112,7 +112,7 @@ namespace GLUI {
 
 		for (int i = 0; i < this->pnl_tabs.size(); ++i) {
 			this->pnl_tabs[i]->set_visible(this->animating || i == this->selected);												// All tab is visible when animating (altough tabs wich are outside of the panel are not being drawn becouse of the scissor)
-			this->pnl_tabs[i]->set_size(this->pnl_main_tab->get_width(), this->pnl_main_tab->get_height());						// Set the tabs' size to fit in to the main tab
+			this->pnl_tabs[i]->set_size(this->pnl_main_tab->get_size());						// Set the tabs' size to fit in to the main tab
 			this->pnl_tabs[i]->set_position(this->pnl_tabs[i]->get_position() + this->acc_pos);									// Translate all tab to the selected tab be visible
 		}
 	}
@@ -121,7 +121,7 @@ namespace GLUI {
 		for (int i = 0; i < btn_selectors.size(); ++i) {																		// Iterate through the tab selector buttons to find wich one was pressed
 			if (sender == btn_selectors[i] && e.button_released) {																// If found it
 				if (i != this->selected) {																						// If it's not currently selected
-					this->pos_offset = this->pos_offset + float2(this->width * (this->selected - i), 0);						// Calculate the offset
+					this->pos_offset = this->pos_offset + float2(this->get_width() * (this->selected - i), 0);						// Calculate the offset
 					this->selected = i;
 					this->animating = true;																						// Start animation
 
@@ -158,7 +158,7 @@ namespace GLUI {
 	void TabbedPanel::add_tab(std::string tab_title, Panel* tab) {
 		Button* tab_selector = new Button(tab_title);
 		tab_selector->set_default_border_width(default_border_width);
-		tab_selector->set_wait_time(std::numeric_limits<float>::max());
+		tab_selector->set_wait_time(Duration<Time::HOURS>(24));
 		tab_selector->add_action_listener(this);
 		btn_selectors.push_back(tab_selector);
 		this->add_component(tab_selector);

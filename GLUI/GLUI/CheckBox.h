@@ -41,16 +41,18 @@ namespace GLUI {
 	}
 
 	void CheckBox::draw(bool draw_background) {
-		this->btn_check->get_label()->set_text(checked ? "X" : "");
+		this->btn_check->get_label()->set_text(checked ? "X" : "");		// Displays an X when checked
 	}
 
 	// To listen on inner component's actions
 	void CheckBox::action_performed(void* sender, ActionEvent& e) {
-		if (sender == btn_check && e.button_released) {		// If the checkbox was pressed
-			if (!checked) {									// Check it if it's unchecked
-				this->check();
-			} else {										// Else uncheck it
-				this->uncheck();
+		if (sender == btn_check) {										// If the checkbox
+			if (e.button_released) {									// Was pressed
+				if (!checked) {											// Check it if it's unchecked
+					this->check();
+				} else {												// Else uncheck it
+					this->uncheck();
+				}
 			}
 		}
 	}

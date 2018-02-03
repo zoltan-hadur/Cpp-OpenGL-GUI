@@ -173,7 +173,7 @@ namespace GLUI {
 
 		float2 start_pos = this->get_absolute_position() + float2(default_border_width + char_width / 2, default_border_width + char_width * 3 / 2);
 		float2 pos = start_pos;
-		float max_pos_x = start_pos.x + width - char_width * 2;
+		float max_pos_x = start_pos.x + this->get_width() - char_width * 2;
 
 		for (int i = 0; i <= pos_cursor; ++i) {
 			if (pos.x > max_pos_x) {
@@ -228,7 +228,7 @@ namespace GLUI {
 
 		float2 start_pos = this->get_absolute_position() + float2(default_border_width + char_width / 2, default_border_width + char_width * 3 / 2);
 		float2 pos = start_pos;
-		float max_pos_x = start_pos.x + width - char_width * 2;
+		float max_pos_x = start_pos.x + this->get_width() - char_width * 2;
 
 		for (int i = 0; i <= pos_cursor; ++i) {
 			if (pos.x > max_pos_x) {
@@ -245,7 +245,7 @@ namespace GLUI {
 			}
 		}
 
-		int max_chars = (width - char_width) / char_width;
+		int max_chars = (this->get_width() - char_width) / char_width;
 		int from = 0;
 		int to = 0;
 		int actual_line_length = 0;
@@ -302,7 +302,7 @@ namespace GLUI {
 
 		float2 start_pos = this->get_absolute_position() + float2(default_border_width + char_width / 2, default_border_width + char_width * 3 / 2);
 		float2 pos = start_pos;
-		float max_pos_x = start_pos.x + width - char_width * 2;
+		float max_pos_x = start_pos.x + this->get_width() - char_width * 2;
 
 		for (int i = 0; i < pos_cursor; ++i) {
 			unsigned char c = buffer[i];
@@ -337,7 +337,7 @@ namespace GLUI {
 
 		float2 start_pos = this->get_absolute_position() + float2(default_border_width + char_width / 2, default_border_width + char_width * 3 / 2);
 		float2 pos = start_pos;
-		float max_pos_x = start_pos.x + width - char_width * 2;
+		float max_pos_x = start_pos.x + this->get_width() - char_width * 2;
 
 		for (int i = 0; i < pos_cursor; ++i) {
 			unsigned char c = buffer[i];
@@ -480,7 +480,7 @@ namespace GLUI {
 				selecting_buffer_input = true;
 				float2 start_pos = this->get_absolute_position() + float2(default_border_width + char_width / 2, default_border_width + char_width * 3 / 2);
 				float2 pos = start_pos;
-				float max_pos_x = start_pos.x + width - char_width * 2;
+				float max_pos_x = start_pos.x + this->get_width() - char_width * 2;
 
 				if (this->type == TYPE::SINGLE_LINE) {
 					start_pos = start_pos - float2(window_start*char_width, 0);
@@ -534,7 +534,7 @@ namespace GLUI {
 		}
 		if (e.mouse_left && e.mouse_pressed) {
 			float2 pos = this->get_absolute_position();
-			if (!(pos.x < e.x && e.x < pos.x + width && pos.y < e.y && e.y < pos.y + height)) {
+			if (!(pos.x < e.x && e.x < pos.x + this->get_width() && pos.y < e.y && e.y < pos.y + this->get_height())) {
 				this->selecting_buffer_input = false;
 				this->pos_selection = this->pos_cursor;
 			}
@@ -550,13 +550,13 @@ namespace GLUI {
 	void TextEditor::draw(bool draw_background) {
 		Component::draw(draw_background);
 
-		float dt = watch.get_delta_time();
+		float dt = watch.get_delta<Time::SECONDS>();
 
-		this->window_width = (width - char_width) / char_width;
-		int max_lines = height / char_height;
-		float2 start_pos = this->get_absolute_position() + float2(default_border_width + char_width / 2, default_border_width + char_width * 3 / 2);
+		this->window_width = (this->get_width() - char_width) / char_width;
+		int max_lines = this->get_height() / char_height;
+		float2 start_pos = this->get_absolute_position() + float2(default_border_width + char_width / 2, default_border_width + char_width * 1.6);
 		float2 pos = start_pos;
-		float2 max_pos = float2(start_pos.x + width - char_width * 2, start_pos.y + height - char_height);
+		float2 max_pos = float2(start_pos.x + this->get_width() - char_width * 2, start_pos.y + this->get_height() - char_height);
 
 		//if (buffer.empty()) {
 		//	glColor4f(0.7, 0.7, 0.7, 1);

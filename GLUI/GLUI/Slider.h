@@ -93,16 +93,16 @@ namespace GLUI {
 			switch (this->align) {																		// Move it according to the mouse position
 				case ALIGN::HORIZONTAL:
 				{
-					pos.x = std::min(pos.x, (float)(this->width - 15 - 20));							// The indicator has a 20 width/height according to the alignment
-					pos.x = std::max(pos.x, (float)15);
-					this->change_value((this->max - this->min)*(pos.x - 15) / (this->width - 50));
+					pos.x = std::min(pos.x, (float)(this->get_width() - 20 - 20));							// The indicator has a 20 width/height according to the alignment
+					pos.x = std::max(pos.x, (float)20);
+					this->change_value((this->max - this->min)*(pos.x - 20) / (this->get_width() - 60));
 					break;
 				}
 				case ALIGN::VERTICAL:
 				{
-					pos.y = std::min(pos.y, (float)(this->height - 15 - 20));
-					pos.y = std::max(pos.y, (float)15);
-					this->change_value((this->max - this->min)*(pos.y - 15) / (this->height - 50));
+					pos.y = std::min(pos.y, (float)(this->get_height() - 20 - 20));
+					pos.y = std::max(pos.y, (float)20);
+					this->change_value((this->max - this->min)*(pos.y - 20) / (this->get_height() - 60));
 					break;
 				}
 			}
@@ -112,8 +112,8 @@ namespace GLUI {
 				this->watch.start();																	// Then start the watch to animate slider moving
 			} else if (e.mouse_left_down) {																// If the user still holds down the left mouse button
 				if (this->watch.is_running()) {															// And the watch is running
-					float dt = this->watch.get_delta_time() * this->speed;								// Then calc a dt to how much move the slider towards the mouse
-					if (this->watch.get_elapsed_time() > this->wait_time) {								// If enough time elapsed for the indicator to starts moving towards the mouse
+					float dt = this->watch.get_delta<Time::SECONDS>() * this->speed;								// Then calc a dt to how much move the slider towards the mouse
+					if (this->watch.get_elapsed<Time::SECONDS>() > this->wait_time) {								// If enough time elapsed for the indicator to starts moving towards the mouse
 						switch (this->align) {
 							case ALIGN::HORIZONTAL:
 							{
@@ -143,35 +143,41 @@ namespace GLUI {
 	}
 
 	void Slider::draw(bool draw_background) {
+		if (this->min == this->max) {
+			this->disable();
+		}else{
+			this->enable();
+		}
+
 		switch (this->align) {																			// Set the position and size of the slider components according to it's alignment
 			case ALIGN::HORIZONTAL:
 			{
 				this->btn_left->get_label()->set_text("<");
-				this->btn_left->set_size(16, this->height);
-				this->btn_left->set_position(0, 0);
+				this->btn_left->set_size(float2(20, this->get_height()));
+				this->btn_left->set_position(float2(0, 0));
 
 				this->btn_right->get_label()->set_text(">");
-				this->btn_right->set_size(16, this->height);
-				this->btn_right->set_position(this->width - 16, 0);
+				this->btn_right->set_size(float2(20, this->get_height()));
+				this->btn_right->set_position(float2(this->get_width() - 20, 0));
 
 				this->btn_indicator->get_label()->set_text("|");
-				this->btn_indicator->set_size(20, this->height);
-				this->btn_indicator->set_position(15 + (this->width - 50) * this->calc_percent(), 0);
+				this->btn_indicator->set_size(float2(20, this->get_height()));
+				this->btn_indicator->set_position(float2(19 + (this->get_width() - 58) * this->calc_percent(), 0));
 				break;
 			}
 			case ALIGN::VERTICAL:
 			{
 				this->btn_right->get_label()->set_text(R"(\/)");
-				this->btn_right->set_size(this->width, 16);
-				this->btn_right->set_position(0, this->height - 16);
+				this->btn_right->set_size(float2(this->get_width(), 20));
+				this->btn_right->set_position(float2(0, this->get_height() - 20));
 
 				this->btn_left->get_label()->set_text(R"(/\)");
-				this->btn_left->set_size(this->width, 16);
-				this->btn_left->set_position(0, 0);
+				this->btn_left->set_size(float2(this->get_width(), 20));
+				this->btn_left->set_position(float2(0, 0));
 
 				this->btn_indicator->get_label()->set_text("-");
-				this->btn_indicator->set_size(this->width, 20);
-				this->btn_indicator->set_position(0, 15 + (this->height - 50) * this->calc_percent());
+				this->btn_indicator->set_size(float2(this->get_width(), 20));
+				this->btn_indicator->set_position(float2(0, 19 + (this->get_height() - 58) * this->calc_percent()));
 				break;
 			}
 		}

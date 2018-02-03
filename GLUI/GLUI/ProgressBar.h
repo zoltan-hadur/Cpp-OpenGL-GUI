@@ -86,7 +86,7 @@ namespace GLUI {
 	};
 
 	void ProgressBar::calc_percent() {
-		this->percent = (this->value - this->min) / (this->max - this->min);														// Calculate percentage (range: 0-1)
+		this->percent = (this->value - this->min) / (this->max - this->min);					// Calculate percentage (range: 0-1)
 	}
 
 	void ProgressBar::handle_event(Event& e) {
@@ -94,59 +94,61 @@ namespace GLUI {
 	}
 
 	void ProgressBar::draw(bool draw_background) {
-		Component::draw(draw_background);																							// Draw base
+		Component::draw(draw_background);														// Draw base
 
 		char buf[10];
-		std::sprintf(buf, "%6.2f %%", percent * 100);																				// Create the string storing the percentage in the 100.00 % form
+		std::sprintf(buf, "%6.2f %%", percent * 100);											// Create the string storing the percentage in the 100.00 % form
 		this->lbl_percent->set_text(std::string(buf));
-		this->lbl_percent->set_position(0, 0);																						// As the label aligned mid-mid by default
-		this->lbl_percent->set_size(this->width, this->height);																		// The label will be in the center of the progress bar
+		this->lbl_percent->set_position(float2(0, 0));											// As the label aligned mid-mid by default
+		this->lbl_percent->set_size(this->get_size());											// The label will be in the center of the progress bar
 
 
-		if (this->anim == ANIMATION::TEXT_DOTS || this->anim == ANIMATION::TEXT_SPINNING) {											// Handle animation
-			if (this->progressing) {																								// Only animating when something is progressing
-				if (this->watch.is_running()) {																						// Must check, else an exception will be thrown
+		if (this->anim == ANIMATION::TEXT_DOTS || this->anim == ANIMATION::TEXT_SPINNING) {		// Handle animation
+			if (this->progressing) {															// Only animating when something is progressing
+				if (this->watch.is_running()) {													// Must check, else an exception will be thrown
+					long float elapsed = this->watch.get_elapsed<Time::SECONDS>();
 					switch (this->anim) {
-						case ANIMATION::TEXT_DOTS:																					// Text goes in this order
-						{																											// Progressing
-							if (watch.get_elapsed_time() < 1.0f / 4.0f * this->period_time) {										// Progressing.
-								this->lbl_progressing->set_text(" Progressing");													// Progressing..
-							} else if (watch.get_elapsed_time() < 2.0f / 4.0f * this->period_time) {								// Progressing...
+						case ANIMATION::TEXT_DOTS:												// Text goes in this order
+						{																		// Progressing
+							if (elapsed < 1.0f / 4.0f * this->period_time) {					// Progressing.
+								this->lbl_progressing->set_text(" Progressing");				// Progressing..
+							} else if (elapsed < 2.0f / 4.0f * this->period_time) {				// Progressing...
 								this->lbl_progressing->set_text(" Progressing.");
-							} else if (watch.get_elapsed_time() < 3.0f / 4.0f * this->period_time) {								// Each displayed for 1/4 of the period
+							} else if (elapsed < 3.0f / 4.0f * this->period_time) {				// Each displayed for 1/4 of the period
 								this->lbl_progressing->set_text(" Progressing..");
-							} else if (watch.get_elapsed_time() < 4.0f / 4.0f * this->period_time) {
+							} else if (elapsed < 4.0f / 4.0f * this->period_time) {
 								this->lbl_progressing->set_text(" Progressing...");
 							} else {
-								this->watch.reset();																				// Reset the watch if a full period elapsed
+								this->watch.reset();											// Reset the watch if a full period elapsed
 							}
 							break;
 						}
-						case ANIMATION::TEXT_SPINNING:																				// Text goes in this order
-						{																											// Progressing |
-							if (watch.get_elapsed_time() < 1.0f / 4.0f * this->period_time) {										/* Progressing / */
-								this->lbl_progressing->set_text(" Progressing |");													// Progressing -
-							} else if (watch.get_elapsed_time() < 2.0f / 4.0f * this->period_time) {								/* Progressing \ */
+						case ANIMATION::TEXT_SPINNING:											// Text goes in this order
+						{																		// Progressing |
+							if (elapsed < 1.0f / 4.0f * this->period_time) {					/* Progressing / */
+								this->lbl_progressing->set_text(" Progressing |");				// Progressing -
+							} else if (elapsed < 2.0f / 4.0f * this->period_time) {				/* Progressing \ */
 								this->lbl_progressing->set_text(" Progressing /");
-							} else if (watch.get_elapsed_time() < 3.0f / 4.0f * this->period_time) {								// Each displayed for 1/4 of the period
-								unsigned char c = '\x12';																			// Wider '-' character (at least on my pc)
-								this->lbl_progressing->set_text(" Progressing " + std::string(reinterpret_cast<char*>(&c), 1));
-							} else if (watch.get_elapsed_time() < 4.0f / 4.0f * this->period_time) {
+							} else if (elapsed < 3.0f / 4.0f * this->period_time) {				// Each displayed for 1/4 of the period
+								//unsigned char c = '\x12';										// Wider '-' character (at least on my pc)
+								//this->lbl_progressing->set_text(" Progressing " + std::string(reinterpret_cast<char*>(&c), 1));
+								this->lbl_progressing->set_text(" Progressing -");
+							} else if (elapsed < 4.0f / 4.0f * this->period_time) {
 								this->lbl_progressing->set_text(" Progressing \\");
 							} else {
-								this->watch.reset();																				// Reset the watch if a full period elapsed
+								this->watch.reset();											// Reset the watch if a full period elapsed
 							}
 							break;
 						}
 					}
 				}
 			}
-			this->lbl_progressing->set_visible(this->progressing);																	// The label 'animation' only visible when progressing
-			this->lbl_progressing->set_position(0, 0);
-			this->lbl_progressing->set_size(this->width, this->height);
-			this->lbl_progressing->set_h_align(Label::H_ALIGN::LEFT);																// The label's text changes, but I want it to be always mid-left aligned
+			this->lbl_progressing->set_visible(this->progressing);								// The label 'animation' only visible when progressing
+			this->lbl_progressing->set_position(float2(0, 0));
+			this->lbl_progressing->set_size(this->get_size());
+			this->lbl_progressing->set_h_align(Label::H_ALIGN::LEFT);							// The label's text changes, but I want it to be always mid-left aligned
 		} else {
-			this->lbl_progressing->set_visible(false);																				// Not visible, because not a TEXT animation is applied
+			this->lbl_progressing->set_visible(false);											// Not visible, because not a TEXT animation is applied
 		}
 
 
@@ -160,56 +162,56 @@ namespace GLUI {
 					  this->fill_color.A);
 			glBegin(GL_QUADS);
 			glVertex2f(pos.x + this->default_border_width, pos.y + this->default_border_width);
-			glVertex2f(pos.x + (this->width - this->default_border_width)*percent, pos.y + this->default_border_width);
-			glVertex2f(pos.x + (this->width - this->default_border_width)*percent, pos.y + this->height - this->default_border_width);
-			glVertex2f(pos.x + this->default_border_width, pos.y + this->height - this->default_border_width);
+			glVertex2f(pos.x + (this->get_width() - this->default_border_width)*percent, pos.y + this->default_border_width);
+			glVertex2f(pos.x + (this->get_width() - this->default_border_width)*percent, pos.y + this->get_height() - this->default_border_width);
+			glVertex2f(pos.x + this->default_border_width, pos.y + this->get_height() - this->default_border_width);
 			glEnd();
 
 			// Draw animation
 			if (this->progressing) {
 				GLint scissor_pos[4];
-				glGetIntegerv(GL_SCISSOR_BOX, scissor_pos);																			// Get the current scissor position and size
+				glGetIntegerv(GL_SCISSOR_BOX, scissor_pos);																	// Get the current scissor position and size
 
-				float2 posp = float2(scissor_pos[0], glutGet(GLUT_WINDOW_HEIGHT) - (scissor_pos[1] + scissor_pos[3]));				// Parent's position
-				float2 sizep = float2(scissor_pos[2], scissor_pos[3]);																// Parent's size
+				float2 posp = float2(scissor_pos[0], glutGet(GLUT_WINDOW_HEIGHT) - (scissor_pos[1] + scissor_pos[3]));		// Parent's position
+				float2 sizep = float2(scissor_pos[2], scissor_pos[3]);														// Parent's size
 				float2 posc = this->get_absolute_position();
 				float2 sizec = float2(this->get_width() * percent, this->get_height());
 
-				float2 posi = float2(std::max(posp.x, posc.x + this->default_border_width),											// Calculate the rectangle intersection bottom right corner
+				float2 posi = float2(std::max(posp.x, posc.x + this->default_border_width),									// Calculate the rectangle intersection bottom right corner
 									 std::max(posp.y, posc.y + this->default_border_width));
-				float2 posi2 = float2(std::min(posp.x + sizep.x, posc.x + sizec.x),													// Calculate the rectangle intersection top left corner
+				float2 posi2 = float2(std::min(posp.x + sizep.x, posc.x + sizec.x),											// Calculate the rectangle intersection top left corner
 									  std::min(posp.y + sizep.y, posc.y + sizec.y - this->default_border_width));
-				float2 sizei = float2(posi2.x - posi.x, posi2.y - posi.y);															// Calculate the rectangle intersection size
+				float2 sizei = float2(posi2.x - posi.x, posi2.y - posi.y);													// Calculate the rectangle intersection size
 
 				if (sizei.x > 5.0 && sizei.y > 5.0) {
 					float x = posi.x;
-					float y = glutGet(GLUT_WINDOW_HEIGHT) - (posi.y + sizei.y);														// The scissor is using an other coordinate system
+					float y = glutGet(GLUT_WINDOW_HEIGHT) - (posi.y + sizei.y);												// The scissor is using an other coordinate system
 					float w = sizei.x;
 					float h = sizei.y;
 
-					glScissor(std::ceilf(x), std::ceilf(y), w, h);																	// Use ceil to avoid some glitches
+					glScissor(std::ceilf(x), std::ceilf(y), w, h);															// Use ceil to avoid some glitches
 
 					switch (this->anim) {
 						case ANIMATION::STRIPES:
 						{
 							if (this->watch.is_running()) {
-								if (this->watch.get_elapsed_time() > this->period_time) {											// Reset watch if a full period has elapsed
+								if (this->watch.get_elapsed<Time::SECONDS>() > this->period_time) {							// Reset watch if a full period has elapsed
 									this->watch.reset();
 								}
 							}
 
-							float offset = this->watch.get_elapsed_time() / period_time;											// How much needed to be translated
-							pos = this->get_absolute_position() - float2(15, 0) + float2(20 * offset, 0);							// -15 so the bottom left vertex starts from 0, and 20 becouse the drawable parallelogram is 20 wide
+							float offset = this->watch.get_elapsed<Time::SECONDS>() / period_time;							// How much needed to be translated
+							pos = this->get_absolute_position() - float2(15, 0) + float2(20 * offset, 0);					// -15 so the bottom left vertex starts from 0, and 20 becouse the drawable parallelogram is 20 wide
 							glBegin(GL_QUADS);
-							for (int i = 0; i <= (this->width / 20 + 1)*percent; ++i) {												// Draw the parallelogram n times
+							for (int i = 0; i <= (this->get_width() / 20 + 1)*percent; ++i) {								// Draw the parallelogram n times
 								glColor4f(this->fill_color.R,
 										  this->fill_color.G,
 										  this->fill_color.B,
 										  this->fill_color.A);
 								glVertex2f(pos.x, pos.y);
 								glVertex2f(pos.x + 10, pos.y);
-								glVertex2f(pos.x + 5, pos.y + this->height);
-								glVertex2f(pos.x - 5, pos.y + this->height);
+								glVertex2f(pos.x + 5, pos.y + this->get_height());
+								glVertex2f(pos.x - 5, pos.y + this->get_height());
 								pos = pos + float2(10, 0);
 
 								Color fill_color_darker = this->fill_color * 0.9;
@@ -220,8 +222,8 @@ namespace GLUI {
 										  fill_color_darker.A);
 								glVertex2f(pos.x, pos.y);
 								glVertex2f(pos.x + 10, pos.y);
-								glVertex2f(pos.x + 5, pos.y + this->height);
-								glVertex2f(pos.x - 5, pos.y + this->height);
+								glVertex2f(pos.x + 5, pos.y + this->get_height());
+								glVertex2f(pos.x - 5, pos.y + this->get_height());
 								pos = pos + float2(10, 0);
 							}
 							glEnd();
@@ -229,24 +231,24 @@ namespace GLUI {
 						}
 						case ANIMATION::WINDOWS:
 						{
-							float speed = (60 + this->width) / 3.0;																	// Speed of the travelling brighter area
+							float speed = (60 + this->get_width()) / 3.0;																	// Speed of the travelling brighter area
 							if (this->watch.is_running()) {
-								float dist_over = this->watch.get_elapsed_time() * speed - (60 + this->width*percent);				// How much the brighter area travelled outside the progress bar
+								float dist_over = this->watch.get_elapsed<Time::SECONDS>() * speed - (60 + this->get_width()*percent);		// How much the brighter area travelled outside the progress bar
 								if (dist_over > 0) {
-									if (dist_over / speed > this->period_time) {													// If travelled outside longer than the period time,
-										this->watch.reset();																		// Reset the watch
+									if (dist_over / speed > this->period_time) {															// If travelled outside longer than the period time,
+										this->watch.reset();																				// Reset the watch
 									}
 								}
 							}
-							pos = this->get_absolute_position() - float2(60, 0) + float2(this->watch.get_elapsed_time()*speed, 0);	// -60 because the brighter area is 60 wide
-							glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR);														// For proper blending
-							glBegin(GL_QUADS);																						// The brighter area is actually
-							glColor4f(this->fill_color.R,																			// Two 30 wide rectangle
-									  this->fill_color.G,																			// With color interpolation
-									  this->fill_color.B,																			// From 0,fill_color to 30,brighter color
-									  this->fill_color.A);																			// And from 30, brighter color to 60, fill_color
-							glVertex2f(pos.x, pos.y + this->height);																// So the 60 wide rectangle's 2 edge has fill_color
-							glVertex2f(pos.x, pos.y);																				// While the middle has a brighter color
+							pos = this->get_absolute_position() - float2(60, 0) + float2(this->watch.get_elapsed<Time::SECONDS>()*speed, 0);// -60 because the brighter area is 60 wide
+							glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR);																// For proper blending
+							glBegin(GL_QUADS);																								// The brighter area is actually
+							glColor4f(this->fill_color.R,																					// Two 30 wide rectangle
+									  this->fill_color.G,																					// With color interpolation
+									  this->fill_color.B,																					// From 0,fill_color to 30,brighter color
+									  this->fill_color.A);																					// And from 30, brighter color to 60, fill_color
+							glVertex2f(pos.x, pos.y + this->get_height());																	// So the 60 wide rectangle's 2 edge has fill_color
+							glVertex2f(pos.x, pos.y);																						// While the middle has a brighter color
 
 							Color fill_color_brighter = this->fill_color * 1.3;
 							fill_color_brighter.A = 1;
@@ -255,17 +257,17 @@ namespace GLUI {
 									  fill_color_brighter.B,
 									  fill_color_brighter.A);
 							glVertex2f(pos.x + 30, pos.y);
-							glVertex2f(pos.x + 30, pos.y + this->height);
+							glVertex2f(pos.x + 30, pos.y + this->get_height());
 							pos = pos + float2(30, 0);
 
-							glVertex2f(pos.x, pos.y + this->height);
+							glVertex2f(pos.x, pos.y + this->get_height());
 							glVertex2f(pos.x, pos.y);
 							glColor4f(this->fill_color.R,
 									  this->fill_color.G,
 									  this->fill_color.B,
 									  this->fill_color.A);
 							glVertex2f(pos.x + 30, pos.y);
-							glVertex2f(pos.x + 30, pos.y + this->height);
+							glVertex2f(pos.x + 30, pos.y + this->get_height());
 
 							glEnd();
 							glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
@@ -276,7 +278,7 @@ namespace GLUI {
 							break;
 						}
 					}
-					glScissor(scissor_pos[0], scissor_pos[1], scissor_pos[2], scissor_pos[3]);										// Restore the parent's scissor
+					glScissor(scissor_pos[0], scissor_pos[1], scissor_pos[2], scissor_pos[3]);		// Restore the parent's scissor
 				}
 			}
 		}
