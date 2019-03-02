@@ -15,7 +15,7 @@
     <ProjectGuid>{737e80a8-c0aa-4157-90ab-39341310cecd}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>GLUI</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
