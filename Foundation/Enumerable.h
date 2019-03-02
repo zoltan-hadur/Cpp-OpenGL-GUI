@@ -509,15 +509,14 @@ namespace OpenGLUI::Foundation
       return result;
     }
 
-
     // Returns distinct elements from a sequence by using the default equality comparer to compare values.
-    Enumerable<Source> Distinct()
+    Enumerable<Source> Distinct() const
     {
       return Distinct(DefaultEqualityComparator(Source));
     }
 
     // Returns distinct elements from a sequence by using a specified equality comparer to compare values.
-    Enumerable<Source> Distinct(Delegate<bool(Source const&, Source const&)> comparer)
+    Enumerable<Source> Distinct(Delegate<bool(Source const&, Source const&)> comparer) const
     {
       Enumerable<Source> result(_isReference);
       for (auto& value : _values)
@@ -531,13 +530,13 @@ namespace OpenGLUI::Foundation
     }
 
     // Produces the set difference of two sequences by using the default equality comparer to compare values.
-    Enumerable<Source> Except(Enumerable<Source> const& enumerable)
+    Enumerable<Source> Except(Enumerable<Source> const& enumerable) const
     {
       return Except(enumerable, DefaultEqualityComparator(Source));
     }
 
     // Produces the set difference of two sequences by using the specified equality comparer to compare values.
-    Enumerable<Source> Except(Enumerable<Source> const& enumerable, Delegate<bool(Source const&, Source const&)> comparer)
+    Enumerable<Source> Except(Enumerable<Source> const& enumerable, Delegate<bool(Source const&, Source const&)> comparer) const
     {
       Enumerable<Source> result(_isReference);
       for (auto& value : _values)
@@ -551,13 +550,13 @@ namespace OpenGLUI::Foundation
     }
 
     // Produces the set intersection of two sequences by using the default equality comparer to compare values.
-    Enumerable<Source> Intersect(Enumerable<Source> const& enumerable)
+    Enumerable<Source> Intersect(Enumerable<Source> const& enumerable) const
     {
       return Intersect(enumerable, DefaultEqualityComparator(Source));
     }
 
     // Produces the set intersection of two sequences by using the specified equality comparer to compare values.
-    Enumerable<Source> Intersect(Enumerable<Source> const& enumerable, Delegate<bool(Source const&, Source const&)> comparer)
+    Enumerable<Source> Intersect(Enumerable<Source> const& enumerable, Delegate<bool(Source const&, Source const&)> comparer) const
     {
       Enumerable<Source> result(_isReference);
       for (auto& value : _values)
@@ -571,13 +570,13 @@ namespace OpenGLUI::Foundation
     }
 
     // Produces the set union of two sequences by using the default equality comparer.
-    Enumerable<Source> Union(Enumerable<Source> const& enumerable)
+    Enumerable<Source> Union(Enumerable<Source> const& enumerable) const
     {
       return Union(enumerable, DefaultEqualityComparator(Source));
     }
 
     // Produces the set union of two sequences by using a specified equality comparer.
-    Enumerable<Source> Union(Enumerable<Source> const& enumerable, Delegate<bool(Source const&, Source const&)> comparer)
+    Enumerable<Source> Union(Enumerable<Source> const& enumerable, Delegate<bool(Source const&, Source const&)> comparer) const
     {
       Enumerable<Source> result(_isReference && enumerable._isReference);
       for (auto& value : _values)
@@ -599,14 +598,14 @@ namespace OpenGLUI::Foundation
 
     // Sorts the elements of a sequence in ascending order according to a key.
     template<typename Key>
-    OrderedEnumerable<Source> OrderBy(Delegate<Key(Source const&)> keySelector)
+    OrderedEnumerable<Source> OrderBy(Delegate<Key(Source const&)> keySelector) const
     {
       return OrderBy<Key>(keySelector, DefaultLessThanComparator(Key));
     }
 
     // Sorts the elements of a sequence in ascending order by using a specified comparer.
     template<typename Key>
-    OrderedEnumerable<Source> OrderBy(Delegate<Key(Source const&)> keySelector, Delegate<bool(Key const&, Key const&)> comparer)
+    OrderedEnumerable<Source> OrderBy(Delegate<Key(Source const&)> keySelector, Delegate<bool(Key const&, Key const&)> comparer) const
     {
       OrderedEnumerable<Source> result = *this;
       std::sort(result._values.begin(), result._values.end(), [&](Source *const& left, Source *const& right) -> bool
@@ -619,20 +618,20 @@ namespace OpenGLUI::Foundation
 
     // Sorts the elements of a sequence in descending order according to a key.
     template<typename Key>
-    OrderedEnumerable<Source> OrderByDescending(Delegate<Key(Source const&)> keySelector)
+    OrderedEnumerable<Source> OrderByDescending(Delegate<Key(Source const&)> keySelector) const
     {
       return OrderBy(keySelector).Reverse();
     }
 
     // Sorts the elements of a sequence in descending order by using a specified comparer.
     template<typename Key>
-    OrderedEnumerable<Source> OrderByDescending(Delegate<Key(Source const&)> keySelector, Delegate<bool(Key const&, Key const&)> comparer)
+    OrderedEnumerable<Source> OrderByDescending(Delegate<Key(Source const&)> keySelector, Delegate<bool(Key const&, Key const&)> comparer) const
     {
       return OrderBy(keySelector, comparer).Reverse();
     }
 
     // Inverts the order of the elements in a sequence.
-    Enumerable<Source> Reverse()
+    Enumerable<Source> Reverse() const
     {
       Enumerable<Source> result = *this;
       std::reverse(result._values.begin(), result._values.end());
@@ -642,7 +641,7 @@ namespace OpenGLUI::Foundation
     // TODO GroupBy
 
     // Applies an accumulator function over a sequence.
-    Source Aggregate(Delegate<Source(Source const&, Source const&)> accumulator)
+    Source Aggregate(Delegate<Source(Source const&, Source const&)> accumulator) const
     {
       if (Size() == 0) throw std::runtime_error("Aggregate can't be called on empty collections!");
       auto accumulation = *_values[0];
@@ -656,7 +655,7 @@ namespace OpenGLUI::Foundation
 
     // Applies an accumulator function over a sequence. The specified seed value is used as the initial accumulator value.
     template<typename Accumulate>
-    Accumulate Aggregate(Accumulate seed, Delegate<Accumulate(Accumulate const&, Source const&)> accumulator)
+    Accumulate Aggregate(Accumulate seed, Delegate<Accumulate(Accumulate const&, Source const&)> accumulator) const
     {
       auto accumulation = seed;
       auto size = Size();
@@ -669,7 +668,7 @@ namespace OpenGLUI::Foundation
 
     // Applies an accumulator function over a sequence. The specified seed value is used as the initial accumulator value, and the specified function is used to select the result value.
     template<typename Accumulate, typename Result>
-    Result Aggregate(Accumulate seed, Delegate<Accumulate(Accumulate const&, Source const&)> accumulator, Delegate<Result(Accumulate const&)> selector)
+    Result Aggregate(Accumulate seed, Delegate<Accumulate(Accumulate const&, Source const&)> accumulator, Delegate<Result(Accumulate const&)> selector) const
     {
       auto accumulation = seed;
       auto size = Size();
@@ -681,14 +680,14 @@ namespace OpenGLUI::Foundation
     }
 
     // Computes the average of a sequence.
-    double Average()
+    double Average() const
     {
       return (double)Sum() / Size();
     }
 
     // Computes the average of a sequence of values that is obtained by invoking a projection function on each element of the input sequence.
     template<typename Result>
-    double Average(Delegate<Result(Source const&)> selector)
+    double Average(Delegate<Result(Source const&)> selector) const
     {
       return (double)Sum(selector) / Size();
     }
@@ -700,13 +699,13 @@ namespace OpenGLUI::Foundation
     }
 
     // Returns the number of elements in a sequence.
-    int64_t Count()
+    int64_t Count() const
     {
       return Size();
     }
 
     // Returns the number of elements in the specified sequence that satisfies a condition.
-    int64_t Count(Delegate<bool(Source const&)> predicate)
+    int64_t Count(Delegate<bool(Source const&)> predicate) const
     {
       int64_t count = 0;
       for (auto& value : _values)
@@ -720,14 +719,14 @@ namespace OpenGLUI::Foundation
     }
 
     // Returns the maximum value in a sequence.
-    Source Max()
+    Source Max() const
     {
       return Max<Source>(DefaultSelector(Source));
     }
 
     // Invokes a projection function on each element in a sequence and returns the maximum resulting value.
     template<typename Key>
-    Source Max(Delegate<Key(Source const&)> selector)
+    Source Max(Delegate<Key(Source const&)> selector) const
     {
       auto max = std::numeric_limits<Key>::lowest();
       auto maxi = 0i64;
@@ -745,14 +744,14 @@ namespace OpenGLUI::Foundation
     }
 
     // Returns the minimum value in a sequence.
-    Source Min()
+    Source Min() const
     {
       return Min<Source>(DefaultSelector(Source));
     }
 
     // Invokes a projection function on each element in a sequence and returns the minimum resulting value.
     template<typename Key>
-    Source Min(Delegate<Key(Source const&)> selector)
+    Source Min(Delegate<Key(Source const&)> selector) const
     {
       auto min = std::numeric_limits<Key>::max();
       auto mini = 0i64;
@@ -770,14 +769,14 @@ namespace OpenGLUI::Foundation
     }
 
     // Computes the sum of a sequence.
-    Source Sum()
+    Source Sum() const
     {
       return Sum<Source>(DefaultSelector(Source));
     }
 
     // Computes the sum of a sequence of values that is obtained by invoking a projection function on each element of the input sequence.
     template<typename Key>
-    Key Sum(Delegate<Key(Source const&)> selector)
+    Key Sum(Delegate<Key(Source const&)> selector) const
     {
       auto sum = Key();
       for (auto& value : _values)
@@ -789,7 +788,7 @@ namespace OpenGLUI::Foundation
 
     // Converts the elements of a sequence to the specified type.
     template<typename Result>
-    Enumerable<Result> StaticCast()
+    Enumerable<Result> StaticCast() const
     {
       Enumerable<Result> result(false);
       for (auto& value : _values)
@@ -801,7 +800,7 @@ namespace OpenGLUI::Foundation
 
     // Converts the elements of a sequence to the specified type.
     template<typename Result>
-    Enumerable<Result> DynamicCast()
+    Enumerable<Result> DynamicCast() const
     {
       Enumerable<Result> result(false);
       for (auto& value : _values)
@@ -813,7 +812,7 @@ namespace OpenGLUI::Foundation
 
     // Filters the elements of a sequence based on the specified type.
     template<typename Result>
-    Enumerable<Result> OfType()
+    Enumerable<Result> OfType() const
     {
       Enumerable<Result> result(false);
       for (auto& value : _values)
@@ -840,81 +839,81 @@ namespace OpenGLUI::Foundation
     }
 
     // Returns the first element of a sequence.
-    Source First()
+    Source First() const
     {
       return *_values[0];
     }
 
     // Returns the first element of a sequence that satisfies a specified condition.
-    Source First(Delegate<bool(Source const&)> predicate)
+    Source First(Delegate<bool(Source const&)> predicate) const
     {
       return Where(predicate).First();
     }
 
     // Returns the first element of a sequence, or a default value if the sequence contains no elements.
-    Source FirstOrDefault()
+    Source FirstOrDefault() const
     {
       return Any() ? First() : Source();
     }
 
     // Returns the first element of a sequence that satisfies a specified condition or a default value if no such element is found.
-    Source FirstOrDefault(Delegate<bool(Source const&)> predicate)
+    Source FirstOrDefault(Delegate<bool(Source const&)> predicate) const
     {
       return Where(predicate).FirstOrDefault();
     }
 
     // Returns the last element of a sequence.
-    Source Last()
+    Source Last() const
     {
       return *_values[Size() - 1];
     }
 
     // Returns the last element of a sequence that satisfies a specified condition.
-    Source Last(Delegate<bool(Source const&)> predicate)
+    Source Last(Delegate<bool(Source const&)> predicate) const
     {
       return Where(predicate).Last();
     }
 
     // Returns the last element of a sequence, or a default value if the sequence contains no elements.
-    Source LastOrDefault()
+    Source LastOrDefault() const
     {
       return Any() ? Last() : Source();
     }
 
     // Returns the last element of a sequence that satisfies a specified condition or a default value if no such element is found.
-    Source LastOrDefault(Delegate<bool(Source const&)> predicate)
+    Source LastOrDefault(Delegate<bool(Source const&)> predicate) const
     {
       return Where(predicate).LastOrDefault();
     }
 
     // Returns the only element of a sequence, and throws an exception if there is not exactly one element in the sequence.
-    Source Single()
+    Source Single() const
     {
       if (Size() != 1) throw std::runtime_error("There is not exactly one element in the sequence!");
       return *_values[0];
     }
 
     // Returns the only element of a sequence that satisfies a specified condition, and throws an exception if more than one such element exists.
-    Source Single(Delegate<bool(Source const&)> predicate)
+    Source Single(Delegate<bool(Source const&)> predicate) const
     {
       return Where(predicate).Single();
     }
 
     // Returns the only element of a sequence, or a default value if the sequence is empty; this method throws an exception if there is more than one element in the sequence.
-    Source SingleOrDefault()
+    Source SingleOrDefault() const
     {
       if (Size() > 1) throw std::runtime_error("There is more than one element in the sequence!");
       return Any() ? *_values[0] : Source();
     }
 
     // Returns the only element of a sequence that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition.
-    Source SingleOrDefault(Delegate<bool(Source const&)> predicate)
+    Source SingleOrDefault(Delegate<bool(Source const&)> predicate) const
     {
       return Where(predicate).SingleOrDefault();
     }
 
     // Bypasses a specified number of elements in a sequence and then returns the remaining elements.
-    Enumerable<Source> Skip(int64_t count)
+    Enumerable<Source> Skip(int64_t count) const
     {
       Enumerable<Source> result(_isReference);
       auto size = Size();
@@ -926,7 +925,7 @@ namespace OpenGLUI::Foundation
     }
 
     // Bypasses elements in a sequence as long as a specified condition is true and then returns the remaining elements.
-    Enumerable<Source> SkipWhile(Delegate<bool(Source const&)> predicate)
+    Enumerable<Source> SkipWhile(Delegate<bool(Source const&)> predicate) const
     {
       int64_t count = 0;
       auto size = Size();
@@ -935,7 +934,7 @@ namespace OpenGLUI::Foundation
     }
 
     // Bypasses elements in a sequence as long as a specified condition is true and then returns the remaining elements. The element's index is used in the logic of the predicate function.
-    Enumerable<Source> SkipWhile(Delegate<bool(Source const&, int64_t)> predicate)
+    Enumerable<Source> SkipWhile(Delegate<bool(Source const&, int64_t)> predicate) const
     {
       int64_t count = 0;
       auto size = Size();
@@ -944,7 +943,7 @@ namespace OpenGLUI::Foundation
     }
 
     // Returns a specified number of contiguous elements from the start of a sequence.
-    Enumerable<Source> Take(int64_t count)
+    Enumerable<Source> Take(int64_t count) const
     {
       Enumerable<Source> result(_isReference);
       auto size = Size();
@@ -956,7 +955,7 @@ namespace OpenGLUI::Foundation
     }
 
     // Returns elements from a sequence as long as a specified condition is true. The element's index is used in the logic of the predicate function.
-    Enumerable<Source> TakeWhile(Delegate<bool(Source const&)> predicate)
+    Enumerable<Source> TakeWhile(Delegate<bool(Source const&)> predicate) const
     {
       int64_t count = 0;
       auto size = Size();
@@ -965,7 +964,7 @@ namespace OpenGLUI::Foundation
     }
 
     // Returns elements from a sequence as long as a specified condition is true.
-    Enumerable<Source> TakeWhile(Delegate<bool(Source const&, int64_t)> predicate)
+    Enumerable<Source> TakeWhile(Delegate<bool(Source const&, int64_t)> predicate) const
     {
       int64_t count = 0;
       auto size = Size();
@@ -975,7 +974,7 @@ namespace OpenGLUI::Foundation
 
     // Merges two sequences by using the specified predicate function.
     template<typename Result, typename Source2>
-    Enumerable<Result> Zip(Enumerable<Source2> const& enumerable, Delegate<Result(Source const&, typename std::iterator_traits<decltype(enumerable.begin())>::value_type const&)> resultSelector)
+    Enumerable<Result> Zip(Enumerable<Source2> const& enumerable, Delegate<Result(Source const&, typename std::iterator_traits<decltype(enumerable.begin())>::value_type const&)> resultSelector) const
     {
       Enumerable<Result> result(false);
       auto size = std::min(Size(), enumerable.Size());
@@ -987,7 +986,7 @@ namespace OpenGLUI::Foundation
     }
 
     // Appends a value to the end of the sequence.
-    Enumerable<Source> Append(Source const& value)
+    Enumerable<Source> Append(Source const& value) const
     {
       Enumerable<Source> result(false);
       for (auto& value : _values)
@@ -999,7 +998,7 @@ namespace OpenGLUI::Foundation
     }
 
     // Adds a value to the beginning of the sequence.
-    Enumerable<Source> Prepend(Source const& value)
+    Enumerable<Source> Prepend(Source const& value) const
     {
       Enumerable<Source> result(false);
       result.Add(value);
@@ -1011,7 +1010,7 @@ namespace OpenGLUI::Foundation
     }
 
     // Determines whether two sequences are equal by comparing the elements by using the default equality comparer for their type.
-    bool SequenceEqual(Enumerable<Source> const& enumerable)
+    bool SequenceEqual(Enumerable<Source> const& enumerable) const
     {
       if (Size() != enumerable.Size()) return false;
       auto size = Size();
@@ -1024,7 +1023,7 @@ namespace OpenGLUI::Foundation
     }
 
     // Determines whether two sequences are equal by comparing their elements by using a specified equality comparer.
-    bool SequenceEqual(Enumerable<Source> const& enumerable, Delegate<bool(Source const&, Source const&)> comparer)
+    bool SequenceEqual(Enumerable<Source> const& enumerable, Delegate<bool(Source const&, Source const&)> comparer) const
     {
       if (Size() != enumerable.Size()) return false;
       auto size = Size();
@@ -1059,7 +1058,7 @@ namespace OpenGLUI::Foundation
     }
 
     // Creates a vector<Source> from an Enumerable<Source>.
-    std::vector<Source> ToVector()
+    std::vector<Source> ToVector() const
     {
       std::vector<Source> result;
       for (auto& value : _values)
@@ -1071,7 +1070,7 @@ namespace OpenGLUI::Foundation
 
     // Creates a map<Key, Value> from an Enumerable<Source> according to the specified key selector and element selector functions.
     template<typename Key, typename Value>
-    std::map<Key, Value> ToMap(Delegate<Key(Source const&)> keySelector, Delegate<Value(Source const&)> valueSelector)
+    std::map<Key, Value> ToMap(Delegate<Key(Source const&)> keySelector, Delegate<Value(Source const&)> valueSelector) const
     {
       std::map<Key, Value> result;
       for (auto& value : _values)
