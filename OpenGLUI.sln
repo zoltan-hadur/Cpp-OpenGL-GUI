@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GLUI", "GLUI\GLUI.vcxproj",
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Foundation", "Foundation\Foundation.vcxproj", "{41EBAE31-9C09-4FC9-B4C4-BFCA074E71DB}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Foundation.Test", "Foundation.Test\Foundation.Test.vcxproj", "{934A2E5A-F873-4328-9301-32841C2C5A37}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,10 @@ Global
 		{41EBAE31-9C09-4FC9-B4C4-BFCA074E71DB}.Debug|x64.Build.0 = Debug|x64
 		{41EBAE31-9C09-4FC9-B4C4-BFCA074E71DB}.Release|x64.ActiveCfg = Release|x64
 		{41EBAE31-9C09-4FC9-B4C4-BFCA074E71DB}.Release|x64.Build.0 = Release|x64
+		{934A2E5A-F873-4328-9301-32841C2C5A37}.Debug|x64.ActiveCfg = Debug|x64
+		{934A2E5A-F873-4328-9301-32841C2C5A37}.Debug|x64.Build.0 = Debug|x64
+		{934A2E5A-F873-4328-9301-32841C2C5A37}.Release|x64.ActiveCfg = Release|x64
+		{934A2E5A-F873-4328-9301-32841C2C5A37}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
