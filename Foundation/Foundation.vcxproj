@@ -85,6 +85,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Delegate.h" />
+    <ClInclude Include="Enumerable.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="FunctionInfo.h" />
     <ClInclude Include="stdafx.h" />
