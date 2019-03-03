@@ -471,7 +471,37 @@ namespace OpenGLUI::Foundation
 
     // TODO Group join
 
-    // TODO Join
+    // Correlates the elements of two sequences based on matching keys. The default equality comparer is used to compare keys.
+    template<typename Inner, typename Key, typename Result>
+    Enumerable<Result> Join(Enumerable<Inner> const& inner,
+                            Delegate<Key(Source const&)> sourceKeySelector,
+                            Delegate<Key(Inner const&)> innerKeySelector,
+                            Delegate<Result(Source const&, Inner const&)> resultSelector) const
+    {
+      return Join<Inner, Key, Result>(inner, sourceKeySelector, innerKeySelector, resultSelector, DefaultEqualityComparator(Key));
+    }
+
+    // Correlates the elements of two sequences based on matching keys. A specified equality comparer is used to compare keys.
+    template<typename Inner, typename Key, typename Result>
+    Enumerable<Result> Join(Enumerable<Inner> const& inner,
+                            Delegate<Key(Source const&)> sourceKeySelector,
+                            Delegate<Key(Inner const&)> innerKeySelector,
+                            Delegate<Result(Source const&, Inner const&)> resultSelector,
+                            Delegate<bool(Key const&, Key const&)> comparer) const
+    {
+      Enumerable<Result> result(false);
+      for (auto& value : _values)
+      {
+        for (auto& innerValue : inner._values)
+        {
+          if (comparer(sourceKeySelector(*value), innerKeySelector(*innerValue)))
+          {
+            result.Add(resultSelector(*value, *innerValue));
+          }
+        }
+      }
+      return result;
+    }
 
     // Determines whether all the elements of a sequence satisfy a condition.
     bool All(Delegate<bool(Source const&)> predicate) const
