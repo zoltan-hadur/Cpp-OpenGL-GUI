@@ -386,7 +386,7 @@ namespace OpenGLUI::Foundation
     {
       Enumerable<Result> result(false);
       auto size = Size();
-      for (int i = 0; i < size; ++i)
+      for (int64_t i = 0; i < size; ++i)
       {
         result.Add(selector(*_values[i], i));
       }
@@ -414,7 +414,7 @@ namespace OpenGLUI::Foundation
     {
       Enumerable<Source> result(_isReference);
       auto size = Size();
-      for (int i = 0; i < size; ++i)
+      for (int64_t i = 0; i < size; ++i)
       {
         if (predicate(*_values[i], i))
         {
@@ -646,7 +646,7 @@ namespace OpenGLUI::Foundation
       if (Size() == 0) throw std::runtime_error("Aggregate can't be called on empty collections!");
       auto accumulation = *_values[0];
       auto size = Size();
-      for (int i = 1; i < size; ++i)
+      for (int64_t i = 1; i < size; ++i)
       {
         accumulation = accumulator(accumulation, *_values[i]);
       }
@@ -659,7 +659,7 @@ namespace OpenGLUI::Foundation
     {
       auto accumulation = seed;
       auto size = Size();
-      for (int i = 0; i < size; ++i)
+      for (int64_t i = 0; i < size; ++i)
       {
         accumulation = accumulator(accumulation, *_values[i]);
       }
@@ -672,7 +672,7 @@ namespace OpenGLUI::Foundation
     {
       auto accumulation = seed;
       auto size = Size();
-      for (int i = 0; i < size; ++i)
+      for (int64_t i = 0; i < size; ++i)
       {
         accumulation = accumulator(accumulation, *_values[i]);
       }
@@ -917,7 +917,7 @@ namespace OpenGLUI::Foundation
     {
       Enumerable<Source> result(_isReference);
       auto size = Size();
-      for (int i = count; i < size; ++i)
+      for (int64_t i = count; i < size; ++i)
       {
         result.Add(*_values[i]);
       }
@@ -947,7 +947,7 @@ namespace OpenGLUI::Foundation
     {
       Enumerable<Source> result(_isReference);
       auto size = Size();
-      for (int i = 0; i < count && i < size; ++i)
+      for (int64_t i = 0; i < count && i < size; ++i)
       {
         result.Add(*_values[i]);
       }
@@ -978,7 +978,7 @@ namespace OpenGLUI::Foundation
     {
       Enumerable<Result> result(false);
       auto size = std::min(Size(), enumerable.Size());
-      for (int i = 0; i < size; ++i)
+      for (int64_t i = 0; i < size; ++i)
       {
         result.Add(resultSelector(*_values[i], *enumerable._values[i]));
       }
