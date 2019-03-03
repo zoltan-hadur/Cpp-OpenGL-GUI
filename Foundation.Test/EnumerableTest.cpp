@@ -28,7 +28,7 @@ namespace OpenGLUI::Foundation::Test
     {
       auto leftIt = left.begin();
       auto rightIt = right.begin();
-      while (leftIt != left.end() && rightIt != right.end())
+      while (leftIt != left.end() || rightIt != right.end())
       {
         if (*leftIt != *rightIt)
           return false;
@@ -43,7 +43,7 @@ namespace OpenGLUI::Foundation::Test
     {
       auto leftIt = left.begin();
       auto rightIt = right.begin();
-      while (leftIt != left.end() && rightIt != right.end())
+      while (leftIt != left.end() || rightIt != right.end())
       {
         if (!comparer(*leftIt, *rightIt))
           return false;
@@ -199,7 +199,7 @@ namespace OpenGLUI::Foundation::Test
                                         { L"Ashkenazi, Ronen", { L"Walker", L"Sugar" } },
                                         { L"Price, Vernette", { L"Scratches", L"Diesel" } },
                                         { L"Hines, Patrick", { L"Dusty"} } }};
-      auto expected = array{ 8, 4, 7, 6, 10, 7 };
+      auto expected = array{ 8, 4, 7, 6, 10, 7, 6 };
 
       auto output = From(input).SelectMany<wstring, size_t>([](PetOwner const& owner, int64_t index)
       {
