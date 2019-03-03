@@ -469,7 +469,39 @@ namespace OpenGLUI::Foundation
       return result;
     }
 
-    // TODO Group join
+    // Correlates the elements of two sequences based on equality of keys and groups the results. The default equality comparer is used to compare keys.
+    template<typename Inner, typename Key, typename Result>
+    Enumerable<Result> GroupJoin(Enumerable<Inner> const& inner,
+                                 Delegate<Key(Source const&)> sourceKeySelector,
+                                 Delegate<Key(Inner const&)> innerKeySelector,
+                                 Delegate<Result(Source const&, Enumerable<Inner> const&)> resultSelector) const
+    {
+      return GroupJoin<Inner, Key, Result>(inner, sourceKeySelector, innerKeySelector, resultSelector, DefaultEqualityComparator(Key));
+    }
+
+    // Correlates the elements of two sequences based on key equality and groups the results. A specified equality comparer is used to compare keys.
+    template<typename Inner, typename Key, typename Result>
+    Enumerable<Result> GroupJoin(Enumerable<Inner> const& inner,
+                                 Delegate<Key(Source const&)> sourceKeySelector,
+                                 Delegate<Key(Inner const&)> innerKeySelector,
+                                 Delegate<Result(Source const&, Enumerable<Inner> const&)> resultSelector,
+                                 Delegate<bool(Key const&, Key const&)> comparer) const
+    {
+      Enumerable<Result> result(false);
+      for (auto& value : _values)
+      {
+        Enumerable<Inner> innerResult(false);
+        for (auto& innerValue : inner._values)
+        {
+          if (comparer(sourceKeySelector(*value), innerKeySelector(*innerValue)))
+          {
+            innerResult.Add(*innerValue);
+          }
+        }
+        result.Add(resultSelector(*value, innerResult));
+      }
+      return result;
+    }
 
     // Correlates the elements of two sequences based on matching keys. The default equality comparer is used to compare keys.
     template<typename Inner, typename Key, typename Result>

@@ -317,6 +317,83 @@ namespace OpenGLUI::Foundation::Test
       Assert::IsTrue(Equal(expected, output));
     }
 
+    TEST_METHOD(TestGroupJoin1)
+    {
+      struct Customer { int Id; wstring Name; };
+      struct Order { int Id; double Amount; int CustomerId; };
+
+      auto customers = vector<Customer>
+      {
+        { 1, L"George Washington" },
+        { 2, L"John Adams" },
+        { 3, L"Thomas Jefferson" },
+        { 4, L"James Madison" },
+        { 5, L"James Monroe" }
+      };
+      auto orders = vector<Order>
+      {
+        { 1, 234.56, 1 },
+        { 2, 78.50, 3 },
+        { 3, 124.00, 2 },
+        { 4, 65.50, 3 },
+        { 5, 25.50, 10 },
+        { 6, 14.40, 9 }
+      };
+      auto expected = vector<pair<wstring, vector<double>>>
+      {
+        { L"George Washington", { 234.56 } },
+        { L"John Adams", { 124.00 } },
+        { L"Thomas Jefferson", { 78.50, 65.50 } }
+      };
+
+      auto output = From(customers).GroupJoin<Order, int, pair<wstring, vector<double>>>(
+        From(orders),
+        [](Customer const& customer) { return customer.Id; },
+        [](Order const& order) { return order.CustomerId; },
+        [](Customer const& customer, Enumerable<Order> const& orders) { return pair(customer.Name, orders.Select<double>([](Order const& order) { return order.Amount; }).ToVector()); }
+      );
+      Assert::IsTrue(Equal(expected, output));
+    }
+
+    TEST_METHOD(TestGroupJoin2)
+    {
+      struct Customer { int Id; wstring Name; };
+      struct Order { int Id; double Amount; int CustomerId; };
+
+      auto customers = vector<Customer>
+      {
+        { 1, L"George Washington" },
+        { 2, L"John Adams" },
+        { 3, L"Thomas Jefferson" },
+        { 4, L"James Madison" },
+        { 5, L"James Monroe" }
+      };
+      auto orders = vector<Order>
+      {
+        { 1, 234.56, 1 },
+        { 2, 78.50, 3 },
+        { 3, 124.00, 2 },
+        { 4, 65.50, 3 },
+        { 5, 25.50, 10 },
+        { 6, 14.40, 9 }
+      };
+      auto expected = vector<pair<wstring, vector<double>>>
+      {
+        { L"George Washington", { 234.56 } },
+        { L"John Adams", { 124.00 } },
+        { L"Thomas Jefferson", { 78.50, 65.50 } }
+      };
+
+      auto output = From(customers).GroupJoin<Order, int, pair<wstring, vector<double>>>(
+        From(orders),
+        [](Customer const& customer) { return customer.Id; },
+        [](Order const& order) { return order.CustomerId; },
+        [](Customer const& customer, Enumerable<Order> const& orders) { return pair(customer.Name, orders.Select<double>([](Order const& order) { return order.Amount; }).ToVector()); },
+        [](int const& left, int const& right) { return left == right; }
+      );
+      Assert::IsTrue(Equal(expected, output));
+    }
+
     TEST_METHOD(TestAll)
     {
       struct Pet { wstring Name; int Age; };
