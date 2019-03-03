@@ -498,7 +498,10 @@ namespace OpenGLUI::Foundation
             innerResult.Add(*innerValue);
           }
         }
-        result.Add(resultSelector(*value, innerResult));
+        if (innerResult.Any())
+        {
+          result.Add(resultSelector(*value, innerResult));
+        }
       }
       return result;
     }
