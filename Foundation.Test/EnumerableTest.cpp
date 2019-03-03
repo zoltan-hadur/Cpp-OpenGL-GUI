@@ -149,6 +149,71 @@ namespace OpenGLUI::Foundation::Test
       Assert::IsTrue(Equal(expected, output2));
     }
 
+    TEST_METHOD(TestSelectMany1)
+    {
+      struct PetOwner { wstring Name; vector<wstring> Pets; };
+      auto input = array<PetOwner, 3>{{ { L"Higa, Sidney", { L"Scruffy", L"Sam" } },
+                                        { L"Ashkenazi, Ronen", { L"Walker", L"Sugar" } },
+                                        { L"Price, Vernette", { L"Scratches", L"Diesel" } } }};
+      auto expected = array{ L"Scruffy", L"Sam", L"Walker", L"Sugar", L"Scratches", L"Diesel" };
+
+      auto output = From(input).SelectMany<wstring>([](PetOwner const& owner) { return From(owner.Pets); });
+      Assert::IsTrue(Equal(expected, output));
+    }
+
+    TEST_METHOD(TestSelectMany2)
+    {
+      struct PetOwner { wstring Name; vector<wstring> Pets; };
+      auto input = array<PetOwner, 4>{{ { L"Higa, Sidney", { L"Scruffy", L"Sam" } },
+                                        { L"Ashkenazi, Ronen", { L"Walker", L"Sugar" } },
+                                        { L"Price, Vernette", { L"Scratches", L"Diesel" } },
+                                        { L"Hines, Patrick", { L"Dusty"} } }};
+      auto expected = array{ L"0Scruffy", L"0Sam", L"1Walker", L"1Sugar", L"2Scratches", L"2Diesel", L"3Dusty" };
+
+      auto output = From(input).SelectMany<wstring>([](PetOwner const& owner, int64_t index)
+      {
+        return From(owner.Pets).Select<wstring>([&](wstring const& name)
+        {
+          return to_wstring(index) + name;
+        });
+      });
+      Assert::IsTrue(Equal(expected, output));
+    }
+
+    TEST_METHOD(TestSelectMany3)
+    {
+      struct PetOwner { wstring Name; vector<wstring> Pets; };
+      auto input = array<PetOwner, 3>{{ { L"Higa, Sidney", { L"Scruffy", L"Sam" } },
+                                        { L"Ashkenazi, Ronen", { L"Walker", L"Sugar" } },
+                                        { L"Price, Vernette", { L"Scratches", L"Diesel" } } }};
+      auto expected = array{ 7, 3, 6, 5, 9, 6 };
+
+      auto output = From(input).SelectMany<wstring, size_t>([](PetOwner const& owner) { return From(owner.Pets); }, [](wstring const& pet) { return pet.length(); });
+      Assert::IsTrue(Equal(expected, output));
+    }
+
+    TEST_METHOD(TestSelectMany4)
+    {
+      struct PetOwner { wstring Name; vector<wstring> Pets; };
+      auto input = array<PetOwner, 4>{{ { L"Higa, Sidney", { L"Scruffy", L"Sam" } },
+                                        { L"Ashkenazi, Ronen", { L"Walker", L"Sugar" } },
+                                        { L"Price, Vernette", { L"Scratches", L"Diesel" } },
+                                        { L"Hines, Patrick", { L"Dusty"} } }};
+      auto expected = array{ 8, 4, 7, 6, 10, 7 };
+
+      auto output = From(input).SelectMany<wstring, size_t>([](PetOwner const& owner, int64_t index)
+      {
+        return From(owner.Pets).Select<wstring>([&](wstring const& name)
+        {
+          return to_wstring(index) + name;
+        });
+      }, [](wstring const& pet)
+      {
+        return pet.length();
+      });
+      Assert::IsTrue(Equal(expected, output));
+    }
+
     TEST_METHOD(TestWhere1)
     {
       auto input = array{ L"apple"s, L"banana"s, L"mango"s, L"orange"s, L"passionfruit"s, L"grape"s };
