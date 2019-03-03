@@ -844,7 +844,7 @@ namespace OpenGLUI::Foundation::Test
       auto words = array{ L"one"s, L"two"s, L"three"s };
       auto expected = array{ L"1 one"s, L"2 two"s, L"3 three"s };
 
-      auto output = From(numbers).Zip<wstring>(From(words), [](int const& left, wstring const& right) { return to_wstring(left) + L" " + right; });
+      auto output = From(numbers).Zip<wstring>(From(words), [](int const& number, wstring const& word) { return to_wstring(number) + L" " + word; });
       Assert::IsTrue(Equal(expected, output));
     }
 
