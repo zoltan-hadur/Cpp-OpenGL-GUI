@@ -393,7 +393,52 @@ namespace OpenGLUI::Foundation
       return result;
     }
 
-    // TODO SelectMany
+    // Projects each element of a sequence to an Enumerable, and flattens the resulting sequences into one sequence.
+    template<typename Result>
+    Enumerable<Result> SelectMany(Delegate<Enumerable<Result>(Source const&)> selector) const
+    {
+      return SelectMany<Result, Result>(selector, DefaultSelector(Result));
+    }
+
+    // Projects each element of a sequence to an Enumerable, and flattens the resulting sequences into one sequence. The index of each source element is used in the projected form of that element.
+    template<typename Result>
+    Enumerable<Result> SelectMany(Delegate<Enumerable<Result>(Source const&, int64_t)> selector) const
+    {
+      return SelectMany<Result, Result>(selector, DefaultSelector(Result));
+    }
+
+    // Projects each element of a sequence to an Enumerable, flattens the resulting sequences into one sequence, and invokes a result selector function on each element therein.
+    template<typename Source2, typename Result>
+    Enumerable<Result> SelectMany(Delegate<Enumerable<Source2>(Source const&)> collectionSelector, Delegate<Result(Source2 const&)> resultSelector) const
+    {
+      Enumerable<Result> result(false);
+      for (auto& value : _values)
+      {
+        auto inner = collectionSelector(*value);
+        for (auto& innerValue : inner._values)
+        {
+          result.Add(resultSelector(*innerValue));
+        }
+      }
+      return result;
+    }
+
+    // Projects each element of a sequence to an Enumerable, flattens the resulting sequences into one sequence, and invokes a result selector function on each element therein. The index of each source element is used in the intermediate projected form of that element.
+    template<typename Source2, typename Result>
+    Enumerable<Result> SelectMany(Delegate<Enumerable<Source2>(Source const&, int64_t)> collectionSelector, Delegate<Result(Source2 const&)> resultSelector) const
+    {
+      Enumerable<Result> result(false);
+      auto size = Size();
+      for (int64_t i = 0; i < size; ++i)
+      {
+        auto inner = collectionSelector(*_values[i], i);
+        for (auto& innerValue : inner._values)
+        {
+          result.Add(resultSelector(*innerValue));
+        }
+      }
+      return result;
+    }
 
     // Filters a sequence of values based on a predicate.
     Enumerable<Source> Where(Delegate<bool(Source const&)> predicate) const
