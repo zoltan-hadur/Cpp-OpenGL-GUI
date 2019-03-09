@@ -9,7 +9,6 @@
 #include <utility>
 #include <type_traits>
 #include <initializer_list>
-#include<stdarg.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
@@ -946,9 +945,9 @@ namespace OpenGLUI::Foundation::Test
     TEST_METHOD(TestSingle2)
     {
       Assert::ExpectException<runtime_error>([]() { From({ 1, 2, 3 }).Single([](int const& value) { return value < 3; }); });
-      Assert::ExpectException<runtime_error>([]() { L"c"s, From({ L"a"s, L"b"s, L"c"s }).Single([](wstring const& value) { return value < L"c"; }); });
+      Assert::ExpectException<runtime_error>([]() { From({ L"a"s, L"b"s, L"c"s }).Single([](wstring const& value) { return value < L"c"; }); });
       Assert::ExpectException<runtime_error>([]() { From({ 1, 2, 3 }).Single([](int const& value) { return value < 1; }); });
-      Assert::ExpectException<runtime_error>([]() { L"c"s, From({ L"a"s, L"b"s, L"c"s }).Single([](wstring const& value) { return value < L"a"; }); });
+      Assert::ExpectException<runtime_error>([]() { From({ L"a"s, L"b"s, L"c"s }).Single([](wstring const& value) { return value < L"a"; }); });
       Assert::AreEqual(1, From({ 1, 2, 3 }).Single([](int const& value) { return value < 2; }));
       Assert::AreEqual(L"a"s, From({ L"a"s, L"b"s, L"c"s }).Single([](wstring const& value) { return value < L"b"; }));
     }

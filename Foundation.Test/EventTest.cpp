@@ -38,11 +38,11 @@ namespace OpenGLUI::Foundation::Test
       auto event = Event<Delegate<void(int)>>();
 
       auto token1 = event.Add([&](int value) {});
-      Assert::AreEqual<int>(1, event._handlers.size());
+      Assert::AreEqual<size_t>(1, event._handlers.size());
       Assert::IsTrue(event._handlers.count(token1));
 
       auto token2 = event.Add([&](int value) {});
-      Assert::AreEqual<int>(2, event._handlers.size());
+      Assert::AreEqual<size_t>(2, event._handlers.size());
       Assert::IsTrue(event._handlers.count(token2));
 
       Assert::AreNotEqual(token1, token2);
@@ -53,11 +53,11 @@ namespace OpenGLUI::Foundation::Test
       auto event = Event<Delegate<void(int)>>();
 
       auto token1 = event.Add(EventTestFreeFunction);
-      Assert::AreEqual<int>(1, event._handlers.size());
+      Assert::AreEqual<size_t>(1, event._handlers.size());
       Assert::IsTrue(event._handlers.count(token1));
 
       auto token2 = event.Add(EventTestFreeFunction);
-      Assert::AreEqual<int>(2, event._handlers.size());
+      Assert::AreEqual<size_t>(2, event._handlers.size());
       Assert::IsTrue(event._handlers.count(token2));
 
       Assert::AreNotEqual(token1, token2);
@@ -69,11 +69,11 @@ namespace OpenGLUI::Foundation::Test
       auto event = Event<Delegate<void(int)>>();
 
       auto token1 = event.Add({ &test, &EventTestClass::Method });
-      Assert::AreEqual<int>(1, event._handlers.size());
+      Assert::AreEqual<size_t>(1, event._handlers.size());
       Assert::IsTrue(event._handlers.count(token1));
 
       auto token2 = event.Add({ &test, &EventTestClass::Method });
-      Assert::AreEqual<int>(2, event._handlers.size());
+      Assert::AreEqual<size_t>(2, event._handlers.size());
       Assert::IsTrue(event._handlers.count(token2));
 
       Assert::AreNotEqual(token1, token2);
@@ -85,15 +85,15 @@ namespace OpenGLUI::Foundation::Test
       auto event = Event<Delegate<void(int)>>();
 
       auto token1 = event.Add([&](int value) {});
-      Assert::AreEqual<int>(1, event._handlers.size());
+      Assert::AreEqual<size_t>(1, event._handlers.size());
       Assert::IsTrue(event._handlers.count(token1));
 
       auto token2 = event.Add(EventTestFreeFunction);
-      Assert::AreEqual<int>(2, event._handlers.size());
+      Assert::AreEqual<size_t>(2, event._handlers.size());
       Assert::IsTrue(event._handlers.count(token2));
 
       auto token3 = event.Add({ &test, &EventTestClass::Method });
-      Assert::AreEqual<int>(3, event._handlers.size());
+      Assert::AreEqual<size_t>(3, event._handlers.size());
       Assert::IsTrue(event._handlers.count(token3));
 
       Assert::AreNotEqual(token1, token2);
@@ -109,18 +109,18 @@ namespace OpenGLUI::Foundation::Test
       auto token2 = event.Add(EventTestFreeFunction);
       auto token3 = event.Add({ &test, &EventTestClass::Method });
 
-      Assert::AreEqual<int>(3, event._handlers.size());
+      Assert::AreEqual<size_t>(3, event._handlers.size());
 
       event.Remove(token1);
-      Assert::AreEqual<int>(2, event._handlers.size());
+      Assert::AreEqual<size_t>(2, event._handlers.size());
       Assert::IsFalse(event._handlers.count(token1));
 
       event.Remove(token2);
-      Assert::AreEqual<int>(1, event._handlers.size());
+      Assert::AreEqual<size_t>(1, event._handlers.size());
       Assert::IsFalse(event._handlers.count(token2));
 
       event.Remove(token3);
-      Assert::AreEqual<int>(0, event._handlers.size());
+      Assert::AreEqual<size_t>(0, event._handlers.size());
       Assert::IsFalse(event._handlers.count(token3));
     }
 
@@ -133,9 +133,9 @@ namespace OpenGLUI::Foundation::Test
       auto token2 = event.Add(EventTestFreeFunction);
       auto token3 = event.Add({ &test, &EventTestClass::Method });
 
-      Assert::AreEqual<int>(3, event._handlers.size());
+      Assert::AreEqual<size_t>(3, event._handlers.size());
       event.Clear();
-      Assert::AreEqual<int>(0, event._handlers.size());
+      Assert::AreEqual<size_t>(0, event._handlers.size());
     }
 
     TEST_METHOD(TestInvoke)
@@ -146,32 +146,32 @@ namespace OpenGLUI::Foundation::Test
       auto token1 = event.Add([&](int value) { EventTestGlobalArgument = value; EventTestGlobalCalled++; throw exception("Fail on purpose"); });
       auto token2 = event.Add(EventTestFreeFunction);
       auto token3 = event.Add({ &test, &EventTestClass::Method });
-      Assert::AreEqual<int>(3, event._handlers.size());
+      Assert::AreEqual<size_t>(3, event._handlers.size());
 
       event(1337);
       Assert::AreEqual(1337, EventTestGlobalArgument);
       Assert::AreEqual(3, EventTestGlobalCalled);
-      Assert::AreEqual<int>(2, event._handlers.size());
+      Assert::AreEqual<size_t>(2, event._handlers.size());
 
       event(1338);
       Assert::AreEqual(1338, EventTestGlobalArgument);
       Assert::AreEqual(5, EventTestGlobalCalled);
-      Assert::AreEqual<int>(2, event._handlers.size());
+      Assert::AreEqual<size_t>(2, event._handlers.size());
 
       event.Clear();
       event(1338);
       Assert::AreEqual(1338, EventTestGlobalArgument);
       Assert::AreEqual(5, EventTestGlobalCalled);
-      Assert::AreEqual<int>(0, event._handlers.size());
+      Assert::AreEqual<size_t>(0, event._handlers.size());
     }
 
     TEST_METHOD(TestUniqueEventToken)
     {
       auto event = Event<Delegate<void()>>();
-      unsigned threadCount = thread::hardware_concurrency();
+      auto threadCount = thread::hardware_concurrency();
       auto threads = vector<thread>(threadCount);
       auto id = EventCommon::_id.load();
-      for (int i = 0; i < threadCount; ++i)
+      for (decltype(threadCount) i = 0; i < threadCount; ++i)
       {
         threads[i] = thread([&]()
         {
@@ -181,7 +181,7 @@ namespace OpenGLUI::Foundation::Test
           }
         });
       }
-      for (int i = 0; i < threadCount; ++i)
+      for (decltype(threadCount) i = 0; i < threadCount; ++i)
       {
         threads[i].join();
       }
