@@ -29,6 +29,7 @@ namespace OpenGLUI::Foundation
   private:
     template<typename Source> friend class Enumerable;
     template<typename Source> friend class OrderedEnumerable;
+    template<typename Key, typename Source> friend class Grouping;
     friend class OpenGLUI::Foundation::Test::EnumerableTest;
 
     std::vector<Source*> _values;
@@ -748,7 +749,129 @@ namespace OpenGLUI::Foundation
       return result;
     }
 
-    // TODO GroupBy
+    // Groups the elements of a sequence according to a specified key selector function.
+    template<typename Key>
+    Enumerable<Grouping<Key, Source>> GroupBy(Delegate<Key(Source const&)> keySelector) const
+    {
+      return GroupBy<Key, Source, Grouping<Key, Source>>(
+        keySelector,
+        DefaultSelector(Source),
+        [](Key const& key, Enumerable<Source> const& enumerable) { return Grouping(key, enumerable); },
+        DefaultEqualityComparator(Key)
+      );
+    }
+
+    // Groups the elements of a sequence according to a specified key selector function and compares the keys by using a specified comparer.
+    template<typename Key>
+    Enumerable<Grouping<Key, Source>> GroupBy(Delegate<Key(Source const&)> keySelector, Delegate<bool(Key const&, Key const&)> comparer) const
+    {
+      return GroupBy<Key, Source, Grouping<Key, Source>>(
+        keySelector,
+        DefaultSelector(Source),
+        [](Key const& key, Enumerable<Source> const& enumerable) { return Grouping(key, enumerable); },
+        comparer
+      );
+    }
+
+    // Groups the elements of a sequence according to a specified key selector function and creates a result value from each group and its key.
+    template<typename Key, typename Result>
+    Enumerable<Result> GroupBy(Delegate<Key(Source const&)> keySelector, Delegate<Result(Key const&, Enumerable<Source> const&)> resultSelector) const
+    {
+      return GroupBy<Key, Source, Result>(
+        keySelector,
+        DefaultSelector(Source),
+        resultSelector,
+        DefaultEqualityComparator(Key)
+      );
+    }
+
+    // Groups the elements of a sequence according to a specified key selector function and creates a result value from each group and its key. The keys are compared by using a specified comparer.
+    template<typename Key, typename Result>
+    Enumerable<Result> GroupBy(Delegate<Key(Source const&)> keySelector, Delegate<Result(Key const&, Enumerable<Source> const&)> resultSelector, Delegate<bool(Key const&, Key const&)> comparer) const
+    {
+      return GroupBy<Key, Source, Result>(
+        keySelector,
+        DefaultSelector(Source),
+        resultSelector,
+        comparer
+      );
+    }
+
+    // Groups the elements of a sequence according to a specified key selector function and projects the elements for each group by using a specified function.
+    template<typename Key, typename Element>
+    Enumerable<Grouping<Key, Element>> GroupBy(Delegate<Key(Source const&)> keySelector, Delegate<Element(Source const&)> elementSelector) const
+    {
+      return GroupBy<Key, Element, Grouping<Key, Element>>(
+        keySelector,
+        elementSelector,
+        [](Key const& key, Enumerable<Element> const& enumerable) { return Grouping(key, enumerable); },
+        DefaultEqualityComparator(Key)
+      );
+    }
+
+    // Groups the elements of a sequence according to a key selector function. The keys are compared by using a comparer and each group's elements are projected by using a specified function.
+    template<typename Key, typename Element>
+    Enumerable<Grouping<Key, Element>> GroupBy(Delegate<Key(Source const&)> keySelector, Delegate<Element(Source const&)> elementSelector, Delegate<bool(Key const&, Key const&)> comparer) const
+    {
+      return GroupBy<Key, Element, Grouping<Key, Element>>(
+        keySelector,
+        elementSelector,
+        [](Key const& key, Enumerable<Element> const& enumerable) { return Grouping(key, enumerable); },
+        comparer
+      );
+    }
+
+    // Groups the elements of a sequence according to a specified key selector function and creates a result value from each group and its key. The elements of each group are projected by using a specified function.
+    template<typename Key, typename Element, typename Result>
+    Enumerable<Result> GroupBy(
+      Delegate<Key(Source const&)> keySelector,
+      Delegate<Element(Source const&)> elementSelector,
+      Delegate<Result(Key const&, Enumerable<Element> const&)> resultSelector
+    ) const
+    {
+      return GroupBy<Key, Element, Result>(
+        keySelector,
+        elementSelector,
+        resultSelector,
+        DefaultEqualityComparator(Key)
+      );
+    }
+
+    // Groups the elements of a sequence according to a specified key selector function and creates a result value from each group and its key. Key values are compared by using a specified comparer, and the elements of each group are projected by using a specified function.
+    template<typename Key, typename Element, typename Result>
+    Enumerable<Result> GroupBy(
+      Delegate<Key(Source const&)> keySelector,
+      Delegate<Element(Source const&)> elementSelector,
+      Delegate<Result(Key const&, Enumerable<Element> const&)> resultSelector,
+      Delegate<bool(Key const&, Key const&)> comparer
+    ) const
+    {
+      Enumerable<Grouping<Key, Element>> groups(false);
+      for (auto& value : _values)
+      {
+        auto key = keySelector(*value);
+        Grouping<Key, Element>* groupPtr = nullptr;
+        for (auto& group : groups)
+        {
+          if (comparer(group.Key(), key))
+          {
+            groupPtr = &group;
+            break;
+          }
+        }
+        if (!groupPtr)
+        {
+          groupPtr = groups._values.emplace_back(new Grouping<Key, Element>(key, false));
+        }
+        groupPtr->Add(elementSelector(*value));
+      }
+      Enumerable<Result> result(false);
+      for (auto& group : groups)
+      {
+        result.Add(resultSelector(group.Key(), group));
+      }
+      return result;
+    }
 
     // Applies an accumulator function over a sequence.
     Source Aggregate(Delegate<Source(Source const&, Source const&)> accumulator) const
@@ -1218,6 +1341,7 @@ namespace OpenGLUI::Foundation
   private:
     template<typename Source> friend class Enumerable;
     template<typename Source> friend class OrderedEnumerable;
+    template<typename Key, typename Source> friend class Grouping;
     friend class OpenGLUI::Foundation::Test::EnumerableTest;
 
     std::vector<std::pair<int64_t, int64_t>> _ranges;
@@ -1306,6 +1430,28 @@ namespace OpenGLUI::Foundation
       }
       result.DetermineRanges(keySelector);
       return result;
+    }
+  };
+
+  template<typename Key, typename Source>
+  class Grouping : Enumerable<Source>
+  {
+  private:
+    template<typename Source> friend class Enumerable;
+    template<typename Source> friend class OrderedEnumerable;
+    template<typename Key, typename Source> friend class Grouping;
+    friend class OpenGLUI::Foundation::Test::EnumerableTest;
+
+    Key _key;
+
+    Grouping() : Enumerable(false) { _key = Key(); }
+    Grouping(Key key, bool isReference = true) : Enumerable(isReference) { _key = key; }
+    Grouping(Key key, Enumerable const& enumerable) : Enumerable(enumerable) { _key = key; }
+  public:
+    
+    Key Key() const
+    {
+      return _key;
     }
   };
 }

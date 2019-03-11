@@ -23,7 +23,7 @@ namespace OpenGLUI::Foundation::Test
     static _CrtMemState _result;
 
     template<typename T1, typename T2>
-    bool Equal(T1 const& left, T2 const& right)
+    bool Equal(T1 const& left, T2 const& right) const
     {
       auto leftIt = left.begin();
       auto rightIt = right.begin();
@@ -38,7 +38,7 @@ namespace OpenGLUI::Foundation::Test
     }
 
     template<typename T1, typename T2>
-    bool Equal(T1 const& left, T2 const& right, Delegate<bool(typename decltype(left.begin())::value_type const&, typename decltype(right.begin())::value_type const&)> comparer)
+    bool Equal(T1 const& left, T2 const& right, Delegate<bool(typename decltype(left.begin())::value_type const&, typename decltype(right.begin())::value_type const&)> comparer) const
     {
       auto leftIt = left.begin();
       auto rightIt = right.begin();
@@ -702,6 +702,130 @@ namespace OpenGLUI::Foundation::Test
     {
       Assert::IsTrue(From({ 1, 2, 3, 4, 5 }).Reverse().SequenceEqual({ 5, 4, 3, 2, 1 }));
       Assert::IsTrue(From({ 1.0, 3.0, 2.0 }).Reverse().SequenceEqual({ 2.0, 3.0, 1.0 }));
+    }
+
+    TEST_METHOD(TestGroupBy1)
+    {
+      auto input = array{ 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      auto expected = vector<pair<bool, vector<int>>>{ { false, { 1, 3, 5, 7, 9 } }, { true, { 2, 4, 6, 8 } } };
+
+      auto output = From(input).GroupBy<bool>(
+        [](int const& value) { return value % 2 == 0; }
+      );
+      Assert::IsTrue(Equal(expected, output, [&](pair<bool, vector<int>> const& innerExpected, Grouping<bool, int> const& innerOutput)
+      {
+        return innerExpected.first == innerOutput.Key() && Equal(innerExpected.second, innerOutput);
+      }));
+    }
+
+    TEST_METHOD(TestGroupBy2)
+    {
+      auto input = array{ 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      auto expected = vector<pair<bool, vector<int>>>{ { false, { 1, 3, 5, 7, 9 } }, { true, { 2, 4, 6, 8 } } };
+
+      auto output = From(input).GroupBy<bool>(
+        [](int const& value) { return value % 2 == 0; },
+        [](bool const& left, bool const& right) { return left == right; }
+      );
+      Assert::IsTrue(Equal(expected, output, [&](pair<bool, vector<int>> const& innerExpected, Grouping<bool, int> const& innerOutput)
+      {
+        return innerExpected.first == innerOutput.Key() && Equal(innerExpected.second, innerOutput);
+      }));
+    }
+
+    TEST_METHOD(TestGroupBy3)
+    {
+      auto input = array{ 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      auto expected = vector<pair<int, vector<int>>>{ { 0, { 1, 3, 5, 7, 9 } }, { 1, { 2, 4, 6, 8 } } };
+
+      auto output = From(input).GroupBy<bool, pair<int, vector<int>>>(
+        [](int const& value) { return value % 2 == 0; },
+        [](bool const& key, Enumerable<int> const& enumerable) { return pair(key ? 1 : 0, enumerable.ToVector()); }
+      );
+      Assert::IsTrue(Equal(expected, output, [&](pair<int, vector<int>> const& innerExpected, pair<int, vector<int>> const& innerOutput)
+      {
+        return innerExpected.first == innerOutput.first && Equal(innerExpected.second, innerOutput.second);
+      }));
+    }
+
+    TEST_METHOD(TestGroupBy4)
+    {
+      auto input = array{ 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      auto expected = vector<pair<int, vector<int>>>{ { 0, { 1, 3, 5, 7, 9 } }, { 1, { 2, 4, 6, 8 } } };
+
+      auto output = From(input).GroupBy<bool, pair<int, vector<int>>>(
+        [](int const& value) { return value % 2 == 0; },
+        [](bool const& key, Enumerable<int> const& enumerable) { return pair(key ? 1 : 0, enumerable.ToVector()); },
+        [](bool const& left, bool const& right) { return left == right; }
+      );
+      Assert::IsTrue(Equal(expected, output, [&](pair<int, vector<int>> const& innerExpected, pair<int, vector<int>> const& innerOutput)
+      {
+        return innerExpected.first == innerOutput.first && Equal(innerExpected.second, innerOutput.second);
+      }));
+    }
+
+    TEST_METHOD(TestGroupBy5)
+    {
+      auto input = array{ 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      auto expected = vector<pair<bool, vector<double>>>{ { false, { 1.0, 3.0, 5.0, 7.0, 9.0 } }, { true, { 2.0, 4.0, 6.0, 8.0 } } };
+
+      auto output = From(input).GroupBy<bool, double>(
+        [](int const& value) { return value % 2 == 0; },
+        [](int const& value) { return value * 1.0; }
+      );
+      Assert::IsTrue(Equal(expected, output, [&](pair<bool, vector<double>> const& innerExpected, Grouping<bool, double> const& innerOutput)
+      {
+        return innerExpected.first == innerOutput.Key() && Equal(innerExpected.second, innerOutput);
+      }));
+    }
+
+    TEST_METHOD(TestGroupBy6)
+    {
+      auto input = array{ 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      auto expected = vector<pair<bool, vector<double>>>{ { false, { 1.0, 3.0, 5.0, 7.0, 9.0 } }, { true, { 2.0, 4.0, 6.0, 8.0 } } };
+
+      auto output = From(input).GroupBy<bool, double>(
+        [](int const& value) { return value % 2 == 0; },
+        [](int const& value) { return value * 1.0; },
+        [](bool const& left, bool const& right) { return left == right; }
+      );
+      Assert::IsTrue(Equal(expected, output, [&](pair<bool, vector<double>> const& innerExpected, Grouping<bool, double> const& innerOutput)
+      {
+        return innerExpected.first == innerOutput.Key() && Equal(innerExpected.second, innerOutput);
+      }));
+    }
+
+    TEST_METHOD(TestGroupBy7)
+    {
+      auto input = array{ 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      auto expected = vector<pair<int, vector<double>>>{ { 0, { 1.0, 3.0, 5.0, 7.0, 9.0 } }, { 1, { 2.0, 4.0, 6.0, 8.0 } } };
+
+      auto output = From(input).GroupBy<bool, double, pair<int, vector<double>>>(
+        [](int const& value) { return value % 2 == 0; },
+        [](int const& value) { return value * 1.0; },
+        [](bool const& key, Enumerable<double> const& enumerable) { return pair(key ? 1 : 0, enumerable.ToVector()); }
+      );
+      Assert::IsTrue(Equal(expected, output, [&](pair<int, vector<double>> const& innerExpected, pair<int, vector<double>> const& innerOutput)
+      {
+        return innerExpected.first == innerOutput.first && Equal(innerExpected.second, innerOutput.second);
+      }));
+    }
+
+    TEST_METHOD(TestGroupBy8)
+    {
+      auto input = array{ 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      auto expected = vector<pair<int, vector<double>>>{ { 0, { 1.0, 3.0, 5.0, 7.0, 9.0 } }, { 1, { 2.0, 4.0, 6.0, 8.0 } } };
+
+      auto output = From(input).GroupBy<bool, double, pair<int, vector<double>>>(
+        [](int const& value) { return value % 2 == 0; },
+        [](int const& value) { return value * 1.0; },
+        [](bool const& key, Enumerable<double> const& enumerable) { return pair(key ? 1 : 0, enumerable.ToVector()); },
+        [](bool const& left, bool const& right) { return left == right; }
+      );
+      Assert::IsTrue(Equal(expected, output, [&](pair<int, vector<double>> const& innerExpected, pair<int, vector<double>> const& innerOutput)
+      {
+        return innerExpected.first == innerOutput.first && Equal(innerExpected.second, innerOutput.second);
+      }));
     }
 
     TEST_METHOD(TestAggregate1)
