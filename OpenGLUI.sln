@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Foundation", "Foundation\Fo
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Foundation.Test", "Foundation.Test\Foundation.Test.vcxproj", "{934A2E5A-F873-4328-9301-32841C2C5A37}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Json4CPP", "Json4CPP\Json4CPP.vcxproj", "{5A1A5B04-E299-4A68-8305-5A3BE3F79012}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -27,6 +29,10 @@ Global
 		{934A2E5A-F873-4328-9301-32841C2C5A37}.Debug|x64.Build.0 = Debug|x64
 		{934A2E5A-F873-4328-9301-32841C2C5A37}.Release|x64.ActiveCfg = Release|x64
 		{934A2E5A-F873-4328-9301-32841C2C5A37}.Release|x64.Build.0 = Release|x64
+		{5A1A5B04-E299-4A68-8305-5A3BE3F79012}.Debug|x64.ActiveCfg = Debug|x64
+		{5A1A5B04-E299-4A68-8305-5A3BE3F79012}.Debug|x64.Build.0 = Debug|x64
+		{5A1A5B04-E299-4A68-8305-5A3BE3F79012}.Release|x64.ActiveCfg = Release|x64
+		{5A1A5B04-E299-4A68-8305-5A3BE3F79012}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
