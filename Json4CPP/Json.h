@@ -83,6 +83,9 @@ namespace Json4CPP
       return std::get<T>(_value);
     }
 
+    void AddPair(std::pair<NAME, Json> pair);
+    void AddValue(Json value);
+
     operator std::nullptr_t   ();
     operator std::wstring     ();
     operator bool             ();

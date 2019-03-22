@@ -111,6 +111,32 @@ namespace Json4CPP
     wfstream(filePath, wfstream::out) << *this;
   }
 
+  void Json::AddPair(std::pair<NAME, Json> pair)
+  {
+    switch (Type())
+    {
+    case JsonType::Null:
+      _value = JsonObject();
+    case JsonType::Object:
+      return get<JsonObject>(_value).AddPair(pair);
+    default:
+      throw exception("Add(pair<NAME, Json>) is only defined for JsonObject!");
+    }
+  }
+
+  void Json::AddValue(Json value)
+  {
+    switch (Type())
+    {
+    case JsonType::Null:
+      _value = JsonArray();
+    case JsonType::Array:
+      return get<JsonArray>(_value).AddValue(value);
+    default:
+      throw exception("Add(Json) is only defined for JsonArray!");
+    }
+  }
+
 #pragma region Implicit conversion operators
 #pragma warning(push)
 #pragma warning(disable : 4244)

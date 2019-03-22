@@ -36,6 +36,8 @@ namespace Json4CPP
 
     std::wstring Dump(int indentation = 0) const;
 
+    void AddValue(Json value);
+
     Json& operator[](int const& index);
 
     JSON_API friend std::wostream& operator<<(std::wostream& os, JsonArray const& array);

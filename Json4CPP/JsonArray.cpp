@@ -70,6 +70,11 @@ namespace Json4CPP
     return buffer.str();
   }
 
+  void JsonArray::AddValue(Json value)
+  {
+    _values.push_back(value);
+  }
+
   Json& JsonArray::operator[](int const& index)
   {
     return _values[index];

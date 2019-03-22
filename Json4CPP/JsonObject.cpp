@@ -75,6 +75,11 @@ namespace Json4CPP
     return buffer.str();
   }
 
+  void JsonObject::AddPair(std::pair<NAME, Json> pair)
+  {
+    _pairs.push_back(pair);
+  }
+
   Json& JsonObject::operator[](NAME const& name)
   {
     for (auto& [key, value] : _pairs)
