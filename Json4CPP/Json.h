@@ -45,6 +45,24 @@ namespace Json4CPP
     Json(std::initializer_list<JsonBuilder> values);
     Json(Json const& json);
 
+    Json(std::nullptr_t value);
+    Json(const wchar_t* value);
+    Json(std::wstring   value);
+    Json(bool           value);
+    Json(char           value);
+    Json(int8_t         value);
+    Json(uint8_t        value);
+    Json(int16_t        value);
+    Json(uint16_t       value);
+    Json(int32_t        value);
+    Json(uint32_t       value);
+    Json(int64_t        value);
+    Json(uint64_t       value);
+    Json(float          value);
+    Json(double         value);
+    Json(JsonObject     value);
+    Json(JsonArray      value);
+
     JsonType Type() const;
     bool Is(JsonType type) const;
 

@@ -66,6 +66,24 @@ namespace Json4CPP
     _value = json._value;
   }
 
+  Json::Json(nullptr_t      value ) { _value = value;          }
+  Json::Json(const wchar_t* value ) { _value = wstring(value); }
+  Json::Json(wstring        value ) { _value = value;          }
+  Json::Json(bool           value ) { _value = value;          }
+  Json::Json(char           value ) { _value = double(value);  }
+  Json::Json(int8_t         value ) { _value = double(value);  }
+  Json::Json(uint8_t        value ) { _value = double(value);  }
+  Json::Json(int16_t        value ) { _value = double(value);  }
+  Json::Json(uint16_t       value ) { _value = double(value);  }
+  Json::Json(int32_t        value ) { _value = double(value);  }
+  Json::Json(uint32_t       value ) { _value = double(value);  }
+  Json::Json(int64_t        value ) { _value = double(value);  }
+  Json::Json(uint64_t       value ) { _value = double(value);  }
+  Json::Json(float          value ) { _value = double(value);  }
+  Json::Json(double         value ) { _value = value;          }
+  Json::Json(JsonObject     value ) { _value = value;          }
+  Json::Json(JsonArray      value ) { _value = value;          }
+
   JsonType Json::Type() const
   {
     return GetType(_value);
