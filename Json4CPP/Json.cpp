@@ -33,7 +33,7 @@ namespace Json4CPP
 
   Json::Json()
   {
-    _value = JsonObject();
+    _value = nullptr;
   }
 
   Json::Json(JsonBuilder value)
@@ -332,8 +332,12 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Object: return get<JsonObject>(_value)[name];
-    default: throw exception("Operator[NAME] is only defined for JsonObject!");
+    case JsonType::Null:
+      _value = JsonObject();
+    case JsonType::Object:
+      return get<JsonObject>(_value)[name];
+    default:
+      throw exception("Operator[NAME] is only defined for JsonObject!");
     }
   }
 
