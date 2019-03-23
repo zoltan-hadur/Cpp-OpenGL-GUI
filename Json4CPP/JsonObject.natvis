@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+  <Type Name="Json4CPP::JsonObject">
+    <DisplayString>{{ Object={{Pairs={_pairs.size()}}} }}</DisplayString>
+    <Expand HideRawView="true">
+      <Item Name="[size]" ExcludeView="simple">_pairs.size()</Item>
+      <Item Name="[capacity]" ExcludeView="simple">_pairs.capacity()</Item>
+      <ArrayItems>
+        <Size>_pairs.size()</Size>
+        <ValuePointer>_pairs._Mypair._Myval2._Myfirst</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+</AutoVisualizer>

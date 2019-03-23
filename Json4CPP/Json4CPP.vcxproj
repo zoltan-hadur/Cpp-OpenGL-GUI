@@ -115,6 +115,12 @@
   <ItemGroup>
     <None Include="cpp.hint" />
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="Json.natvis" />
+    <Natvis Include="JsonArray.natvis" />
+    <Natvis Include="JsonObject.natvis" />
+    <Natvis Include="KeyValuePair.natvis" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

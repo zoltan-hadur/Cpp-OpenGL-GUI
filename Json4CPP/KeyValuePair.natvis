@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+  <Type Name="std::pair&lt;*,Json4CPP::Json&gt;">
+    <DisplayString>({first}, {second})</DisplayString>
+    <Expand HideRawView="true">
+      <Item Name="[Key]">first</Item>
+      <Item Name="[Value]">second</Item>
+    </Expand>
+  </Type>
+</AutoVisualizer>
