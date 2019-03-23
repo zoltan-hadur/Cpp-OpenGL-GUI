@@ -414,6 +414,7 @@ namespace Json4CPP
   Json& Json::operator=(uint64_t                            value) { _value = double(value);       return *this; }
   Json& Json::operator=(float                               value) { _value = double(value);       return *this; }
   Json& Json::operator=(double                              value) { _value = value;               return *this; }
+  Json& Json::operator=(Json                                value) { _value = value._value;        return *this; }
   Json& Json::operator=(JsonObject                          value) { _value = value;               return *this; }
   Json& Json::operator=(JsonArray                           value) { _value = value;               return *this; }
   Json& Json::operator=(JsonBuilder                         value) { _value = Json(value)._value;  return *this; }

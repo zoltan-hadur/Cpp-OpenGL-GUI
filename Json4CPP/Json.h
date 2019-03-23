@@ -146,6 +146,7 @@ namespace Json4CPP
     Json& operator= (uint64_t                           value );
     Json& operator= (float                              value );
     Json& operator= (double                             value );
+    Json& operator= (Json                               value );
     Json& operator= (JsonObject                         value );
     Json& operator= (JsonArray                          value );
     Json& operator= (JsonBuilder                        value );
