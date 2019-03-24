@@ -8,6 +8,8 @@ using namespace std;
 
 namespace Json4CPP
 {
+  JsonBuilder::JsonBuilder() : JsonBuilder(nullptr) {}
+
   JsonBuilder::JsonBuilder(VALUE                          value ) { visit([&](auto arg) { _value = arg; }, value);              }
   JsonBuilder::JsonBuilder(nullptr_t                      value ) { _value = value;                                             }
   JsonBuilder::JsonBuilder(const wchar_t*                 value ) { _value = wstring(value);                                    }

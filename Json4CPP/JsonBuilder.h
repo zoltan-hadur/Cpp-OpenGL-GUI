@@ -29,6 +29,8 @@ namespace Json4CPP
     VALUE_BUILDER _value;
 
   public:
+    JsonBuilder();
+
     JsonBuilder(VALUE                               value );
     JsonBuilder(std::nullptr_t                      value );
     JsonBuilder(const wchar_t*                      value );
