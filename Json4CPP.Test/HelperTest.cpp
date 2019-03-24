@@ -8,7 +8,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using namespace Json4CPP;
 
-namespace Json4CPPTest
+namespace Json4CPP::Test
 {		
 	TEST_CLASS(HelperTest)
 	{
