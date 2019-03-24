@@ -141,8 +141,8 @@ namespace Json4CPP
     bool value;
     switch (is.peek())
     {
-    case L't': expectedw = L"true"; expected = "true"; value = true; break;
-    case L'f': value = L"false"; expected = "false"; value = false; break;
+    case L't': expectedw = L"true";  expected = "true";  value = true;  break;
+    case L'f': expectedw = L"false"; expected = "false"; value = false; break;
     default:
     {
       auto message = "Expected 't' or 'f' at position " + to_string(is.tellg());
