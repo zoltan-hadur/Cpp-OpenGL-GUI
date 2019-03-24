@@ -1,5 +1,11 @@
 #pragma once
 
+#ifdef JSON4CPP_EXPORTS
+#define JSON_API __declspec(dllexport)
+#else
+#define JSON_API __declspec(dllimport)
+#endif
+
 #include <string>
 
 namespace Json4CPP
@@ -15,5 +21,5 @@ namespace Json4CPP
   template<typename ...Args>
   Overload(Args...)->Overload<Args...>;
 
-  std::wstring EscapeString(std::wstring value);
+  JSON_API std::wstring EscapeString(std::wstring value);
 }
