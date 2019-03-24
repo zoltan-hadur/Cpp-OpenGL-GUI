@@ -162,82 +162,28 @@ namespace Json4CPP
     JSON_API friend std::wistream& operator>>(std::wistream& is, Json      & json);
 
     JSON_API              friend bool   operator==(Json const& left, Json const& right);
-    template<typename T>  friend bool   operator==(Json const& left, T    const& right) { return left == Json(right); }
-    template<typename T>  friend bool   operator==(T    const& left, Json const& right) { return Json(left) == right; }
-
     JSON_API              friend bool   operator!=(Json const& left, Json const& right);
-    template<typename T>  friend bool   operator!=(Json const& left, T    const& right) { return left != Json(right); }
-    template<typename T>  friend bool   operator!=(T    const& left, Json const& right) { return Json(left) != right; }
-
     JSON_API              friend bool   operator< (Json const& left, Json const& right);
-    template<typename T>  friend bool   operator< (Json const& left, T    const& right) { return left < Json(right); }
-    template<typename T>  friend bool   operator< (T    const& left, Json const& right) { return Json(left) < right; }
-
     JSON_API              friend bool   operator<=(Json const& left, Json const& right);
-    template<typename T>  friend bool   operator<=(Json const& left, T    const& right) { return left <= Json(right); }
-    template<typename T>  friend bool   operator<=(T    const& left, Json const& right) { return Json(left) <= right; }
-
     JSON_API              friend bool   operator> (Json const& left, Json const& right);
-    template<typename T>  friend bool   operator> (Json const& left, T    const& right) { return left > Json(right); }
-    template<typename T>  friend bool   operator> (T    const& left, Json const& right) { return Json(left) > right; }
-
     JSON_API              friend bool   operator>=(Json const& left, Json const& right);
-    template<typename T>  friend bool   operator>=(Json const& left, T    const& right) { return left >= Json(right); }
-    template<typename T>  friend bool   operator>=(T    const& left, Json const& right) { return Json(left) >= right; }
-
     JSON_API              friend Json   operator+ (Json const& left, Json const& right);
-    template<typename T>  friend Json   operator+ (Json const& left, T    const& right) { return left + Json(right); }
-    template<typename T>  friend Json   operator+ (T    const& left, Json const& right) { return Json(left) + right; }
-
     JSON_API              friend Json&  operator+=(Json      & left, Json const& right);
-    template<typename T>  friend Json&  operator+=(Json      & left, T    const& right) { left += Json(right); return left; }
-
     JSON_API              friend Json   operator- (Json const& left, Json const& right);
-    template<typename T>  friend Json   operator- (Json const& left, T    const& right) { return left - Json(right); }
-    template<typename T>  friend Json   operator- (T    const& left, Json const& right) { return Json(left) - right; }
-
     JSON_API              friend Json&  operator-=(Json      & left, Json const& right);
-    template<typename T>  friend Json&  operator-=(Json      & left, T    const& right) { left -= Json(right); return left; }
-
     JSON_API              friend Json   operator* (Json const& left, Json const& right);
-    template<typename T>  friend Json   operator* (Json const& left, T    const& right) { return left * Json(right); }
-    template<typename T>  friend Json   operator* (T    const& left, Json const& right) { return Json(left) * right; }
-
     JSON_API              friend Json&  operator*=(Json      & left, Json const& right);
-    template<typename T>  friend Json&  operator*=(Json      & left, T    const& right) { left *= Json(right); return left; }
-
     JSON_API              friend Json   operator/ (Json const& left, Json const& right);
-    template<typename T>  friend Json   operator/ (Json const& left, T    const& right) { return left / Json(right); }
-    template<typename T>  friend Json   operator/ (T    const& left, Json const& right) { return Json(left) / right; }
-
     JSON_API              friend Json&  operator/=(Json      & left, Json const& right);
-    template<typename T>  friend Json&  operator/=(Json      & left, T    const& right) { left /= Json(right); return left; }
-
     JSON_API              friend Json   operator% (Json const& left, Json const& right);
-    template<typename T>  friend Json   operator% (Json const& left, T    const& right) { return left % Json(right); }
-    template<typename T>  friend Json   operator% (T    const& left, Json const& right) { return Json(left) % right; }
-
     JSON_API              friend Json&  operator%=(Json      & left, Json const& right);
-    template<typename T>  friend Json&  operator%=(Json      & left, T    const& right) { left %= Json(right); return left; }
-
-    JSON_API              friend Json   operator- (Json const& value);
-
-    JSON_API              friend bool   operator! (Json const& value);
-
-    JSON_API              friend Json&  operator++(Json      & value);
-
-    JSON_API              friend Json   operator++(Json      & value, int);
-
-    JSON_API              friend Json&  operator--(Json      & value);
-
-    JSON_API              friend Json   operator--(Json      & value, int);
-
+    JSON_API              friend Json   operator- (Json const& value                  );
+    JSON_API              friend bool   operator! (Json const& value                  );
+    JSON_API              friend Json&  operator++(Json      & value                  );
+    JSON_API              friend Json   operator++(Json      & value, int             );
+    JSON_API              friend Json&  operator--(Json      & value                  );
+    JSON_API              friend Json   operator--(Json      & value, int             );
     JSON_API              friend bool   operator&&(Json const& left, Json const& right);
-    template<typename T>  friend bool   operator&&(Json const& left, T    const& right) { return left && Json(right); }
-    template<typename T>  friend bool   operator&&(T    const& left, Json const& right) { return Json(left) && right; }
-
     JSON_API              friend bool   operator||(Json const& left, Json const& right);
-    template<typename T>  friend bool   operator||(Json const& left, T    const& right) { return left || Json(right); }
-    template<typename T>  friend bool   operator||(T    const& left, Json const& right) { return Json(left) || right; }
   };
 }
