@@ -14,7 +14,7 @@ namespace Json4CPP
 #pragma warning(disable : 4804 4805)
   JsonType GetType(VALUE const& value)
   {
-    auto result = JsonType::Invalid;
+    JsonType result;
     visit(Overload{
       [&](nullptr_t  const& v) { result = JsonType::Null;    },
       [&](wstring    const& v) { result = JsonType::String;  },
@@ -22,13 +22,14 @@ namespace Json4CPP
       [&](double     const& v) { result = JsonType::Number;  },
       [&](JsonObject const& v) { result = JsonType::Object;  },
       [&](JsonArray  const& v) { result = JsonType::Array;   },
+      [&](auto       const& v) { result = JsonType::Invalid; }
     }, value);
     return result;
   }
 
   JsonBuilderType GetType(VALUE_BUILDER const& value)
   {
-    auto result = JsonBuilderType::Invalid;
+    JsonBuilderType result;
     visit(Overload{
       [&](nullptr_t  const& v) { result = JsonBuilderType::Null;    },
       [&](wstring    const& v) { result = JsonBuilderType::String;  },
@@ -46,7 +47,8 @@ namespace Json4CPP
           result = JsonBuilderType::Object;
         else
           result = JsonBuilderType::Array;
-      }
+      },
+      [&](auto       const& v) { result = JsonBuilderType::Invalid; }
     }, value);
     return result;
   }
