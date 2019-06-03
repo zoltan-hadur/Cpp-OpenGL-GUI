@@ -133,30 +133,37 @@ namespace Json4CPP
   bool ParseBoolean(wistream& is)
   {
     is >> ws;
-    wstring expectedw;
-    string expected;
-    bool value;
     switch (is.peek())
     {
-    case L't': expectedw = L"true";  expected = "true";  value = true;  break;
-    case L'f': expectedw = L"false"; expected = "false"; value = false; break;
-    default:
+    case L't':
     {
-      auto message = "Expected 't' or 'f' at position " + to_string(is.tellg());
-      throw exception(message.c_str());
-    }
-    }
-    wstring text;
-    for (int i = 0; i < expectedw.length(); ++i)
-    {
-      text.push_back(is.get());
-      if (text != expectedw.substr(0, i + 1))
+      wstring expected = L"true";
+      for (int i = 0; i < 4; ++i)
       {
-        auto message = "Expected '" + expected.substr(i, 1) + "' at position " + to_string(is.tellg());
-        throw exception(message.c_str());
+        if (is.get() != expected[i])
+        {
+          auto message = "Expected \"true\" at position " + to_string(is.tellg() - streamoff(i));
+          throw exception(message.c_str());
+        }
       }
+      return true;
     }
-    return value;
+    case L'f':
+    {
+      wstring expected = L"false";
+      for (int i = 0; i < 5; ++i)
+      {
+        if (is.get() != expected[i])
+        {
+          auto message = "Expected \"false\" at position " + to_string(is.tellg() - streamoff(i));
+          throw exception(message.c_str());
+        }
+      }
+      return false;
+    }
+    }
+    auto message = "Expected \"true\" or \"false\" at position " + to_string(is.tellg());
+    throw exception(message.c_str());
   }
 
   bool ParseBoolean(wstring const& value)

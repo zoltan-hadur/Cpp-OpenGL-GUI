@@ -80,14 +80,13 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestParseBoolean1)
     {
-      auto input = vector<wstring>{ L"", L" ", L" t", L" tr", L" tru", L" true", L" true " , L" trie ", L"", L" ", L" f", L" fa", L" fal", L" fals", L" false" , L" false " };
-      auto expectException = vector<bool>{ true, true, true, true, true, false, false, true, true, true, true, true, true, true, false, false };
-      auto expected = vector<bool>{ false, false, false, false, false, true, true, false, true, true, true, true, true, true, false, false };
-      for (int i = 14; i < input.size(); ++i)
+      auto input           = vector<wstring>{  L"", L" ", L" t", L" tr", L" tru", L" true", L" true ", L" trie " };
+      auto expectException = vector<bool>   { true, true,  true,   true,    true,    false,     false,      true };
+      for (int i = 0; i < input.size(); ++i)
       {
         if (!expectException[i])
         {
-          Assert::IsTrue(expected[i] == ParseBoolean(wstringstream(input[i])));
+          Assert::IsTrue(ParseBoolean(wstringstream(input[i])));
         }
         else
         {
@@ -98,14 +97,47 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestParseBoolean2)
     {
-      auto input = vector<wstring>{ L"", L" ", L" t", L" tr", L" tru", L" true", L" true " , L" trie ", L"", L" ", L" f", L" fa", L" fal", L" fals", L" false" , L" false " };
-      auto expectException = vector<bool>{ true, true, true, true, true, false, false, true, true, true, true, true, true, true, false, false };
-      auto expected = vector<bool>{ false, false, false, false, false, true, true, false, true, true, true, true, true, true, false, false };
-      for (int i = 14; i < input.size(); ++i)
+      auto input           = vector<wstring>{  L"", L" ", L" f", L" fa", L" fal", L" fals", L" false", L" fakse " };
+      auto expectException = vector<bool>   { true, true,  true,   true,    true,     true,     false,       true };
+      for (int i = 0; i < input.size(); ++i)
       {
         if (!expectException[i])
         {
-          Assert::IsTrue(expected[i] == ParseBoolean(input[i]));
+          Assert::IsFalse(ParseBoolean(wstringstream(input[i])));
+        }
+        else
+        {
+          Assert::ExpectException<exception>([&]() { ParseBoolean(wstringstream(input[i])); });
+        }
+      }
+    }
+
+    TEST_METHOD(TestParseBoolean3)
+    {
+      auto input = vector<wstring>{ L"", L" ", L" t", L" tr", L" tru", L" true", L" true ", L" trie " };
+      auto expectException = vector<bool>{ true, true,  true,   true,    true,    false,     false,      true };
+      for (int i = 0; i < input.size(); ++i)
+      {
+        if (!expectException[i])
+        {
+          Assert::IsTrue(ParseBoolean(input[i]));
+        }
+        else
+        {
+          Assert::ExpectException<exception>([&]() { ParseBoolean(input[i]); });
+        }
+      }
+    }
+
+    TEST_METHOD(TestParseBoolean4)
+    {
+      auto input = vector<wstring>{ L"", L" ", L" f", L" fa", L" fal", L" fals", L" false", L" fakse " };
+      auto expectException = vector<bool>{ true, true,  true,   true,    true,     true,     false,       true };
+      for (int i = 0; i < input.size(); ++i)
+      {
+        if (!expectException[i])
+        {
+          Assert::IsFalse(ParseBoolean(input[i]));
         }
         else
         {
