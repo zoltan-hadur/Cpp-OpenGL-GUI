@@ -46,11 +46,11 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestParseNull1)
     {
-      auto input = vector<wstring>{ L"", L" ", L" n", L" nu", L" nul", L" null", L" null " , L" nu11 ", L" nill ", L" mull " };
-      auto expected = vector<bool>{ false, false, false, false, false, true, true, false, false, false };
+      auto input           = vector<wstring>{  L"", L" ", L" n", L" nu", L" nul", L" null", L" null ", L" nu11 ", L" nill ", L" mull " };
+      auto expectException = vector<bool>   { true, true,  true,   true,    true,    false,     false,      true,      true,      true };
       for (int i = 0; i < input.size(); ++i)
       {
-        if (expected[i])
+        if (!expectException[i])
         {
           Assert::IsTrue(nullptr == ParseNull(wstringstream(input[i])));
         }
@@ -63,11 +63,11 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestParseNull2)
     {
-      auto input = vector<wstring>{ L"", L" ", L" n", L" nu", L" nul", L" null", L" null " , L" nu11 ", L" nill ", L" mull " };
-      auto expected = vector<bool>{ false, false, false, false, false, true, true, false, false, false };
+      auto input           = vector<wstring>{  L"", L" ", L" n", L" nu", L" nul", L" null", L" null ", L" nu11 ", L" nill ", L" mull " };
+      auto expectException = vector<bool>   { true, true,  true,   true,    true,    false,     false,      true,      true,      true };
       for (int i = 0; i < input.size(); ++i)
       {
-        if (expected[i])
+        if (!expectException[i])
         {
           Assert::IsTrue(nullptr == ParseNull(input[i]));
         }
