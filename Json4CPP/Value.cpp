@@ -56,7 +56,7 @@ namespace Json4CPP
   nullptr_t ParseNull(wistream& is)
   {
     is >> ws;
-    wstring expected = L"null";
+    auto expected = L"null"s;
     for (int i = 0; i < 4; ++i)
     {
       if (is.get() != expected[i])
