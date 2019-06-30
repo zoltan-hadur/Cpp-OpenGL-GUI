@@ -175,46 +175,75 @@ namespace Json4CPP
   {
     is >> ws;
     wstring text;
+
+    // Can start with '-'
     if (is.peek() == L'-')
     {
       text.push_back(is.get());
     }
+
+    // Either continues with '0'
     if (is.peek() == L'0')
     {
       text.push_back(is.get());
     }
+    // Or with a digit between '1' and '9'
     else if (L'1' <= is.peek() && is.peek() <= L'9')
     {
+      // And then in that case it can continue with zero or more digit
       while (iswdigit(is.peek()))
       {
         text.push_back(is.get());
       }
     }
+    // Else it's not a number
     else
     {
       auto message = "Expected '-' or digit at position " + to_string(is.tellg());
       throw exception(message.c_str());
     }
+
+    // Can contain '.'
     if (is.peek() == L'.')
     {
       text.push_back(is.get());
+      // And then it contains at least one digit
+      auto hasAtLeastOneDigit = false;
       while (iswdigit(is.peek()))
       {
         text.push_back(is.get());
+        hasAtLeastOneDigit = true;
+      }
+      if (!hasAtLeastOneDigit)
+      {
+        auto message = "Expected digit at position " + to_string(is.tellg());
+        throw exception(message.c_str());
       }
     }
+
+    // Can contain 'e' or 'E'
     if (is.peek() == L'e' || is.peek() == L'E')
     {
       text.push_back(is.get());
+      // And then it can contain either '+' or '-'
       if (is.peek() == L'+' || is.peek() == L'-')
       {
         text.push_back(is.get());
       }
+      // And then it contains at least one digit
+      auto hasAtLeastOneDigit = false;
       while (iswdigit(is.peek()))
       {
         text.push_back(is.get());
+        hasAtLeastOneDigit = true;
+      }
+      if (!hasAtLeastOneDigit)
+      {
+        auto message = "Expected digit at position " + to_string(is.tellg());
+        throw exception(message.c_str());
       }
     }
+
     double number;
     wstringstream(text) >> number;
     return number;
