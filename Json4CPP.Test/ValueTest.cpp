@@ -72,11 +72,13 @@ namespace Json4CPP::Test
       {
         if (!expectException[i])
         {
+          Assert::IsTrue(ParseBoolean(input[i]));
           Assert::IsTrue(ParseBoolean(wstringstream(input[i])));
         }
         else
         {
           Assert::ExpectException<exception>([&]() { ParseBoolean(wstringstream(input[i])); });
+          Assert::ExpectException<exception>([&]() { ParseBoolean(input[i]); });
         }
       }
     }
@@ -89,48 +91,18 @@ namespace Json4CPP::Test
       {
         if (!expectException[i])
         {
+          Assert::IsFalse(ParseBoolean(input[i]));
           Assert::IsFalse(ParseBoolean(wstringstream(input[i])));
         }
         else
         {
+          Assert::ExpectException<exception>([&]() { ParseBoolean(input[i]); });
           Assert::ExpectException<exception>([&]() { ParseBoolean(wstringstream(input[i])); });
         }
       }
     }
 
-    TEST_METHOD(TestParseBoolean3)
-    {
-      auto input = vector<wstring>{ L"", L" ", L" t", L" tr", L" tru", L" true", L" true ", L" trie " };
-      auto expectException = vector<bool>{ true, true,  true,   true,    true,    false,     false,      true };
-      for (int i = 0; i < input.size(); ++i)
-      {
-        if (!expectException[i])
-        {
-          Assert::IsTrue(ParseBoolean(input[i]));
-        }
-        else
-        {
-          Assert::ExpectException<exception>([&]() { ParseBoolean(input[i]); });
-        }
-      }
-    }
 
-    TEST_METHOD(TestParseBoolean4)
-    {
-      auto input = vector<wstring>{ L"", L" ", L" f", L" fa", L" fal", L" fals", L" false", L" fakse " };
-      auto expectException = vector<bool>{ true, true,  true,   true,    true,     true,     false,       true };
-      for (int i = 0; i < input.size(); ++i)
-      {
-        if (!expectException[i])
-        {
-          Assert::IsFalse(ParseBoolean(input[i]));
-        }
-        else
-        {
-          Assert::ExpectException<exception>([&]() { ParseBoolean(input[i]); });
-        }
-      }
-    }
 
     TEST_METHOD(TestValueWrite)
     {
