@@ -76,45 +76,89 @@ namespace Json4CPP
   wstring ParseString(wistream& is)
   {
     is >> ws;
-    wstring text;
+    auto text = L""s;
+    // A string must start with a quote
     if (is.peek() == L'\"')
     {
       is.get();
-      while (is.peek() != L'\"' && !is.eof())
+      // Check if it's an empty string in which case it's immediately ends with a quote
+      if (is.peek() == L'\"')
       {
-        if (is.peek() == L'\\')
-        {
-          text.push_back(is.get());
-          if (is.peek() == L'u')
-          {
-            for (int i = 0; i < 4; ++i)
-            {
-              text.push_back(is.get());
-            }
-          }
-          else
-          {
-            text.push_back(is.get());
-          }
-        }
-        else if (!iswcntrl(is.peek()))
-        {
-          text.push_back(is.get());
-        }
-        else
-        {
-          auto message = "Invalid character found at position " + to_string(is.tellg());
-          throw exception(message.c_str());
-        }
-      }
-      if (is.eof())
-      {
-        auto message = "Expected '\"' at position " + to_string(is.tellg());
-        throw exception(message.c_str());
+        is.get();
       }
       else
       {
-        is.get();
+        // Read the characters until the closing quote
+        while (is.peek() != L'\"' && !is.eof())
+        {
+          if (is.peek() == L'\\')
+          {
+            is.get();
+            auto c = is.peek();
+            switch (c)
+            {
+            case L'b' : text.push_back(L'\b'); is.get(); break;
+            case L'f' : text.push_back(L'\f'); is.get(); break;
+            case L'n' : text.push_back(L'\n'); is.get(); break;
+            case L'r' : text.push_back(L'\r'); is.get(); break;
+            case L't' : text.push_back(L'\t'); is.get(); break;
+            case L'\"':
+            case L'\\':
+            case L'/' :
+            {
+              text.push_back(is.get());
+              break;
+            }
+            case L'u' :
+            {
+              is.get();
+              auto hexCode = L""s;
+              for (int i = 0; i < 4; ++i)
+              {
+                if (iswxdigit(is.peek()))
+                {
+                  hexCode.push_back(is.get());
+                }
+                else
+                {
+                  auto message = "Expected a hexadecimal digit at position " + to_string(is.tellg());
+                  throw exception(message.c_str());
+                }
+              }
+              wstringstream ss;
+              ss << hex << hexCode;
+              unsigned int number;
+              ss >> number;
+              text.push_back((wchar_t)number);
+              break;
+            }
+            default:
+            {
+              auto message = "Expected one of the following characters: \", \\, /, b, f, n, r, t, u at position " + to_string(is.tellg());
+              throw exception(message.c_str());
+              break;
+            }
+            }
+          }
+          else if (!iswcntrl(is.peek()))
+          {
+            text.push_back(is.get());
+          }
+          else
+          {
+            auto message = "Invalid character found at position " + to_string(is.tellg());
+            throw exception(message.c_str());
+          }
+        }
+        if (is.eof())
+        {
+          auto message = "Expected '\"' at position " + to_string(is.tellg());
+          throw exception(message.c_str());
+        }
+        else
+        {
+          is.get();
+        }
       }
     }
     else
