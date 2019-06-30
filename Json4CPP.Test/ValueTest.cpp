@@ -63,6 +63,39 @@ namespace Json4CPP::Test
       }
     }
 
+    TEST_METHOD(TestParseString)
+    {
+      auto pairs = map<wstring, wstring>
+      {
+        { L"\"\""s        , L""s        },  // Empty
+        { L"\"a\""s       , L"a"s       },  // a
+        { L"\"\\\"\""s    , L"\""s      },  // Quote
+        { L"\"\\\\\""s    , L"\\"s      },  // Backslash
+        { L"\"\\/\""s     , L"/"s       },  // Slash
+        { L"\"\\b\""s     , L"\b"s      },  // Backspace
+        { L"\"\\f\""s     , L"\f"s      },  // Form feed
+        { L"\"\\n\""s     , L"\n"s      },  // New line
+        { L"\"\\r\""s     , L"\r"s      },  // Carriage return
+        { L"\"\\t\""s     , L"\t"s      },  // Tab
+        { L"\"\\u03A9\""s , L"\u03A9"s  },  // Ω
+        { L"\"ab\""s      , L"ab"s      },
+        { L"\"\\\"b\""s   , L"\"b"s     },
+        { L"\"\\\\b\""s   , L"\\b"s     },
+        { L"\"\\/b\""s    , L"/b"s      },
+        { L"\"\\bb\""s    , L"\bb"s     },
+        { L"\"\\fb\""s    , L"\fb"s     },
+        { L"\"\\nb\""s    , L"\nb"s     },
+        { L"\"\\rb\""s    , L"\rb"s     },
+        { L"\"\\tb\""s    , L"\tb"s     },
+        { L"\"\\u03A9b\""s, L"\u03A9b"s },
+      };
+
+      for (auto [value, expected] : pairs)
+      {
+        Assert::AreEqual(expected, ParseString(value));
+        Assert::AreEqual(expected, ParseString(wstringstream(value)));
+      }
+    }
 
     TEST_METHOD(TestParseBoolean1)
     {
