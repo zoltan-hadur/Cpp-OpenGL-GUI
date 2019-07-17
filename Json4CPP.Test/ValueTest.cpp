@@ -627,6 +627,28 @@ namespace Json4CPP::Test
       }
     }
 
+    TEST_METHOD(TestValueRead)
+    {
+      auto pairs = map<wstring, VALUE>
+      {
+        { L"\"Hello \\\"World\\\"\""s, L"Hello \"World\""s                          },
+        { L"13.37"s                  , 13.37                                        },
+        { L"{\"key1\":1,\"key2\":2}"s, JsonObject{ { L"key1", 1 }, { L"key2", 2 } } },
+        { L"[1,3,3,7]"s              , JsonArray{ 1, 3, 3, 7 }                      },
+        { L"true"s                   , true                                         },
+        { L"false"s                  , false                                        },
+        { L"null"s                   , nullptr                                      },
+      };
+
+      for (auto [value, expected] : pairs)
+      {
+        auto is = wistringstream(value);
+        VALUE actual;
+        ValueRead(is, actual);
+        Assert::IsTrue(expected == actual);
+      }
+    }
+
     TEST_CLASS_INITIALIZE(ClassInitialize)
     {
       _CrtMemCheckpoint(&_init);
