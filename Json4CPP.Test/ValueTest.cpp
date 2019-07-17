@@ -503,6 +503,41 @@ namespace Json4CPP::Test
       }
     }
 
+    TEST_METHOD(TestParseJsonArray)
+    {
+      auto pairs = map<wstring, JsonArray>
+      {
+        // Test whitespace handling
+        { L"[]"s, {} },
+        { L"[  ]"s, {} },
+        { L"[1,2]"s,         { 1, 2 } },
+        { L"[  1,2]"s,       { 1, 2 } },
+        { L"[1  ,2]"s,       { 1, 2 } },
+        { L"[1,  2]"s,       { 1, 2 } },
+        { L"[1,2  ]"s,       { 1, 2 } },
+        { L"[  1  ,2]"s,     { 1, 2 } },
+        { L"[  1,  2]"s,     { 1, 2 } },
+        { L"[  1,2  ]"s,     { 1, 2 } },
+        { L"[1  ,  2]"s,     { 1, 2 } },
+        { L"[1  ,2  ]"s,     { 1, 2 } },
+        { L"[1,  2  ]"s,     { 1, 2 } },
+        { L"[  1  ,  2]"s,   { 1, 2 } },
+        { L"[  1  ,2  ]"s,   { 1, 2 } },
+        { L"[  1,  2  ]"s,   { 1, 2 } },
+        { L"[1  ,  2  ]"s,   { 1, 2 } },
+        { L"[  1  ,  2  ]"s, { 1, 2 } },
+        // Complex array with all types of values (string, number, object, array, bool, null)
+        { L"[ \"string\",1337, {   \"key1\":\"value1\" ,   \"key2\":\"value2\"  }, [ 1, 3, 3, 7 ], true, false, null    ]"s,
+            { L"string" ,1337, { { L"key1", L"value1" }, { L"key2", L"value2" } }, { 1, 3, 3, 7 }, true, false, nullptr } },
+      };
+
+      for (auto [value, expected] : pairs)
+      {
+        Assert::IsTrue(expected == ParseJsonArray(value));
+        Assert::IsTrue(expected == ParseJsonArray(wstringstream(value)));
+      }
+    }
+
     TEST_METHOD(TestValueWrite)
     {
       auto input = vector<VALUE>{ nullptr, L"Hello \"World\""s, false, true, 13.37,
