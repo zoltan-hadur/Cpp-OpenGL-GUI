@@ -607,37 +607,24 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestValueWrite)
     {
-      auto input = vector<VALUE>{ nullptr, L"Hello \"World\""s, false, true, 13.37,
-        JsonObject{ { L"a", 1 }, { L"b", 2.5 } },
-        JsonArray{ 1, 2, 3 }
-      };
-      
-      auto expected = vector<wstring>
+      JsonDefault::Indentation = 0;
+      auto pairs = map<VALUE, wstring>
       {
-        LR"(null)"s,
-        LR"("Hello \"World\"")"s,
-        LR"(false)"s,
-        LR"(true)"s,
-        LR"(13.37)"s,
-        LR"({
-  "a": 1,
-  "b": 2.5
-})"s,
-        LR"([
-  1,
-  2,
-  3
-])"s,
+        { L"Hello \"World\""s                         , L"\"Hello \\\"World\\\"\""s },
+        { 13.37                                       , L"13.37"s                   },
+        { JsonObject{ { L"key1", 1 }, { L"key2", 2 } }, L"{\"key1\":1,\"key2\":2}"s },
+        { JsonArray{ 1, 3, 3, 7 }                     , L"[1,3,3,7]"s               },
+        { true                                        , L"true"s                    },
+        { false                                       , L"false"s                   },
+        { nullptr                                     , L"null"s                    },
       };
 
-      auto output = From(input).Select<wstring>([](VALUE const& value)
+      for (auto [value, expected] : pairs)
       {
         auto os = wostringstream();
-        ValueWrite(os, value);
-        return os.str();
-      });
-      
-      Assert::IsTrue(From(expected).SequenceEqual(output));
+        ValueWrite(os, value); 
+        Assert::IsTrue(expected == os.str());
+      }
     }
 
     TEST_CLASS_INITIALIZE(ClassInitialize)
