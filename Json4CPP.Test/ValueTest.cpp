@@ -466,6 +466,42 @@ namespace Json4CPP::Test
       }
     }
 
+    TEST_METHOD(TestParseJsonObject)
+    {
+      auto pairs = map<wstring, JsonObject>
+      {
+        // Test whitespace handling
+        { L"{}"s, {} },
+        { L"{  }"s, {} },
+        { L"{\"key1\":1337}"s,         { { L"key1", 1337 } } },
+        { L"{  \"key1\":1337}"s,       { { L"key1", 1337 } } },
+        { L"{\"key1\"  :1337}"s,       { { L"key1", 1337 } } },
+        { L"{  \"key1\"  :1337}"s,     { { L"key1", 1337 } } },
+        { L"{\"key1\":  1337}"s,       { { L"key1", 1337 } } },
+        { L"{  \"key1\":  1337}"s,     { { L"key1", 1337 } } },
+        { L"{\"key1\"  :  1337}"s,     { { L"key1", 1337 } } },
+        { L"{  \"key1\"  :  1337}"s,   { { L"key1", 1337 } } },
+        { L"{\"key1\":1337  }"s,       { { L"key1", 1337 } } },
+        { L"{  \"key1\":1337  }"s,     { { L"key1", 1337 } } },
+        { L"{\"key1\"  :1337  }"s,     { { L"key1", 1337 } } },
+        { L"{  \"key1\"  :1337  }"s,   { { L"key1", 1337 } } },
+        { L"{\"key1\":  1337  }"s,     { { L"key1", 1337 } } },
+        { L"{  \"key1\":  1337  }"s,   { { L"key1", 1337 } } },
+        { L"{\"key1\"  :  1337  }"s,   { { L"key1", 1337 } } },
+        { L"{  \"key1\"  :  1337  }"s, { { L"key1", 1337 } } },
+        // Simple object with 2 key value pair
+        { L"{\"key1\":1337,\"key2\":\"value2\"}"s, { { L"key1", 1337 }, { L"key2", L"value2" } } },
+        // Complex object with all types of values (string, number, object, array, bool, null)
+        { L"{   \"string\":\"string\" ,   \"number\":1337  ,   \"object\":{   \"key1\":\"value1\" ,   \"key2\":\"value2\"  }  ,   \"array\":[ 1, 3, 3, 7 ]  ,   \"true\":true  ,   \"false\":false  ,   \"null\":null      }"s,
+            { { L"string", L"string" }, { L"number", 1337 }, { L"object", { { L"key1", L"value1" }, { L"key2", L"value2" } } }, { L"array", { 1, 3, 3, 7 } }, { L"true", true }, { L"false", false }, { L"null", nullptr } } },
+      };
+
+      for (auto [value, expected] : pairs)
+      {
+        Assert::IsTrue(expected == ParseJsonObject(value));
+        Assert::IsTrue(expected == ParseJsonObject(wstringstream(value)));
+      }
+    }
 
     TEST_METHOD(TestValueWrite)
     {
