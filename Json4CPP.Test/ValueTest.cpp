@@ -538,6 +538,73 @@ namespace Json4CPP::Test
       }
     }
 
+    TEST_METHOD(TestParseJson)
+    {
+      auto pairs = map<wstring, Json>
+      {
+        { L"\"string\""s, L"string"s },
+        { L"1337"s, 1337 },
+
+        // Test whitespace handling
+        { L"{}"s, JsonObject{} },   // Must use explicit JsonObject, becase Json{} evalutes to null
+        { L"{  }"s, JsonObject{} }, // Must use explicit JsonObject, becase Json{} evalutes to null
+        { L"{\"key1\":1337}"s,         { { L"key1", 1337 } } },
+        { L"{  \"key1\":1337}"s,       { { L"key1", 1337 } } },
+        { L"{\"key1\"  :1337}"s,       { { L"key1", 1337 } } },
+        { L"{  \"key1\"  :1337}"s,     { { L"key1", 1337 } } },
+        { L"{\"key1\":  1337}"s,       { { L"key1", 1337 } } },
+        { L"{  \"key1\":  1337}"s,     { { L"key1", 1337 } } },
+        { L"{\"key1\"  :  1337}"s,     { { L"key1", 1337 } } },
+        { L"{  \"key1\"  :  1337}"s,   { { L"key1", 1337 } } },
+        { L"{\"key1\":1337  }"s,       { { L"key1", 1337 } } },
+        { L"{  \"key1\":1337  }"s,     { { L"key1", 1337 } } },
+        { L"{\"key1\"  :1337  }"s,     { { L"key1", 1337 } } },
+        { L"{  \"key1\"  :1337  }"s,   { { L"key1", 1337 } } },
+        { L"{\"key1\":  1337  }"s,     { { L"key1", 1337 } } },
+        { L"{  \"key1\":  1337  }"s,   { { L"key1", 1337 } } },
+        { L"{\"key1\"  :  1337  }"s,   { { L"key1", 1337 } } },
+        { L"{  \"key1\"  :  1337  }"s, { { L"key1", 1337 } } },
+        // Simple object with 2 key value pair
+        { L"{\"key1\":1337,\"key2\":\"value2\"}"s, { { L"key1", 1337 }, { L"key2", L"value2" } } },
+        // Complex object with all types of values (string, number, object, array, bool, null)
+        { L"{   \"string\":\"string\" ,   \"number\":1337  ,   \"object\":{   \"key1\":\"value1\" ,   \"key2\":\"value2\"  }  ,   \"array\":[ 1, 3, 3, 7 ]  ,   \"true\":true  ,   \"false\":false  ,   \"null\":null      }"s,
+            { { L"string", L"string" }, { L"number", 1337 }, { L"object", { { L"key1", L"value1" }, { L"key2", L"value2" } } }, { L"array", { 1, 3, 3, 7 } }, { L"true", true }, { L"false", false }, { L"null", nullptr } } },
+
+        // Test whitespace handling
+        { L"[]"s, JsonArray{} },   // Must use explicit JsonArray, becase Json{} evalutes to null
+        { L"[  ]"s, JsonArray{} }, // Must use explicit JsonArray, becase Json{} evalutes to null
+        { L"[1,2]"s,         { 1, 2 } },
+        { L"[  1,2]"s,       { 1, 2 } },
+        { L"[1  ,2]"s,       { 1, 2 } },
+        { L"[1,  2]"s,       { 1, 2 } },
+        { L"[1,2  ]"s,       { 1, 2 } },
+        { L"[  1  ,2]"s,     { 1, 2 } },
+        { L"[  1,  2]"s,     { 1, 2 } },
+        { L"[  1,2  ]"s,     { 1, 2 } },
+        { L"[1  ,  2]"s,     { 1, 2 } },
+        { L"[1  ,2  ]"s,     { 1, 2 } },
+        { L"[1,  2  ]"s,     { 1, 2 } },
+        { L"[  1  ,  2]"s,   { 1, 2 } },
+        { L"[  1  ,2  ]"s,   { 1, 2 } },
+        { L"[  1,  2  ]"s,   { 1, 2 } },
+        { L"[1  ,  2  ]"s,   { 1, 2 } },
+        { L"[  1  ,  2  ]"s, { 1, 2 } },
+        // Complex array with all types of values (string, number, object, array, bool, null)
+        { L"[ \"string\",1337, {   \"key1\":\"value1\" ,   \"key2\":\"value2\"  }, [ 1, 3, 3, 7 ], true, false, null    ]"s,
+            { L"string" ,1337, { { L"key1", L"value1" }, { L"key2", L"value2" } }, { 1, 3, 3, 7 }, true, false, nullptr } },
+
+        { L"true"s, true },
+        { L"false"s, false },
+        { L"null"s, nullptr },
+      };
+
+      for (auto [value, expected] : pairs)
+      {
+        Assert::IsTrue(expected == ParseJson(value));
+        Assert::IsTrue(expected == ParseJson(wstringstream(value)));
+      }
+    }
+
     TEST_METHOD(TestValueWrite)
     {
       auto input = vector<VALUE>{ nullptr, L"Hello \"World\""s, false, true, 13.37,
