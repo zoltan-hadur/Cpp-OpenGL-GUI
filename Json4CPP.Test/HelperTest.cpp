@@ -28,12 +28,12 @@ namespace Json4CPP::Test
           optional<float> number = nullopt;
           optional<bool> invalid = nullopt;
           visit(Overload{
-            [&](int     const& l, int     const& r) { number = l + r; },
-            [&](int     const& l, float   const& r) { number = l + r; },
-            [&](float   const& l, int     const& r) { number = l + r; },
-            [&](float   const& l, float   const& r) { number = l + r; },
-            [&](wstring const& l, wstring const& r) { text   = l + r; },
-            [&](auto    const& l, auto    const& r) { invalid = true; }
+            [&](int     const& l, int     const& r) { number = (float)l + (float)r; },
+            [&](int     const& l, float   const& r) { number = (float)l +        r; },
+            [&](float   const& l, int     const& r) { number =        l + (float)r; },
+            [&](float   const& l, float   const& r) { number =        l +        r; },
+            [&](wstring const& l, wstring const& r) { text   =        l +        r; },
+            [&](auto    const& l, auto    const& r) { invalid = true;               }
           }, left, right);
           Assert::AreEqual(1, text.has_value() + number.has_value() + invalid.has_value());
           if (text)
