@@ -369,8 +369,6 @@ namespace Json4CPP
   {
     bool result;
     visit(Overload{
-      [&](nullptr_t  const& l, auto       const& r) { result = false;  },
-      [&](auto       const& l, nullptr_t  const& r) { result = false;  },
       [&](nullptr_t  const& l, nullptr_t  const& r) { result = true;   },
       [&](wstring    const& l, wstring    const& r) { result = l == r; },
       [&](bool       const& l, bool       const& r) { result = l == r; },
@@ -386,7 +384,7 @@ namespace Json4CPP
 
   bool ValueNotEqual(VALUE const& left, VALUE const& right)
   {
-    return !(left == right);
+    return !ValueEqual(left, right);
   }
 
   bool ValueLessThan(VALUE const& left, VALUE const& right)
