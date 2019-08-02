@@ -792,6 +792,149 @@ namespace Json4CPP::Test
       Assert::IsTrue (ValueEqual(string2 , string2 ));
     }
 
+    TEST_METHOD(TestValueNotEqual)
+    {
+      auto null = nullptr;
+      auto string1 = L"TestString1"s;
+      auto string2 = L"TestString2"s;
+      auto boolean1 = true;
+      auto boolean2 = false;
+      auto number1 = 1.0;
+      auto number2 = 0.0;
+      auto object1 = JsonObject{
+        { L"key1", 1337 },
+        { L"key2", 1338 }
+      };
+      auto object2 = JsonObject{
+        { L"key3", 1339 },
+        { L"key4", 1340 }
+      };
+      auto array1 = JsonArray{ 1, 2, 3 };
+      auto array2 = JsonArray{ 4, 5, 6 };
+
+      Assert::IsFalse(ValueNotEqual(array1  , array1  ));
+      Assert::IsTrue (ValueNotEqual(array1  , array2  ));
+      Assert::IsTrue (ValueNotEqual(array1  , boolean1));
+      Assert::IsTrue (ValueNotEqual(array1  , boolean2));
+      Assert::IsTrue (ValueNotEqual(array1  , null    ));
+      Assert::IsTrue (ValueNotEqual(array1  , number1 ));
+      Assert::IsTrue (ValueNotEqual(array1  , number2 ));
+      Assert::IsTrue (ValueNotEqual(array1  , object1 ));
+      Assert::IsTrue (ValueNotEqual(array1  , object2 ));
+      Assert::IsTrue (ValueNotEqual(array1  , string1 ));
+      Assert::IsTrue (ValueNotEqual(array1  , string2 ));
+      Assert::IsTrue (ValueNotEqual(array2  , array1  ));
+      Assert::IsFalse(ValueNotEqual(array2  , array2  ));
+      Assert::IsTrue (ValueNotEqual(array2  , boolean1));
+      Assert::IsTrue (ValueNotEqual(array2  , boolean2));
+      Assert::IsTrue (ValueNotEqual(array2  , null    ));
+      Assert::IsTrue (ValueNotEqual(array2  , number1 ));
+      Assert::IsTrue (ValueNotEqual(array2  , number2 ));
+      Assert::IsTrue (ValueNotEqual(array2  , object1 ));
+      Assert::IsTrue (ValueNotEqual(array2  , object2 ));
+      Assert::IsTrue (ValueNotEqual(array2  , string1 ));
+      Assert::IsTrue (ValueNotEqual(array2  , string2 ));
+      Assert::IsTrue (ValueNotEqual(boolean1, array1  ));
+      Assert::IsTrue (ValueNotEqual(boolean1, array2  ));
+      Assert::IsFalse(ValueNotEqual(boolean1, boolean1));
+      Assert::IsTrue (ValueNotEqual(boolean1, boolean2));
+      Assert::IsTrue (ValueNotEqual(boolean1, null    ));
+      Assert::IsFalse(ValueNotEqual(boolean1, number1 ));
+      Assert::IsTrue (ValueNotEqual(boolean1, number2 ));
+      Assert::IsTrue (ValueNotEqual(boolean1, object1 ));
+      Assert::IsTrue (ValueNotEqual(boolean1, object2 ));
+      Assert::IsTrue (ValueNotEqual(boolean1, string1 ));
+      Assert::IsTrue (ValueNotEqual(boolean1, string2 ));
+      Assert::IsTrue (ValueNotEqual(boolean2, array1  ));
+      Assert::IsTrue (ValueNotEqual(boolean2, array2  ));
+      Assert::IsTrue (ValueNotEqual(boolean2, boolean1));
+      Assert::IsFalse(ValueNotEqual(boolean2, boolean2));
+      Assert::IsTrue (ValueNotEqual(boolean2, null    ));
+      Assert::IsTrue (ValueNotEqual(boolean2, number1 ));
+      Assert::IsFalse(ValueNotEqual(boolean2, number2 ));
+      Assert::IsTrue (ValueNotEqual(boolean2, object1 ));
+      Assert::IsTrue (ValueNotEqual(boolean2, object2 ));
+      Assert::IsTrue (ValueNotEqual(boolean2, string1 ));
+      Assert::IsTrue (ValueNotEqual(boolean2, string2 ));
+      Assert::IsTrue (ValueNotEqual(null    , array1  ));
+      Assert::IsTrue (ValueNotEqual(null    , array2  ));
+      Assert::IsTrue (ValueNotEqual(null    , boolean1));
+      Assert::IsTrue (ValueNotEqual(null    , boolean2));
+      Assert::IsFalse(ValueNotEqual(null    , null    ));
+      Assert::IsTrue (ValueNotEqual(null    , number1 ));
+      Assert::IsTrue (ValueNotEqual(null    , number2 ));
+      Assert::IsTrue (ValueNotEqual(null    , object1 ));
+      Assert::IsTrue (ValueNotEqual(null    , object2 ));
+      Assert::IsTrue (ValueNotEqual(null    , string1 ));
+      Assert::IsTrue (ValueNotEqual(null    , string2 ));
+      Assert::IsTrue (ValueNotEqual(number1 , array1  ));
+      Assert::IsTrue (ValueNotEqual(number1 , array2  ));
+      Assert::IsFalse(ValueNotEqual(number1 , boolean1));
+      Assert::IsTrue (ValueNotEqual(number1 , boolean2));
+      Assert::IsTrue (ValueNotEqual(number1 , null    ));
+      Assert::IsFalse(ValueNotEqual(number1 , number1 ));
+      Assert::IsTrue (ValueNotEqual(number1 , number2 ));
+      Assert::IsTrue (ValueNotEqual(number1 , object1 ));
+      Assert::IsTrue (ValueNotEqual(number1 , object2 ));
+      Assert::IsTrue (ValueNotEqual(number1 , string1 ));
+      Assert::IsTrue (ValueNotEqual(number1 , string2 ));
+      Assert::IsTrue (ValueNotEqual(number2 , array1  ));
+      Assert::IsTrue (ValueNotEqual(number2 , array2  ));
+      Assert::IsTrue (ValueNotEqual(number2 , boolean1));
+      Assert::IsFalse(ValueNotEqual(number2 , boolean2));
+      Assert::IsTrue (ValueNotEqual(number2 , null    ));
+      Assert::IsTrue (ValueNotEqual(number2 , number1 ));
+      Assert::IsFalse(ValueNotEqual(number2 , number2 ));
+      Assert::IsTrue (ValueNotEqual(number2 , object1 ));
+      Assert::IsTrue (ValueNotEqual(number2 , object2 ));
+      Assert::IsTrue (ValueNotEqual(number2 , string1 ));
+      Assert::IsTrue (ValueNotEqual(number2 , string2 ));
+      Assert::IsTrue (ValueNotEqual(object1 , array1  ));
+      Assert::IsTrue (ValueNotEqual(object1 , array2  ));
+      Assert::IsTrue (ValueNotEqual(object1 , boolean1));
+      Assert::IsTrue (ValueNotEqual(object1 , boolean2));
+      Assert::IsTrue (ValueNotEqual(object1 , null    ));
+      Assert::IsTrue (ValueNotEqual(object1 , number1 ));
+      Assert::IsTrue (ValueNotEqual(object1 , number2 ));
+      Assert::IsFalse(ValueNotEqual(object1 , object1 ));
+      Assert::IsTrue (ValueNotEqual(object1 , object2 ));
+      Assert::IsTrue (ValueNotEqual(object1 , string1 ));
+      Assert::IsTrue (ValueNotEqual(object1 , string2 ));
+      Assert::IsTrue (ValueNotEqual(object2 , array1  ));
+      Assert::IsTrue (ValueNotEqual(object2 , array2  ));
+      Assert::IsTrue (ValueNotEqual(object2 , boolean1));
+      Assert::IsTrue (ValueNotEqual(object2 , boolean2));
+      Assert::IsTrue (ValueNotEqual(object2 , null    ));
+      Assert::IsTrue (ValueNotEqual(object2 , number1 ));
+      Assert::IsTrue (ValueNotEqual(object2 , number2 ));
+      Assert::IsTrue (ValueNotEqual(object2 , object1 ));
+      Assert::IsFalse(ValueNotEqual(object2 , object2 ));
+      Assert::IsTrue (ValueNotEqual(object2 , string1 ));
+      Assert::IsTrue (ValueNotEqual(object2 , string2 ));
+      Assert::IsTrue (ValueNotEqual(string1 , array1  ));
+      Assert::IsTrue (ValueNotEqual(string1 , array2  ));
+      Assert::IsTrue (ValueNotEqual(string1 , boolean1));
+      Assert::IsTrue (ValueNotEqual(string1 , boolean2));
+      Assert::IsTrue (ValueNotEqual(string1 , null    ));
+      Assert::IsTrue (ValueNotEqual(string1 , number1 ));
+      Assert::IsTrue (ValueNotEqual(string1 , number2 ));
+      Assert::IsTrue (ValueNotEqual(string1 , object1 ));
+      Assert::IsTrue (ValueNotEqual(string1 , object2 ));
+      Assert::IsFalse(ValueNotEqual(string1 , string1 ));
+      Assert::IsTrue (ValueNotEqual(string1 , string2 ));
+      Assert::IsTrue (ValueNotEqual(string2 , array1  ));
+      Assert::IsTrue (ValueNotEqual(string2 , array2  ));
+      Assert::IsTrue (ValueNotEqual(string2 , boolean1));
+      Assert::IsTrue (ValueNotEqual(string2 , boolean2));
+      Assert::IsTrue (ValueNotEqual(string2 , null    ));
+      Assert::IsTrue (ValueNotEqual(string2 , number1 ));
+      Assert::IsTrue (ValueNotEqual(string2 , number2 ));
+      Assert::IsTrue (ValueNotEqual(string2 , object1 ));
+      Assert::IsTrue (ValueNotEqual(string2 , object2 ));
+      Assert::IsTrue (ValueNotEqual(string2 , string1 ));
+      Assert::IsFalse(ValueNotEqual(string2 , string2 ));
+    }
+
     TEST_CLASS_INITIALIZE(ClassInitialize)
     {
       _CrtMemCheckpoint(&_init);
