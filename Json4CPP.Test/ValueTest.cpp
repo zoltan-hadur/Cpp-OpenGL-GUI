@@ -1221,6 +1221,149 @@ namespace Json4CPP::Test
       Assert::IsTrue (ValueLessThanOrEqual(string2, string2));
     }
 
+    TEST_METHOD(TestValueGreaterThan)
+    {
+      auto null = nullptr;
+      auto string1 = L"TestString0"s;
+      auto string2 = L"TestString1"s;
+      auto boolean1 = false;
+      auto boolean2 = true;
+      auto number1 = 0.0;
+      auto number2 = 1.0;
+      auto object1 = JsonObject{
+        { L"key1", 1337 },
+        { L"key2", 1338 }
+      };
+      auto object2 = JsonObject{
+        { L"key3", 1339 },
+        { L"key4", 1340 }
+      };
+      auto array1 = JsonArray{ 1, 2, 3 };
+      auto array2 = JsonArray{ 4, 5, 6 };
+
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(array1, array1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(array1, array2); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(array1, boolean1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(array1, boolean2); });
+      Assert::IsFalse(ValueGreaterThan(array1, null));
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(array1, number1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(array1, number2); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(array1, object1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(array1, object2); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(array1, string1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(array1, string2); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(array2, array1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(array2, array2); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(array2, boolean1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(array2, boolean2); });
+      Assert::IsFalse(ValueGreaterThan(array2, null));
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(array2, number1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(array2, number2); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(array2, object1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(array2, object2); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(array2, string1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(array2, string2); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(boolean1, array1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(boolean1, array2); });
+      Assert::IsFalse(ValueGreaterThan(boolean1, boolean1));
+      Assert::IsFalse(ValueGreaterThan(boolean1, boolean2));
+      Assert::IsFalse(ValueGreaterThan(boolean1, null));
+      Assert::IsFalse(ValueGreaterThan(boolean1, number1));
+      Assert::IsFalse(ValueGreaterThan(boolean1, number2));
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(boolean1, object1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(boolean1, object2); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(boolean1, string1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(boolean1, string2); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(boolean2, array1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(boolean2, array2); });
+      Assert::IsTrue (ValueGreaterThan(boolean2, boolean1));
+      Assert::IsFalse(ValueGreaterThan(boolean2, boolean2));
+      Assert::IsFalse(ValueGreaterThan(boolean2, null));
+      Assert::IsTrue (ValueGreaterThan(boolean2, number1));
+      Assert::IsFalse(ValueGreaterThan(boolean2, number2));
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(boolean2, object1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(boolean2, object2); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(boolean2, string1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(boolean2, string2); });
+      Assert::IsTrue (ValueGreaterThan(null, array1));
+      Assert::IsTrue (ValueGreaterThan(null, array2));
+      Assert::IsTrue (ValueGreaterThan(null, boolean1));
+      Assert::IsTrue (ValueGreaterThan(null, boolean2));
+      Assert::IsFalse(ValueGreaterThan(null, null));
+      Assert::IsTrue (ValueGreaterThan(null, number1));
+      Assert::IsTrue (ValueGreaterThan(null, number2));
+      Assert::IsTrue (ValueGreaterThan(null, object1));
+      Assert::IsTrue (ValueGreaterThan(null, object2));
+      Assert::IsTrue (ValueGreaterThan(null, string1));
+      Assert::IsTrue (ValueGreaterThan(null, string2));
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(number1, array1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(number1, array2); });
+      Assert::IsFalse(ValueGreaterThan(number1, boolean1));
+      Assert::IsFalse(ValueGreaterThan(number1, boolean2));
+      Assert::IsFalse(ValueGreaterThan(number1, null));
+      Assert::IsFalse(ValueGreaterThan(number1, number1));
+      Assert::IsFalse(ValueGreaterThan(number1, number2));
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(number1, object1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(number1, object2); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(number1, string1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(number1, string2); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(number2, array1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(number2, array2); });
+      Assert::IsTrue (ValueGreaterThan(number2, boolean1));
+      Assert::IsFalse(ValueGreaterThan(number2, boolean2));
+      Assert::IsFalse(ValueGreaterThan(number2, null));
+      Assert::IsTrue (ValueGreaterThan(number2, number1));
+      Assert::IsFalse(ValueGreaterThan(number2, number2));
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(number2, object1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(number2, object2); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(number2, string1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(number2, string2); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(object1, array1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(object1, array2); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(object1, boolean1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(object1, boolean2); });
+      Assert::IsFalse(ValueGreaterThan(object1, null));
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(object1, number1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(object1, number2); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(object1, object1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(object1, object2); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(object1, string1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(object1, string2); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(object2, array1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(object2, array2); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(object2, boolean1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(object2, boolean2); });
+      Assert::IsFalse(ValueGreaterThan(object2, null));
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(object2, number1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(object2, number2); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(object2, object1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(object2, object2); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(object2, string1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(object2, string2); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(string1, array1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(string1, array2); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(string1, boolean1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(string1, boolean2); });
+      Assert::IsFalse(ValueGreaterThan(string1, null));
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(string1, number1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(string1, number2); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(string1, object1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(string1, object2); });
+      Assert::IsFalse(ValueGreaterThan(string1, string1));
+      Assert::IsFalse(ValueGreaterThan(string1, string2));
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(string2, array1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(string2, array2); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(string2, boolean1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(string2, boolean2); });
+      Assert::IsFalse(ValueGreaterThan(string2, null));
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(string2, number1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(string2, number2); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(string2, object1); });
+      Assert::ExpectException<exception>([&] { ValueGreaterThan(string2, object2); });
+      Assert::IsTrue (ValueGreaterThan(string2, string1));
+      Assert::IsFalse(ValueGreaterThan(string2, string2));
+    }
+
     TEST_CLASS_INITIALIZE(ClassInitialize)
     {
       _CrtMemCheckpoint(&_init);
