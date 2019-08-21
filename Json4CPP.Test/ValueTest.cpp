@@ -1078,6 +1078,149 @@ namespace Json4CPP::Test
       Assert::IsFalse(ValueLessThan(string2 , string2 ));
     }
 
+    TEST_METHOD(TestValueLessThanOrEqual)
+    {
+      auto null = nullptr;
+      auto string1 = L"TestString0"s;
+      auto string2 = L"TestString1"s;
+      auto boolean1 = false;
+      auto boolean2 = true;
+      auto number1 = 0.0;
+      auto number2 = 1.0;
+      auto object1 = JsonObject{
+        { L"key1", 1337 },
+        { L"key2", 1338 }
+      };
+      auto object2 = JsonObject{
+        { L"key3", 1339 },
+        { L"key4", 1340 }
+      };
+      auto array1 = JsonArray{ 1, 2, 3 };
+      auto array2 = JsonArray{ 4, 5, 6 };
+
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(array1, array1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(array1, array2); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(array1, boolean1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(array1, boolean2); });
+      Assert::IsTrue (ValueLessThanOrEqual(array1, null));
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(array1, number1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(array1, number2); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(array1, object1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(array1, object2); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(array1, string1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(array1, string2); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(array2, array1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(array2, array2); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(array2, boolean1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(array2, boolean2); });
+      Assert::IsTrue (ValueLessThanOrEqual(array2, null));
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(array2, number1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(array2, number2); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(array2, object1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(array2, object2); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(array2, string1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(array2, string2); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(boolean1, array1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(boolean1, array2); });
+      Assert::IsTrue (ValueLessThanOrEqual(boolean1, boolean1));
+      Assert::IsTrue (ValueLessThanOrEqual(boolean1, boolean2));
+      Assert::IsTrue (ValueLessThanOrEqual(boolean1, null));
+      Assert::IsTrue (ValueLessThanOrEqual(boolean1, number1));
+      Assert::IsTrue (ValueLessThanOrEqual(boolean1, number2));
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(boolean1, object1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(boolean1, object2); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(boolean1, string1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(boolean1, string2); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(boolean2, array1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(boolean2, array2); });
+      Assert::IsFalse(ValueLessThanOrEqual(boolean2, boolean1));
+      Assert::IsTrue (ValueLessThanOrEqual(boolean2, boolean2));
+      Assert::IsTrue (ValueLessThanOrEqual(boolean2, null));
+      Assert::IsFalse(ValueLessThanOrEqual(boolean2, number1));
+      Assert::IsTrue (ValueLessThanOrEqual(boolean2, number2));
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(boolean2, object1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(boolean2, object2); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(boolean2, string1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(boolean2, string2); });
+      Assert::IsFalse(ValueLessThanOrEqual(null, array1));
+      Assert::IsFalse(ValueLessThanOrEqual(null, array2));
+      Assert::IsFalse(ValueLessThanOrEqual(null, boolean1));
+      Assert::IsFalse(ValueLessThanOrEqual(null, boolean2));
+      Assert::IsTrue (ValueLessThanOrEqual(null, null));
+      Assert::IsFalse(ValueLessThanOrEqual(null, number1));
+      Assert::IsFalse(ValueLessThanOrEqual(null, number2));
+      Assert::IsFalse(ValueLessThanOrEqual(null, object1));
+      Assert::IsFalse(ValueLessThanOrEqual(null, object2));
+      Assert::IsFalse(ValueLessThanOrEqual(null, string1));
+      Assert::IsFalse(ValueLessThanOrEqual(null, string2));
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(number1, array1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(number1, array2); });
+      Assert::IsTrue (ValueLessThanOrEqual(number1, boolean1));
+      Assert::IsTrue (ValueLessThanOrEqual(number1, boolean2));
+      Assert::IsTrue (ValueLessThanOrEqual(number1, null));
+      Assert::IsTrue (ValueLessThanOrEqual(number1, number1));
+      Assert::IsTrue (ValueLessThanOrEqual(number1, number2));
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(number1, object1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(number1, object2); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(number1, string1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(number1, string2); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(number2, array1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(number2, array2); });
+      Assert::IsFalse(ValueLessThanOrEqual(number2, boolean1));
+      Assert::IsTrue (ValueLessThanOrEqual(number2, boolean2));
+      Assert::IsTrue (ValueLessThanOrEqual(number2, null));
+      Assert::IsFalse(ValueLessThanOrEqual(number2, number1));
+      Assert::IsTrue (ValueLessThanOrEqual(number2, number2));
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(number2, object1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(number2, object2); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(number2, string1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(number2, string2); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(object1, array1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(object1, array2); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(object1, boolean1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(object1, boolean2); });
+      Assert::IsTrue (ValueLessThanOrEqual(object1, null));
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(object1, number1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(object1, number2); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(object1, object1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(object1, object2); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(object1, string1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(object1, string2); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(object2, array1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(object2, array2); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(object2, boolean1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(object2, boolean2); });
+      Assert::IsTrue (ValueLessThanOrEqual(object2, null));
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(object2, number1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(object2, number2); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(object2, object1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(object2, object2); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(object2, string1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(object2, string2); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(string1, array1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(string1, array2); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(string1, boolean1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(string1, boolean2); });
+      Assert::IsTrue (ValueLessThanOrEqual(string1, null));
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(string1, number1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(string1, number2); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(string1, object1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(string1, object2); });
+      Assert::IsTrue (ValueLessThanOrEqual(string1, string1));
+      Assert::IsTrue (ValueLessThanOrEqual(string1, string2));
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(string2, array1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(string2, array2); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(string2, boolean1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(string2, boolean2); });
+      Assert::IsTrue (ValueLessThanOrEqual(string2, null));
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(string2, number1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(string2, number2); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(string2, object1); });
+      Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(string2, object2); });
+      Assert::IsFalse(ValueLessThanOrEqual(string2, string1));
+      Assert::IsTrue (ValueLessThanOrEqual(string2, string2));
+    }
+
     TEST_CLASS_INITIALIZE(ClassInitialize)
     {
       _CrtMemCheckpoint(&_init);
