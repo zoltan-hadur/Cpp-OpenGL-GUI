@@ -652,12 +652,12 @@ namespace Json4CPP::Test
     TEST_METHOD(TestValueEqual)
     {
       auto null = nullptr;
-      auto string1 = L"TestString1"s;
-      auto string2 = L"TestString2"s;
-      auto boolean1 = true;
-      auto boolean2 = false;
-      auto number1 = 1.0;
-      auto number2 = 0.0;
+      auto string1 = L"TestString0"s;
+      auto string2 = L"TestString1"s;
+      auto boolean1 = false;
+      auto boolean2 = true;
+      auto number1 = 0.0;
+      auto number2 = 1.0;
       auto object1 = JsonObject{
         { L"key1", 1337 },
         { L"key2", 1338 }
@@ -795,12 +795,12 @@ namespace Json4CPP::Test
     TEST_METHOD(TestValueNotEqual)
     {
       auto null = nullptr;
-      auto string1 = L"TestString1"s;
-      auto string2 = L"TestString2"s;
-      auto boolean1 = true;
-      auto boolean2 = false;
-      auto number1 = 1.0;
-      auto number2 = 0.0;
+      auto string1 = L"TestString0"s;
+      auto string2 = L"TestString1"s;
+      auto boolean1 = false;
+      auto boolean2 = true;
+      auto number1 = 0.0;
+      auto number2 = 1.0;
       auto object1 = JsonObject{
         { L"key1", 1337 },
         { L"key2", 1338 }
