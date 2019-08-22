@@ -475,14 +475,14 @@ namespace Json4CPP
   {
     VALUE result;
     visit(Overload{
-      [&](nullptr_t  const& l, auto       const& r) { result = nullptr;       },
-      [&](auto       const& l, nullptr_t  const& r) { result = nullptr;       },
-      [&](nullptr_t  const& l, nullptr_t  const& r) { result = nullptr;       },
-      [&](wstring    const& l, wstring    const& r) { result = l + r;         },
-      [&](bool       const& l, bool       const& r) { result = double(l + r); },
-      [&](bool       const& l, double     const& r) { result = l + r;         },
-      [&](double     const& l, bool       const& r) { result = l + r;         },
-      [&](double     const& l, double     const& r) { result = l + r;         },
+      [&](nullptr_t  const& l, auto       const& r) { result = nullptr;               },
+      [&](auto       const& l, nullptr_t  const& r) { result = nullptr;               },
+      [&](nullptr_t  const& l, nullptr_t  const& r) { result = nullptr;               },
+      [&](wstring    const& l, wstring    const& r) { result = l + r;                 },
+      [&](bool       const& l, bool       const& r) { result = double(l) + double(r); },
+      [&](bool       const& l, double     const& r) { result = l + r;                 },
+      [&](double     const& l, bool       const& r) { result = l + r;                 },
+      [&](double     const& l, double     const& r) { result = l + r;                 },
       [&](auto       const& l, auto       const& r)
       {
         auto message = "Operator+ is not defined for types " + string(typeid(l).name()) + " and " + string(typeid(r).name()) + "!";
@@ -495,14 +495,14 @@ namespace Json4CPP
   VALUE& ValueAddAssign(VALUE& left, VALUE const& right)
   {
     visit(Overload{
-      [&](nullptr_t  & l, auto       const& r) { left = nullptr;       },
-      [&](auto       & l, nullptr_t  const& r) { left = nullptr;       },
-      [&](nullptr_t  & l, nullptr_t  const& r) { left = nullptr;       },
-      [&](wstring    & l, wstring    const& r) { left = l + r;         },
-      [&](bool       & l, bool       const& r) { left = double(l + r); },
-      [&](bool       & l, double     const& r) { left = l + r;         },
-      [&](double     & l, bool       const& r) { left = l + r;         },
-      [&](double     & l, double     const& r) { left = l + r;         },
+      [&](nullptr_t  & l, auto       const& r) { left = nullptr;               },
+      [&](auto       & l, nullptr_t  const& r) { left = nullptr;               },
+      [&](nullptr_t  & l, nullptr_t  const& r) { left = nullptr;               },
+      [&](wstring    & l, wstring    const& r) { left = l + r;                 },
+      [&](bool       & l, bool       const& r) { left = double(l) + double(r); },
+      [&](bool       & l, double     const& r) { left = l + r;                 },
+      [&](double     & l, bool       const& r) { left = l + r;                 },
+      [&](double     & l, double     const& r) { left = l + r;                 },
       [&](auto       & l, auto       const& r)
       {
         auto message = "Operator+= is not defined for types " + string(typeid(l).name()) + " and " + string(typeid(r).name()) + "!";
@@ -516,13 +516,13 @@ namespace Json4CPP
   {
     VALUE result;
     visit(Overload{
-      [&](nullptr_t  const& l, auto       const& r) { result = nullptr; },
-      [&](auto       const& l, nullptr_t  const& r) { result = nullptr; },
-      [&](nullptr_t  const& l, nullptr_t  const& r) { result = nullptr; },
-      [&](bool       const& l, bool       const& r) { result = double(l - r); },
-      [&](bool       const& l, double     const& r) { result = l - r; },
-      [&](double     const& l, bool       const& r) { result = l - r; },
-      [&](double     const& l, double     const& r) { result = l - r; },
+      [&](nullptr_t  const& l, auto       const& r) { result = nullptr;               },
+      [&](auto       const& l, nullptr_t  const& r) { result = nullptr;               },
+      [&](nullptr_t  const& l, nullptr_t  const& r) { result = nullptr;               },
+      [&](bool       const& l, bool       const& r) { result = double(l) - double(r); },
+      [&](bool       const& l, double     const& r) { result = l - r;                 },
+      [&](double     const& l, bool       const& r) { result = l - r;                 },
+      [&](double     const& l, double     const& r) { result = l - r;                 },
       [&](auto       const& l, auto       const& r)
       {
         auto message = "Operator- is not defined for types " + string(typeid(l).name()) + " and " + string(typeid(r).name()) + "!";
@@ -535,13 +535,13 @@ namespace Json4CPP
   VALUE& ValueSubtractAssign(VALUE& left, VALUE const& right)
   {
     visit(Overload{
-      [&](nullptr_t  & l, auto       const& r) { left = nullptr;       },
-      [&](auto       & l, nullptr_t  const& r) { left = nullptr;       },
-      [&](nullptr_t  & l, nullptr_t  const& r) { left = nullptr;       },
-      [&](bool       & l, bool       const& r) { left = double(l - r); },
-      [&](bool       & l, double     const& r) { left = l - r;         },
-      [&](double     & l, bool       const& r) { left = l - r;         },
-      [&](double     & l, double     const& r) { left = l - r;         },
+      [&](nullptr_t  & l, auto       const& r) { left = nullptr;               },
+      [&](auto       & l, nullptr_t  const& r) { left = nullptr;               },
+      [&](nullptr_t  & l, nullptr_t  const& r) { left = nullptr;               },
+      [&](bool       & l, bool       const& r) { left = double(l) - double(r); },
+      [&](bool       & l, double     const& r) { left = l - r;                 },
+      [&](double     & l, bool       const& r) { left = l - r;                 },
+      [&](double     & l, double     const& r) { left = l - r;                 },
       [&](auto       & l, auto       const& r)
       {
         auto message = "Operator-= is not defined for types " + string(typeid(l).name()) + " and " + string(typeid(r).name()) + "!";
@@ -555,13 +555,13 @@ namespace Json4CPP
   {
     VALUE result;
     visit(Overload{
-      [&](nullptr_t  const& l, auto       const& r) { result = nullptr;       },
-      [&](auto       const& l, nullptr_t  const& r) { result = nullptr;       },
-      [&](nullptr_t  const& l, nullptr_t  const& r) { result = nullptr;       },
-      [&](bool       const& l, bool       const& r) { result = double(l * r); },
-      [&](bool       const& l, double     const& r) { result = l * r;         },
-      [&](double     const& l, bool       const& r) { result = l * r;         },
-      [&](double     const& l, double     const& r) { result = l * r;         },
+      [&](nullptr_t  const& l, auto       const& r) { result = nullptr;               },
+      [&](auto       const& l, nullptr_t  const& r) { result = nullptr;               },
+      [&](nullptr_t  const& l, nullptr_t  const& r) { result = nullptr;               },
+      [&](bool       const& l, bool       const& r) { result = double(l) * double(r); },
+      [&](bool       const& l, double     const& r) { result = l * r;                 },
+      [&](double     const& l, bool       const& r) { result = l * r;                 },
+      [&](double     const& l, double     const& r) { result = l * r;                 },
       [&](auto       const& l, auto       const& r)
       {
         auto message = "Operator* is not defined for types " + string(typeid(l).name()) + " and " + string(typeid(r).name()) + "!";
@@ -574,13 +574,13 @@ namespace Json4CPP
   VALUE& ValueMultiplyAssign(VALUE& left, VALUE const& right)
   {
     visit(Overload{
-      [&](nullptr_t  & l, auto       const& r) { left = nullptr;       },
-      [&](auto       & l, nullptr_t  const& r) { left = nullptr;       },
-      [&](nullptr_t  & l, nullptr_t  const& r) { left = nullptr;       },
-      [&](bool       & l, bool       const& r) { left = double(l * r); },
-      [&](bool       & l, double     const& r) { left = l * r;         },
-      [&](double     & l, bool       const& r) { left = l * r;         },
-      [&](double     & l, double     const& r) { left = l * r;         },
+      [&](nullptr_t  & l, auto       const& r) { left = nullptr;               },
+      [&](auto       & l, nullptr_t  const& r) { left = nullptr;               },
+      [&](nullptr_t  & l, nullptr_t  const& r) { left = nullptr;               },
+      [&](bool       & l, bool       const& r) { left = double(l) * double(r); },
+      [&](bool       & l, double     const& r) { left = l * r;                 },
+      [&](double     & l, bool       const& r) { left = l * r;                 },
+      [&](double     & l, double     const& r) { left = l * r;                 },
       [&](auto       & l, auto       const& r)
       {
         auto message = "Operator*= is not defined for types " + string(typeid(l).name()) + " and " + string(typeid(r).name()) + "!";
