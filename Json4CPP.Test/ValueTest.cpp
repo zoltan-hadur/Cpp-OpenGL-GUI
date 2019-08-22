@@ -1502,6 +1502,149 @@ namespace Json4CPP::Test
       Assert::IsTrue (ValueGreaterThanOrEqual(string2, string2));
     }
 
+    TEST_METHOD(TestValueAdd)
+    {
+      auto null = nullptr;
+      auto string1 = L"TestString0"s;
+      auto string2 = L"TestString1"s;
+      auto boolean1 = false;
+      auto boolean2 = true;
+      auto number1 = 0.0;
+      auto number2 = 1.0;
+      auto object1 = JsonObject{
+        { L"key1", 1337 },
+        { L"key2", 1338 }
+      };
+      auto object2 = JsonObject{
+        { L"key3", 1339 },
+        { L"key4", 1340 }
+      };
+      auto array1 = JsonArray{ 1, 2, 3 };
+      auto array2 = JsonArray{ 4, 5, 6 };
+
+      Assert::ExpectException<exception>([&] { ValueAdd(array1, array1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(array1, array2); });
+      Assert::ExpectException<exception>([&] { ValueAdd(array1, boolean1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(array1, boolean2); });
+      Assert::AreEqual<VALUE>(null, ValueAdd(array1, null));
+      Assert::ExpectException<exception>([&] { ValueAdd(array1, number1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(array1, number2); });
+      Assert::ExpectException<exception>([&] { ValueAdd(array1, object1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(array1, object2); });
+      Assert::ExpectException<exception>([&] { ValueAdd(array1, string1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(array1, string2); });
+      Assert::ExpectException<exception>([&] { ValueAdd(array2, array1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(array2, array2); });
+      Assert::ExpectException<exception>([&] { ValueAdd(array2, boolean1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(array2, boolean2); });
+      Assert::AreEqual<VALUE>(null, ValueAdd(array2, null));
+      Assert::ExpectException<exception>([&] { ValueAdd(array2, number1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(array2, number2); });
+      Assert::ExpectException<exception>([&] { ValueAdd(array2, object1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(array2, object2); });
+      Assert::ExpectException<exception>([&] { ValueAdd(array2, string1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(array2, string2); });
+      Assert::ExpectException<exception>([&] { ValueAdd(boolean1, array1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(boolean1, array2); });
+      Assert::AreEqual<VALUE>(0.0, ValueAdd(boolean1, boolean1));
+      Assert::AreEqual<VALUE>(1.0, ValueAdd(boolean1, boolean2));
+      Assert::AreEqual<VALUE>(null, ValueAdd(boolean1, null));
+      Assert::AreEqual<VALUE>(0.0, ValueAdd(boolean1, number1));
+      Assert::AreEqual<VALUE>(1.0, ValueAdd(boolean1, number2));
+      Assert::ExpectException<exception>([&] { ValueAdd(boolean1, object1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(boolean1, object2); });
+      Assert::ExpectException<exception>([&] { ValueAdd(boolean1, string1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(boolean1, string2); });
+      Assert::ExpectException<exception>([&] { ValueAdd(boolean2, array1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(boolean2, array2); });
+      Assert::AreEqual<VALUE>(1.0, ValueAdd(boolean2, boolean1));
+      Assert::AreEqual<VALUE>(2.0, ValueAdd(boolean2, boolean2));
+      Assert::AreEqual<VALUE>(null, ValueAdd(boolean2, null));
+      Assert::AreEqual<VALUE>(1.0, ValueAdd(boolean2, number1));
+      Assert::AreEqual<VALUE>(2.0, ValueAdd(boolean2, number2));
+      Assert::ExpectException<exception>([&] { ValueAdd(boolean2, object1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(boolean2, object2); });
+      Assert::ExpectException<exception>([&] { ValueAdd(boolean2, string1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(boolean2, string2); });
+      Assert::AreEqual<VALUE>(null, ValueAdd(null, array1));
+      Assert::AreEqual<VALUE>(null, ValueAdd(null, array2));
+      Assert::AreEqual<VALUE>(null, ValueAdd(null, boolean1));
+      Assert::AreEqual<VALUE>(null, ValueAdd(null, boolean2));
+      Assert::AreEqual<VALUE>(null, ValueAdd(null, null));
+      Assert::AreEqual<VALUE>(null, ValueAdd(null, number1));
+      Assert::AreEqual<VALUE>(null, ValueAdd(null, number2));
+      Assert::AreEqual<VALUE>(null, ValueAdd(null, object1));
+      Assert::AreEqual<VALUE>(null, ValueAdd(null, object2));
+      Assert::AreEqual<VALUE>(null, ValueAdd(null, string1));
+      Assert::AreEqual<VALUE>(null, ValueAdd(null, string2));
+      Assert::ExpectException<exception>([&] { ValueAdd(number1, array1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(number1, array2); });
+      Assert::AreEqual<VALUE>(0.0, ValueAdd(number1, boolean1));
+      Assert::AreEqual<VALUE>(1.0, ValueAdd(number1, boolean2));
+      Assert::AreEqual<VALUE>(null, ValueAdd(number1, null));
+      Assert::AreEqual<VALUE>(0.0, ValueAdd(number1, number1));
+      Assert::AreEqual<VALUE>(1.0, ValueAdd(number1, number2));
+      Assert::ExpectException<exception>([&] { ValueAdd(number1, object1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(number1, object2); });
+      Assert::ExpectException<exception>([&] { ValueAdd(number1, string1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(number1, string2); });
+      Assert::ExpectException<exception>([&] { ValueAdd(number2, array1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(number2, array2); });
+      Assert::AreEqual<VALUE>(1.0, ValueAdd(number2, boolean1));
+      Assert::AreEqual<VALUE>(2.0, ValueAdd(number2, boolean2));
+      Assert::AreEqual<VALUE>(null, ValueAdd(number2, null));
+      Assert::AreEqual<VALUE>(1.0, ValueAdd(number2, number1));
+      Assert::AreEqual<VALUE>(2.0, ValueAdd(number2, number2));
+      Assert::ExpectException<exception>([&] { ValueAdd(number2, object1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(number2, object2); });
+      Assert::ExpectException<exception>([&] { ValueAdd(number2, string1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(number2, string2); });
+      Assert::ExpectException<exception>([&] { ValueAdd(object1, array1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(object1, array2); });
+      Assert::ExpectException<exception>([&] { ValueAdd(object1, boolean1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(object1, boolean2); });
+      Assert::AreEqual<VALUE>(null, ValueAdd(object1, null));
+      Assert::ExpectException<exception>([&] { ValueAdd(object1, number1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(object1, number2); });
+      Assert::ExpectException<exception>([&] { ValueAdd(object1, object1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(object1, object2); });
+      Assert::ExpectException<exception>([&] { ValueAdd(object1, string1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(object1, string2); });
+      Assert::ExpectException<exception>([&] { ValueAdd(object2, array1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(object2, array2); });
+      Assert::ExpectException<exception>([&] { ValueAdd(object2, boolean1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(object2, boolean2); });
+      Assert::AreEqual<VALUE>(null, ValueAdd(object2, null));
+      Assert::ExpectException<exception>([&] { ValueAdd(object2, number1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(object2, number2); });
+      Assert::ExpectException<exception>([&] { ValueAdd(object2, object1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(object2, object2); });
+      Assert::ExpectException<exception>([&] { ValueAdd(object2, string1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(object2, string2); });
+      Assert::ExpectException<exception>([&] { ValueAdd(string1, array1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(string1, array2); });
+      Assert::ExpectException<exception>([&] { ValueAdd(string1, boolean1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(string1, boolean2); });
+      Assert::AreEqual<VALUE>(null, ValueAdd(string1, null));
+      Assert::ExpectException<exception>([&] { ValueAdd(string1, number1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(string1, number2); });
+      Assert::ExpectException<exception>([&] { ValueAdd(string1, object1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(string1, object2); });
+      Assert::AreEqual<VALUE>(L"TestString0TestString0"s, ValueAdd(string1, string1));
+      Assert::AreEqual<VALUE>(L"TestString0TestString1"s, ValueAdd(string1, string2));
+      Assert::ExpectException<exception>([&] { ValueAdd(string2, array1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(string2, array2); });
+      Assert::ExpectException<exception>([&] { ValueAdd(string2, boolean1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(string2, boolean2); });
+      Assert::AreEqual<VALUE>(null, ValueAdd(string2, null));
+      Assert::ExpectException<exception>([&] { ValueAdd(string2, number1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(string2, number2); });
+      Assert::ExpectException<exception>([&] { ValueAdd(string2, object1); });
+      Assert::ExpectException<exception>([&] { ValueAdd(string2, object2); });
+      Assert::AreEqual<VALUE>(L"TestString1TestString0"s, ValueAdd(string2, string1));
+      Assert::AreEqual<VALUE>(L"TestString1TestString1"s, ValueAdd(string2, string2));
+    }
+
     TEST_CLASS_INITIALIZE(ClassInitialize)
     {
       _CrtMemCheckpoint(&_init);
