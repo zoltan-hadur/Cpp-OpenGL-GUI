@@ -1,9 +1,4 @@
 #include "stdafx.h"
-#include "CppUnitTest.h"
-#include <optional>
-
-#include "..\Json4CPP\Json.hpp"
-#include "..\Foundation\Enumerable.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
@@ -58,8 +53,8 @@ namespace Json4CPP::Test
       {
         if (!expectException[i])
         {
-          Assert::IsTrue(nullptr == ParseNull(input[i]));
-          Assert::IsTrue(nullptr == ParseNull(wstringstream(input[i])));
+          Assert::AreEqual(nullptr, ParseNull(input[i]));
+          Assert::AreEqual(nullptr, ParseNull(wstringstream(input[i])));
         }
         else
         {
@@ -498,8 +493,8 @@ namespace Json4CPP::Test
 
       for (auto [value, expected] : pairs)
       {
-        Assert::IsTrue(expected == ParseJsonObject(value));
-        Assert::IsTrue(expected == ParseJsonObject(wstringstream(value)));
+        Assert::AreEqual(expected, ParseJsonObject(value));
+        Assert::AreEqual(expected, ParseJsonObject(wstringstream(value)));
       }
     }
 
@@ -533,8 +528,8 @@ namespace Json4CPP::Test
 
       for (auto [value, expected] : pairs)
       {
-        Assert::IsTrue(expected == ParseJsonArray(value));
-        Assert::IsTrue(expected == ParseJsonArray(wstringstream(value)));
+        Assert::AreEqual(expected, ParseJsonArray(value));
+        Assert::AreEqual(expected, ParseJsonArray(wstringstream(value)));
       }
     }
 
@@ -600,8 +595,8 @@ namespace Json4CPP::Test
 
       for (auto [value, expected] : pairs)
       {
-        Assert::IsTrue(expected == ParseJson(value));
-        Assert::IsTrue(expected == ParseJson(wstringstream(value)));
+        Assert::AreEqual(expected, ParseJson(value));
+        Assert::AreEqual(expected, ParseJson(wstringstream(value)));
       }
     }
 
@@ -622,8 +617,8 @@ namespace Json4CPP::Test
       for (auto [value, expected] : pairs)
       {
         auto os = wostringstream();
-        ValueWrite(os, value); 
-        Assert::IsTrue(expected == os.str());
+        ValueWrite(os, value);
+        Assert::AreEqual(expected, os.str());
       }
     }
 
@@ -645,7 +640,7 @@ namespace Json4CPP::Test
         auto is = wistringstream(value);
         VALUE actual;
         ValueRead(is, actual);
-        Assert::IsTrue(expected == actual);
+        Assert::AreEqual(expected, actual);
       }
     }
 

@@ -1,8 +1,4 @@
 #include "stdafx.h"
-#include "CppUnitTest.h"
-#include <optional>
-
-#include "..\Json4CPP\Json.hpp"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
