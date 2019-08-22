@@ -646,23 +646,23 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestValueEqual)
     {
-      auto null = nullptr;
-      auto string1 = L"TestString0"s;
-      auto string2 = L"TestString1"s;
-      auto boolean1 = false;
-      auto boolean2 = true;
-      auto number1 = 0.0;
-      auto number2 = 1.0;
-      auto object1 = JsonObject{
+      VALUE null = nullptr;
+      VALUE string1 = L"TestString0"s;
+      VALUE string2 = L"TestString1"s;
+      VALUE boolean1 = false;
+      VALUE boolean2 = true;
+      VALUE number1 = 0.0;
+      VALUE number2 = 1.0;
+      VALUE object1 = JsonObject{
         { L"key1", 1337 },
         { L"key2", 1338 }
       };
-      auto object2 = JsonObject{
+      VALUE object2 = JsonObject{
         { L"key3", 1339 },
         { L"key4", 1340 }
       };
-      auto array1 = JsonArray{ 1, 2, 3 };
-      auto array2 = JsonArray{ 4, 5, 6 };
+      VALUE array1 = JsonArray{ 1, 2, 3 };
+      VALUE array2 = JsonArray{ 4, 5, 6 };
 
       Assert::IsTrue (ValueEqual(array1  , array1  ));
       Assert::IsFalse(ValueEqual(array1  , array2  ));
@@ -789,23 +789,23 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestValueNotEqual)
     {
-      auto null = nullptr;
-      auto string1 = L"TestString0"s;
-      auto string2 = L"TestString1"s;
-      auto boolean1 = false;
-      auto boolean2 = true;
-      auto number1 = 0.0;
-      auto number2 = 1.0;
-      auto object1 = JsonObject{
+      VALUE null = nullptr;
+      VALUE string1 = L"TestString0"s;
+      VALUE string2 = L"TestString1"s;
+      VALUE boolean1 = false;
+      VALUE boolean2 = true;
+      VALUE number1 = 0.0;
+      VALUE number2 = 1.0;
+      VALUE object1 = JsonObject{
         { L"key1", 1337 },
         { L"key2", 1338 }
       };
-      auto object2 = JsonObject{
+      VALUE object2 = JsonObject{
         { L"key3", 1339 },
         { L"key4", 1340 }
       };
-      auto array1 = JsonArray{ 1, 2, 3 };
-      auto array2 = JsonArray{ 4, 5, 6 };
+      VALUE array1 = JsonArray{ 1, 2, 3 };
+      VALUE array2 = JsonArray{ 4, 5, 6 };
 
       Assert::IsFalse(ValueNotEqual(array1  , array1  ));
       Assert::IsTrue (ValueNotEqual(array1  , array2  ));
@@ -932,23 +932,23 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestValueLessThan)
     {
-      auto null = nullptr;
-      auto string1 = L"TestString0"s;
-      auto string2 = L"TestString1"s;
-      auto boolean1 = false;
-      auto boolean2 = true;
-      auto number1 = 0.0;
-      auto number2 = 1.0;
-      auto object1 = JsonObject{
+      VALUE null = nullptr;
+      VALUE string1 = L"TestString0"s;
+      VALUE string2 = L"TestString1"s;
+      VALUE boolean1 = false;
+      VALUE boolean2 = true;
+      VALUE number1 = 0.0;
+      VALUE number2 = 1.0;
+      VALUE object1 = JsonObject{
         { L"key1", 1337 },
         { L"key2", 1338 }
       };
-      auto object2 = JsonObject{
+      VALUE object2 = JsonObject{
         { L"key3", 1339 },
         { L"key4", 1340 }
       };
-      auto array1 = JsonArray{ 1, 2, 3 };
-      auto array2 = JsonArray{ 4, 5, 6 };
+      VALUE array1 = JsonArray{ 1, 2, 3 };
+      VALUE array2 = JsonArray{ 4, 5, 6 };
 
       Assert::ExpectException<exception>([&] { ValueLessThan(array1, array1); });
       Assert::ExpectException<exception>([&] { ValueLessThan(array1, array2); });
@@ -1075,23 +1075,23 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestValueLessThanOrEqual)
     {
-      auto null = nullptr;
-      auto string1 = L"TestString0"s;
-      auto string2 = L"TestString1"s;
-      auto boolean1 = false;
-      auto boolean2 = true;
-      auto number1 = 0.0;
-      auto number2 = 1.0;
-      auto object1 = JsonObject{
+      VALUE null = nullptr;
+      VALUE string1 = L"TestString0"s;
+      VALUE string2 = L"TestString1"s;
+      VALUE boolean1 = false;
+      VALUE boolean2 = true;
+      VALUE number1 = 0.0;
+      VALUE number2 = 1.0;
+      VALUE object1 = JsonObject{
         { L"key1", 1337 },
         { L"key2", 1338 }
       };
-      auto object2 = JsonObject{
+      VALUE object2 = JsonObject{
         { L"key3", 1339 },
         { L"key4", 1340 }
       };
-      auto array1 = JsonArray{ 1, 2, 3 };
-      auto array2 = JsonArray{ 4, 5, 6 };
+      VALUE array1 = JsonArray{ 1, 2, 3 };
+      VALUE array2 = JsonArray{ 4, 5, 6 };
 
       Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(array1, array1); });
       Assert::ExpectException<exception>([&] { ValueLessThanOrEqual(array1, array2); });
@@ -1218,23 +1218,23 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestValueGreaterThan)
     {
-      auto null = nullptr;
-      auto string1 = L"TestString0"s;
-      auto string2 = L"TestString1"s;
-      auto boolean1 = false;
-      auto boolean2 = true;
-      auto number1 = 0.0;
-      auto number2 = 1.0;
-      auto object1 = JsonObject{
+      VALUE null = nullptr;
+      VALUE string1 = L"TestString0"s;
+      VALUE string2 = L"TestString1"s;
+      VALUE boolean1 = false;
+      VALUE boolean2 = true;
+      VALUE number1 = 0.0;
+      VALUE number2 = 1.0;
+      VALUE object1 = JsonObject{
         { L"key1", 1337 },
         { L"key2", 1338 }
       };
-      auto object2 = JsonObject{
+      VALUE object2 = JsonObject{
         { L"key3", 1339 },
         { L"key4", 1340 }
       };
-      auto array1 = JsonArray{ 1, 2, 3 };
-      auto array2 = JsonArray{ 4, 5, 6 };
+      VALUE array1 = JsonArray{ 1, 2, 3 };
+      VALUE array2 = JsonArray{ 4, 5, 6 };
 
       Assert::ExpectException<exception>([&] { ValueGreaterThan(array1, array1); });
       Assert::ExpectException<exception>([&] { ValueGreaterThan(array1, array2); });
@@ -1361,23 +1361,23 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestValueGreaterThanOrEqual)
     {
-      auto null = nullptr;
-      auto string1 = L"TestString0"s;
-      auto string2 = L"TestString1"s;
-      auto boolean1 = false;
-      auto boolean2 = true;
-      auto number1 = 0.0;
-      auto number2 = 1.0;
-      auto object1 = JsonObject{
+      VALUE null = nullptr;
+      VALUE string1 = L"TestString0"s;
+      VALUE string2 = L"TestString1"s;
+      VALUE boolean1 = false;
+      VALUE boolean2 = true;
+      VALUE number1 = 0.0;
+      VALUE number2 = 1.0;
+      VALUE object1 = JsonObject{
         { L"key1", 1337 },
         { L"key2", 1338 }
       };
-      auto object2 = JsonObject{
+      VALUE object2 = JsonObject{
         { L"key3", 1339 },
         { L"key4", 1340 }
       };
-      auto array1 = JsonArray{ 1, 2, 3 };
-      auto array2 = JsonArray{ 4, 5, 6 };
+      VALUE array1 = JsonArray{ 1, 2, 3 };
+      VALUE array2 = JsonArray{ 4, 5, 6 };
 
       Assert::ExpectException<exception>([&] { ValueGreaterThanOrEqual(array1, array1); });
       Assert::ExpectException<exception>([&] { ValueGreaterThanOrEqual(array1, array2); });
@@ -1504,23 +1504,23 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestValueAdd)
     {
-      auto null = nullptr;
-      auto string1 = L"TestString0"s;
-      auto string2 = L"TestString1"s;
-      auto boolean1 = false;
-      auto boolean2 = true;
-      auto number1 = 0.0;
-      auto number2 = 1.0;
-      auto object1 = JsonObject{
+      VALUE null = nullptr;
+      VALUE string1 = L"TestString0"s;
+      VALUE string2 = L"TestString1"s;
+      VALUE boolean1 = false;
+      VALUE boolean2 = true;
+      VALUE number1 = 0.0;
+      VALUE number2 = 1.0;
+      VALUE object1 = JsonObject{
         { L"key1", 1337 },
         { L"key2", 1338 }
       };
-      auto object2 = JsonObject{
+      VALUE object2 = JsonObject{
         { L"key3", 1339 },
         { L"key4", 1340 }
       };
-      auto array1 = JsonArray{ 1, 2, 3 };
-      auto array2 = JsonArray{ 4, 5, 6 };
+      VALUE array1 = JsonArray{ 1, 2, 3 };
+      VALUE array2 = JsonArray{ 4, 5, 6 };
 
       Assert::ExpectException<exception>([&] { ValueAdd(array1, array1); });
       Assert::ExpectException<exception>([&] { ValueAdd(array1, array2); });
