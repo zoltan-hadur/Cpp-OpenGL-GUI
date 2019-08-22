@@ -2030,6 +2030,149 @@ namespace Json4CPP::Test
       Assert::AreEqual<VALUE>(L"TestString1TestString1"s, value);
     }
 
+    TEST_METHOD(TestValueSubtract)
+    {
+      VALUE null = nullptr;
+      VALUE string1 = L"TestString0"s;
+      VALUE string2 = L"TestString1"s;
+      VALUE boolean1 = false;
+      VALUE boolean2 = true;
+      VALUE number1 = 0.0;
+      VALUE number2 = 1.0;
+      VALUE object1 = JsonObject{
+        { L"key1", 1337 },
+        { L"key2", 1338 }
+      };
+      VALUE object2 = JsonObject{
+        { L"key3", 1339 },
+        { L"key4", 1340 }
+      };
+      VALUE array1 = JsonArray{ 1, 2, 3 };
+      VALUE array2 = JsonArray{ 4, 5, 6 };
+
+      Assert::ExpectException<exception>([&] { ValueSubtract(array1, array1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(array1, array2); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(array1, boolean1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(array1, boolean2); });
+      Assert::AreEqual<VALUE>(null, ValueSubtract(array1, null));
+      Assert::ExpectException<exception>([&] { ValueSubtract(array1, number1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(array1, number2); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(array1, object1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(array1, object2); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(array1, string1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(array1, string2); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(array2, array1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(array2, array2); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(array2, boolean1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(array2, boolean2); });
+      Assert::AreEqual<VALUE>(null, ValueSubtract(array2, null));
+      Assert::ExpectException<exception>([&] { ValueSubtract(array2, number1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(array2, number2); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(array2, object1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(array2, object2); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(array2, string1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(array2, string2); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(boolean1, array1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(boolean1, array2); });
+      Assert::AreEqual<VALUE>(0.0, ValueSubtract(boolean1, boolean1));
+      Assert::AreEqual<VALUE>(-1.0, ValueSubtract(boolean1, boolean2));
+      Assert::AreEqual<VALUE>(null, ValueSubtract(boolean1, null));
+      Assert::AreEqual<VALUE>(0.0, ValueSubtract(boolean1, number1));
+      Assert::AreEqual<VALUE>(-1.0, ValueSubtract(boolean1, number2));
+      Assert::ExpectException<exception>([&] { ValueSubtract(boolean1, object1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(boolean1, object2); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(boolean1, string1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(boolean1, string2); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(boolean2, array1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(boolean2, array2); });
+      Assert::AreEqual<VALUE>(1.0, ValueSubtract(boolean2, boolean1));
+      Assert::AreEqual<VALUE>(0.0, ValueSubtract(boolean2, boolean2));
+      Assert::AreEqual<VALUE>(null, ValueSubtract(boolean2, null));
+      Assert::AreEqual<VALUE>(1.0, ValueSubtract(boolean2, number1));
+      Assert::AreEqual<VALUE>(0.0, ValueSubtract(boolean2, number2));
+      Assert::ExpectException<exception>([&] { ValueSubtract(boolean2, object1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(boolean2, object2); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(boolean2, string1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(boolean2, string2); });
+      Assert::AreEqual<VALUE>(null, ValueSubtract(null, array1));
+      Assert::AreEqual<VALUE>(null, ValueSubtract(null, array2));
+      Assert::AreEqual<VALUE>(null, ValueSubtract(null, boolean1));
+      Assert::AreEqual<VALUE>(null, ValueSubtract(null, boolean2));
+      Assert::AreEqual<VALUE>(null, ValueSubtract(null, null));
+      Assert::AreEqual<VALUE>(null, ValueSubtract(null, number1));
+      Assert::AreEqual<VALUE>(null, ValueSubtract(null, number2));
+      Assert::AreEqual<VALUE>(null, ValueSubtract(null, object1));
+      Assert::AreEqual<VALUE>(null, ValueSubtract(null, object2));
+      Assert::AreEqual<VALUE>(null, ValueSubtract(null, string1));
+      Assert::AreEqual<VALUE>(null, ValueSubtract(null, string2));
+      Assert::ExpectException<exception>([&] { ValueSubtract(number1, array1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(number1, array2); });
+      Assert::AreEqual<VALUE>(0.0, ValueSubtract(number1, boolean1));
+      Assert::AreEqual<VALUE>(-1.0, ValueSubtract(number1, boolean2));
+      Assert::AreEqual<VALUE>(null, ValueSubtract(number1, null));
+      Assert::AreEqual<VALUE>(0.0, ValueSubtract(number1, number1));
+      Assert::AreEqual<VALUE>(-1.0, ValueSubtract(number1, number2));
+      Assert::ExpectException<exception>([&] { ValueSubtract(number1, object1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(number1, object2); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(number1, string1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(number1, string2); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(number2, array1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(number2, array2); });
+      Assert::AreEqual<VALUE>(1.0, ValueSubtract(number2, boolean1));
+      Assert::AreEqual<VALUE>(0.0, ValueSubtract(number2, boolean2));
+      Assert::AreEqual<VALUE>(null, ValueSubtract(number2, null));
+      Assert::AreEqual<VALUE>(1.0, ValueSubtract(number2, number1));
+      Assert::AreEqual<VALUE>(0.0, ValueSubtract(number2, number2));
+      Assert::ExpectException<exception>([&] { ValueSubtract(number2, object1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(number2, object2); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(number2, string1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(number2, string2); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(object1, array1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(object1, array2); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(object1, boolean1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(object1, boolean2); });
+      Assert::AreEqual<VALUE>(null, ValueSubtract(object1, null));
+      Assert::ExpectException<exception>([&] { ValueSubtract(object1, number1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(object1, number2); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(object1, object1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(object1, object2); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(object1, string1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(object1, string2); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(object2, array1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(object2, array2); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(object2, boolean1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(object2, boolean2); });
+      Assert::AreEqual<VALUE>(null, ValueSubtract(object2, null));
+      Assert::ExpectException<exception>([&] { ValueSubtract(object2, number1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(object2, number2); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(object2, object1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(object2, object2); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(object2, string1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(object2, string2); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(string1, array1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(string1, array2); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(string1, boolean1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(string1, boolean2); });
+      Assert::AreEqual<VALUE>(null, ValueSubtract(string1, null));
+      Assert::ExpectException<exception>([&] { ValueSubtract(string1, number1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(string1, number2); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(string1, object1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(string1, object2); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(string1, string1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(string1, string2); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(string2, array1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(string2, array2); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(string2, boolean1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(string2, boolean2); });
+      Assert::AreEqual<VALUE>(null, ValueSubtract(string2, null));
+      Assert::ExpectException<exception>([&] { ValueSubtract(string2, number1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(string2, number2); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(string2, object1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(string2, object2); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(string2, string1); });
+      Assert::ExpectException<exception>([&] { ValueSubtract(string2, string2); });
+    }
+
     TEST_CLASS_INITIALIZE(ClassInitialize)
     {
       _CrtMemCheckpoint(&_init);
