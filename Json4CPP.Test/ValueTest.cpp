@@ -2558,6 +2558,149 @@ namespace Json4CPP::Test
       Assert::AreEqual<VALUE>(string2, value);
     }
 
+    TEST_METHOD(TestValueMultiply)
+    {
+      VALUE null = nullptr;
+      VALUE string1 = L"TestString0"s;
+      VALUE string2 = L"TestString1"s;
+      VALUE boolean1 = false;
+      VALUE boolean2 = true;
+      VALUE number1 = 0.0;
+      VALUE number2 = 1.0;
+      VALUE object1 = JsonObject{
+        { L"key1", 1337 },
+        { L"key2", 1338 }
+      };
+      VALUE object2 = JsonObject{
+        { L"key3", 1339 },
+        { L"key4", 1340 }
+      };
+      VALUE array1 = JsonArray{ 1, 2, 3 };
+      VALUE array2 = JsonArray{ 4, 5, 6 };
+
+      Assert::ExpectException<exception>([&] { ValueMultiply(array1, array1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(array1, array2); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(array1, boolean1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(array1, boolean2); });
+      Assert::AreEqual<VALUE>(null, ValueMultiply(array1, null));
+      Assert::ExpectException<exception>([&] { ValueMultiply(array1, number1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(array1, number2); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(array1, object1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(array1, object2); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(array1, string1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(array1, string2); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(array2, array1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(array2, array2); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(array2, boolean1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(array2, boolean2); });
+      Assert::AreEqual<VALUE>(null, ValueMultiply(array2, null));
+      Assert::ExpectException<exception>([&] { ValueMultiply(array2, number1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(array2, number2); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(array2, object1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(array2, object2); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(array2, string1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(array2, string2); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(boolean1, array1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(boolean1, array2); });
+      Assert::AreEqual<VALUE>(0.0, ValueMultiply(boolean1, boolean1));
+      Assert::AreEqual<VALUE>(0.0, ValueMultiply(boolean1, boolean2));
+      Assert::AreEqual<VALUE>(null, ValueMultiply(boolean1, null));
+      Assert::AreEqual<VALUE>(0.0, ValueMultiply(boolean1, number1));
+      Assert::AreEqual<VALUE>(0.0, ValueMultiply(boolean1, number2));
+      Assert::ExpectException<exception>([&] { ValueMultiply(boolean1, object1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(boolean1, object2); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(boolean1, string1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(boolean1, string2); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(boolean2, array1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(boolean2, array2); });
+      Assert::AreEqual<VALUE>(0.0, ValueMultiply(boolean2, boolean1));
+      Assert::AreEqual<VALUE>(1.0, ValueMultiply(boolean2, boolean2));
+      Assert::AreEqual<VALUE>(null, ValueMultiply(boolean2, null));
+      Assert::AreEqual<VALUE>(0.0, ValueMultiply(boolean2, number1));
+      Assert::AreEqual<VALUE>(1.0, ValueMultiply(boolean2, number2));
+      Assert::ExpectException<exception>([&] { ValueMultiply(boolean2, object1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(boolean2, object2); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(boolean2, string1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(boolean2, string2); });
+      Assert::AreEqual<VALUE>(null, ValueMultiply(null, array1));
+      Assert::AreEqual<VALUE>(null, ValueMultiply(null, array2));
+      Assert::AreEqual<VALUE>(null, ValueMultiply(null, boolean1));
+      Assert::AreEqual<VALUE>(null, ValueMultiply(null, boolean2));
+      Assert::AreEqual<VALUE>(null, ValueMultiply(null, null));
+      Assert::AreEqual<VALUE>(null, ValueMultiply(null, number1));
+      Assert::AreEqual<VALUE>(null, ValueMultiply(null, number2));
+      Assert::AreEqual<VALUE>(null, ValueMultiply(null, object1));
+      Assert::AreEqual<VALUE>(null, ValueMultiply(null, object2));
+      Assert::AreEqual<VALUE>(null, ValueMultiply(null, string1));
+      Assert::AreEqual<VALUE>(null, ValueMultiply(null, string2));
+      Assert::ExpectException<exception>([&] { ValueMultiply(number1, array1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(number1, array2); });
+      Assert::AreEqual<VALUE>(0.0, ValueMultiply(number1, boolean1));
+      Assert::AreEqual<VALUE>(0.0, ValueMultiply(number1, boolean2));
+      Assert::AreEqual<VALUE>(null, ValueMultiply(number1, null));
+      Assert::AreEqual<VALUE>(0.0, ValueMultiply(number1, number1));
+      Assert::AreEqual<VALUE>(0.0, ValueMultiply(number1, number2));
+      Assert::ExpectException<exception>([&] { ValueMultiply(number1, object1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(number1, object2); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(number1, string1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(number1, string2); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(number2, array1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(number2, array2); });
+      Assert::AreEqual<VALUE>(0.0, ValueMultiply(number2, boolean1));
+      Assert::AreEqual<VALUE>(1.0, ValueMultiply(number2, boolean2));
+      Assert::AreEqual<VALUE>(null, ValueMultiply(number2, null));
+      Assert::AreEqual<VALUE>(0.0, ValueMultiply(number2, number1));
+      Assert::AreEqual<VALUE>(1.0, ValueMultiply(number2, number2));
+      Assert::ExpectException<exception>([&] { ValueMultiply(number2, object1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(number2, object2); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(number2, string1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(number2, string2); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(object1, array1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(object1, array2); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(object1, boolean1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(object1, boolean2); });
+      Assert::AreEqual<VALUE>(null, ValueMultiply(object1, null));
+      Assert::ExpectException<exception>([&] { ValueMultiply(object1, number1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(object1, number2); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(object1, object1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(object1, object2); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(object1, string1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(object1, string2); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(object2, array1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(object2, array2); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(object2, boolean1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(object2, boolean2); });
+      Assert::AreEqual<VALUE>(null, ValueMultiply(object2, null));
+      Assert::ExpectException<exception>([&] { ValueMultiply(object2, number1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(object2, number2); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(object2, object1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(object2, object2); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(object2, string1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(object2, string2); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(string1, array1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(string1, array2); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(string1, boolean1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(string1, boolean2); });
+      Assert::AreEqual<VALUE>(null, ValueMultiply(string1, null));
+      Assert::ExpectException<exception>([&] { ValueMultiply(string1, number1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(string1, number2); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(string1, object1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(string1, object2); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(string1, string1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(string1, string2); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(string2, array1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(string2, array2); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(string2, boolean1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(string2, boolean2); });
+      Assert::AreEqual<VALUE>(null, ValueMultiply(string2, null));
+      Assert::ExpectException<exception>([&] { ValueMultiply(string2, number1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(string2, number2); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(string2, object1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(string2, object2); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(string2, string1); });
+      Assert::ExpectException<exception>([&] { ValueMultiply(string2, string2); });
+    }
+
     TEST_CLASS_INITIALIZE(ClassInitialize)
     {
       _CrtMemCheckpoint(&_init);
