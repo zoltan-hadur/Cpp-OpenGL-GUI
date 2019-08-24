@@ -23,23 +23,10 @@ namespace Json4CPP::Detail
     Invalid = 1 << 31
   };
 
-  inline bool operator==(JsonBuilderType left, JsonBuilderType right)
-  {
-    return (int)left & (int)right;
-  }
+  JSON_API std::wostream& operator<<(std::wostream& os, JsonBuilderType const& type);
 
-  inline bool operator!=(JsonBuilderType left, JsonBuilderType right)
-  {
-    return !(left == right);
-  }
-
-  inline JsonBuilderType operator|(JsonBuilderType left, JsonBuilderType right)
-  {
-    return static_cast<JsonBuilderType>(static_cast<std::underlying_type_t<JsonBuilderType>>(left) | static_cast<std::underlying_type_t<JsonBuilderType>>(right));
-  }
-
-  inline JsonBuilderType operator&(JsonBuilderType left, JsonBuilderType right)
-  {
-    return static_cast<JsonBuilderType>(static_cast<std::underlying_type_t<JsonBuilderType>>(left) & static_cast<std::underlying_type_t<JsonBuilderType>>(right));
-  }
+  JSON_API bool            operator==(JsonBuilderType left, JsonBuilderType right);
+  JSON_API bool            operator!=(JsonBuilderType left, JsonBuilderType right);
+  JSON_API JsonBuilderType operator| (JsonBuilderType left, JsonBuilderType right);
+  JSON_API JsonBuilderType operator& (JsonBuilderType left, JsonBuilderType right);
 }

@@ -85,6 +85,14 @@ namespace Json4CPP
       return std::get<T>(_value);
     }
 
+    template<typename T>
+    static std::wstring Stringify(T const& value)
+    {
+      std::wostringstream os;
+      os << value;
+      return os.str();
+    }
+
     void AddPair(std::pair<KEY, Json> pair);
     void AddValue(Json value);
 

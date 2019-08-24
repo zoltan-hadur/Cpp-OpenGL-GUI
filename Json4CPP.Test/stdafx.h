@@ -29,9 +29,15 @@
 
 namespace Microsoft::VisualStudio::CppUnitTestFramework
 {
-  template<> static std::wstring ToString<std::nullptr_t>(std::nullptr_t const&) { return L"null"; }
-  template<> static std::wstring ToString<Json4CPP::JsonObject>(Json4CPP::JsonObject const& object) { std::wostringstream os; os << object; return os.str(); }
-  template<> static std::wstring ToString<Json4CPP::JsonArray>(Json4CPP::JsonArray const& array) { std::wostringstream os; os << array; return os.str(); }
-  template<> static std::wstring ToString<Json4CPP::Json>(Json4CPP::Json const& json) { std::wostringstream os; os << json; return os.str(); }
-  template<> static std::wstring ToString<Json4CPP::Detail::VALUE>(Json4CPP::Detail::VALUE const& value) { std::wostringstream os; Json4CPP::Detail::Value::Write(os, value); return os.str(); }
+  template<> static std::wstring ToString<Json4CPP::        JsonObject     >(Json4CPP::        JsonObject      const& object) { return Json4CPP::Json::Stringify(object); }
+  template<> static std::wstring ToString<Json4CPP::        JsonArray      >(Json4CPP::        JsonArray       const& array ) { return Json4CPP::Json::Stringify(array ); }
+  template<> static std::wstring ToString<Json4CPP::        Json           >(Json4CPP::        Json            const& json  ) { return Json4CPP::Json::Stringify(json  ); }
+  template<> static std::wstring ToString<Json4CPP::        JsonType       >(Json4CPP::        JsonType        const& type  ) { return Json4CPP::Json::Stringify(type  ); }
+  template<> static std::wstring ToString<Json4CPP::Detail::JsonBuilderType>(Json4CPP::Detail::JsonBuilderType const& type  ) { return Json4CPP::Json::Stringify(type  ); }
+  template<> static std::wstring ToString<Json4CPP::Detail::VALUE          >(Json4CPP::Detail::VALUE           const& value )
+  {
+    std::wostringstream os;
+    Json4CPP::Detail::Value::Write(os, value);
+    return os.str();
+  }
 }

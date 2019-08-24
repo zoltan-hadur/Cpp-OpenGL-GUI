@@ -104,8 +104,10 @@
     <ClCompile Include="Json.cpp" />
     <ClCompile Include="JsonArray.cpp" />
     <ClCompile Include="JsonBuilder.cpp" />
+    <ClCompile Include="JsonBuilderType.cpp" />
     <ClCompile Include="JsonDefault.cpp" />
     <ClCompile Include="JsonObject.cpp" />
+    <ClCompile Include="JsonType.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>

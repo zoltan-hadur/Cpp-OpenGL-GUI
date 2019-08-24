@@ -17,57 +17,76 @@ namespace Json4CPP::Test
   public:
     TEST_METHOD(TestGetType1)
     {
-      auto input    = vector<VALUE>   {    nullptr_t(),        wstring(),            bool(),         double(),     JsonObject(),     JsonArray() };
-      auto expected = vector<JsonType>{ JsonType::Null, JsonType::String, JsonType::Boolean, JsonType::Number, JsonType::Object, JsonType::Array };
-      auto output = From(input).Select<JsonType>([](VALUE const& value) { return Value::GetType(value); });
-      Assert::IsTrue(From(expected).SequenceEqual(output));
+      auto pairs = vector<pair<VALUE, JsonType>>
+      {
+        { nullptr_t() , JsonType::Null    },
+        { wstring()   , JsonType::String  },
+        { bool()      , JsonType::Boolean },
+        { double()    , JsonType::Number  },
+        { JsonObject(), JsonType::Object  },
+        { JsonArray() , JsonType::Array   },
+      };
+      for (auto& [input, expected] : pairs)
+      {
+        Assert::AreEqual(expected, Value::GetType(input));
+      }
     }
 
     TEST_METHOD(TestGetType2)
     {
-      auto input = vector<VALUE_BUILDER>
+      auto pairs = vector<pair<VALUE_BUILDER, JsonBuilderType>>
       {
-        nullptr_t(), wstring(), bool(), double(), JsonObject(), JsonArray(),
-        vector<JsonBuilder>(),
-        vector<JsonBuilder>{ JsonBuilder(L"Key"), JsonBuilder(L"Value") },
-        vector<JsonBuilder>{ vector<JsonBuilder>{ JsonBuilder(L"Key0"), JsonBuilder(L"Value0") },
-                             vector<JsonBuilder>{ JsonBuilder(L"Key1"), JsonBuilder(L"Value1") } },
-        vector<JsonBuilder>{ JsonBuilder(1), JsonBuilder(2), JsonBuilder(3) }
+        { nullptr_t() , JsonBuilderType::Null    },
+        { wstring()   , JsonBuilderType::String  },
+        { bool()      , JsonBuilderType::Boolean },
+        { double()    , JsonBuilderType::Number  },
+        { JsonObject(), JsonBuilderType::Object  },
+        { JsonArray() , JsonBuilderType::Array   },
+        { vector<JsonBuilder>()                                                                     , JsonBuilderType::Empty  },
+        { vector<JsonBuilder>{ JsonBuilder(L"Key"), JsonBuilder(L"Value") }                         , JsonBuilderType::Pair   },
+        { vector<JsonBuilder>{ vector<JsonBuilder>{ JsonBuilder(L"Key0"), JsonBuilder(L"Value0") },
+                               vector<JsonBuilder>{ JsonBuilder(L"Key1"), JsonBuilder(L"Value1") } }, JsonBuilderType::Object },
+        { vector<JsonBuilder>{ JsonBuilder(1), JsonBuilder(2), JsonBuilder(3) }                     , JsonBuilderType::Array  },
       };
-      auto expected = vector<JsonBuilderType>
+      for (auto& [input, expected] : pairs)
       {
-        JsonBuilderType::Null, JsonBuilderType::String, JsonBuilderType::Boolean, JsonBuilderType::Number, JsonBuilderType::Object, JsonBuilderType::Array,
-        JsonBuilderType::Empty,
-        JsonBuilderType::Pair,
-        JsonBuilderType::Object,
-        JsonBuilderType::Array
-      };
-      auto output = From(input).Select<JsonBuilderType>([](VALUE_BUILDER const& value) { return Value::GetType(value); });
-      Assert::IsTrue(From(expected).SequenceEqual(output));
+        Assert::AreEqual(expected, Value::GetType(input));
+      }
     }
 
     TEST_METHOD(TestParseNull)
     {
-      auto input           = vector<wstring>{  L"", L" ", L" n", L" nu", L" nul", L" null", L" null ", L" nu11 ", L" nill ", L" mull " };
-      auto expectException = vector<bool>   { true, true,  true,   true,    true,    false,     false,      true,      true,      true };
-      for (int i = 0; i < input.size(); ++i)
+      auto pairs = vector<pair<wstring, bool>>
       {
-        if (!expectException[i])
+        { L""      , true  },
+        { L" "     , true  },
+        { L" n"    , true  },
+        { L" nu"   , true  },
+        { L" nul"  , true  },
+        { L" null" , false },
+        { L" null ", false },
+        { L" nu11 ", true  },
+        { L" nill ", true  },
+        { L" mull ", true  },
+      };
+      for (auto& [input, expectException] : pairs)
+      {
+        if (!expectException)
         {
-          Assert::AreEqual(nullptr, Value::ParseNull(input[i]));
-          Assert::AreEqual(nullptr, Value::ParseNull(wstringstream(input[i])));
+          Assert::AreEqual<VALUE>(nullptr, Value::ParseNull(input));
+          Assert::AreEqual<VALUE>(nullptr, Value::ParseNull(wstringstream(input)));
         }
         else
         {
-          Assert::ExpectException<exception>([&]() { Value::ParseNull(input[i]); });
-          Assert::ExpectException<exception>([&]() { Value::ParseNull(wstringstream(input[i])); });
+          Assert::ExpectException<exception>([&]() { Value::ParseNull(input); });
+          Assert::ExpectException<exception>([&]() { Value::ParseNull(wstringstream(input)); });
         }
       }
     }
 
     TEST_METHOD(TestParseString)
     {
-      auto pairs = map<wstring, wstring>
+      auto pairs = vector<pair<wstring, wstring>>
       {
         { L"\"\""s        , L""s        },  // Empty
         { L"\"a\""s       , L"a"s       },  // a
@@ -92,7 +111,7 @@ namespace Json4CPP::Test
         { L"\"\\u03A9b\""s, L"\u03A9b"s },
       };
 
-      for (auto [value, expected] : pairs)
+      for (auto& [value, expected] : pairs)
       {
         Assert::AreEqual(expected, Value::ParseString(value));
         Assert::AreEqual(expected, Value::ParseString(wstringstream(value)));
@@ -101,45 +120,64 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestParseBoolean1)
     {
-      auto input           = vector<wstring>{  L"", L" ", L" t", L" tr", L" tru", L" true", L" true ", L" trie " };
-      auto expectException = vector<bool>   { true, true,  true,   true,    true,    false,     false,      true };
-      for (int i = 0; i < input.size(); ++i)
+      auto pairs = vector<pair<wstring, bool>>
       {
-        if (!expectException[i])
+        { L"",       true  },
+        { L" ",      true  },
+        { L" t",     true  },
+        { L" tr",    true  },
+        { L" tru",   true  },
+        { L" true",  false },
+        { L" true ", false },
+        { L" trie ", true  },
+      };
+      for (auto& [input, expectException] : pairs)
+      {
+        if (!expectException)
         {
-          Assert::IsTrue(Value::ParseBoolean(input[i]));
-          Assert::IsTrue(Value::ParseBoolean(wstringstream(input[i])));
+          Assert::IsTrue(Value::ParseBoolean(input));
+          Assert::IsTrue(Value::ParseBoolean(wstringstream(input)));
         }
         else
         {
-          Assert::ExpectException<exception>([&]() { Value::ParseBoolean(input[i]); });
-          Assert::ExpectException<exception>([&]() { Value::ParseBoolean(wstringstream(input[i])); });
+          Assert::ExpectException<exception>([&]() { Value::ParseBoolean(input); });
+          Assert::ExpectException<exception>([&]() { Value::ParseBoolean(wstringstream(input)); });
         }
       }
     }
 
     TEST_METHOD(TestParseBoolean2)
     {
-      auto input           = vector<wstring>{  L"", L" ", L" f", L" fa", L" fal", L" fals", L" false", L" fakse " };
-      auto expectException = vector<bool>   { true, true,  true,   true,    true,     true,     false,       true };
-      for (int i = 0; i < input.size(); ++i)
+      auto pairs = vector<pair<wstring, bool>>
       {
-        if (!expectException[i])
+        { L"",        true  },
+        { L" ",       true  },
+        { L" f",      true  },
+        { L" fa",     true  },
+        { L" fal",    true  },
+        { L" fals",   true  },
+        { L" false",  false },
+        { L" false ", false },
+        { L" fakse ", true  }
+      };
+      for (auto& [input, expectException] : pairs)
+      {
+        if (!expectException)
         {
-          Assert::IsFalse(Value::ParseBoolean(input[i]));
-          Assert::IsFalse(Value::ParseBoolean(wstringstream(input[i])));
+          Assert::IsFalse(Value::ParseBoolean(input));
+          Assert::IsFalse(Value::ParseBoolean(wstringstream(input)));
         }
         else
         {
-          Assert::ExpectException<exception>([&]() { Value::ParseBoolean(input[i]); });
-          Assert::ExpectException<exception>([&]() { Value::ParseBoolean(wstringstream(input[i])); });
+          Assert::ExpectException<exception>([&]() { Value::ParseBoolean(input); });
+          Assert::ExpectException<exception>([&]() { Value::ParseBoolean(wstringstream(input)); });
         }
       }
     }
 
     TEST_METHOD(TestParseNumber)
     {
-      auto pairs = map<wstring, double>
+      auto pairs = vector<pair<wstring, double>>
       {
         { L"0"s          , 0.0                },
         { L"0E+1"s       , 0.0                },
@@ -455,7 +493,7 @@ namespace Json4CPP::Test
         { L"-123.12e-12"s, -0.00000000012312  }
       };
 
-      for (auto [value, expected] : pairs)
+      for (auto& [value, expected] : pairs)
       {
         Assert::AreEqual(expected, Value::ParseNumber(value));
         Assert::AreEqual(expected, Value::ParseNumber(wstringstream(value)));
@@ -464,7 +502,7 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestParseJsonObject)
     {
-      auto pairs = map<wstring, JsonObject>
+      auto pairs = vector<pair<wstring, JsonObject>>
       {
         // Test whitespace handling
         { L"{}"s, {} },
@@ -492,7 +530,7 @@ namespace Json4CPP::Test
             { { L"string", L"string" }, { L"number", 1337 }, { L"object", { { L"key1", L"value1" }, { L"key2", L"value2" } } }, { L"array", { 1, 3, 3, 7 } }, { L"true", true }, { L"false", false }, { L"null", nullptr } } },
       };
 
-      for (auto [value, expected] : pairs)
+      for (auto& [value, expected] : pairs)
       {
         Assert::AreEqual(expected, Value::ParseJsonObject(value));
         Assert::AreEqual(expected, Value::ParseJsonObject(wstringstream(value)));
@@ -501,7 +539,7 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestParseJsonArray)
     {
-      auto pairs = map<wstring, JsonArray>
+      auto pairs = vector<pair<wstring, JsonArray>>
       {
         // Test whitespace handling
         { L"[]"s, {} },
@@ -527,7 +565,7 @@ namespace Json4CPP::Test
             { L"string" ,1337, { { L"key1", L"value1" }, { L"key2", L"value2" } }, { 1, 3, 3, 7 }, true, false, nullptr } },
       };
 
-      for (auto [value, expected] : pairs)
+      for (auto& [value, expected] : pairs)
       {
         Assert::AreEqual(expected, Value::ParseJsonArray(value));
         Assert::AreEqual(expected, Value::ParseJsonArray(wstringstream(value)));
@@ -536,7 +574,7 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestParseJson)
     {
-      auto pairs = map<wstring, Json>
+      auto pairs = vector<pair<wstring, Json>>
       {
         { L"\"string\""s, L"string"s },
         { L"1337"s, 1337 },
@@ -594,7 +632,7 @@ namespace Json4CPP::Test
         { L"null"s, nullptr },
       };
 
-      for (auto [value, expected] : pairs)
+      for (auto& [value, expected] : pairs)
       {
         Assert::AreEqual(expected, Value::ParseJson(value));
         Assert::AreEqual(expected, Value::ParseJson(wstringstream(value)));
@@ -604,7 +642,7 @@ namespace Json4CPP::Test
     TEST_METHOD(TestValueWrite)
     {
       JsonDefault::Indentation = 0;
-      auto pairs = map<VALUE, wstring>
+      auto pairs = vector<pair<VALUE, wstring>>
       {
         { L"Hello \"World\""s                         , L"\"Hello \\\"World\\\"\""s },
         { 13.37                                       , L"13.37"s                   },
@@ -615,7 +653,7 @@ namespace Json4CPP::Test
         { nullptr                                     , L"null"s                    },
       };
 
-      for (auto [value, expected] : pairs)
+      for (auto& [value, expected] : pairs)
       {
         auto os = wostringstream();
         Value::Write(os, value);
@@ -625,7 +663,7 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestValueRead)
     {
-      auto pairs = map<wstring, VALUE>
+      auto pairs = vector<pair<wstring, VALUE>>
       {
         { L"\"Hello \\\"World\\\"\""s, L"Hello \"World\""s                          },
         { L"13.37"s                  , 13.37                                        },
@@ -636,7 +674,7 @@ namespace Json4CPP::Test
         { L"null"s                   , nullptr                                      },
       };
 
-      for (auto [value, expected] : pairs)
+      for (auto& [value, expected] : pairs)
       {
         auto is = wistringstream(value);
         VALUE actual;
