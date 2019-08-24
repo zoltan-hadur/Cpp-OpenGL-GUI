@@ -8,7 +8,7 @@
 
 #include <string>
 
-namespace Json4CPP
+namespace Json4CPP::Detail
 {
   template<typename T>
   struct TypeDebug;

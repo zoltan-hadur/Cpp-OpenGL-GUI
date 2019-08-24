@@ -7,7 +7,6 @@
 #endif
 
 #include "JsonType.h"
-#include "JsonBuilderType.h"
 #include "Value.h"
 #include "JsonArray.h"
 #include "JsonObject.h"
@@ -23,9 +22,12 @@
 
 namespace Json4CPP
 {
+  namespace Detail
+  {
+    class JSON_API JsonBuilder;
+  }
   class JSON_API JsonObject;
   class JSON_API JsonArray;
-  class JSON_API JsonBuilder;
 
   JSON_API Json operator""_json(const wchar_t* value, std::size_t size);
 
@@ -34,15 +36,15 @@ namespace Json4CPP
   private:
     friend class JsonObject;
     friend class JsonArray;
-    friend class JsonBuilder;
+    friend class Detail::JsonBuilder;
 #pragma warning(suppress: 4251)
-    VALUE _value;
+    Detail::VALUE _value;
 
     void Dump(std::wstringstream& os, int indentation, int level) const;
   public:
     Json();
-    Json(JsonBuilder value);
-    Json(std::initializer_list<JsonBuilder> values);
+    Json(Detail::JsonBuilder value);
+    Json(std::initializer_list<Detail::JsonBuilder> values);
     Json(Json const& json);
 
     Json(std::nullptr_t value);
@@ -127,35 +129,35 @@ namespace Json4CPP
     explicit operator JsonObject     & ();
     explicit operator JsonArray      & ();
 
-    Json& operator[](KEY const&                         key   );
-    Json& operator[](const wchar_t*                     key   );
-    Json& operator[](int const&                         index );
+    Json& operator[](KEY const&     key  );
+    Json& operator[](const wchar_t* key  );
+    Json& operator[](int const&     index);
 
-    Json& operator= (std::nullptr_t                     value );
-    Json& operator= (const wchar_t*                     value );
-    Json& operator= (std::wstring                       value );
-    Json& operator= (bool                               value );
-    Json& operator= (char                               value );
-    Json& operator= (int8_t                             value );
-    Json& operator= (uint8_t                            value );
-    Json& operator= (int16_t                            value );
-    Json& operator= (uint16_t                           value );
-    Json& operator= (int32_t                            value );
-    Json& operator= (uint32_t                           value );
-    Json& operator= (int64_t                            value );
-    Json& operator= (uint64_t                           value );
-    Json& operator= (float                              value );
-    Json& operator= (double                             value );
-    Json& operator= (Json                               value );
-    Json& operator= (JsonObject                         value );
-    Json& operator= (JsonArray                          value );
-    Json& operator= (JsonBuilder                        value );
-    Json& operator= (std::initializer_list<JsonBuilder> values);
+    Json& operator= (std::nullptr_t      value);
+    Json& operator= (const wchar_t*      value);
+    Json& operator= (std::wstring        value);
+    Json& operator= (bool                value);
+    Json& operator= (char                value);
+    Json& operator= (int8_t              value);
+    Json& operator= (uint8_t             value);
+    Json& operator= (int16_t             value);
+    Json& operator= (uint16_t            value);
+    Json& operator= (int32_t             value);
+    Json& operator= (uint32_t            value);
+    Json& operator= (int64_t             value);
+    Json& operator= (uint64_t            value);
+    Json& operator= (float               value);
+    Json& operator= (double              value);
+    Json& operator= (Json                value);
+    Json& operator= (JsonObject          value);
+    Json& operator= (JsonArray           value);
+    Json& operator= (Detail::JsonBuilder value);
+    Json& operator= (std::initializer_list<Detail::JsonBuilder> values);
 
     template<typename T>
     Json& operator=(T const& value)
     {
-      TypeDebug<T>(); // Type T is not supported. See output error C2027 for the exact type.
+      Detail::TypeDebug<T>(); // Type T is not supported. See output error C2027 for the exact type.
     }
 
     JSON_API friend std::wostream& operator<<(std::wostream& os, Json const& json);

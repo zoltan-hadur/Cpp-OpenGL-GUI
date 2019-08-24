@@ -8,7 +8,7 @@
 using namespace std;
 using namespace std::filesystem;
 
-namespace Json4CPP
+namespace Json4CPP::Detail::Value
 {
 #pragma warning(push)
 #pragma warning(disable : 4804 4805)
@@ -337,7 +337,7 @@ namespace Json4CPP
     return ParseJson(wstringstream(value));
   }
 
-  wostream& ValueWrite(wostream& os, VALUE const& value)
+  wostream& Write(wostream& os, VALUE const& value)
   {
     visit(Overload{
       [&](nullptr_t  const& v) { os << L"null";                           },
@@ -350,7 +350,7 @@ namespace Json4CPP
     return os;
   }
 
-  wistream& ValueRead(wistream& is, VALUE& value)
+  wistream& Read(wistream& is, VALUE& value)
   {
     is >> ws;
     switch (is.peek())
@@ -365,7 +365,7 @@ namespace Json4CPP
     return is;
   }
 
-  bool ValueEqual(VALUE const& left, VALUE const& right)
+  bool Equal(VALUE const& left, VALUE const& right)
   {
     bool result;
     visit(Overload{
@@ -382,12 +382,12 @@ namespace Json4CPP
     return result;
   }
 
-  bool ValueNotEqual(VALUE const& left, VALUE const& right)
+  bool NotEqual(VALUE const& left, VALUE const& right)
   {
-    return !ValueEqual(left, right);
+    return !Equal(left, right);
   }
 
-  bool ValueLessThan(VALUE const& left, VALUE const& right)
+  bool LessThan(VALUE const& left, VALUE const& right)
   {
     bool result;
     visit(Overload{
@@ -408,7 +408,7 @@ namespace Json4CPP
     return result;
   }
 
-  bool ValueLessThanOrEqual(VALUE const& left, VALUE const& right)
+  bool LessThanOrEqual(VALUE const& left, VALUE const& right)
   {
     bool result;
     visit(Overload{
@@ -429,7 +429,7 @@ namespace Json4CPP
     return result;
   }
 
-  bool ValueGreaterThan(VALUE const& left, VALUE const& right)
+  bool GreaterThan(VALUE const& left, VALUE const& right)
   {
     bool result;
     visit(Overload{
@@ -450,7 +450,7 @@ namespace Json4CPP
     return result;
   }
 
-  bool ValueGreaterThanOrEqual(VALUE const& left, VALUE const& right)
+  bool GreaterThanOrEqual(VALUE const& left, VALUE const& right)
   {
     bool result;
     visit(Overload{
@@ -471,7 +471,7 @@ namespace Json4CPP
     return result;
   }
 
-  VALUE ValueAdd(VALUE const& left, VALUE const& right)
+  VALUE Add(VALUE const& left, VALUE const& right)
   {
     VALUE result;
     visit(Overload{
@@ -492,7 +492,7 @@ namespace Json4CPP
     return result;
   }
 
-  VALUE& ValueAddAssign(VALUE& left, VALUE const& right)
+  VALUE& AddAssign(VALUE& left, VALUE const& right)
   {
     visit(Overload{
       [&](nullptr_t  & l, auto       const& r) { left = nullptr;               },
@@ -512,7 +512,7 @@ namespace Json4CPP
     return left;
   }
 
-  VALUE ValueSubtract(VALUE const& left, VALUE const& right)
+  VALUE Subtract(VALUE const& left, VALUE const& right)
   {
     VALUE result;
     visit(Overload{
@@ -532,7 +532,7 @@ namespace Json4CPP
     return result;
   }
 
-  VALUE& ValueSubtractAssign(VALUE& left, VALUE const& right)
+  VALUE& SubtractAssign(VALUE& left, VALUE const& right)
   {
     visit(Overload{
       [&](nullptr_t  & l, auto       const& r) { left = nullptr;               },
@@ -551,7 +551,7 @@ namespace Json4CPP
     return left;
   }
 
-  VALUE ValueMultiply(VALUE const& left, VALUE const& right)
+  VALUE Multiply(VALUE const& left, VALUE const& right)
   {
     VALUE result;
     visit(Overload{
@@ -571,7 +571,7 @@ namespace Json4CPP
     return result;
   }
 
-  VALUE& ValueMultiplyAssign(VALUE& left, VALUE const& right)
+  VALUE& MultiplyAssign(VALUE& left, VALUE const& right)
   {
     visit(Overload{
       [&](nullptr_t  & l, auto       const& r) { left = nullptr;               },
@@ -590,7 +590,7 @@ namespace Json4CPP
     return left;
   }
 
-  VALUE ValueDivide(VALUE const& left, VALUE const& right)
+  VALUE Divide(VALUE const& left, VALUE const& right)
   {
     VALUE result;
     visit(Overload{
@@ -611,7 +611,7 @@ namespace Json4CPP
     return result;
   }
 
-  VALUE& ValueDivideAssign(VALUE& left, VALUE const& right)
+  VALUE& DivideAssign(VALUE& left, VALUE const& right)
   {
     visit(Overload{
       [&](nullptr_t  & l, auto       const& r) { left = nullptr;                    },
@@ -631,7 +631,7 @@ namespace Json4CPP
     return left;
   }
 
-  VALUE ValueModulo(VALUE const& left, VALUE const& right)
+  VALUE Modulo(VALUE const& left, VALUE const& right)
   {
     VALUE result;
     visit(Overload{
@@ -651,7 +651,7 @@ namespace Json4CPP
     return result;
   }
 
-  VALUE& ValueModuloAssign(VALUE& left, VALUE const& right)
+  VALUE& ModuloAssign(VALUE& left, VALUE const& right)
   {
     visit(Overload{
       [&](nullptr_t  & l, auto       const& r) { left = nullptr;    },
@@ -670,7 +670,7 @@ namespace Json4CPP
     return left;
   }
 
-  VALUE ValueNegate(VALUE const& value)
+  VALUE Negate(VALUE const& value)
   {
     VALUE result;
     visit(Overload{
@@ -686,7 +686,7 @@ namespace Json4CPP
     return result;
   }
 
-  bool ValueNot(VALUE const& value)
+  bool Not(VALUE const& value)
   {
     bool result;
     visit(Overload{
@@ -702,7 +702,7 @@ namespace Json4CPP
     return result;
   }
 
-  VALUE& ValuePreIncrement(VALUE& value)
+  VALUE& PreIncrement(VALUE& value)
   {
     visit(Overload{
       [&](nullptr_t  & v) { value = nullptr; },
@@ -716,7 +716,7 @@ namespace Json4CPP
     return value;
   }
 
-  VALUE ValuePostIncrement(VALUE& value)
+  VALUE PostIncrement(VALUE& value)
   {
     VALUE result;
     visit(Overload{
@@ -731,7 +731,7 @@ namespace Json4CPP
     return result;
   }
 
-  VALUE& ValuePreDecrement(VALUE& value)
+  VALUE& PreDecrement(VALUE& value)
   {
     visit(Overload{
       [&](nullptr_t  & v) { value = nullptr; },
@@ -745,7 +745,7 @@ namespace Json4CPP
     return value;
   }
 
-  VALUE ValuePostDecrement(VALUE& value)
+  VALUE PostDecrement(VALUE& value)
   {
     VALUE result;
     visit(Overload{
@@ -760,7 +760,7 @@ namespace Json4CPP
     return result;
   }
 
-  bool ValueLogicalAnd(VALUE const& left, VALUE const& right)
+  bool LogicalAnd(VALUE const& left, VALUE const& right)
   {
     bool result;
     visit(Overload{
@@ -780,12 +780,12 @@ namespace Json4CPP
     return result;
   }
 
-  bool ValueLogicalOr(VALUE const& left, VALUE const& right)
+  bool LogicalOr(VALUE const& left, VALUE const& right)
   {
     bool result;
     visit(Overload{
-      [&](nullptr_t  const& l, auto       const& r) { result = !ValueNot(r);    },
-      [&](auto       const& l, nullptr_t  const& r) { result = !ValueNot(l);    },
+      [&](nullptr_t  const& l, auto       const& r) { result = !Not(r);    },
+      [&](auto       const& l, nullptr_t  const& r) { result = !Not(l);    },
       [&](nullptr_t  const& l, nullptr_t  const& r) { result = false;           },
       [&](bool       const& l, bool       const& r) { result = l && r;          },
       [&](bool       const& l, double     const& r) { result = l && r;          },

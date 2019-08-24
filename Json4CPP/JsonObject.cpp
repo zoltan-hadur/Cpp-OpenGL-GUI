@@ -7,6 +7,7 @@
 #include "Helper.h"
 
 using namespace std;
+using namespace Json4CPP::Detail;
 
 namespace Json4CPP
 {
@@ -14,7 +15,7 @@ namespace Json4CPP
   {
     auto indent = wstring(indentation * level, L' ');
     auto single = wstring(indentation, L' ');
-    auto newLine = indentation == 0 ? L"" : L"\n";
+    auto newLine = indentation == 0 ? L"" : L"\r\n";
     auto space = indentation == 0 ? L"" : L" ";
     auto size = _pairs.size();
 
@@ -26,8 +27,8 @@ namespace Json4CPP
       os << L"\"" << key << L"\":" << space;
       switch (value.Type())
       {
-      case JsonType::Object:  value.Get<JsonObject> ().Dump(os, indentation, level + 1); break;
-      case JsonType::Array:   value.Get<JsonArray>  ().Dump(os, indentation, level + 1); break;
+      case JsonType::Object: value.Get<JsonObject>().Dump(os, indentation, level + 1); break;
+      case JsonType::Array : value.Get<JsonArray >().Dump(os, indentation, level + 1); break;
       default: os << value; break;
       }
       if (i < size - 1)
@@ -104,7 +105,7 @@ namespace Json4CPP
       is >> ws;
       if (is.peek() != L'}')
       {
-        auto key = ParseString(is);
+        auto key = Value::ParseString(is);
         is >> ws;
         if (is.peek() == L':')
         {
@@ -116,14 +117,14 @@ namespace Json4CPP
           auto message = "Expected ':' at position " + to_string(is.tellg());
           throw exception(message.c_str());
         }
-        auto value = ParseJson(is);
+        auto value = Value::ParseJson(is);
         is >> ws;
         object._pairs.push_back({ key, value });
         while (is.peek() == L',')
         {
           is.get();
           is >> ws;
-          key = ParseString(is);
+          key = Value::ParseString(is);
           is >> ws;
           if (is.peek() == L':')
           {
@@ -135,7 +136,7 @@ namespace Json4CPP
             auto message = "Expected ':' at position " + to_string(is.tellg());
             throw exception(message.c_str());
           }
-          auto value = ParseJson(is);
+          auto value = Value::ParseJson(is);
           is >> ws;
           object._pairs.push_back({ key, value });
         }

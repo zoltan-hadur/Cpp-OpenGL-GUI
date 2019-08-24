@@ -17,24 +17,27 @@
 
 namespace Json4CPP
 {
+  namespace Detail
+  {
+    class JSON_API JsonBuilder;
+  }
   class JSON_API JsonArray;
   class JSON_API Json;
-  class JSON_API JsonBuilder;
 
   class JSON_API JsonObject
   {
   private:
     friend class JsonArray;
     friend class Json;
-    friend class JsonBuilder;
+    friend class Detail::JsonBuilder;
 #pragma warning(suppress: 4251)
     std::vector<std::pair<KEY, Json>> _pairs;
 
     void Dump(std::wstringstream& os, int indentation, int level) const;
   public:
     JsonObject() = default;
-    JsonObject(JsonBuilder builder);
-    JsonObject(std::initializer_list<JsonBuilder> builders);
+    JsonObject(Detail::JsonBuilder builder);
+    JsonObject(std::initializer_list<Detail::JsonBuilder> builders);
     JsonObject(JsonObject const& object);
 
     std::wstring Dump(int indentation = 0) const;

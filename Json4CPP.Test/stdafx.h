@@ -33,5 +33,5 @@ namespace Microsoft::VisualStudio::CppUnitTestFramework
   template<> static std::wstring ToString<Json4CPP::JsonObject>(Json4CPP::JsonObject const& object) { std::wostringstream os; os << object; return os.str(); }
   template<> static std::wstring ToString<Json4CPP::JsonArray>(Json4CPP::JsonArray const& array) { std::wostringstream os; os << array; return os.str(); }
   template<> static std::wstring ToString<Json4CPP::Json>(Json4CPP::Json const& json) { std::wostringstream os; os << json; return os.str(); }
-  template<> static std::wstring ToString<Json4CPP::VALUE>(Json4CPP::VALUE const& value) { std::wostringstream os; ValueWrite(os, value); return os.str(); }
+  template<> static std::wstring ToString<Json4CPP::Detail::VALUE>(Json4CPP::Detail::VALUE const& value) { std::wostringstream os; Json4CPP::Detail::Value::Write(os, value); return os.str(); }
 }

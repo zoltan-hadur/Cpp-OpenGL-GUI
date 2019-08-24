@@ -6,7 +6,7 @@
 #define JSON_API __declspec(dllimport)
 #endif
 
-namespace Json4CPP
+namespace Json4CPP::Detail
 {
   enum class JSON_API JsonBuilderType
   {

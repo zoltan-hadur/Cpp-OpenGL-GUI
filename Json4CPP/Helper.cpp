@@ -4,7 +4,7 @@
 
 using namespace std;
 
-namespace Json4CPP
+namespace Json4CPP::Detail
 {
   wstring EscapeString(wstring value)
   {

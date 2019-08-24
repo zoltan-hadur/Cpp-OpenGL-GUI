@@ -7,6 +7,7 @@
 #include "Helper.h"
 
 using namespace std;
+using namespace Json4CPP::Detail;
 
 namespace Json4CPP
 {
@@ -14,7 +15,7 @@ namespace Json4CPP
   {
     auto indent = wstring(indentation * level, L' ');
     auto single = wstring(indentation, L' ');
-    auto newLine = indentation == 0 ? L"" : L"\n";
+    auto newLine = indentation == 0 ? L"" : L"\r\n";
     auto size = _values.size();
 
     os << L"[" << newLine;
@@ -24,8 +25,8 @@ namespace Json4CPP
       os << indent << single;
       switch (value.Type())
       {
-      case JsonType::Object:  value.Get<JsonObject> ().Dump(os, indentation, level + 1); break;
-      case JsonType::Array:   value.Get<JsonArray>  ().Dump(os, indentation, level + 1); break;
+      case JsonType::Object: value.Get<JsonObject>().Dump(os, indentation, level + 1); break;
+      case JsonType::Array : value.Get<JsonArray >().Dump(os, indentation, level + 1); break;
       default: os << value; break;
       }
       if (i < size - 1)
@@ -94,13 +95,13 @@ namespace Json4CPP
       is >> ws;
       if (is.peek() != L']')
       {
-        array._values.push_back(ParseJson(is));
+        array._values.push_back(Value::ParseJson(is));
         is >> ws;
         while (is.peek() == L',')
         {
           is.get();
           is >> ws;
-          array._values.push_back(ParseJson(is));
+          array._values.push_back(Value::ParseJson(is));
           is >> ws;
         }
         if (is.peek() == L']')
