@@ -83,7 +83,7 @@ namespace Json4CPP
       return std::get<T>(_value);
     }
 
-    void AddPair(std::pair<NAME, Json> pair);
+    void AddPair(std::pair<KEY, Json> pair);
     void AddValue(Json value);
 
     explicit operator std::nullptr_t   ();
@@ -127,8 +127,8 @@ namespace Json4CPP
     explicit operator JsonObject     & ();
     explicit operator JsonArray      & ();
 
-    Json& operator[](NAME const&                        name  );
-    Json& operator[](const wchar_t*                     name  );
+    Json& operator[](KEY const&                         key   );
+    Json& operator[](const wchar_t*                     key   );
     Json& operator[](int const&                         index );
 
     Json& operator= (std::nullptr_t                     value );

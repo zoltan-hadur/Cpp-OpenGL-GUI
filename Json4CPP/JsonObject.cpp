@@ -21,9 +21,9 @@ namespace Json4CPP
     os << L"{" << newLine;
     for (int i = 0; i < size; ++i)
     {
-      auto& [name, value] = _pairs[i];
+      auto& [key, value] = _pairs[i];
       os << indent << single;
-      os << L"\"" << name << L"\":" << space;
+      os << L"\"" << key << L"\":" << space;
       switch (value.Type())
       {
       case JsonType::Object:  value.Get<JsonObject> ().Dump(os, indentation, level + 1); break;
@@ -50,9 +50,9 @@ namespace Json4CPP
       for (auto& builder : *builders)
       {
         auto pair = get<vector<JsonBuilder>>(builder._value);
-        auto name = get<NAME>(pair[0]._value);
+        auto key = get<KEY>(pair[0]._value);
         auto value = Json(pair[1]);
-        _pairs.push_back({ name, value });
+        _pairs.push_back({ key, value });
       }
     }
     else
@@ -75,19 +75,19 @@ namespace Json4CPP
     return buffer.str();
   }
 
-  void JsonObject::AddPair(std::pair<NAME, Json> pair)
+  void JsonObject::AddPair(std::pair<KEY, Json> pair)
   {
     _pairs.push_back(pair);
   }
 
-  Json& JsonObject::operator[](NAME const& name)
+  Json& JsonObject::operator[](KEY const& key)
   {
-    for (auto& [key, value] : _pairs)
+    for (auto& pair : _pairs)
     {
-      if (key == name)
-        return value;
+      if (pair.first == key)
+        return pair.second;
     }
-    return _pairs.emplace_back(make_pair(name, Json{})).second;
+    return _pairs.emplace_back(make_pair(key, Json{})).second;
   }
 
   wostream& operator<<(wostream& os, JsonObject const& object)
@@ -104,7 +104,7 @@ namespace Json4CPP
       is >> ws;
       if (is.peek() != L'}')
       {
-        auto name = ParseString(is);
+        auto key = ParseString(is);
         is >> ws;
         if (is.peek() == L':')
         {
@@ -118,12 +118,12 @@ namespace Json4CPP
         }
         auto value = ParseJson(is);
         is >> ws;
-        object._pairs.push_back({ name, value });
+        object._pairs.push_back({ key, value });
         while (is.peek() == L',')
         {
           is.get();
           is >> ws;
-          auto name = ParseString(is);
+          key = ParseString(is);
           is >> ws;
           if (is.peek() == L':')
           {
@@ -137,7 +137,7 @@ namespace Json4CPP
           }
           auto value = ParseJson(is);
           is >> ws;
-          object._pairs.push_back({ name, value });
+          object._pairs.push_back({ key, value });
         }
         if (is.peek() == L'}')
         {

@@ -111,7 +111,7 @@ namespace Json4CPP
     wfstream(filePath, wfstream::out) << *this;
   }
 
-  void Json::AddPair(std::pair<NAME, Json> pair)
+  void Json::AddPair(std::pair<KEY, Json> pair)
   {
     switch (Type())
     {
@@ -120,7 +120,7 @@ namespace Json4CPP
     case JsonType::Object:
       return get<JsonObject>(_value).AddPair(pair);
     default:
-      throw exception("Add(pair<NAME, Json>) is only defined for JsonObject!");
+      throw exception("Add(pair<KEY, Json>) is only defined for JsonObject!");
     }
   }
 
@@ -372,22 +372,22 @@ namespace Json4CPP
 #pragma warning(pop)
 #pragma endregion
 
-  Json& Json::operator[](NAME const& name)
+  Json& Json::operator[](KEY const& key)
   {
     switch (Type())
     {
     case JsonType::Null:
       _value = JsonObject();
     case JsonType::Object:
-      return get<JsonObject>(_value)[name];
+      return get<JsonObject>(_value)[key];
     default:
-      throw exception("Operator[NAME] is only defined for JsonObject!");
+      throw exception("Operator[KEY] is only defined for JsonObject!");
     }
   }
 
-  Json& Json::operator[](const wchar_t* name)
+  Json& Json::operator[](const wchar_t* key)
   {
-    return (*this)[wstring(name)];
+    return (*this)[wstring(key)];
   }
 
   Json& Json::operator[](int const& index)

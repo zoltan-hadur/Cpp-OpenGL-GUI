@@ -26,7 +26,7 @@ namespace Json4CPP
   template<typename ...Args>
   using VALUE_EXT = std::variant<std::nullptr_t, std::wstring, bool, double, JsonObject, JsonArray, Args...>;
 
-  using NAME = std::wstring;
+  using KEY = std::wstring;
   using VALUE = VALUE_EXT<>;
   using VALUE_BUILDER = VALUE_EXT<std::vector<JsonBuilder>>;
 

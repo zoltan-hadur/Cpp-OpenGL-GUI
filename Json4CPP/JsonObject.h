@@ -28,7 +28,7 @@ namespace Json4CPP
     friend class Json;
     friend class JsonBuilder;
 #pragma warning(suppress: 4251)
-    std::vector<std::pair<NAME, Json>> _pairs;
+    std::vector<std::pair<KEY, Json>> _pairs;
 
     void Dump(std::wstringstream& os, int indentation, int level) const;
   public:
@@ -39,9 +39,9 @@ namespace Json4CPP
 
     std::wstring Dump(int indentation = 0) const;
 
-    void AddPair(std::pair<NAME, Json> pair);
+    void AddPair(std::pair<KEY, Json> pair);
 
-    Json& operator[](NAME const& name);
+    Json& operator[](KEY const& key);
 
     JSON_API friend std::wostream& operator<<(std::wostream& os, JsonObject const& object);
     JSON_API friend std::wistream& operator>>(std::wistream& is, JsonObject      & object);
