@@ -138,109 +138,9 @@ namespace Json4CPP
     }
   }
 
-#pragma region Implicit conversion operators
+#pragma region Conversion operators
 #pragma warning(push)
 #pragma warning(disable : 4244)
-  Json::operator std::nullptr_t()
-  {
-    if (Is(JsonType::Null)) return nullptr;
-    throw exception("Invalid conversion!");
-  }
-
-  Json::operator std::wstring()
-  {
-    if (Is(JsonType::String)) return Get<std::wstring>();
-    throw exception("Invalid conversion!");
-  }
-
-  Json::operator bool()
-  {
-    switch (Type())
-    {
-    case JsonType::Null: return false;
-    case JsonType::Boolean: return Get<bool>();
-    default: return true;
-    }
-  }
-
-  Json::operator char()
-  {
-    if (Is(JsonType::Number)) return Get<double>();
-    throw exception("Invalid conversion!");
-  }
-
-  Json::operator int8_t()
-  {
-    if (Is(JsonType::Number)) return Get<double>();
-    throw exception("Invalid conversion!");
-  }
-
-  Json::operator uint8_t()
-  {
-    if (Is(JsonType::Number)) return Get<double>();
-    throw exception("Invalid conversion!");
-  }
-
-  Json::operator int16_t()
-  {
-    if (Is(JsonType::Number)) return Get<double>();
-    throw exception("Invalid conversion!");
-  }
-
-  Json::operator uint16_t()
-  {
-    if (Is(JsonType::Number)) return Get<double>();
-    throw exception("Invalid conversion!");
-  }
-
-  Json::operator int32_t()
-  {
-    if (Is(JsonType::Number)) return Get<double>();
-    throw exception("Invalid conversion!");
-  }
-
-  Json::operator uint32_t()
-  {
-    if (Is(JsonType::Number)) return Get<double>();
-    throw exception("Invalid conversion!");
-  }
-
-  Json::operator int64_t()
-  {
-    if (Is(JsonType::Number)) return Get<double>();
-    throw exception("Invalid conversion!");
-  }
-
-  Json::operator uint64_t()
-  {
-    if (Is(JsonType::Number)) return Get<double>();
-    throw exception("Invalid conversion!");
-  }
-
-  Json::operator float()
-  {
-    if (Is(JsonType::Number)) return Get<double>();
-    throw exception("Invalid conversion!");
-  }
-
-  Json::operator double()
-  {
-    if (Is(JsonType::Number)) return Get<double>();
-    throw exception("Invalid conversion!");
-  }
-
-  Json::operator JsonObject()
-  {
-    if (Is(JsonType::Object)) return Get<JsonObject>();
-    throw exception("Invalid conversion!");
-  }
-
-  Json::operator JsonArray()
-  {
-    if (Is(JsonType::Array)) return Get<JsonArray>();
-    throw exception("Invalid conversion!");
-  }
-
   Json::operator std::nullptr_t() const
   {
     if (Is(JsonType::Null)) return nullptr;
@@ -339,36 +239,6 @@ namespace Json4CPP
   {
     if (Is(JsonType::Array)) return Get<JsonArray>();
     throw exception("Invalid conversion!");
-  }
-
-  Json::operator std::nullptr_t&()
-  {
-    return Get<std::nullptr_t>();
-  }
-
-  Json::operator std::wstring&()
-  {
-    return Get<std::wstring>();
-  }
-
-  Json::operator bool&()
-  {
-    return Get<bool>();
-  }
-
-  Json::operator double&()
-  {
-    return Get<double>();
-  }
-
-  Json::operator JsonObject&()
-  {
-    return Get<JsonObject>();
-  }
-
-  Json::operator JsonArray&()
-  {
-    return Get<JsonArray>();
   }
 #pragma warning(pop)
 #pragma endregion
