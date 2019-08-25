@@ -4376,6 +4376,149 @@ namespace Json4CPP::Test
 #pragma warning( pop )
     }
 
+    TEST_METHOD(TestValueLogicalAnd)
+    {
+      VALUE null = nullptr;
+      VALUE string1 = L"TestString0"s;
+      VALUE string2 = L"TestString1"s;
+      VALUE boolean1 = false;
+      VALUE boolean2 = true;
+      VALUE number1 = 0.0;
+      VALUE number2 = 1.0;
+      VALUE object1 = JsonObject{
+        { L"key1", 1337 },
+        { L"key2", 1338 }
+      };
+      VALUE object2 = JsonObject{
+        { L"key3", 1339 },
+        { L"key4", 1340 }
+      };
+      VALUE array1 = JsonArray{ 1, 2, 3 };
+      VALUE array2 = JsonArray{ 4, 5, 6 };
+
+      Assert::IsTrue (Value::LogicalAnd(array1  , array1  ));
+      Assert::IsTrue (Value::LogicalAnd(array1  , array2  ));
+      Assert::IsFalse(Value::LogicalAnd(array1  , boolean1));
+      Assert::IsTrue (Value::LogicalAnd(array1  , boolean2));
+      Assert::IsFalse(Value::LogicalAnd(array1  , null    ));
+      Assert::IsFalse(Value::LogicalAnd(array1  , number1 ));
+      Assert::IsTrue (Value::LogicalAnd(array1  , number2 ));
+      Assert::IsTrue (Value::LogicalAnd(array1  , object1 ));
+      Assert::IsTrue (Value::LogicalAnd(array1  , object2 ));
+      Assert::IsTrue (Value::LogicalAnd(array1  , string1 ));
+      Assert::IsTrue (Value::LogicalAnd(array1  , string2 ));
+      Assert::IsTrue (Value::LogicalAnd(array2  , array1  ));
+      Assert::IsTrue (Value::LogicalAnd(array2  , array2  ));
+      Assert::IsFalse(Value::LogicalAnd(array2  , boolean1));
+      Assert::IsTrue (Value::LogicalAnd(array2  , boolean2));
+      Assert::IsFalse(Value::LogicalAnd(array2  , null    ));
+      Assert::IsFalse(Value::LogicalAnd(array2  , number1 ));
+      Assert::IsTrue (Value::LogicalAnd(array2  , number2 ));
+      Assert::IsTrue (Value::LogicalAnd(array2  , object1 ));
+      Assert::IsTrue (Value::LogicalAnd(array2  , object2 ));
+      Assert::IsTrue (Value::LogicalAnd(array2  , string1 ));
+      Assert::IsTrue (Value::LogicalAnd(array2  , string2 ));
+      Assert::IsFalse(Value::LogicalAnd(boolean1, array1  ));
+      Assert::IsFalse(Value::LogicalAnd(boolean1, array2  ));
+      Assert::IsFalse(Value::LogicalAnd(boolean1, boolean1));
+      Assert::IsFalse(Value::LogicalAnd(boolean1, boolean2));
+      Assert::IsFalse(Value::LogicalAnd(boolean1, null    ));
+      Assert::IsFalse(Value::LogicalAnd(boolean1, number1 ));
+      Assert::IsFalse(Value::LogicalAnd(boolean1, number2 ));
+      Assert::IsFalse(Value::LogicalAnd(boolean1, object1 ));
+      Assert::IsFalse(Value::LogicalAnd(boolean1, object2 ));
+      Assert::IsFalse(Value::LogicalAnd(boolean1, string1 ));
+      Assert::IsFalse(Value::LogicalAnd(boolean1, string2 ));
+      Assert::IsTrue (Value::LogicalAnd(boolean2, array1  ));
+      Assert::IsTrue (Value::LogicalAnd(boolean2, array2  ));
+      Assert::IsFalse(Value::LogicalAnd(boolean2, boolean1));
+      Assert::IsTrue (Value::LogicalAnd(boolean2, boolean2));
+      Assert::IsFalse(Value::LogicalAnd(boolean2, null    ));
+      Assert::IsFalse(Value::LogicalAnd(boolean2, number1 ));
+      Assert::IsTrue (Value::LogicalAnd(boolean2, number2 ));
+      Assert::IsTrue (Value::LogicalAnd(boolean2, object1 ));
+      Assert::IsTrue (Value::LogicalAnd(boolean2, object2 ));
+      Assert::IsTrue (Value::LogicalAnd(boolean2, string1 ));
+      Assert::IsTrue (Value::LogicalAnd(boolean2, string2 ));
+      Assert::IsFalse(Value::LogicalAnd(null    , array1  ));
+      Assert::IsFalse(Value::LogicalAnd(null    , array2  ));
+      Assert::IsFalse(Value::LogicalAnd(null    , boolean1));
+      Assert::IsFalse(Value::LogicalAnd(null    , boolean2));
+      Assert::IsFalse(Value::LogicalAnd(null    , null    ));
+      Assert::IsFalse(Value::LogicalAnd(null    , number1 ));
+      Assert::IsFalse(Value::LogicalAnd(null    , number2 ));
+      Assert::IsFalse(Value::LogicalAnd(null    , object1 ));
+      Assert::IsFalse(Value::LogicalAnd(null    , object2 ));
+      Assert::IsFalse(Value::LogicalAnd(null    , string1 ));
+      Assert::IsFalse(Value::LogicalAnd(null    , string2 ));
+      Assert::IsFalse(Value::LogicalAnd(number1 , array1  ));
+      Assert::IsFalse(Value::LogicalAnd(number1 , array2  ));
+      Assert::IsFalse(Value::LogicalAnd(number1 , boolean1));
+      Assert::IsFalse(Value::LogicalAnd(number1 , boolean2));
+      Assert::IsFalse(Value::LogicalAnd(number1 , null    ));
+      Assert::IsFalse(Value::LogicalAnd(number1 , number1 ));
+      Assert::IsFalse(Value::LogicalAnd(number1 , number2 ));
+      Assert::IsFalse(Value::LogicalAnd(number1 , object1 ));
+      Assert::IsFalse(Value::LogicalAnd(number1 , object2 ));
+      Assert::IsFalse(Value::LogicalAnd(number1 , string1 ));
+      Assert::IsFalse(Value::LogicalAnd(number1 , string2 ));
+      Assert::IsTrue (Value::LogicalAnd(number2 , array1  ));
+      Assert::IsTrue (Value::LogicalAnd(number2 , array2  ));
+      Assert::IsFalse(Value::LogicalAnd(number2 , boolean1));
+      Assert::IsTrue (Value::LogicalAnd(number2 , boolean2));
+      Assert::IsFalse(Value::LogicalAnd(number2 , null    ));
+      Assert::IsFalse(Value::LogicalAnd(number2 , number1 ));
+      Assert::IsTrue (Value::LogicalAnd(number2 , number2 ));
+      Assert::IsTrue (Value::LogicalAnd(number2 , object1 ));
+      Assert::IsTrue (Value::LogicalAnd(number2 , object2 ));
+      Assert::IsTrue (Value::LogicalAnd(number2 , string1 ));
+      Assert::IsTrue (Value::LogicalAnd(number2 , string2 ));
+      Assert::IsTrue (Value::LogicalAnd(object1 , array1  ));
+      Assert::IsTrue (Value::LogicalAnd(object1 , array2  ));
+      Assert::IsFalse(Value::LogicalAnd(object1 , boolean1));
+      Assert::IsTrue (Value::LogicalAnd(object1 , boolean2));
+      Assert::IsFalse(Value::LogicalAnd(object1 , null    ));
+      Assert::IsFalse(Value::LogicalAnd(object1 , number1 ));
+      Assert::IsTrue (Value::LogicalAnd(object1 , number2 ));
+      Assert::IsTrue (Value::LogicalAnd(object1 , object1 ));
+      Assert::IsTrue (Value::LogicalAnd(object1 , object2 ));
+      Assert::IsTrue (Value::LogicalAnd(object1 , string1 ));
+      Assert::IsTrue (Value::LogicalAnd(object1 , string2 ));
+      Assert::IsTrue (Value::LogicalAnd(object2 , array1  ));
+      Assert::IsTrue (Value::LogicalAnd(object2 , array2  ));
+      Assert::IsFalse(Value::LogicalAnd(object2 , boolean1));
+      Assert::IsTrue (Value::LogicalAnd(object2 , boolean2));
+      Assert::IsFalse(Value::LogicalAnd(object2 , null    ));
+      Assert::IsFalse(Value::LogicalAnd(object2 , number1 ));
+      Assert::IsTrue (Value::LogicalAnd(object2 , number2 ));
+      Assert::IsTrue (Value::LogicalAnd(object2 , object1 ));
+      Assert::IsTrue (Value::LogicalAnd(object2 , object2 ));
+      Assert::IsTrue (Value::LogicalAnd(object2 , string1 ));
+      Assert::IsTrue (Value::LogicalAnd(object2 , string2 ));
+      Assert::IsTrue (Value::LogicalAnd(string1 , array1  ));
+      Assert::IsTrue (Value::LogicalAnd(string1 , array2  ));
+      Assert::IsFalse(Value::LogicalAnd(string1 , boolean1));
+      Assert::IsTrue (Value::LogicalAnd(string1 , boolean2));
+      Assert::IsFalse(Value::LogicalAnd(string1 , null    ));
+      Assert::IsFalse(Value::LogicalAnd(string1 , number1 ));
+      Assert::IsTrue (Value::LogicalAnd(string1 , number2 ));
+      Assert::IsTrue (Value::LogicalAnd(string1 , object1 ));
+      Assert::IsTrue (Value::LogicalAnd(string1 , object2 ));
+      Assert::IsTrue (Value::LogicalAnd(string1 , string1 ));
+      Assert::IsTrue (Value::LogicalAnd(string1 , string2 ));
+      Assert::IsTrue (Value::LogicalAnd(string2 , array1  ));
+      Assert::IsTrue (Value::LogicalAnd(string2 , array2  ));
+      Assert::IsFalse(Value::LogicalAnd(string2 , boolean1));
+      Assert::IsTrue (Value::LogicalAnd(string2 , boolean2));
+      Assert::IsFalse(Value::LogicalAnd(string2 , null    ));
+      Assert::IsFalse(Value::LogicalAnd(string2 , number1 ));
+      Assert::IsTrue (Value::LogicalAnd(string2 , number2 ));
+      Assert::IsTrue (Value::LogicalAnd(string2 , object1 ));
+      Assert::IsTrue (Value::LogicalAnd(string2 , object2 ));
+      Assert::IsTrue (Value::LogicalAnd(string2 , string1 ));
+      Assert::IsTrue (Value::LogicalAnd(string2 , string2 ));
+    }
+
     TEST_CLASS_INITIALIZE(ClassInitialize)
     {
       _CrtMemCheckpoint(&_init);
