@@ -762,42 +762,12 @@ namespace Json4CPP::Detail::Value
 
   bool LogicalAnd(VALUE const& left, VALUE const& right)
   {
-    bool result;
-    visit(Overload{
-      [&](nullptr_t  const& l, auto       const& r) { result = false;  },
-      [&](auto       const& l, nullptr_t  const& r) { result = false;  },
-      [&](nullptr_t  const& l, nullptr_t  const& r) { result = false;  },
-      [&](bool       const& l, bool       const& r) { result = l && r; },
-      [&](bool       const& l, double     const& r) { result = l && r; },
-      [&](double     const& l, bool       const& r) { result = l && r; },
-      [&](double     const& l, double     const& r) { result = l && r; },
-      [&](auto const& l, auto const& r)
-      {
-        auto message = "Operator&& is not defined for types " + string(typeid(l).name()) + " and " + string(typeid(r).name()) + "!";
-        throw exception(message.c_str());
-      }
-    }, left, right);
-    return result;
+    return (bool)Json(left) && (bool)Json(right);
   }
 
   bool LogicalOr(VALUE const& left, VALUE const& right)
   {
-    bool result;
-    visit(Overload{
-      [&](nullptr_t  const& l, auto       const& r) { result = !Not(r);    },
-      [&](auto       const& l, nullptr_t  const& r) { result = !Not(l);    },
-      [&](nullptr_t  const& l, nullptr_t  const& r) { result = false;           },
-      [&](bool       const& l, bool       const& r) { result = l && r;          },
-      [&](bool       const& l, double     const& r) { result = l && r;          },
-      [&](double     const& l, bool       const& r) { result = l && r;          },
-      [&](double     const& l, double     const& r) { result = l && r;          },
-      [&](auto const& l, auto const& r)
-      {
-        auto message = "Operator|| is not defined for types " + string(typeid(l).name()) + " and " + string(typeid(r).name()) + "!";
-        throw exception(message.c_str());
-      }
-    }, left, right);
-    return result;
+    return (bool)Json(left) || (bool)Json(right);
   }
 #pragma warning(pop)
 }

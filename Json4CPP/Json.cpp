@@ -157,8 +157,9 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Null: return false;
+    case JsonType::Null   : return false;
     case JsonType::Boolean: return Get<bool>();
+    case JsonType::Number : return Get<double>();
     default: return true;
     }
   }
