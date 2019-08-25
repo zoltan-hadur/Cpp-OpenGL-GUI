@@ -80,7 +80,7 @@ namespace Json4CPP
     }
 
     template<typename T>
-    T& Get()
+    T const& Get()
     {
       return std::get<T>(_value);
     }
