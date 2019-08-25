@@ -4286,6 +4286,8 @@ namespace Json4CPP::Test
       };
       VALUE array = JsonArray{ 1, 2, 3 };
 
+#pragma warning(push)
+#pragma warning(disable : 26444)
       VALUE value = array;
       Assert::ExpectException<exception>([&] { Value::PostIncrement(value); });
       Assert::AreEqual<VALUE>(array, value);
@@ -4304,6 +4306,7 @@ namespace Json4CPP::Test
       value = string;
       Assert::ExpectException<exception>([&] { Value::PostIncrement(value); });
       Assert::AreEqual<VALUE>(string, value);
+#pragma warning( pop )
     }
 
     TEST_METHOD(TestValuePreDecrement)
@@ -4350,6 +4353,8 @@ namespace Json4CPP::Test
       };
       VALUE array = JsonArray{ 1, 2, 3 };
 
+#pragma warning(push)
+#pragma warning(disable : 26444)
       VALUE value = array;
       Assert::ExpectException<exception>([&] { Value::PostDecrement(value); });
       Assert::AreEqual<VALUE>(array, value);
@@ -4368,6 +4373,7 @@ namespace Json4CPP::Test
       value = string;
       Assert::ExpectException<exception>([&] { Value::PostDecrement(value); });
       Assert::AreEqual<VALUE>(string, value);
+#pragma warning( pop )
     }
 
     TEST_CLASS_INITIALIZE(ClassInitialize)
