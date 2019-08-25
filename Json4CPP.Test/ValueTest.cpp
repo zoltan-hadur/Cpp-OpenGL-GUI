@@ -4219,6 +4219,29 @@ namespace Json4CPP::Test
 #pragma warning( pop )
     }
 
+    TEST_METHOD(TestValueNot)
+    {
+      VALUE null = nullptr;
+      VALUE string = L"TestString"s;
+      VALUE boolean = true;
+      VALUE number = 1.0;
+      VALUE object = JsonObject{
+        { L"key1", 1337 },
+        { L"key2", 1338 }
+      };
+      VALUE array = JsonArray{ 1, 2, 3 };
+
+#pragma warning(push)
+#pragma warning(disable : 26444)
+      Assert::ExpectException<exception>([&] { Value::Not(array); });
+      Assert::AreEqual<VALUE>(!true, Value::Not(boolean));
+      Assert::AreEqual<VALUE>(!nullptr, Value::Not(null));
+      Assert::AreEqual<VALUE>(!1.0, Value::Not(number));
+      Assert::ExpectException<exception>([&] { Value::Not(object); });
+      Assert::ExpectException<exception>([&] { Value::Not(string); });
+#pragma warning( pop )
+    }
+
     TEST_CLASS_INITIALIZE(ClassInitialize)
     {
       _CrtMemCheckpoint(&_init);
