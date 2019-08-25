@@ -3134,6 +3134,152 @@ namespace Json4CPP::Test
       Assert::AreEqual<VALUE>(string2, value);
     }
 
+    TEST_METHOD(TestValueDivide)
+    {
+      VALUE null = nullptr;
+      VALUE string1 = L"TestString0"s;
+      VALUE string2 = L"TestString1"s;
+      VALUE boolean1 = false;
+      VALUE boolean2 = true;
+      VALUE number1 = 0.0;
+      VALUE number2 = 1.0;
+      VALUE object1 = JsonObject{
+        { L"key1", 1337 },
+        { L"key2", 1338 }
+      };
+      VALUE object2 = JsonObject{
+        { L"key3", 1339 },
+        { L"key4", 1340 }
+      };
+      VALUE array1 = JsonArray{ 1, 2, 3 };
+      VALUE array2 = JsonArray{ 4, 5, 6 };
+
+#pragma warning(push)
+#pragma warning(disable : 26444)
+      Assert::ExpectException<exception>([&] { Value::Divide(array1, array1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(array1, array2); });
+      Assert::ExpectException<exception>([&] { Value::Divide(array1, boolean1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(array1, boolean2); });
+      Assert::AreEqual<VALUE>(null, Value::Divide(array1, null));
+      Assert::ExpectException<exception>([&] { Value::Divide(array1, number1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(array1, number2); });
+      Assert::ExpectException<exception>([&] { Value::Divide(array1, object1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(array1, object2); });
+      Assert::ExpectException<exception>([&] { Value::Divide(array1, string1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(array1, string2); });
+      Assert::ExpectException<exception>([&] { Value::Divide(array2, array1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(array2, array2); });
+      Assert::ExpectException<exception>([&] { Value::Divide(array2, boolean1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(array2, boolean2); });
+      Assert::AreEqual<VALUE>(null, Value::Divide(array2, null));
+      Assert::ExpectException<exception>([&] { Value::Divide(array2, number1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(array2, number2); });
+      Assert::ExpectException<exception>([&] { Value::Divide(array2, object1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(array2, object2); });
+      Assert::ExpectException<exception>([&] { Value::Divide(array2, string1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(array2, string2); });
+      Assert::ExpectException<exception>([&] { Value::Divide(boolean1, array1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(boolean1, array2); });
+      Assert::IsTrue(isnan(get<double>(Value::Divide(boolean1, boolean1))));
+      Assert::AreEqual<VALUE>(0.0, Value::Divide(boolean1, boolean2));
+      Assert::AreEqual<VALUE>(null, Value::Divide(boolean1, null));
+      Assert::IsTrue(isnan(get<double>(Value::Divide(boolean1, number1))));
+      Assert::AreEqual<VALUE>(0.0, Value::Divide(boolean1, number2));
+      Assert::ExpectException<exception>([&] { Value::Divide(boolean1, object1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(boolean1, object2); });
+      Assert::ExpectException<exception>([&] { Value::Divide(boolean1, string1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(boolean1, string2); });
+      Assert::ExpectException<exception>([&] { Value::Divide(boolean2, array1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(boolean2, array2); });
+      Assert::IsTrue(isinf(get<double>(Value::Divide(boolean2, boolean1))));
+      Assert::AreEqual<VALUE>(1.0, Value::Divide(boolean2, boolean2));
+      Assert::AreEqual<VALUE>(null, Value::Divide(boolean2, null));
+      Assert::IsTrue(isinf(get<double>(Value::Divide(boolean2, number1))));
+      Assert::AreEqual<VALUE>(1.0, Value::Divide(boolean2, number2));
+      Assert::ExpectException<exception>([&] { Value::Divide(boolean2, object1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(boolean2, object2); });
+      Assert::ExpectException<exception>([&] { Value::Divide(boolean2, string1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(boolean2, string2); });
+      Assert::AreEqual<VALUE>(null, Value::Divide(null, array1));
+      Assert::AreEqual<VALUE>(null, Value::Divide(null, array2));
+      Assert::AreEqual<VALUE>(null, Value::Divide(null, boolean1));
+      Assert::AreEqual<VALUE>(null, Value::Divide(null, boolean2));
+      Assert::AreEqual<VALUE>(null, Value::Divide(null, null));
+      Assert::AreEqual<VALUE>(null, Value::Divide(null, number1));
+      Assert::AreEqual<VALUE>(null, Value::Divide(null, number2));
+      Assert::AreEqual<VALUE>(null, Value::Divide(null, object1));
+      Assert::AreEqual<VALUE>(null, Value::Divide(null, object2));
+      Assert::AreEqual<VALUE>(null, Value::Divide(null, string1));
+      Assert::AreEqual<VALUE>(null, Value::Divide(null, string2));
+      Assert::ExpectException<exception>([&] { Value::Divide(number1, array1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(number1, array2); });
+      Assert::IsTrue(isnan(get<double>(Value::Divide(number1, boolean1))));
+      Assert::AreEqual<VALUE>(0.0, Value::Divide(number1, boolean2));
+      Assert::AreEqual<VALUE>(null, Value::Divide(number1, null));
+      Assert::IsTrue(isnan(get<double>(Value::Divide(number1, number1))));
+      Assert::AreEqual<VALUE>(0.0, Value::Divide(number1, number2));
+      Assert::ExpectException<exception>([&] { Value::Divide(number1, object1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(number1, object2); });
+      Assert::ExpectException<exception>([&] { Value::Divide(number1, string1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(number1, string2); });
+      Assert::ExpectException<exception>([&] { Value::Divide(number2, array1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(number2, array2); });
+      Assert::IsTrue(isinf(get<double>(Value::Divide(number2, boolean1))));
+      Assert::AreEqual<VALUE>(1.0, Value::Divide(number2, boolean2));
+      Assert::AreEqual<VALUE>(null, Value::Divide(number2, null));
+      Assert::IsTrue(isinf(get<double>(Value::Divide(number2, number1))));
+      Assert::AreEqual<VALUE>(1.0, Value::Divide(number2, number2));
+      Assert::ExpectException<exception>([&] { Value::Divide(number2, object1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(number2, object2); });
+      Assert::ExpectException<exception>([&] { Value::Divide(number2, string1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(number2, string2); });
+      Assert::ExpectException<exception>([&] { Value::Divide(object1, array1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(object1, array2); });
+      Assert::ExpectException<exception>([&] { Value::Divide(object1, boolean1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(object1, boolean2); });
+      Assert::AreEqual<VALUE>(null, Value::Divide(object1, null));
+      Assert::ExpectException<exception>([&] { Value::Divide(object1, number1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(object1, number2); });
+      Assert::ExpectException<exception>([&] { Value::Divide(object1, object1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(object1, object2); });
+      Assert::ExpectException<exception>([&] { Value::Divide(object1, string1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(object1, string2); });
+      Assert::ExpectException<exception>([&] { Value::Divide(object2, array1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(object2, array2); });
+      Assert::ExpectException<exception>([&] { Value::Divide(object2, boolean1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(object2, boolean2); });
+      Assert::AreEqual<VALUE>(null, Value::Divide(object2, null));
+      Assert::ExpectException<exception>([&] { Value::Divide(object2, number1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(object2, number2); });
+      Assert::ExpectException<exception>([&] { Value::Divide(object2, object1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(object2, object2); });
+      Assert::ExpectException<exception>([&] { Value::Divide(object2, string1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(object2, string2); });
+      Assert::ExpectException<exception>([&] { Value::Divide(string1, array1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(string1, array2); });
+      Assert::ExpectException<exception>([&] { Value::Divide(string1, boolean1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(string1, boolean2); });
+      Assert::AreEqual<VALUE>(null, Value::Divide(string1, null));
+      Assert::ExpectException<exception>([&] { Value::Divide(string1, number1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(string1, number2); });
+      Assert::ExpectException<exception>([&] { Value::Divide(string1, object1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(string1, object2); });
+      Assert::AreEqual<VALUE>(wstring(L"TestString0"s / L"TestString0"s), Value::Divide(string1, string1));
+      Assert::AreEqual<VALUE>(wstring(L"TestString0"s / L"TestString1"s), Value::Divide(string1, string2));
+      Assert::ExpectException<exception>([&] { Value::Divide(string2, array1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(string2, array2); });
+      Assert::ExpectException<exception>([&] { Value::Divide(string2, boolean1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(string2, boolean2); });
+      Assert::AreEqual<VALUE>(null, Value::Divide(string2, null));
+      Assert::ExpectException<exception>([&] { Value::Divide(string2, number1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(string2, number2); });
+      Assert::ExpectException<exception>([&] { Value::Divide(string2, object1); });
+      Assert::ExpectException<exception>([&] { Value::Divide(string2, object2); });
+      Assert::AreEqual<VALUE>(wstring(L"TestString1"s / L"TestString0"s), Value::Divide(string2, string1));
+      Assert::AreEqual<VALUE>(wstring(L"TestString1"s / L"TestString1"s), Value::Divide(string2, string2));
+#pragma warning( pop )
+    }
+
     TEST_CLASS_INITIALIZE(ClassInitialize)
     {
       _CrtMemCheckpoint(&_init);
