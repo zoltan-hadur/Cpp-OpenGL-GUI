@@ -4519,6 +4519,149 @@ namespace Json4CPP::Test
       Assert::IsTrue (Value::LogicalAnd(string2 , string2 ));
     }
 
+    TEST_METHOD(TestValueLogicalOr)
+    {
+      VALUE null = nullptr;
+      VALUE string1 = L"TestString0"s;
+      VALUE string2 = L"TestString1"s;
+      VALUE boolean1 = false;
+      VALUE boolean2 = true;
+      VALUE number1 = 0.0;
+      VALUE number2 = 1.0;
+      VALUE object1 = JsonObject{
+        { L"key1", 1337 },
+        { L"key2", 1338 }
+      };
+      VALUE object2 = JsonObject{
+        { L"key3", 1339 },
+        { L"key4", 1340 }
+      };
+      VALUE array1 = JsonArray{ 1, 2, 3 };
+      VALUE array2 = JsonArray{ 4, 5, 6 };
+
+      Assert::IsTrue (Value::LogicalOr(array1  , array1  ));
+      Assert::IsTrue (Value::LogicalOr(array1  , array2  ));
+      Assert::IsTrue (Value::LogicalOr(array1  , boolean1));
+      Assert::IsTrue (Value::LogicalOr(array1  , boolean2));
+      Assert::IsTrue (Value::LogicalOr(array1  , null    ));
+      Assert::IsTrue (Value::LogicalOr(array1  , number1 ));
+      Assert::IsTrue (Value::LogicalOr(array1  , number2 ));
+      Assert::IsTrue (Value::LogicalOr(array1  , object1 ));
+      Assert::IsTrue (Value::LogicalOr(array1  , object2 ));
+      Assert::IsTrue (Value::LogicalOr(array1  , string1 ));
+      Assert::IsTrue (Value::LogicalOr(array1  , string2 ));
+      Assert::IsTrue (Value::LogicalOr(array2  , array1  ));
+      Assert::IsTrue (Value::LogicalOr(array2  , array2  ));
+      Assert::IsTrue (Value::LogicalOr(array2  , boolean1));
+      Assert::IsTrue (Value::LogicalOr(array2  , boolean2));
+      Assert::IsTrue (Value::LogicalOr(array2  , null    ));
+      Assert::IsTrue (Value::LogicalOr(array2  , number1 ));
+      Assert::IsTrue (Value::LogicalOr(array2  , number2 ));
+      Assert::IsTrue (Value::LogicalOr(array2  , object1 ));
+      Assert::IsTrue (Value::LogicalOr(array2  , object2 ));
+      Assert::IsTrue (Value::LogicalOr(array2  , string1 ));
+      Assert::IsTrue (Value::LogicalOr(array2  , string2 ));
+      Assert::IsTrue (Value::LogicalOr(boolean1, array1  ));
+      Assert::IsTrue (Value::LogicalOr(boolean1, array2  ));
+      Assert::IsFalse(Value::LogicalOr(boolean1, boolean1));
+      Assert::IsTrue (Value::LogicalOr(boolean1, boolean2));
+      Assert::IsFalse(Value::LogicalOr(boolean1, null    ));
+      Assert::IsFalse(Value::LogicalOr(boolean1, number1 ));
+      Assert::IsTrue (Value::LogicalOr(boolean1, number2 ));
+      Assert::IsTrue (Value::LogicalOr(boolean1, object1 ));
+      Assert::IsTrue (Value::LogicalOr(boolean1, object2 ));
+      Assert::IsTrue (Value::LogicalOr(boolean1, string1 ));
+      Assert::IsTrue (Value::LogicalOr(boolean1, string2 ));
+      Assert::IsTrue (Value::LogicalOr(boolean2, array1  ));
+      Assert::IsTrue (Value::LogicalOr(boolean2, array2  ));
+      Assert::IsTrue (Value::LogicalOr(boolean2, boolean1));
+      Assert::IsTrue (Value::LogicalOr(boolean2, boolean2));
+      Assert::IsTrue (Value::LogicalOr(boolean2, null    ));
+      Assert::IsTrue (Value::LogicalOr(boolean2, number1 ));
+      Assert::IsTrue (Value::LogicalOr(boolean2, number2 ));
+      Assert::IsTrue (Value::LogicalOr(boolean2, object1 ));
+      Assert::IsTrue (Value::LogicalOr(boolean2, object2 ));
+      Assert::IsTrue (Value::LogicalOr(boolean2, string1 ));
+      Assert::IsTrue (Value::LogicalOr(boolean2, string2 ));
+      Assert::IsTrue (Value::LogicalOr(null    , array1  ));
+      Assert::IsTrue (Value::LogicalOr(null    , array2  ));
+      Assert::IsFalse(Value::LogicalOr(null    , boolean1));
+      Assert::IsTrue (Value::LogicalOr(null    , boolean2));
+      Assert::IsFalse(Value::LogicalOr(null    , null    ));
+      Assert::IsFalse(Value::LogicalOr(null    , number1 ));
+      Assert::IsTrue (Value::LogicalOr(null    , number2 ));
+      Assert::IsTrue (Value::LogicalOr(null    , object1 ));
+      Assert::IsTrue (Value::LogicalOr(null    , object2 ));
+      Assert::IsTrue (Value::LogicalOr(null    , string1 ));
+      Assert::IsTrue (Value::LogicalOr(null    , string2 ));
+      Assert::IsTrue (Value::LogicalOr(number1 , array1  ));
+      Assert::IsTrue (Value::LogicalOr(number1 , array2  ));
+      Assert::IsFalse(Value::LogicalOr(number1 , boolean1));
+      Assert::IsTrue (Value::LogicalOr(number1 , boolean2));
+      Assert::IsFalse(Value::LogicalOr(number1 , null    ));
+      Assert::IsFalse(Value::LogicalOr(number1 , number1 ));
+      Assert::IsTrue (Value::LogicalOr(number1 , number2 ));
+      Assert::IsTrue (Value::LogicalOr(number1 , object1 ));
+      Assert::IsTrue (Value::LogicalOr(number1 , object2 ));
+      Assert::IsTrue (Value::LogicalOr(number1 , string1 ));
+      Assert::IsTrue (Value::LogicalOr(number1 , string2 ));
+      Assert::IsTrue (Value::LogicalOr(number2 , array1  ));
+      Assert::IsTrue (Value::LogicalOr(number2 , array2  ));
+      Assert::IsTrue (Value::LogicalOr(number2 , boolean1));
+      Assert::IsTrue (Value::LogicalOr(number2 , boolean2));
+      Assert::IsTrue (Value::LogicalOr(number2 , null    ));
+      Assert::IsTrue (Value::LogicalOr(number2 , number1 ));
+      Assert::IsTrue (Value::LogicalOr(number2 , number2 ));
+      Assert::IsTrue (Value::LogicalOr(number2 , object1 ));
+      Assert::IsTrue (Value::LogicalOr(number2 , object2 ));
+      Assert::IsTrue (Value::LogicalOr(number2 , string1 ));
+      Assert::IsTrue (Value::LogicalOr(number2 , string2 ));
+      Assert::IsTrue (Value::LogicalOr(object1 , array1  ));
+      Assert::IsTrue (Value::LogicalOr(object1 , array2  ));
+      Assert::IsTrue (Value::LogicalOr(object1 , boolean1));
+      Assert::IsTrue (Value::LogicalOr(object1 , boolean2));
+      Assert::IsTrue (Value::LogicalOr(object1 , null    ));
+      Assert::IsTrue (Value::LogicalOr(object1 , number1 ));
+      Assert::IsTrue (Value::LogicalOr(object1 , number2 ));
+      Assert::IsTrue (Value::LogicalOr(object1 , object1 ));
+      Assert::IsTrue (Value::LogicalOr(object1 , object2 ));
+      Assert::IsTrue (Value::LogicalOr(object1 , string1 ));
+      Assert::IsTrue (Value::LogicalOr(object1 , string2 ));
+      Assert::IsTrue (Value::LogicalOr(object2 , array1  ));
+      Assert::IsTrue (Value::LogicalOr(object2 , array2  ));
+      Assert::IsTrue (Value::LogicalOr(object2 , boolean1));
+      Assert::IsTrue (Value::LogicalOr(object2 , boolean2));
+      Assert::IsTrue (Value::LogicalOr(object2 , null    ));
+      Assert::IsTrue (Value::LogicalOr(object2 , number1 ));
+      Assert::IsTrue (Value::LogicalOr(object2 , number2 ));
+      Assert::IsTrue (Value::LogicalOr(object2 , object1 ));
+      Assert::IsTrue (Value::LogicalOr(object2 , object2 ));
+      Assert::IsTrue (Value::LogicalOr(object2 , string1 ));
+      Assert::IsTrue (Value::LogicalOr(object2 , string2 ));
+      Assert::IsTrue (Value::LogicalOr(string1 , array1  ));
+      Assert::IsTrue (Value::LogicalOr(string1 , array2  ));
+      Assert::IsTrue (Value::LogicalOr(string1 , boolean1));
+      Assert::IsTrue (Value::LogicalOr(string1 , boolean2));
+      Assert::IsTrue (Value::LogicalOr(string1 , null    ));
+      Assert::IsTrue (Value::LogicalOr(string1 , number1 ));
+      Assert::IsTrue (Value::LogicalOr(string1 , number2 ));
+      Assert::IsTrue (Value::LogicalOr(string1 , object1 ));
+      Assert::IsTrue (Value::LogicalOr(string1 , object2 ));
+      Assert::IsTrue (Value::LogicalOr(string1 , string1 ));
+      Assert::IsTrue (Value::LogicalOr(string1 , string2 ));
+      Assert::IsTrue (Value::LogicalOr(string2 , array1  ));
+      Assert::IsTrue (Value::LogicalOr(string2 , array2  ));
+      Assert::IsTrue (Value::LogicalOr(string2 , boolean1));
+      Assert::IsTrue (Value::LogicalOr(string2 , boolean2));
+      Assert::IsTrue (Value::LogicalOr(string2 , null    ));
+      Assert::IsTrue (Value::LogicalOr(string2 , number1 ));
+      Assert::IsTrue (Value::LogicalOr(string2 , number2 ));
+      Assert::IsTrue (Value::LogicalOr(string2 , object1 ));
+      Assert::IsTrue (Value::LogicalOr(string2 , object2 ));
+      Assert::IsTrue (Value::LogicalOr(string2 , string1 ));
+      Assert::IsTrue (Value::LogicalOr(string2 , string2 ));
+    }
+
     TEST_CLASS_INITIALIZE(ClassInitialize)
     {
       _CrtMemCheckpoint(&_init);
