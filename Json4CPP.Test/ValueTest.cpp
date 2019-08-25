@@ -4242,6 +4242,38 @@ namespace Json4CPP::Test
 #pragma warning( pop )
     }
 
+    TEST_METHOD(TestValuePreIncrement)
+    {
+      VALUE null = nullptr;
+      VALUE string = L"TestString"s;
+      VALUE boolean = true;
+      VALUE number = 1.0;
+      VALUE object = JsonObject{
+        { L"key1", 1337 },
+        { L"key2", 1338 }
+      };
+      VALUE array = JsonArray{ 1, 2, 3 };
+
+      VALUE value = array;
+      Assert::ExpectException<exception>([&] { Value::PreIncrement(value); });
+      Assert::AreEqual<VALUE>(array, value);
+      value = boolean;
+      Assert::ExpectException<exception>([&] { Value::PreIncrement(value); });
+      Assert::AreEqual<VALUE>(boolean, value);
+      value = null;
+      Assert::AreEqual<VALUE>(null, Value::PreIncrement(value));
+      Assert::AreEqual<VALUE>(null, value);
+      value = number;
+      Assert::AreEqual<VALUE>(2.0, Value::PreIncrement(value));
+      Assert::AreEqual<VALUE>(2.0, value);
+      value = object;
+      Assert::ExpectException<exception>([&] { Value::PreIncrement(value); });
+      Assert::AreEqual<VALUE>(object, value);
+      value = string;
+      Assert::ExpectException<exception>([&] { Value::PreIncrement(value); });
+      Assert::AreEqual<VALUE>(string, value);
+    }
+
     TEST_CLASS_INITIALIZE(ClassInitialize)
     {
       _CrtMemCheckpoint(&_init);
