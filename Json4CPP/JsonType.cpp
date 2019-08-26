@@ -32,14 +32,4 @@ namespace Json4CPP
   {
     return !(left == right);
   }
-
-  JsonType operator|(JsonType left, JsonType right)
-  {
-    return static_cast<JsonType>(static_cast<std::underlying_type_t<JsonType>>(left) | static_cast<std::underlying_type_t<JsonType>>(right));
-  }
-
-  JsonType operator&(JsonType left, JsonType right)
-  {
-    return static_cast<JsonType>(static_cast<std::underlying_type_t<JsonType>>(left) & static_cast<std::underlying_type_t<JsonType>>(right));
-  }
 }

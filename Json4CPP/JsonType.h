@@ -23,8 +23,6 @@ namespace Json4CPP
 
   JSON_API std::wostream& operator<<(std::wostream& os, JsonType const& type);
 
-  JSON_API bool     operator==(JsonType left, JsonType right);
-  JSON_API bool     operator!=(JsonType left, JsonType right);
-  JSON_API JsonType operator| (JsonType left, JsonType right);
-  JSON_API JsonType operator& (JsonType left, JsonType right);
+  JSON_API bool operator==(JsonType left, JsonType right);
+  JSON_API bool operator!=(JsonType left, JsonType right);
 }

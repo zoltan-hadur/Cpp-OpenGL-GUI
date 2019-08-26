@@ -34,14 +34,4 @@ namespace Json4CPP::Detail
   {
     return !(left == right);
   }
-
-  JsonBuilderType operator|(JsonBuilderType left, JsonBuilderType right)
-  {
-    return static_cast<JsonBuilderType>(static_cast<std::underlying_type_t<JsonBuilderType>>(left) | static_cast<std::underlying_type_t<JsonBuilderType>>(right));
-  }
-
-  JsonBuilderType operator&(JsonBuilderType left, JsonBuilderType right)
-  {
-    return static_cast<JsonBuilderType>(static_cast<std::underlying_type_t<JsonBuilderType>>(left) & static_cast<std::underlying_type_t<JsonBuilderType>>(right));
-  }
 }
