@@ -74,15 +74,15 @@ namespace Json4CPP
     void Write(std::filesystem::path filePath) const;
 
     template<typename T>
-    T Get() const
+    auto const& Get() const
     {
       return std::get<T>(_value);
     }
 
     template<typename T>
-    T const& Get()
+    auto GetIf()
     {
-      return std::get<T>(_value);
+      return std::get_if<T>(&_value);
     }
 
     template<typename T>
