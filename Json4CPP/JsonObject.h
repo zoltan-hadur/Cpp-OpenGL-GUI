@@ -9,6 +9,7 @@
 #include "Value.h"
 
 #include <vector>
+#include <unordered_map>
 #include <utility>
 #include <sstream>
 #include <iostream>
@@ -32,19 +33,29 @@ namespace Json4CPP
     friend class Detail::JsonBuilder;
 #pragma warning(suppress: 4251)
     std::vector<std::pair<KEY, Json>> _pairs;
+#pragma warning(suppress: 4251)
+    std::unordered_map<KEY, int64_t> _indexes;
 
-    void Dump(std::wstringstream& os, int indentation, int level) const;
+    void _Dump(std::wstringstream& os, uint8_t indentation, uint64_t level) const;
   public:
     JsonObject() = default;
     JsonObject(Detail::JsonBuilder builder);
     JsonObject(std::initializer_list<Detail::JsonBuilder> builders);
     JsonObject(JsonObject const& object);
 
-    std::wstring Dump(int indentation = 0) const;
+    std::wstring Dump(uint8_t indentation = 0) const;
 
-    void AddPair(std::pair<KEY, Json> pair);
-
+    int64_t Size();
+    void Clear();
+    bool Insert(std::pair<KEY, Json> pair);
+    void Erase(KEY key);
+    std::vector<KEY> Keys() const;
     Json& operator[](KEY const& key);
+
+    std::vector<std::pair<KEY, Json>>::iterator begin();
+    std::vector<std::pair<KEY, Json>>::iterator end();
+    std::vector<std::pair<KEY, Json>>::const_iterator begin() const;
+    std::vector<std::pair<KEY, Json>>::const_iterator end() const;
 
     JSON_API friend std::wostream& operator<<(std::wostream& os, JsonObject const& object);
     JSON_API friend std::wistream& operator>>(std::wistream& is, JsonObject      & object);

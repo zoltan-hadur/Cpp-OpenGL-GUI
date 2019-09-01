@@ -11,7 +11,7 @@ using namespace Json4CPP::Detail;
 
 namespace Json4CPP
 {
-  void JsonArray::Dump(wstringstream& os, int indentation, int level) const
+  void JsonArray::_Dump(wstringstream& os, uint8_t indentation, uint64_t level) const
   {
     auto indent = wstring(indentation * level, L' ');
     auto single = wstring(indentation, L' ');
@@ -25,8 +25,8 @@ namespace Json4CPP
       os << indent << single;
       switch (value.Type())
       {
-      case JsonType::Object: value.Get<JsonObject>().Dump(os, indentation, level + 1); break;
-      case JsonType::Array : value.Get<JsonArray >().Dump(os, indentation, level + 1); break;
+      case JsonType::Object: value.Get<JsonObject>()._Dump(os, indentation, level + 1); break;
+      case JsonType::Array : value.Get<JsonArray >()._Dump(os, indentation, level + 1); break;
       default: os << value; break;
       }
       if (i < size - 1)
@@ -64,21 +64,66 @@ namespace Json4CPP
     _values = array._values;
   }
 
-  wstring JsonArray::Dump(int indentation) const
+  wstring JsonArray::Dump(uint8_t indentation) const
   {
     wstringstream buffer;
-    Dump(buffer, indentation, 0);
+    _Dump(buffer, indentation, 0);
     return buffer.str();
   }
 
-  void JsonArray::AddValue(Json value)
+  int64_t JsonArray::Size()
+  {
+    return _values.size();
+  }
+
+  void JsonArray::Resize(int64_t size)
+  {
+    _values.resize(size);
+  }
+
+  void JsonArray::Clear()
+  {
+    _values.clear();
+  }
+
+  void JsonArray::PushBack(Json value)
   {
     _values.push_back(value);
+  }
+
+  void JsonArray::Insert(Json value, int64_t index)
+  {
+    _values.insert(_values.begin() + index, value);
+  }
+  
+  void JsonArray::Erase(int64_t index)
+  {
+    _values.erase(_values.begin() + index);
   }
 
   Json& JsonArray::operator[](int const& index)
   {
     return _values[index];
+  }
+
+  std::vector<Json>::iterator JsonArray::begin()
+  {
+    return _values.begin();
+  }
+
+  std::vector<Json>::iterator JsonArray::end()
+  {
+    return _values.end();
+  }
+
+  std::vector<Json>::const_iterator JsonArray::begin() const
+  {
+    return _values.begin();
+  }
+
+  std::vector<Json>::const_iterator JsonArray::end() const
+  {
+    return _values.end();
   }
 
   wostream& operator<<(wostream& os, JsonArray const& array)

@@ -40,7 +40,7 @@ namespace Json4CPP
 #pragma warning(suppress: 4251)
     Detail::VALUE _value;
 
-    void Dump(std::wstringstream& os, int indentation, int level) const;
+    void _Dump(std::wstringstream& os, uint8_t indentation, uint64_t level) const;
   public:
     Json();
     Json(Detail::JsonBuilder value);
@@ -68,7 +68,7 @@ namespace Json4CPP
     JsonType Type() const;
     bool Is(JsonType type) const;
 
-    std::wstring Dump(int indentation = 0) const;
+    std::wstring Dump(uint8_t indentation = 0) const;
 
     static Json Read(std::filesystem::path filePath);
     void Write(std::filesystem::path filePath) const;
@@ -93,8 +93,15 @@ namespace Json4CPP
       return os.str();
     }
 
-    void AddPair(std::pair<KEY, Json> pair);
-    void AddValue(Json value);
+    int64_t Size();
+    void Resize(int64_t size);
+    void Clear();
+    bool Insert(std::pair<KEY, Json> pair);
+    void PushBack(Json value);
+    void Erase(KEY key);
+    void Erase(int64_t index);
+    Json& operator[](KEY const& key);
+    Json& operator[](int const& index);
 
     explicit operator std::nullptr_t () const;
     explicit operator std::wstring   () const;
@@ -112,10 +119,6 @@ namespace Json4CPP
     explicit operator double         () const;
     explicit operator JsonObject     () const;
     explicit operator JsonArray      () const;
-
-    Json& operator[](KEY const&     key  );
-    Json& operator[](const wchar_t* key  );
-    Json& operator[](int const&     index);
 
     Json& operator= (std::nullptr_t      value);
     Json& operator= (const wchar_t*      value);

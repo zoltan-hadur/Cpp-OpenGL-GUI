@@ -22,12 +22,12 @@ namespace Json4CPP
     return Value::ParseJson(wstring(value));
   }
 
-  void Json::Dump(wstringstream& os, int indentation, int level) const
+  void Json::_Dump(wstringstream& os, uint8_t indentation, uint64_t level) const
   {
     switch (Value::GetType(_value))
     {
-    case JsonType::Object: get<JsonObject>(_value).Dump(os, indentation, level); break;
-    case JsonType::Array : get<JsonArray >(_value).Dump(os, indentation, level); break;
+    case JsonType::Object: get<JsonObject>(_value)._Dump(os, indentation, level); break;
+    case JsonType::Array : get<JsonArray >(_value)._Dump(os, indentation, level); break;
     default: Value::Write(os, _value); break;
     }
   }
@@ -95,10 +95,10 @@ namespace Json4CPP
     return Type() == type;
   }
 
-  wstring Json::Dump(int indentation) const
+  wstring Json::Dump(uint8_t indentation) const
   {
     wstringstream buffer;
-    Dump(buffer, indentation, 0);
+    _Dump(buffer, indentation, 0);
     return buffer.str();
   }
 
@@ -112,29 +112,92 @@ namespace Json4CPP
     wfstream(filePath, wfstream::out) << *this;
   }
 
-  void Json::AddPair(std::pair<KEY, Json> pair)
+  int64_t Json::Size()
+  {
+    switch (Type())
+    {
+    case JsonType::Object: return get<JsonObject>(_value).Size();
+    case JsonType::Array : return get<JsonArray >(_value).Size();
+    default: throw exception("Size() is only defined for JsonObject and JsonArray!");
+    }
+  }
+
+  void Json::Resize(int64_t size)
+  {
+    switch (Type())
+    {
+    case JsonType::Array: get<JsonArray>(_value).Resize(size); break;
+    default: throw exception("Resize(int64_t size) is only defined for JsonArray!");
+    }
+  }
+
+  void Json::Clear()
+  {
+    switch (Type())
+    {
+    case JsonType::Object: get<JsonObject>(_value).Clear(); break;
+    case JsonType::Array : get<JsonArray >(_value).Clear(); break;
+    default: throw exception("Clear() is only defined for JsonObject and JsonArray!");
+    }
+  }
+
+  bool Json::Insert(std::pair<KEY, Json> pair)
+  {
+    switch (Type())
+    {
+    case JsonType::Null  : _value = JsonObject();
+    case JsonType::Object: return get<JsonObject>(_value).Insert(pair);
+    default: throw exception("Insert(pair<KEY, Json> pair) is only defined for JsonObject!");
+    }
+  }
+
+  void Json::PushBack(Json value)
+  {
+    switch (Type())
+    {
+    case JsonType::Null : _value = JsonArray();
+    case JsonType::Array: get<JsonArray>(_value).PushBack(value); break;
+    default: throw exception("PushBack(Json value) is only defined for JsonArray!");
+    }
+  }
+
+  void Json::Erase(KEY key)
+  {
+    switch (Type())
+    {
+    case JsonType::Object: get<JsonObject>(_value).Erase(key); break;
+    default: throw exception("Erase(KEY key) is only defined for JsonObject!");
+    }
+  }
+
+  void Json::Erase(int64_t index)
+  {
+    switch (Type())
+    {
+    case JsonType::Array: get<JsonArray>(_value).Erase(index); break;
+    default: throw exception("Erase(int64_t index) is only defined for JsonArray!");
+    }
+  }
+
+  Json& Json::operator[](KEY const& key)
   {
     switch (Type())
     {
     case JsonType::Null:
       _value = JsonObject();
     case JsonType::Object:
-      return get<JsonObject>(_value).AddPair(pair);
+      return get<JsonObject>(_value)[key];
     default:
-      throw exception("Add(pair<KEY, Json>) is only defined for JsonObject!");
+      throw exception("Operator[KEY] is only defined for JsonObject!");
     }
   }
 
-  void Json::AddValue(Json value)
+  Json& Json::operator[](int const& index)
   {
     switch (Type())
     {
-    case JsonType::Null:
-      _value = JsonArray();
-    case JsonType::Array:
-      return get<JsonArray>(_value).AddValue(value);
-    default:
-      throw exception("Add(Json) is only defined for JsonArray!");
+    case JsonType::Array: return get<JsonArray>(_value)[index];
+    default: throw exception("Operator[int] is only defined for JsonArray!");
     }
   }
 
@@ -243,33 +306,6 @@ namespace Json4CPP
   }
 #pragma warning(pop)
 #pragma endregion
-
-  Json& Json::operator[](KEY const& key)
-  {
-    switch (Type())
-    {
-    case JsonType::Null:
-      _value = JsonObject();
-    case JsonType::Object:
-      return get<JsonObject>(_value)[key];
-    default:
-      throw exception("Operator[KEY] is only defined for JsonObject!");
-    }
-  }
-
-  Json& Json::operator[](const wchar_t* key)
-  {
-    return (*this)[wstring(key)];
-  }
-
-  Json& Json::operator[](int const& index)
-  {
-    switch (Type())
-    {
-    case JsonType::Array: return get<JsonArray>(_value)[index];
-    default: throw exception("Operator[int] is only defined for JsonArray!");
-    }
-  }
 
   Json& Json::operator=(std::nullptr_t                      value) { _value = value;               return *this; }
   Json& Json::operator=(const wchar_t*                      value) { _value = std::wstring(value); return *this; }

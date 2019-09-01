@@ -21,6 +21,8 @@
 #include <string>
 #include <variant>
 #include <vector>
+#include <unordered_map>
 #include <utility>
 #include <algorithm>
+#include <iterator>
 #include <filesystem>

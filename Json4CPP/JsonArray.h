@@ -30,18 +30,27 @@ namespace Json4CPP
 #pragma warning(suppress: 4251)
     std::vector<Json> _values;
 
-    void Dump(std::wstringstream& os, int indentation, int level) const;
+    void _Dump(std::wstringstream& os, uint8_t indentation, uint64_t level) const;
   public:
     JsonArray() = default;
     JsonArray(Detail::JsonBuilder builder);
     JsonArray(std::initializer_list<Detail::JsonBuilder> builders);
     JsonArray(JsonArray const& array);
 
-    std::wstring Dump(int indentation = 0) const;
+    std::wstring Dump(uint8_t indentation = 0) const;
 
-    void AddValue(Json value);
-
+    int64_t Size();
+    void Resize(int64_t size);
+    void Clear();
+    void PushBack(Json value);
+    void Insert(Json value, int64_t index);
+    void Erase(int64_t index);
     Json& operator[](int const& index);
+
+    std::vector<Json>::iterator begin();
+    std::vector<Json>::iterator end();
+    std::vector<Json>::const_iterator begin() const;
+    std::vector<Json>::const_iterator end() const;
 
     JSON_API friend std::wostream& operator<<(std::wostream& os, JsonArray const& array);
     JSON_API friend std::wistream& operator>>(std::wistream& is, JsonArray      & array);

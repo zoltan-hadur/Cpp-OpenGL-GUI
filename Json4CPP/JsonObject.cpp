@@ -11,7 +11,7 @@ using namespace Json4CPP::Detail;
 
 namespace Json4CPP
 {
-  void JsonObject::Dump(wstringstream& os, int indentation, int level) const
+  void JsonObject::_Dump(wstringstream& os, uint8_t indentation, uint64_t level) const
   {
     auto indent = wstring(indentation * level, L' ');
     auto single = wstring(indentation, L' ');
@@ -27,8 +27,8 @@ namespace Json4CPP
       os << L"\"" << key << L"\":" << space;
       switch (value.Type())
       {
-      case JsonType::Object: value.Get<JsonObject>().Dump(os, indentation, level + 1); break;
-      case JsonType::Array : value.Get<JsonArray >().Dump(os, indentation, level + 1); break;
+      case JsonType::Object: value.Get<JsonObject>()._Dump(os, indentation, level + 1); break;
+      case JsonType::Array : value.Get<JsonArray >()._Dump(os, indentation, level + 1); break;
       default: os << value; break;
       }
       if (i < size - 1)
@@ -53,7 +53,7 @@ namespace Json4CPP
         auto pair = get<vector<JsonBuilder>>(builder._value);
         auto key = get<KEY>(pair[0]._value);
         auto value = Json(pair[1]);
-        _pairs.push_back({ key, value });
+        Insert({ key, value });
       }
     }
     else
@@ -67,28 +67,80 @@ namespace Json4CPP
   JsonObject::JsonObject(JsonObject const& object)
   {
     _pairs = object._pairs;
+    for (int i = 0; i < _pairs.size(); ++i)
+    {
+      _indexes[_pairs[i].first] = i;
+    }
   }
 
-  wstring JsonObject::Dump(int indentation) const
+  wstring JsonObject::Dump(uint8_t indentation) const
   {
     wstringstream buffer;
-    Dump(buffer, indentation, 0);
+    _Dump(buffer, indentation, 0);
     return buffer.str();
   }
 
-  void JsonObject::AddPair(std::pair<KEY, Json> pair)
+  int64_t JsonObject::Size()
   {
+    return _pairs.size();
+  }
+
+  void JsonObject::Clear()
+  {
+    _pairs.clear();
+    _indexes.clear();
+  }
+
+  bool JsonObject::Insert(pair<KEY, Json> pair)
+  {
+    if (_indexes.count(pair.first)) return false;
     _pairs.push_back(pair);
+    _indexes[pair.first] = _pairs.size() - 1;
+    return true;
+  }
+
+  void JsonObject::Erase(KEY key)
+  {
+    if (!_indexes.count(key)) return;
+    _pairs.erase(std::remove_if(_pairs.begin(), _pairs.end(), [&](std::pair<KEY, Json> const& pair) { return pair.first == key; }), _pairs.end());
+    _indexes.clear();
+    for (int i = 0; i < _pairs.size(); ++i)
+    {
+      _indexes[_pairs[i].first] = i;
+    }
+  }
+
+  std::vector<KEY> JsonObject::Keys() const
+  {
+    vector<KEY> keys;
+    transform(_pairs.begin(), _pairs.end(), back_inserter(keys), [](pair<KEY, Json> const& pair) { return pair.first; });
+    return keys;
   }
 
   Json& JsonObject::operator[](KEY const& key)
   {
-    for (auto& pair : _pairs)
-    {
-      if (pair.first == key)
-        return pair.second;
-    }
-    return _pairs.emplace_back(make_pair(key, Json{})).second;
+    if (!_indexes.count(key)) Insert({ key, Json{} });
+    return _pairs[_indexes[key]].second;
+  }
+
+  std::vector<std::pair<KEY, Json>>::iterator JsonObject::begin()
+  {
+    return _pairs.begin();
+  }
+
+  std::vector<std::pair<KEY, Json>>::iterator JsonObject::end()
+  {
+    return _pairs.end();
+  }
+
+  std::vector<std::pair<KEY, Json>>::const_iterator JsonObject::begin() const
+  {
+    return _pairs.begin();
+  }
+
+  std::vector<std::pair<KEY, Json>>::const_iterator JsonObject::end() const
+  {
+    return _pairs.end();
   }
 
   wostream& operator<<(wostream& os, JsonObject const& object)
@@ -119,7 +171,7 @@ namespace Json4CPP
         }
         auto value = Value::ParseJson(is);
         is >> ws;
-        object._pairs.push_back({ key, value });
+        object.Insert({ key, value });
         while (is.peek() == L',')
         {
           is.get();
@@ -138,7 +190,7 @@ namespace Json4CPP
           }
           auto value = Value::ParseJson(is);
           is >> ws;
-          object._pairs.push_back({ key, value });
+          object.Insert({ key, value });
         }
         if (is.peek() == L'}')
         {

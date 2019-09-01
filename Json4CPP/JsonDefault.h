@@ -10,6 +10,6 @@ namespace Json4CPP
 {
   struct JSON_API JsonDefault
   {
-    static int Indentation;
+    static uint8_t Indentation;
   };
 }
