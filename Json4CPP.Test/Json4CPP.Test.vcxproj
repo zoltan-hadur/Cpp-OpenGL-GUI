@@ -92,6 +92,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="JsonArrayTest.cpp" />
     <ClCompile Include="JsonBuilderTest.cpp" />
     <ClCompile Include="JsonBuilderTypeTest.cpp" />
     <ClCompile Include="JsonTypeTest.cpp" />
