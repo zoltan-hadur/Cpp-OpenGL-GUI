@@ -33,4 +33,14 @@ namespace Json4CPP::Detail
     }
     return os.str();
   }
+
+  wstring String2WString(string const& string)
+  {
+    return CA2W(string.c_str());
+  }
+
+  string WString2String(const wstring& string)
+  {
+    return CW2A(string.c_str());
+  }
 }

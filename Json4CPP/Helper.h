@@ -22,4 +22,8 @@ namespace Json4CPP::Detail
   Overload(Args...)->Overload<Args...>;
 
   JSON_API std::wstring EscapeString(std::wstring value);
+
+  JSON_API std::wstring String2WString(std::string const& string);
+
+  JSON_API std::string WString2String(const std::wstring& string);
 }

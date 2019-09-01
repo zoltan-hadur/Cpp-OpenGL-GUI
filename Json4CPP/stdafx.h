@@ -14,6 +14,8 @@
 
 
 // reference additional headers your program requires here
+#include <AtlBase.h>
+#include <atlconv.h>
 #include <iomanip>
 #include <iostream>
 #include <fstream>
