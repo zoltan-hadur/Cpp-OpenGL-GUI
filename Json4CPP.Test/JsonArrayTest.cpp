@@ -117,5 +117,16 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>(2, array[1]);
       Assert::AreEqual<Json>(3, array[2]);
     }
+
+    TEST_METHOD(TestConstructorJsonArray)
+    {
+      JsonArray array = { 1, 2, 3 };
+
+      auto array2 = array;
+      Assert::AreEqual(3i64, array2.Size());
+      Assert::AreEqual<Json>(1, array2[0]);
+      Assert::AreEqual<Json>(2, array2[1]);
+      Assert::AreEqual<Json>(3, array2[2]);
+    }
   };
 }
