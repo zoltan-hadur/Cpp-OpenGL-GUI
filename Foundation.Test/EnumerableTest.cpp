@@ -27,13 +27,15 @@ namespace OpenGLUI::Foundation::Test
     {
       auto leftIt = left.begin();
       auto rightIt = right.begin();
-      while (leftIt != left.end() || rightIt != right.end())
+      while (leftIt != left.end() && rightIt != right.end())
       {
         if (*leftIt != *rightIt)
           return false;
         leftIt++;
         rightIt++;
       }
+      if (leftIt != left.end() || rightIt != right.end())
+        return false;
       return true;
     }
 
@@ -42,13 +44,15 @@ namespace OpenGLUI::Foundation::Test
     {
       auto leftIt = left.begin();
       auto rightIt = right.begin();
-      while (leftIt != left.end() || rightIt != right.end())
+      while (leftIt != left.end() && rightIt != right.end())
       {
         if (!comparer(*leftIt, *rightIt))
           return false;
         leftIt++;
         rightIt++;
       }
+      if (leftIt != left.end() || rightIt != right.end())
+        return false;
       return true;
     }
   public:
@@ -1212,8 +1216,9 @@ namespace OpenGLUI::Foundation::Test
 
     TEST_METHOD(TestSequenceEqual1)
     {
-      Assert::IsTrue(From({ 1, 2, 3, 4, 5 }).SequenceEqual({ 1, 2, 3, 4, 5 }));
       Assert::IsFalse(From({ 1, 2, 3, 4, 5 }).SequenceEqual({ 1, 2, 3, 4 }));
+      Assert::IsTrue (From({ 1, 2, 3, 4, 5 }).SequenceEqual({ 1, 2, 3, 4, 5 }));
+      Assert::IsFalse(From({ 1, 2, 3, 4, 5 }).SequenceEqual({ 1, 2, 3, 4, 5, 6 }));
     }
 
     TEST_METHOD(TestSequenceEqual2)
