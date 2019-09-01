@@ -10,6 +10,10 @@ namespace Json4CPP::Test
   TEST_CLASS(JsonArrayTest)
   {
   public:
-    
+    TEST_METHOD(TestConstructorDefault)
+    {
+      auto array = JsonArray();
+      Assert::AreEqual(0i64, array.Size());
+    }
   };
 }
