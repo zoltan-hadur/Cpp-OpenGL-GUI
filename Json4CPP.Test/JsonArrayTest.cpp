@@ -302,6 +302,12 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>(1337, array[3]);
       Assert::AreEqual<Json>({ { L"key1", 1 }, { L"key2", 2 } }, array[4]);
       Assert::AreEqual<Json>({ 1, 2, 3 }, array[5]);
+
+      for (int i = 0; i < 6; ++i)
+      {
+        array[i] = 1337;
+        Assert::AreEqual<Json>(1337, array[i]);
+      }
     }
 
     TEST_METHOD(TestIterator)
