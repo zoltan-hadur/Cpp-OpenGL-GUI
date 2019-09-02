@@ -329,6 +329,23 @@ namespace Json4CPP::Test
       }
     }
 
+    TEST_METHOD(TestAt)
+    {
+      auto array = JsonArray{ nullptr, L"Test"s, true, 1337, {{ L"key1", 1 }, { L"key2", 2 }}, { 1, 2, 3 } };
+      Assert::AreEqual<Json>(nullptr, array[0]);
+      Assert::AreEqual<Json>(L"Test"s, array[1]);
+      Assert::AreEqual<Json>(true, array[2]);
+      Assert::AreEqual<Json>(1337, array[3]);
+      Assert::AreEqual<Json>({ { L"key1", 1 }, { L"key2", 2 } }, array[4]);
+      Assert::AreEqual<Json>({ 1, 2, 3 }, array[5]);
+
+      for (int i = 0; i < 6; ++i)
+      {
+        array.At(i) = 9999;
+        Assert::AreEqual<Json>(9999, array.At(i));
+      }
+    }
+
     TEST_METHOD(TestIterator)
     {
       auto array = JsonArray{ 1, 2, 3, 4, 5 };
