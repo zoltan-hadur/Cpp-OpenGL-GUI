@@ -39,7 +39,7 @@ namespace Json4CPP
 
     std::wstring Dump(uint8_t indentation = 0) const;
 
-    int64_t Size();
+    int64_t Size() const;
     void Resize(int64_t size);
     void Clear();
     void PushBack(Json value);

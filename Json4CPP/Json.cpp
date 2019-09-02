@@ -112,7 +112,7 @@ namespace Json4CPP
     wfstream(filePath, wfstream::out) << *this;
   }
 
-  int64_t Json::Size()
+  int64_t Json::Size() const
   {
     switch (Type())
     {

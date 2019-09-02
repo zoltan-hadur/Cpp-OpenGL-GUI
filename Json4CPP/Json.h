@@ -93,7 +93,7 @@ namespace Json4CPP
       return os.str();
     }
 
-    int64_t Size();
+    int64_t Size() const;
     void Resize(int64_t size);
     void Clear();
     bool Insert(std::pair<KEY, Json> pair);

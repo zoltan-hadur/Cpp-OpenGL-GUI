@@ -80,7 +80,7 @@ namespace Json4CPP
     return buffer.str();
   }
 
-  int64_t JsonObject::Size()
+  int64_t JsonObject::Size() const
   {
     return _pairs.size();
   }
