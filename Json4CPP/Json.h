@@ -100,6 +100,7 @@ namespace Json4CPP
     void PushBack(Json value);
     void Erase(KEY key);
     void Erase(int64_t index);
+    std::vector<KEY> Keys() const;
     Json& operator[](KEY const& key);
     Json& operator[](int64_t const& index);
     Json At(KEY const& key) const;

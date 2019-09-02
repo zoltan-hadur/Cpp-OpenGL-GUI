@@ -179,6 +179,15 @@ namespace Json4CPP
     }
   }
 
+  std::vector<KEY> Json::Keys() const
+  {
+    switch (Type())
+    {
+    case JsonType::Object: return get<JsonObject>(_value).Keys();
+    default: throw exception("Keys() is only defined for JsonObject!");
+    }
+  }
+
   Json& Json::operator[](KEY const& key)
   {
     switch (Type())
