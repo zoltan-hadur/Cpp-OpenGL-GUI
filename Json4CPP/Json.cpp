@@ -201,6 +201,42 @@ namespace Json4CPP
     }
   }
 
+  Json Json::At(KEY const& key) const
+  {
+    switch (Type())
+    {
+    case JsonType::Object: return get<JsonObject>(_value).At(key);
+    default: throw exception("At(KEY key) is only defined for JsonObject!");
+    }
+  }
+
+  Json& Json::At(KEY const& key)
+  {
+    switch (Type())
+    {
+    case JsonType::Object: return get<JsonObject>(_value).At(key);
+    default: throw exception("At(KEY key) is only defined for JsonObject!");
+    }
+  }
+
+  Json Json::At(int64_t const& index) const
+  {
+    switch (Type())
+    {
+    case JsonType::Array: return get<JsonArray>(_value).At(index);
+    default: throw exception("At(int index) is only defined for JsonArray!");
+    }
+  }
+
+  Json& Json::At(int64_t const& index)
+  {
+    switch (Type())
+    {
+    case JsonType::Array: return get<JsonArray>(_value).At(index);
+    default: throw exception("At(int index) is only defined for JsonArray!");
+    }
+  }
+
 #pragma region Conversion operators
 #pragma warning(push)
 #pragma warning(disable : 4244)

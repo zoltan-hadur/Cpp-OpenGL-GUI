@@ -46,6 +46,8 @@ namespace Json4CPP
     void Insert(Json value, int64_t index);
     void Erase(int64_t index);
     Json& operator[](int64_t const& index);
+    Json At(int64_t const& index) const;
+    Json& At(int64_t const& index);
 
     std::vector<Json>::iterator begin();
     std::vector<Json>::iterator end();

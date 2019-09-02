@@ -102,6 +102,10 @@ namespace Json4CPP
     void Erase(int64_t index);
     Json& operator[](KEY const& key);
     Json& operator[](int64_t const& index);
+    Json At(KEY const& key) const;
+    Json& At(KEY const& key);
+    Json At(int64_t const& index) const;
+    Json& At(int64_t const& index);
 
     explicit operator std::nullptr_t () const;
     explicit operator std::wstring   () const;

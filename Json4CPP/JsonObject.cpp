@@ -120,7 +120,17 @@ namespace Json4CPP
   Json& JsonObject::operator[](KEY const& key)
   {
     if (!_indexes.count(key)) Insert({ key, Json{} });
-    return _pairs[_indexes[key]].second;
+    return _pairs[_indexes.at(key)].second;
+  }
+
+  Json JsonObject::At(KEY const& key) const
+  {
+    return _pairs[_indexes.at(key)].second;
+  }
+
+  Json& JsonObject::At(KEY const& key)
+  {
+    return _pairs[_indexes.at(key)].second;
   }
 
   std::vector<std::pair<KEY, Json>>::iterator JsonObject::begin()

@@ -51,6 +51,8 @@ namespace Json4CPP
     void Erase(KEY key);
     std::vector<KEY> Keys() const;
     Json& operator[](KEY const& key);
+    Json At(KEY const& key) const;
+    Json& At(KEY const& key);
 
     std::vector<std::pair<KEY, Json>>::iterator begin();
     std::vector<std::pair<KEY, Json>>::iterator end();

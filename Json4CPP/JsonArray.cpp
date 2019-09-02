@@ -107,6 +107,16 @@ namespace Json4CPP
     return _values[index];
   }
 
+  Json JsonArray::At(int64_t const& index) const
+  {
+    return _values[index];
+  }
+
+  Json& JsonArray::At(int64_t const& index)
+  {
+    return _values[index];
+  }
+
   std::vector<Json>::iterator JsonArray::begin()
   {
     return _values.begin();
