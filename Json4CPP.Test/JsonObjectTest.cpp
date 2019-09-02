@@ -10,6 +10,10 @@ namespace Json4CPP::Test
   TEST_CLASS(JsonObjectTest)
   {
   public:
-    
+    TEST_METHOD(TestConstructorDefault)
+    {
+      auto object = JsonObject();
+      Assert::AreEqual(0i64, object.Size());
+    }
   };
 }
