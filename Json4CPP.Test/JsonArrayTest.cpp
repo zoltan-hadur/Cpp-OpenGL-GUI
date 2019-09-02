@@ -128,5 +128,85 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>(2, array2[1]);
       Assert::AreEqual<Json>(3, array2[2]);
     }
+
+    TEST_METHOD(TestDump)
+    {
+      wstring asd =
+        L"fos"
+        L"szar"
+        L"ads";
+      JsonArray array = { nullptr, L"Test"s, true, 1337, {{ L"key1", 1 }, { L"key2", 2 }}, { 1, 2, 3 } };
+
+      Assert::AreEqual(L"[null,\"Test\",true,1337,{\"key1\":1,\"key2\":2},[1,2,3]]"s, array.Dump());
+      Assert::AreEqual(L"[null,\"Test\",true,1337,{\"key1\":1,\"key2\":2},[1,2,3]]"s, array.Dump(0));
+
+      Assert::AreEqual(
+        L"["                      "\r\n"
+         " null,"                 "\r\n"
+         " \"Test\","             "\r\n"
+         " true,"                 "\r\n"
+         " 1337,"                 "\r\n"
+         " {"                     "\r\n"
+         "  \"key1\": 1,"         "\r\n"
+         "  \"key2\": 2"          "\r\n"
+         " },"                    "\r\n"
+         " ["                     "\r\n"
+         "  1,"                   "\r\n"
+         "  2,"                   "\r\n"
+         "  3"                    "\r\n"
+         " ]"                     "\r\n"
+         "]"s, array.Dump(1));
+
+      Assert::AreEqual(
+        L"["                      "\r\n"
+         "  null,"                "\r\n"
+         "  \"Test\","            "\r\n"
+         "  true,"                "\r\n"
+         "  1337,"                "\r\n"
+         "  {"                    "\r\n"
+         "    \"key1\": 1,"       "\r\n"
+         "    \"key2\": 2"        "\r\n"
+         "  },"                   "\r\n"
+         "  ["                    "\r\n"
+         "    1,"                 "\r\n"
+         "    2,"                 "\r\n"
+         "    3"                  "\r\n"
+         "  ]"                    "\r\n"
+         "]"s, array.Dump(2));
+
+      Assert::AreEqual(
+        L"["                      "\r\n"
+         "   null,"               "\r\n"
+         "   \"Test\","           "\r\n"
+         "   true,"               "\r\n"
+         "   1337,"               "\r\n"
+         "   {"                   "\r\n"
+         "      \"key1\": 1,"     "\r\n"
+         "      \"key2\": 2"      "\r\n"
+         "   },"                  "\r\n"
+         "   ["                   "\r\n"
+         "      1,"               "\r\n"
+         "      2,"               "\r\n"
+         "      3"                "\r\n"
+         "   ]"                   "\r\n"
+         "]"s, array.Dump(3));
+
+      Assert::AreEqual(
+        L"["                      "\r\n"
+         "    null,"              "\r\n"
+         "    \"Test\","          "\r\n"
+         "    true,"              "\r\n"
+         "    1337,"              "\r\n"
+         "    {"                  "\r\n"
+         "        \"key1\": 1,"   "\r\n"
+         "        \"key2\": 2"    "\r\n"
+         "    },"                 "\r\n"
+         "    ["                  "\r\n"
+         "        1,"             "\r\n"
+         "        2,"             "\r\n"
+         "        3"              "\r\n"
+         "    ]"                  "\r\n"
+         "]"s, array.Dump(4));
+    }
   };
 }
