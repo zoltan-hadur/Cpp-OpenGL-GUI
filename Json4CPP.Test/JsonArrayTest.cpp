@@ -57,6 +57,11 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>(L"1337", array[1]);
       Assert::AreEqual<Json>(true, array[2]);
       Assert::ExpectException<exception>([&]() { array = JsonBuilder(Json()); });
+      array = JsonBuilder(Json(JsonArray({ 1337, L"1337", true })));
+      Assert::AreEqual(3i64, array.Size());
+      Assert::AreEqual<Json>(1337, array[0]);
+      Assert::AreEqual<Json>(L"1337", array[1]);
+      Assert::AreEqual<Json>(true, array[2]);
 
       // JsonBuilder from initializer_list
       Assert::ExpectException<exception>([&]() { array = JsonBuilder({ 1 }); });  // Deduced to JsonBuilder instead of initializer_list<JsonBuilder>
