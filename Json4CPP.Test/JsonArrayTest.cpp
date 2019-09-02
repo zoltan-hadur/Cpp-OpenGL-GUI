@@ -315,6 +315,16 @@ namespace Json4CPP::Test
       {
         Assert::AreEqual<Json>(1337, array[i]);
       }
+
+      array = JsonArray{ 1, 2, 3, 4, 5 };
+      for (auto value : array)
+      {
+        value = 1337;
+      }
+      for (int i = 0; i < array.Size(); ++i)
+      {
+        Assert::AreEqual<Json>(i + 1, array[i]);
+      }
     }
   };
 }
