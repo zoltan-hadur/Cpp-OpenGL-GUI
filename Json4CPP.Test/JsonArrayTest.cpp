@@ -121,6 +121,33 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>(1, array[0]);
       Assert::AreEqual<Json>(2, array[1]);
       Assert::AreEqual<Json>(3, array[2]);
+      array = {
+        nullptr,
+        L"Test",
+        true,
+        1337,
+        {
+          { L"Key1", 1 },
+          { L"Key2", 2 }
+        },
+        { 1, 2, 3 }
+      };
+      Assert::AreEqual(6i64, array.Size());
+      Assert::AreEqual<Json>(nullptr, array[0]);
+      Assert::AreEqual<Json>(L"Test", array[1]);
+      Assert::AreEqual<Json>(true, array[2]);
+      Assert::AreEqual<Json>(1337, array[3]);
+      Assert::AreEqual<Json>({{ L"Key1", 1 }, { L"Key2", 2 }}, array[4]);
+      Assert::AreEqual<Json>({ 1, 2, 3 }, array[5]);
+      Assert::AreEqual(2i64, array[4].Size());
+      Assert::AreEqual(L"Key1"s, array[4].Keys()[0]);
+      Assert::AreEqual(L"Key2"s, array[4].Keys()[1]);
+      Assert::AreEqual<Json>(1, array[4][L"Key1"]);
+      Assert::AreEqual<Json>(2, array[4][L"Key2"]);
+      Assert::AreEqual(3i64, array[5].Size());
+      Assert::AreEqual<Json>(1, array[5][0]);
+      Assert::AreEqual<Json>(2, array[5][1]);
+      Assert::AreEqual<Json>(3, array[5][2]);
     }
 
     TEST_METHOD(TestConstructorJsonArray)
