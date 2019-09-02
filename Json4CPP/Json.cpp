@@ -192,7 +192,7 @@ namespace Json4CPP
     }
   }
 
-  Json& Json::operator[](int const& index)
+  Json& Json::operator[](int64_t const& index)
   {
     switch (Type())
     {

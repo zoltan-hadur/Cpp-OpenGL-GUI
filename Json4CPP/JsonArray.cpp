@@ -102,7 +102,7 @@ namespace Json4CPP
     _values.erase(_values.begin() + index);
   }
 
-  Json& JsonArray::operator[](int const& index)
+  Json& JsonArray::operator[](int64_t const& index)
   {
     return _values[index];
   }
