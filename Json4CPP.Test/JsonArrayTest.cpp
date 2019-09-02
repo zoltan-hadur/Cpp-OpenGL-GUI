@@ -220,5 +220,17 @@ namespace Json4CPP::Test
       Assert::AreEqual(5i64, JsonArray{ nullptr, L"Test"s, true, 1337, {{ L"key1", 1 }, { L"key2", 2 }} }.Size());
       Assert::AreEqual(6i64, JsonArray{ nullptr, L"Test"s, true, 1337, {{ L"key1", 1 }, { L"key2", 2 }}, { 1, 2, 3 } }.Size());
     }
+
+    TEST_METHOD(TestResize)
+    {
+      auto array = JsonArray();
+      Assert::AreEqual(0i64, array.Size());
+      array.Resize(1337);
+      Assert::AreEqual(1337i64, array.Size());
+      for (int i = 0; i < 1337; ++i)
+      {
+        Assert::AreEqual<Json>(nullptr, array[i]);
+      }
+    }
   };
 }
