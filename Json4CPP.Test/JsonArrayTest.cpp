@@ -131,10 +131,6 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestDump)
     {
-      wstring asd =
-        L"fos"
-        L"szar"
-        L"ads";
       JsonArray array = { nullptr, L"Test"s, true, 1337, {{ L"key1", 1 }, { L"key2", 2 }}, { 1, 2, 3 } };
 
       Assert::AreEqual(L"[null,\"Test\",true,1337,{\"key1\":1,\"key2\":2},[1,2,3]]"s, array.Dump());
