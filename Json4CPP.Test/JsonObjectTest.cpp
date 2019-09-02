@@ -92,5 +92,53 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>(1, object[L"Key1"]);
       Assert::AreEqual<Json>(2, object[L"Key2"]);
     }
+
+    TEST_METHOD(TestConstructorInitializerList)
+    {
+      JsonObject object;
+
+      object = { { L"Key1", 1 } };
+      Assert::AreEqual(1i64, object.Size());
+      Assert::AreEqual(L"Key1"s, object.Keys()[0]);
+      Assert::AreEqual<Json>(1, object[L"Key1"]);
+      object = { { L"Key1", 1 }, { L"Key2", 2 } };
+      Assert::AreEqual(2i64, object.Size());
+      Assert::AreEqual(L"Key1"s, object.Keys()[0]);
+      Assert::AreEqual(L"Key2"s, object.Keys()[1]);
+      Assert::AreEqual<Json>(1, object[L"Key1"]);
+      Assert::AreEqual<Json>(2, object[L"Key2"]);
+      object = {
+        { L"Null", nullptr },
+        { L"String", L"Test" },
+        { L"Boolean", true },
+        { L"Number", 1337 },
+        { L"Object", {
+          { L"Key1", 1 },
+          { L"Key2", 2 } }
+        },
+        { L"Array", { 1, 2, 3 } },
+      };
+      Assert::AreEqual(6i64, object.Size());
+      Assert::AreEqual(L"Null"s, object.Keys()[0]);
+      Assert::AreEqual(L"String"s, object.Keys()[1]);
+      Assert::AreEqual(L"Boolean"s, object.Keys()[2]);
+      Assert::AreEqual(L"Number"s, object.Keys()[3]);
+      Assert::AreEqual(L"Object"s, object.Keys()[4]);
+      Assert::AreEqual(L"Array"s, object.Keys()[5]);
+      Assert::AreEqual<Json>(nullptr, object[L"Null"]);
+      Assert::AreEqual<Json>(L"Test", object[L"String"]);
+      Assert::AreEqual<Json>(true, object[L"Boolean"]);
+      Assert::AreEqual<Json>(1337, object[L"Number"]);
+      Assert::AreEqual<Json>({ { L"Key1", 1 }, { L"Key2", 2 } }, object[L"Object"]);
+      Assert::AreEqual<Json>({ 1, 2, 3 }, object[L"Array"]);
+      Assert::AreEqual(L"Key1"s, object[L"Object"].Keys()[0]);
+      Assert::AreEqual(L"Key2"s, object[L"Object"].Keys()[1]);
+      Assert::AreEqual<Json>(1, object[L"Object"][L"Key1"]);
+      Assert::AreEqual<Json>(2, object[L"Object"][L"Key2"]);
+      Assert::AreEqual(3i64, object[L"Array"].Size());
+      Assert::AreEqual<Json>(1, object[L"Array"][0]);
+      Assert::AreEqual<Json>(2, object[L"Array"][1]);
+      Assert::AreEqual<Json>(3, object[L"Array"][2]);
+    }
   };
 }
