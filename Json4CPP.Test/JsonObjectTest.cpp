@@ -152,5 +152,91 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>(1, object2[L"Key1"]);
       Assert::AreEqual<Json>(2, object2[L"Key2"]);
     }
+
+    TEST_METHOD(TestDump)
+    {
+      JsonObject object = {
+        { L"Null", nullptr },
+        { L"String", L"Test" },
+        { L"Boolean", true },
+        { L"Number", 1337 },
+        { L"Object", {
+          { L"Key1", 1 },
+          { L"Key2", 2 } }
+        },
+        { L"Array", { 1, 2, 3 } },
+      };
+
+      Assert::AreEqual(L"{\"Null\":null,\"String\":\"Test\",\"Boolean\":true,\"Number\":1337,\"Object\":{\"Key1\":1,\"Key2\":2},\"Array\":[1,2,3]}"s, object.Dump());
+      Assert::AreEqual(L"{\"Null\":null,\"String\":\"Test\",\"Boolean\":true,\"Number\":1337,\"Object\":{\"Key1\":1,\"Key2\":2},\"Array\":[1,2,3]}"s, object.Dump(0));
+
+      Assert::AreEqual(
+        L"{"                            "\r\n"
+         " \"Null\": null,"             "\r\n"
+         " \"String\": \"Test\","       "\r\n"
+         " \"Boolean\": true,"          "\r\n"
+         " \"Number\": 1337,"           "\r\n"
+         " \"Object\": {"               "\r\n"
+         "  \"Key1\": 1,"               "\r\n"
+         "  \"Key2\": 2"                "\r\n"
+         " },"                          "\r\n"
+         " \"Array\": ["                "\r\n"
+         "  1,"                         "\r\n"
+         "  2,"                         "\r\n"
+         "  3"                          "\r\n"
+         " ]"                           "\r\n"
+         "}"s, object.Dump(1));
+
+      Assert::AreEqual(
+        L"{"                            "\r\n"
+         "  \"Null\": null,"            "\r\n"
+         "  \"String\": \"Test\","      "\r\n"
+         "  \"Boolean\": true,"         "\r\n"
+         "  \"Number\": 1337,"          "\r\n"
+         "  \"Object\": {"              "\r\n"
+         "    \"Key1\": 1,"             "\r\n"
+         "    \"Key2\": 2"              "\r\n"
+         "  },"                         "\r\n"
+         "  \"Array\": ["               "\r\n"
+         "    1,"                       "\r\n"
+         "    2,"                       "\r\n"
+         "    3"                        "\r\n"
+         "  ]"                          "\r\n"
+         "}"s, object.Dump(2));
+
+      Assert::AreEqual(
+        L"{"                            "\r\n"
+         "   \"Null\": null,"           "\r\n"
+         "   \"String\": \"Test\","     "\r\n"
+         "   \"Boolean\": true,"        "\r\n"
+         "   \"Number\": 1337,"         "\r\n"
+         "   \"Object\": {"             "\r\n"
+         "      \"Key1\": 1,"           "\r\n"
+         "      \"Key2\": 2"            "\r\n"
+         "   },"                        "\r\n"
+         "   \"Array\": ["              "\r\n"
+         "      1,"                     "\r\n"
+         "      2,"                     "\r\n"
+         "      3"                      "\r\n"
+         "   ]"                         "\r\n"
+         "}"s, object.Dump(3));
+
+      Assert::AreEqual(
+        L"{"                            "\r\n"
+         "    \"Null\": null,"          "\r\n"
+         "    \"String\": \"Test\","    "\r\n"
+         "    \"Boolean\": true,"       "\r\n"
+         "    \"Number\": 1337,"        "\r\n"
+         "    \"Object\": {"            "\r\n"
+         "        \"Key1\": 1,"         "\r\n"
+         "        \"Key2\": 2"          "\r\n"
+         "    },"                       "\r\n"
+         "    \"Array\": ["             "\r\n"
+         "        1,"                   "\r\n"
+         "        2,"                   "\r\n"
+         "        3"                    "\r\n"
+         "    ]"                        "\r\n"
+         "}"s, object.Dump(4));
+    }
   };
 }
