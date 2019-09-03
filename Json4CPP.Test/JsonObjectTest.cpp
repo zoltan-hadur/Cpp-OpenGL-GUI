@@ -250,5 +250,12 @@ namespace Json4CPP::Test
       Assert::AreEqual(5i64, JsonObject{ { L"Null", nullptr }, { L"String", L"Test" }, { L"Boolean", true }, { L"Number", 1337 }, { L"Object", {{ L"Key1", 1 }, { L"Key2", 2 } } } }.Size());
       Assert::AreEqual(6i64, JsonObject{ { L"Null", nullptr }, { L"String", L"Test" }, { L"Boolean", true }, { L"Number", 1337 }, { L"Object", {{ L"Key1", 1 }, { L"Key2", 2 } } }, { L"Array", { 1, 2, 3 } } }.Size());
     }
+
+    TEST_METHOD(TestClear)
+    {
+      auto object = JsonObject{ { L"Key1", 1 }, { L"Key2", 2 } };
+      object.Clear();
+      Assert::AreEqual(0i64, object.Size());
+    }
   };
 }
