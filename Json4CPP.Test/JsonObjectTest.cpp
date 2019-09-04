@@ -731,5 +731,152 @@ namespace Json4CPP::Test
       Assert::IsTrue (JsonObject{ { L"Key", JsonArray{ 1, 2 } } } == JsonObject{ { L"Key", JsonArray{ 1, 2 } } });
       Assert::IsFalse(JsonObject{ { L"Key", JsonArray{ 1, 2 } } } == JsonObject{ { L"Key", JsonArray{ 1, 2, 3 } } });
     }
+
+    TEST_METHOD(TestOperatorNotEqual)
+    {
+      JsonObject null = { { L"Key", nullptr } };
+      JsonObject string1 = { { L"Key", L"TestString0"s } };
+      JsonObject string2 = { { L"Key", L"TestString1"s } };
+      JsonObject boolean1 = { { L"Key", false } };
+      JsonObject boolean2 = { { L"Key", true } };
+      JsonObject number1 = { { L"Key", 0.0 } };
+      JsonObject number2 = { { L"Key", 1.0 } };
+      JsonObject object1 = { { L"Key", JsonObject{
+        { L"key1", 1337 },
+        { L"key2", 1338 }
+      } } };
+      JsonObject object2 = { { L"Key", JsonObject{
+        { L"key3", 1339 },
+        { L"key4", 1340 }
+      } } };
+      JsonObject array1 = { { L"Key", JsonArray{ 1, 2, 3 } } };
+      JsonObject array2 = { { L"Key", JsonArray{ 4, 5, 6 } } };
+
+      Assert::IsFalse(array1   != array1  );
+      Assert::IsTrue (array1   != array2  );
+      Assert::IsTrue (array1   != boolean1);
+      Assert::IsTrue (array1   != boolean2);
+      Assert::IsTrue (array1   != null    );
+      Assert::IsTrue (array1   != number1 );
+      Assert::IsTrue (array1   != number2 );
+      Assert::IsTrue (array1   != object1 );
+      Assert::IsTrue (array1   != object2 );
+      Assert::IsTrue (array1   != string1 );
+      Assert::IsTrue (array1   != string2 );
+      Assert::IsTrue (array2   != array1  );
+      Assert::IsFalse(array2   != array2  );
+      Assert::IsTrue (array2   != boolean1);
+      Assert::IsTrue (array2   != boolean2);
+      Assert::IsTrue (array2   != null    );
+      Assert::IsTrue (array2   != number1 );
+      Assert::IsTrue (array2   != number2 );
+      Assert::IsTrue (array2   != object1 );
+      Assert::IsTrue (array2   != object2 );
+      Assert::IsTrue (array2   != string1 );
+      Assert::IsTrue (array2   != string2 );
+      Assert::IsTrue (boolean1 != array1  );
+      Assert::IsTrue (boolean1 != array2  );
+      Assert::IsFalse(boolean1 != boolean1);
+      Assert::IsTrue (boolean1 != boolean2);
+      Assert::IsTrue (boolean1 != null    );
+      Assert::IsFalse(boolean1 != number1 );
+      Assert::IsTrue (boolean1 != number2 );
+      Assert::IsTrue (boolean1 != object1 );
+      Assert::IsTrue (boolean1 != object2 );
+      Assert::IsTrue (boolean1 != string1 );
+      Assert::IsTrue (boolean1 != string2 );
+      Assert::IsTrue (boolean2 != array1  );
+      Assert::IsTrue (boolean2 != array2  );
+      Assert::IsTrue (boolean2 != boolean1);
+      Assert::IsFalse(boolean2 != boolean2);
+      Assert::IsTrue (boolean2 != null    );
+      Assert::IsTrue (boolean2 != number1 );
+      Assert::IsFalse(boolean2 != number2 );
+      Assert::IsTrue (boolean2 != object1 );
+      Assert::IsTrue (boolean2 != object2 );
+      Assert::IsTrue (boolean2 != string1 );
+      Assert::IsTrue (boolean2 != string2 );
+      Assert::IsTrue (null     != array1  );
+      Assert::IsTrue (null     != array2  );
+      Assert::IsTrue (null     != boolean1);
+      Assert::IsTrue (null     != boolean2);
+      Assert::IsFalse(null     != null    );
+      Assert::IsTrue (null     != number1 );
+      Assert::IsTrue (null     != number2 );
+      Assert::IsTrue (null     != object1 );
+      Assert::IsTrue (null     != object2 );
+      Assert::IsTrue (null     != string1 );
+      Assert::IsTrue (null     != string2 );
+      Assert::IsTrue (number1  != array1  );
+      Assert::IsTrue (number1  != array2  );
+      Assert::IsFalse(number1  != boolean1);
+      Assert::IsTrue (number1  != boolean2);
+      Assert::IsTrue (number1  != null    );
+      Assert::IsFalse(number1  != number1 );
+      Assert::IsTrue (number1  != number2 );
+      Assert::IsTrue (number1  != object1 );
+      Assert::IsTrue (number1  != object2 );
+      Assert::IsTrue (number1  != string1 );
+      Assert::IsTrue (number1  != string2 );
+      Assert::IsTrue (number2  != array1  );
+      Assert::IsTrue (number2  != array2  );
+      Assert::IsTrue (number2  != boolean1);
+      Assert::IsFalse(number2  != boolean2);
+      Assert::IsTrue (number2  != null    );
+      Assert::IsTrue (number2  != number1 );
+      Assert::IsFalse(number2  != number2 );
+      Assert::IsTrue (number2  != object1 );
+      Assert::IsTrue (number2  != object2 );
+      Assert::IsTrue (number2  != string1 );
+      Assert::IsTrue (number2  != string2 );
+      Assert::IsTrue (object1  != array1  );
+      Assert::IsTrue (object1  != array2  );
+      Assert::IsTrue (object1  != boolean1);
+      Assert::IsTrue (object1  != boolean2);
+      Assert::IsTrue (object1  != null    );
+      Assert::IsTrue (object1  != number1 );
+      Assert::IsTrue (object1  != number2 );
+      Assert::IsFalse(object1  != object1 );
+      Assert::IsTrue (object1  != object2 );
+      Assert::IsTrue (object1  != string1 );
+      Assert::IsTrue (object1  != string2 );
+      Assert::IsTrue (object2  != array1  );
+      Assert::IsTrue (object2  != array2  );
+      Assert::IsTrue (object2  != boolean1);
+      Assert::IsTrue (object2  != boolean2);
+      Assert::IsTrue (object2  != null    );
+      Assert::IsTrue (object2  != number1 );
+      Assert::IsTrue (object2  != number2 );
+      Assert::IsTrue (object2  != object1 );
+      Assert::IsFalse(object2  != object2 );
+      Assert::IsTrue (object2  != string1 );
+      Assert::IsTrue (object2  != string2 );
+      Assert::IsTrue (string1  != array1  );
+      Assert::IsTrue (string1  != array2  );
+      Assert::IsTrue (string1  != boolean1);
+      Assert::IsTrue (string1  != boolean2);
+      Assert::IsTrue (string1  != null    );
+      Assert::IsTrue (string1  != number1 );
+      Assert::IsTrue (string1  != number2 );
+      Assert::IsTrue (string1  != object1 );
+      Assert::IsTrue (string1  != object2 );
+      Assert::IsFalse(string1  != string1 );
+      Assert::IsTrue (string1  != string2 );
+      Assert::IsTrue (string2  != array1  );
+      Assert::IsTrue (string2  != array2  );
+      Assert::IsTrue (string2  != boolean1);
+      Assert::IsTrue (string2  != boolean2);
+      Assert::IsTrue (string2  != null    );
+      Assert::IsTrue (string2  != number1 );
+      Assert::IsTrue (string2  != number2 );
+      Assert::IsTrue (string2  != object1 );
+      Assert::IsTrue (string2  != object2 );
+      Assert::IsTrue (string2  != string1 );
+      Assert::IsFalse(string2  != string2 );
+
+      Assert::IsTrue (JsonObject{ { L"Key", JsonArray{ 1, 2 } } } != JsonObject{ { L"Key", JsonArray{ 1 } } });
+      Assert::IsFalse(JsonObject{ { L"Key", JsonArray{ 1, 2 } } } != JsonObject{ { L"Key", JsonArray{ 1, 2 } } });
+      Assert::IsTrue (JsonObject{ { L"Key", JsonArray{ 1, 2 } } } != JsonObject{ { L"Key", JsonArray{ 1, 2, 3 } } });
+    }
   };
 }
