@@ -511,5 +511,39 @@ namespace Json4CPP::Test
         Assert::AreEqual<Json>(map2.at(key), object2.At(key));
       }
     }
+
+    TEST_METHOD(TestOperatorInsertion)
+    {
+      JsonDefault::Indentation = 2;
+      JsonObject object = {
+        { L"Null", nullptr },
+        { L"String", L"Test" },
+        { L"Boolean", true },
+        { L"Number", 1337 },
+        { L"Object", {
+          { L"Key1", 1 },
+          { L"Key2", 2 } }
+        },
+        { L"Array", { 1, 2, 3 } },
+      };
+      wstringstream is;
+      is << object;
+      Assert::AreEqual(
+        L"{"                            "\r\n"
+         "  \"Null\": null,"            "\r\n"
+         "  \"String\": \"Test\","      "\r\n"
+         "  \"Boolean\": true,"         "\r\n"
+         "  \"Number\": 1337,"          "\r\n"
+         "  \"Object\": {"              "\r\n"
+         "    \"Key1\": 1,"             "\r\n"
+         "    \"Key2\": 2"              "\r\n"
+         "  },"                         "\r\n"
+         "  \"Array\": ["               "\r\n"
+         "    1,"                       "\r\n"
+         "    2,"                       "\r\n"
+         "    3"                        "\r\n"
+         "  ]"                          "\r\n"
+         "}"s, is.str());
+    }
   };
 }
