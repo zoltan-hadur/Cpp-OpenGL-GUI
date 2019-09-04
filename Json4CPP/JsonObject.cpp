@@ -58,7 +58,8 @@ namespace Json4CPP
     }
     else
     {
-      throw exception();
+      auto message = WString2String(L"JsonObject(JsonBuilder builder) is not defined for type " + Json::Stringify(builder.Type()) + L"!");
+      throw exception(message.c_str());
     }
   }
 
