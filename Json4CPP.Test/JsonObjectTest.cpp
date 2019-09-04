@@ -320,5 +320,38 @@ namespace Json4CPP::Test
       Assert::AreEqual(L"Object"s, object.Keys()[4]);
       Assert::AreEqual(L"Array"s, object.Keys()[5]);
     }
+
+    TEST_METHOD(TestOperatorIndex)
+    {
+      JsonObject object = {
+        { L"Null", nullptr },
+        { L"String", L"Test" },
+        { L"Boolean", true },
+        { L"Number", 1337 },
+        { L"Object", {
+          { L"Key1", 1 },
+          { L"Key2", 2 } }
+        },
+        { L"Array", { 1, 2, 3 } },
+      };
+      Assert::AreEqual(6i64, object.Size());
+      Assert::AreEqual<Json>(nullptr, object[L"Null"]);
+      Assert::AreEqual<Json>(L"Test"s, object[L"String"]);
+      Assert::AreEqual<Json>(true, object[L"Boolean"]);
+      Assert::AreEqual<Json>(1337, object[L"Number"]);
+      Assert::AreEqual<Json>({ { L"Key1", 1 }, { L"Key2", 2 } }, object[L"Object"]);
+      Assert::AreEqual<Json>({ 1, 2, 3 }, object[L"Array"]);
+      Assert::AreEqual<Json>(1, object[L"Object"][L"Key1"]);
+      Assert::AreEqual<Json>(2, object[L"Object"][L"Key2"]);
+      Assert::AreEqual<Json>(1, object[L"Array"][0]);
+      Assert::AreEqual<Json>(2, object[L"Array"][1]);
+      Assert::AreEqual<Json>(3, object[L"Array"][2]);
+
+      for (auto key : object.Keys())
+      {
+        object[key] = 1337;
+        Assert::AreEqual<Json>(1337, object[key]);
+      }
+    }
   };
 }
