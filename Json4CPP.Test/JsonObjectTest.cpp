@@ -421,5 +421,50 @@ namespace Json4CPP::Test
         Assert::AreEqual<Json>(9999, object.At(key));
       }
     }
+
+    TEST_METHOD(TestIterator)
+    {
+      auto object = JsonObject{
+        { L"Null", nullptr },
+        { L"String", L"Test" },
+        { L"Boolean", true },
+        { L"Number", 1337 },
+        { L"Object", {
+          { L"Key1", 1 },
+          { L"Key2", 2 } }
+        },
+        { L"Array", { 1, 2, 3 } },
+      };
+      auto map = std::map<wstring, Json>{ { L"Null", nullptr }, { L"String", L"Test" }, { L"Boolean", true }, { L"Number", 1337 }, { L"Object", { { L"Key1", 1 }, { L"Key2", 2 } } }, { L"Array", { 1, 2, 3 } } };
+      for (auto& [key, value] : object)
+      {
+        value = 1337;
+      }
+      for (auto key : object.Keys())
+      {
+        Assert::AreEqual<Json>(1337, object[key]);
+      }
+
+      object = JsonObject{
+        { L"Null", nullptr },
+        { L"String", L"Test" },
+        { L"Boolean", true },
+        { L"Number", 1337 },
+        { L"Object", {
+          { L"Key1", 1 },
+          { L"Key2", 2 } }
+        },
+        { L"Array", { 1, 2, 3 } },
+      };
+      map = std::map<wstring, Json>{ { L"Null", nullptr }, { L"String", L"Test" }, { L"Boolean", true }, { L"Number", 1337 }, { L"Object", { { L"Key1", 1 }, { L"Key2", 2 } } }, { L"Array", { 1, 2, 3 } } };
+      for (auto [key, value] : object)
+      {
+        value = 1337;
+      }
+      for (auto key : object.Keys())
+      {
+        Assert::AreEqual<Json>(map[key], object[key]);
+      }
+    }
   };
 }
