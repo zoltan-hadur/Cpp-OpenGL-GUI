@@ -50,10 +50,23 @@ namespace Json4CPP
     {
       for (auto& builder : *builders)
       {
-        auto pair = get<vector<JsonBuilder>>(builder._value);
-        auto key = get<KEY>(pair[0]._value);
-        auto value = Json(pair[1]);
-        Insert({ key, value });
+        if (auto pair = get_if<vector<JsonBuilder>>(&builder._value))
+        {
+          auto key = get<KEY>((*pair)[0]._value);
+          auto value = Json((*pair)[1]);
+          Insert({ key, value });
+        }
+        else
+        {
+          VALUE value;
+          visit(Overload{
+            [&](auto const& arg) { value = arg; },
+            [&](vector<JsonBuilder> const& arg) { },  // Empty as it is impossible
+          }, builder._value);
+          auto message = WString2String(L"JsonObject(JsonBuilder builder) is not defined for type " + Json::Stringify(builder.Type()) + L"!" +
+                                        L" Error at: " + Json::Stringify(Json(value)) + L".");
+          throw exception(message.c_str());
+        }
       }
     }
     else
