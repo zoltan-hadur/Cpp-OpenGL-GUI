@@ -545,5 +545,44 @@ namespace Json4CPP::Test
          "  ]"                          "\r\n"
          "}"s, is.str());
     }
+
+    TEST_METHOD(TestOperatorExtraction)
+    {
+      JsonDefault::Indentation = 2;
+      auto input = L"{"                            "\r\n"
+                    "  \"Null\": null,"            "\r\n"
+                    "  \"String\": \"Test\","      "\r\n"
+                    "  \"Boolean\": true,"         "\r\n"
+                    "  \"Number\": 1337,"          "\r\n"
+                    "  \"Object\": {"              "\r\n"
+                    "    \"Key1\": 1,"             "\r\n"
+                    "    \"Key2\": 2"              "\r\n"
+                    "  },"                         "\r\n"
+                    "  \"Array\": ["               "\r\n"
+                    "    1,"                       "\r\n"
+                    "    2,"                       "\r\n"
+                    "    3"                        "\r\n"
+                    "  ]"                          "\r\n"
+                    "}"s;
+      JsonObject expected = {
+        { L"Null", nullptr },
+        { L"String", L"Test" },
+        { L"Boolean", true },
+        { L"Number", 1337 },
+        { L"Object", {
+          { L"Key1", 1 },
+          { L"Key2", 2 } }
+        },
+        { L"Array", { 1, 2, 3 } },
+      };
+      JsonObject result;
+      wstringstream ss(input);
+      ss >> result;
+      Assert::AreEqual(expected, result);
+      for (auto key : expected.Keys())
+      {
+        Assert::AreEqual(expected[key], result[key]);
+      }
+    }
   };
 }
