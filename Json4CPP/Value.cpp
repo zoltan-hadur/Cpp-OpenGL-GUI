@@ -300,7 +300,6 @@ namespace Json4CPP::Detail::Value
 
   JsonObject ParseJsonObject(wistream& is)
   {
-    is >> ws;
     JsonObject object;
     is >> object;
     return object;
@@ -313,7 +312,6 @@ namespace Json4CPP::Detail::Value
 
   JsonArray ParseJsonArray(wistream& is)
   {
-    is >> ws;
     JsonArray array;
     is >> array;
     return array;
@@ -326,7 +324,6 @@ namespace Json4CPP::Detail::Value
 
   Json ParseJson(wistream& is)
   {
-    is >> ws;
     Json json;
     is >> json;
     return json;
