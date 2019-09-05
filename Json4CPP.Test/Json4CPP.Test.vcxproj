@@ -96,6 +96,7 @@
     <ClCompile Include="JsonBuilderTest.cpp" />
     <ClCompile Include="JsonBuilderTypeTest.cpp" />
     <ClCompile Include="JsonObjectTest.cpp" />
+    <ClCompile Include="JsonTest.cpp" />
     <ClCompile Include="JsonTypeTest.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
