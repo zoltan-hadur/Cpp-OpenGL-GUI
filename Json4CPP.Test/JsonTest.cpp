@@ -7,7 +7,7 @@ using namespace Json4CPP::Detail;
 
 namespace Json4CPP::Test
 {
-  TEST_CLASS(JsonObjectTest)
+  TEST_CLASS(JsonTest)
   {
   public:
     TEST_METHOD(TestLiteral)
