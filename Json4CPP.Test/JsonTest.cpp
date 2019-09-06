@@ -10,6 +10,13 @@ namespace Json4CPP::Test
   TEST_CLASS(JsonTest)
   {
   public:
+    TEST_METHOD(TestConstructorDefault)
+    {
+      auto json = Json();
+      Assert::IsTrue(json.Is(JsonType::Null));
+      Assert::AreEqual<Json>(nullptr, json);
+    }
+
     TEST_METHOD(TestLiteral)
     {
       Assert::AreEqual<Json>(nullptr, L"null"_json);
