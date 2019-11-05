@@ -150,6 +150,50 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>(true, json[2]);
     }
 
+    TEST_METHOD(TestConstructorInitializerList)
+    {
+      Json json = {
+        nullptr, L"Test1", L"Test2"s, false, true, (char)1, 2i8, 3ui8, 4i16, 5ui16, 6i32, 7ui32, 8i64, 9ui64, 13.37f, 313.37,
+        { { L"Key1", nullptr }, { L"Key2", L"Test1" }, { L"Key3", L"Test2"s }, { L"Key4", false }, { L"Key5", true }, { L"Key6", (char)1 }, { L"Key7", 2i8 }, { L"Key8", 3ui8 },
+          { L"Key9", 4i16 }, { L"Key10", 5ui16 }, { L"Key11", 6i32 }, { L"Key12", 7ui32 }, { L"Key13", 8i64 }, { L"Key14", 9ui64 }, { L"Key15", 13.37f }, { L"Key16", 313.37 },
+          { L"Key17", { { L"InnerKey1", L"Value1" }, { L"InnerKey2", L"Value2" } } },
+          { L"Key18", { 1, 3, 3, 7 } } },
+        { nullptr, L"Test1", L"Test2"s, false, true, (char)1, 2i8, 3ui8, 4i16, 5ui16, 6i32, 7ui32, 8i64, 9ui64, 13.37f, 313.37,
+          { { L"InnerKey1", L"Value1" }, { L"InnerKey2", L"Value2" } },
+          { 1, 3, 3, 7 } }
+      };
+
+      Assert::AreEqual<Json>(18, json.Size());
+      Assert::AreEqual<Json>(18, json[16].Size());
+      Assert::AreEqual<Json>(18, json[17].Size());
+
+      auto values = vector<Json>{ nullptr, L"Test1", L"Test2"s, false, true, (char)1, 2i8, 3ui8, 4i16, 5ui16, 6i32, 7ui32, 8i64, 9ui64, 13.37f, 313.37 };
+      for (int i = 0; i < values.size(); ++i)
+      {
+        Assert::AreEqual<Json>(values[i], json[i]);
+        Assert::AreEqual<Json>(values[i], json[16][L"Key"s + to_wstring(i + 1)]);
+        Assert::AreEqual<Json>(values[i], json[17][i]);
+      }
+
+      Assert::AreEqual<Json>(2, json[16][L"Key17"].Size());
+      Assert::AreEqual<Json>(L"Value1"s, json[16][L"Key17"][L"InnerKey1"]);
+      Assert::AreEqual<Json>(L"Value2"s, json[16][L"Key17"][L"InnerKey2"]);
+      Assert::AreEqual<Json>(4, json[16][L"Key18"].Size());
+      Assert::AreEqual<Json>(1, json[16][L"Key18"][0]);
+      Assert::AreEqual<Json>(3, json[16][L"Key18"][1]);
+      Assert::AreEqual<Json>(3, json[16][L"Key18"][2]);
+      Assert::AreEqual<Json>(7, json[16][L"Key18"][3]);
+
+      Assert::AreEqual<Json>(2, json[17][16].Size());
+      Assert::AreEqual<Json>(L"Value1"s, json[17][16][L"InnerKey1"]);
+      Assert::AreEqual<Json>(L"Value2"s, json[17][16][L"InnerKey2"]);
+      Assert::AreEqual<Json>(4, json[17][17].Size());
+      Assert::AreEqual<Json>(1, json[17][17][0]);
+      Assert::AreEqual<Json>(3, json[17][17][1]);
+      Assert::AreEqual<Json>(3, json[17][17][2]);
+      Assert::AreEqual<Json>(7, json[17][17][3]);
+    }
+
     TEST_METHOD(TestLiteral)
     {
       Assert::AreEqual<Json>(nullptr, L"null"_json);
