@@ -194,6 +194,46 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>(7, json[17][17][3]);
     }
 
+    TEST_METHOD(TestConstructorJson)
+    {
+      auto json = Json(nullptr);
+      Assert::AreEqual<Json>(nullptr, Json(json));
+      json = Json(L"Test");
+      Assert::AreEqual<Json>(L"Test", Json(json));
+      json = Json(L"Test"s);
+      Assert::AreEqual<Json>(L"Test"s, Json(json));
+      json = Json(false);
+      Assert::AreEqual<Json>(false, Json(json));
+      json = Json(true);
+      Assert::AreEqual<Json>(true, Json(json));
+      json = Json((char)1);
+      Assert::AreEqual<Json>((char)1, Json(json));
+      json = Json(2i8);
+      Assert::AreEqual<Json>(2i8, Json(json));
+      json = Json(3ui8);
+      Assert::AreEqual<Json>(3ui8, Json(json));
+      json = Json(4i16);
+      Assert::AreEqual<Json>(4i16, Json(json));
+      json = Json(5ui16);
+      Assert::AreEqual<Json>(5ui16, Json(json));
+      json = Json(6i32);
+      Assert::AreEqual<Json>(6i32, Json(json));
+      json = Json(7ui32);
+      Assert::AreEqual<Json>(7ui32, Json(json));
+      json = Json(8i64);
+      Assert::AreEqual<Json>(8i64, Json(json));
+      json = Json(9ui64);
+      Assert::AreEqual<Json>(9ui64, Json(json));
+      json = Json(13.37f);
+      Assert::AreEqual<Json>(13.37f, Json(json));
+      json = Json(13.37);
+      Assert::AreEqual<Json>(13.37, Json(json));
+      json = Json({ { L"Key1", L"Value1"s }, { L"Key2", L"Value2"s } });
+      Assert::AreEqual<Json>({ { L"Key1", L"Value1"s }, { L"Key2", L"Value2"s } }, Json(json));
+      json = Json({ 1, 3, 3, 7 });
+      Assert::AreEqual<Json>({ 1, 3, 3, 7 }, Json(json));
+    }
+
     TEST_METHOD(TestLiteral)
     {
       Assert::AreEqual<Json>(nullptr, L"null"_json);
