@@ -234,6 +234,108 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>({ 1, 3, 3, 7 }, Json(json));
     }
 
+    TEST_METHOD(TestConstructorNullptr)
+    {
+      Assert::IsTrue(Json(nullptr_t()).Is(JsonType::Null));
+      Assert::IsTrue(Json(nullptr_t()).Type() == JsonType::Null);
+    }
+
+    TEST_METHOD(TestConstructorConstWcharPointer)
+    {
+      Assert::IsTrue(Json(L"").Is(JsonType::String));
+      Assert::IsTrue(Json(L"").Type() == JsonType::String);
+    }
+
+    TEST_METHOD(TestConstructorWstring)
+    {
+      Assert::IsTrue(Json(wstring()).Is(JsonType::String));
+      Assert::IsTrue(Json(wstring()).Type() == JsonType::String);
+    }
+
+    TEST_METHOD(TestConstructorBool)
+    {
+      Assert::IsTrue(Json(bool()).Is(JsonType::Boolean));
+      Assert::IsTrue(Json(bool()).Type() == JsonType::Boolean);
+    }
+
+    TEST_METHOD(TestConstructorChar)
+    {
+      Assert::IsTrue(Json(char()).Is(JsonType::Number));
+      Assert::IsTrue(Json(char()).Type() == JsonType::Number);
+    }
+
+    TEST_METHOD(TestConstructorInt8_t)
+    {
+      Assert::IsTrue(Json(int8_t()).Is(JsonType::Number));
+      Assert::IsTrue(Json(int8_t()).Type() == JsonType::Number);
+    }
+
+    TEST_METHOD(TestConstructorUInt8_t)
+    {
+      Assert::IsTrue(Json(uint8_t()).Is(JsonType::Number));
+      Assert::IsTrue(Json(uint8_t()).Type() == JsonType::Number);
+    }
+
+    TEST_METHOD(TestConstructorInt16_t)
+    {
+      Assert::IsTrue(Json(int16_t()).Is(JsonType::Number));
+      Assert::IsTrue(Json(int16_t()).Type() == JsonType::Number);
+    }
+
+    TEST_METHOD(TestConstructorUInt16_t)
+    {
+      Assert::IsTrue(Json(uint16_t()).Is(JsonType::Number));
+      Assert::IsTrue(Json(uint16_t()).Type() == JsonType::Number);
+    }
+
+    TEST_METHOD(TestConstructorInt32_t)
+    {
+      Assert::IsTrue(Json(int32_t()).Is(JsonType::Number));
+      Assert::IsTrue(Json(int32_t()).Type() == JsonType::Number);
+    }
+
+    TEST_METHOD(TestConstructorUInt32_t)
+    {
+      Assert::IsTrue(Json(uint32_t()).Is(JsonType::Number));
+      Assert::IsTrue(Json(uint32_t()).Type() == JsonType::Number);
+    }
+
+    TEST_METHOD(TestConstructorInt64_t)
+    {
+      Assert::IsTrue(Json(int64_t()).Is(JsonType::Number));
+      Assert::IsTrue(Json(int64_t()).Type() == JsonType::Number);
+    }
+
+    TEST_METHOD(TestConstructorUInt64_t)
+    {
+      Assert::IsTrue(Json(uint64_t()).Is(JsonType::Number));
+      Assert::IsTrue(Json(uint64_t()).Type() == JsonType::Number);
+    }
+
+    TEST_METHOD(TestConstructorFloat)
+    {
+      Assert::IsTrue(Json(float()).Is(JsonType::Number));
+      Assert::IsTrue(Json(float()).Type() == JsonType::Number);
+    }
+
+    TEST_METHOD(TestConstructorDouble)
+    {
+      Assert::IsTrue(Json(double()).Is(JsonType::Number));
+      Assert::IsTrue(Json(double()).Type() == JsonType::Number);
+    }
+
+    TEST_METHOD(TestConstructorJsonObject)
+    {
+      Assert::IsTrue(Json(JsonObject()).Is(JsonType::Object));
+      Assert::IsTrue(Json(JsonObject()).Type() == JsonType::Object);
+    }
+
+    TEST_METHOD(TestConstructorJsonArray)
+    {
+      Assert::IsTrue(Json(JsonArray()).Is(JsonType::Array));
+      Assert::IsTrue(Json(JsonArray()).Type() == JsonType::Array);
+    }
+
     TEST_METHOD(TestLiteral)
     {
       Assert::AreEqual<Json>(nullptr, L"null"_json);
