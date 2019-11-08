@@ -22,6 +22,10 @@
 
 namespace Json4CPP
 {
+  namespace Test
+  {
+    class JsonTest;
+  }
   namespace Detail
   {
     class JSON_API JsonBuilder;
@@ -34,6 +38,7 @@ namespace Json4CPP
   class JSON_API Json
   {
   private:
+    friend class ::Json4CPP::Test::JsonTest;
     friend class JsonObject;
     friend class JsonArray;
     friend class Detail::JsonBuilder;
