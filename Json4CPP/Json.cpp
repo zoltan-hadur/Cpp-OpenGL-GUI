@@ -109,7 +109,7 @@ namespace Json4CPP
 
   void Json::Write(path filePath) const
   {
-    wfstream(filePath, wfstream::out) << *this;
+    wfstream(filePath, wfstream::out | wfstream::binary) << *this;
   }
 
   int64_t Json::Size() const
