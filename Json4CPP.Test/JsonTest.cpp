@@ -381,5 +381,196 @@ namespace Json4CPP::Test
         Assert::IsTrue(input.Is(expected2));
       }
     }
+
+    TEST_METHOD(TestDump)
+    {
+      auto pairs = vector<pair<Json, wstring>>
+      {
+        { nullptr  , L"null"s      },
+        { L"Test1" , L"\"Test1\""s },
+        { L"Test2"s, L"\"Test2\""s },
+        { false    , L"false"s     },
+        { true     , L"true"s      },
+        { (char)1  , L"1"s         },
+        { 2i8      , L"2"s         },
+        { 3ui8     , L"3"s         },
+        { 4i16     , L"4"s         },
+        { 5ui16    , L"5"s         },
+        { 6i32     , L"6"s         },
+        { 7ui32    , L"7"s         },
+        { 8i64     , L"8"s         },
+        { 9ui64    , L"9"s         },
+        { 13.37f   , L"13.37"s     },
+        { 313.37   , L"313.37"s    },
+      };
+      for (auto& [input, expected] : pairs)
+      {
+        for (int i = 0; i < 4; ++i)
+        {
+          Assert::AreEqual(expected, input.Dump(i));
+        }
+      }
+
+      Json object = {
+        { L"Key1", nullptr },
+        { L"Key2", L"Test1" },
+        { L"Key3", L"Test2"s },
+        { L"Key4", false },
+        { L"Key5", true },
+        { L"Key6", (char)1 },
+        { L"Key7", 2i8 },
+        { L"Key8", 3ui8 },
+        { L"Key9", 4i16 },
+        { L"Key10", 5ui16 },
+        { L"Key11", 6i32 },
+        { L"Key12", 7ui32 },
+        { L"Key13", 8i64 },
+        { L"Key14", 9ui64 },
+        { L"Key15", 13.37f },
+        { L"Key16", 313.37 },
+        { L"Key17", {
+          { L"InnerKey1", L"Value1" },
+          { L"InnerKey2", L"Value2" } }
+        },
+        { L"Key18", { 1, 3, 3, 7 } }
+      };
+
+      Assert::AreEqual(L"{\"Key1\":null,\"Key2\":\"Test1\",\"Key3\":\"Test2\",\"Key4\":false,\"Key5\":true,\"Key6\":1,\"Key7\":2,\"Key8\":3,\"Key9\":4,\"Key10\":5,\"Key11\":6,\"Key12\":7,\"Key13\":8,\"Key14\":9,"
+                         "\"Key15\":13.37,\"Key16\":313.37,\"Key17\":{\"InnerKey1\":\"Value1\",\"InnerKey2\":\"Value2\"},\"Key18\":[1,3,3,7]}"s, object.Dump());
+      Assert::AreEqual(L"{\"Key1\":null,\"Key2\":\"Test1\",\"Key3\":\"Test2\",\"Key4\":false,\"Key5\":true,\"Key6\":1,\"Key7\":2,\"Key8\":3,\"Key9\":4,\"Key10\":5,\"Key11\":6,\"Key12\":7,\"Key13\":8,\"Key14\":9,"
+                         "\"Key15\":13.37,\"Key16\":313.37,\"Key17\":{\"InnerKey1\":\"Value1\",\"InnerKey2\":\"Value2\"},\"Key18\":[1,3,3,7]}"s, object.Dump(0));
+
+      Assert::AreEqual(
+        L"{"                              "\r\n"
+         " \"Key1\": null,"               "\r\n"
+         " \"Key2\": \"Test1\","          "\r\n"
+         " \"Key3\": \"Test2\","          "\r\n"
+         " \"Key4\": false,"              "\r\n"
+         " \"Key5\": true,"               "\r\n"
+         " \"Key6\": 1,"                  "\r\n"
+         " \"Key7\": 2,"                  "\r\n"
+         " \"Key8\": 3,"                  "\r\n"
+         " \"Key9\": 4,"                  "\r\n"
+         " \"Key10\": 5,"                 "\r\n"
+         " \"Key11\": 6,"                 "\r\n"
+         " \"Key12\": 7,"                 "\r\n"
+         " \"Key13\": 8,"                 "\r\n"
+         " \"Key14\": 9,"                 "\r\n"
+         " \"Key15\": 13.37,"             "\r\n"
+         " \"Key16\": 313.37,"            "\r\n"
+         " \"Key17\": {"                  "\r\n"
+         "  \"InnerKey1\": \"Value1\","   "\r\n"
+         "  \"InnerKey2\": \"Value2\""    "\r\n"
+         " },"                            "\r\n"
+         " \"Key18\": ["                  "\r\n"
+         "  1,"                           "\r\n"
+         "  3,"                           "\r\n"
+         "  3,"                           "\r\n"
+         "  7"                            "\r\n"
+         " ]"                             "\r\n"
+         "}"s, object.Dump(1));
+
+      Assert::AreEqual(
+        L"{"                              "\r\n"
+         "  \"Key1\": null,"              "\r\n"
+         "  \"Key2\": \"Test1\","         "\r\n"
+         "  \"Key3\": \"Test2\","         "\r\n"
+         "  \"Key4\": false,"             "\r\n"
+         "  \"Key5\": true,"              "\r\n"
+         "  \"Key6\": 1,"                 "\r\n"
+         "  \"Key7\": 2,"                 "\r\n"
+         "  \"Key8\": 3,"                 "\r\n"
+         "  \"Key9\": 4,"                 "\r\n"
+         "  \"Key10\": 5,"                "\r\n"
+         "  \"Key11\": 6,"                "\r\n"
+         "  \"Key12\": 7,"                "\r\n"
+         "  \"Key13\": 8,"                "\r\n"
+         "  \"Key14\": 9,"                "\r\n"
+         "  \"Key15\": 13.37,"            "\r\n"
+         "  \"Key16\": 313.37,"           "\r\n"
+         "  \"Key17\": {"                 "\r\n"
+         "    \"InnerKey1\": \"Value1\"," "\r\n"
+         "    \"InnerKey2\": \"Value2\""  "\r\n"
+         "  },"                           "\r\n"
+         "  \"Key18\": ["                 "\r\n"
+         "    1,"                         "\r\n"
+         "    3,"                         "\r\n"
+         "    3,"                         "\r\n"
+         "    7"                          "\r\n"
+         "  ]"                            "\r\n"
+         "}"s, object.Dump(2));
+
+      Json array = {
+        nullptr, L"Test1", L"Test2"s, false, true, (char)1, 2i8, 3ui8, 4i16, 5ui16, 6i32, 7ui32, 8i64, 9ui64, 13.37f, 313.37,
+        {
+          { L"InnerKey1", L"Value1" },
+          { L"InnerKey2", L"Value2" }
+        },
+        { 1, 3, 3, 7 }
+      };
+
+      Assert::AreEqual(L"[null,\"Test1\",\"Test2\",false,true,1,2,3,4,5,6,7,8,9,13.37,313.37,{\"InnerKey1\":\"Value1\",\"InnerKey2\":\"Value2\"},[1,3,3,7]]"s, array.Dump());
+      Assert::AreEqual(L"[null,\"Test1\",\"Test2\",false,true,1,2,3,4,5,6,7,8,9,13.37,313.37,{\"InnerKey1\":\"Value1\",\"InnerKey2\":\"Value2\"},[1,3,3,7]]"s, array.Dump(0));
+
+      Assert::AreEqual(
+        L"["                              "\r\n"
+         " null,"                         "\r\n"
+         " \"Test1\","                    "\r\n"
+         " \"Test2\","                    "\r\n"
+         " false,"                        "\r\n"
+         " true,"                         "\r\n"
+         " 1,"                            "\r\n"
+         " 2,"                            "\r\n"
+         " 3,"                            "\r\n"
+         " 4,"                            "\r\n"
+         " 5,"                            "\r\n"
+         " 6,"                            "\r\n"
+         " 7,"                            "\r\n"
+         " 8,"                            "\r\n"
+         " 9,"                            "\r\n"
+         " 13.37,"                        "\r\n"
+         " 313.37,"                       "\r\n"
+         " {"                             "\r\n"
+         "  \"InnerKey1\": \"Value1\","   "\r\n"
+         "  \"InnerKey2\": \"Value2\""    "\r\n"
+         " },"                            "\r\n"
+         " ["                             "\r\n"
+         "  1,"                           "\r\n"
+         "  3,"                           "\r\n"
+         "  3,"                           "\r\n"
+         "  7"                            "\r\n"
+         " ]"                             "\r\n"
+         "]"s, array.Dump(1));
+
+      Assert::AreEqual(
+        L"["                              "\r\n"
+         "  null,"                         "\r\n"
+         "  \"Test1\","                    "\r\n"
+         "  \"Test2\","                    "\r\n"
+         "  false,"                        "\r\n"
+         "  true,"                         "\r\n"
+         "  1,"                            "\r\n"
+         "  2,"                            "\r\n"
+         "  3,"                            "\r\n"
+         "  4,"                            "\r\n"
+         "  5,"                            "\r\n"
+         "  6,"                            "\r\n"
+         "  7,"                            "\r\n"
+         "  8,"                            "\r\n"
+         "  9,"                            "\r\n"
+         "  13.37,"                        "\r\n"
+         "  313.37,"                       "\r\n"
+         "  {"                             "\r\n"
+         "    \"InnerKey1\": \"Value1\","   "\r\n"
+         "    \"InnerKey2\": \"Value2\""    "\r\n"
+         "  },"                            "\r\n"
+         "  ["                             "\r\n"
+         "    1,"                           "\r\n"
+         "    3,"                           "\r\n"
+         "    3,"                           "\r\n"
+         "    7"                            "\r\n"
+         "  ]"                             "\r\n"
+         "]"s, array.Dump(2));
+    }
   };
 }
