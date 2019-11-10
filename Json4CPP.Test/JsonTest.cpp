@@ -363,5 +363,23 @@ namespace Json4CPP::Test
         Assert::AreEqual(expected2, input.Type());
       }
     }
+
+    TEST_METHOD(TestIs)
+    {
+      auto tuples = vector<tuple<Json, JsonType, JsonType>>
+      {
+        { nullptr_t() , JsonType::Null   , JsonType::Simple  },
+        { wstring()   , JsonType::String , JsonType::Simple  },
+        { bool()      , JsonType::Boolean, JsonType::Simple  },
+        { double()    , JsonType::Number , JsonType::Simple  },
+        { JsonObject(), JsonType::Object , JsonType::Complex },
+        { JsonArray() , JsonType::Array  , JsonType::Complex },
+      };
+      for (auto& [input, expected1, expected2] : tuples)
+      {
+        Assert::IsTrue(input.Is(expected1));
+        Assert::IsTrue(input.Is(expected2));
+      }
+    }
   };
 }
