@@ -34,13 +34,13 @@ namespace Json4CPP::Detail
     return os.str();
   }
 
-  wstring String2WString(string const& string)
+  wstring String2WString(string const& string, uint32_t codePage)
   {
-    return CA2W(string.c_str());
+    return CA2W(string.c_str(), codePage);
   }
 
-  string WString2String(const wstring& string)
+  string WString2String(const wstring& string, uint32_t codePage)
   {
-    return CW2A(string.c_str());
+    return CW2A(string.c_str(), codePage);
   }
 }
