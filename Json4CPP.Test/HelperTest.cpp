@@ -84,5 +84,31 @@ namespace Json4CPP::Test
       auto actual = WString2String(input);
       Assert::AreEqual(expected, actual);
     }
+
+    TEST_METHOD(TestGetStreamPosition)
+    {
+      auto ss = wstringstream(L"abc\r\n"
+                              L"def\r\n"
+                              L"ghi"s);
+      auto tuples = deque<tuple<wchar_t, uint64_t, uint64_t>>
+      {
+        { L'a', 1, 1 }, { L'b', 1, 2 }, { L'c', 1, 3 },
+        { L'd', 2, 1 }, { L'e', 2, 2 }, { L'f', 2, 3 },
+        { L'g', 3, 1 }, { L'h', 3, 2 }, { L'i', 3, 3 }
+      };
+      while(tuples.size())
+      {
+        wchar_t actualChar = ss.get();
+        if (actualChar == L'\r' || actualChar == L'\n') continue;
+        auto [actualLine, actualColumn] = GetStreamPosition(ss, ss.tellg());
+        auto [expectedChar, expectedLine, expectedColumn] = tuples.front();
+        tuples.pop_front();
+        Assert::AreEqual(expectedChar, actualChar);
+        Assert::AreEqual(expectedLine, actualLine);
+        Assert::AreEqual(expectedColumn, actualColumn);
+        Assert::AreEqual(GetFormattedStreamPosition (ss, ss.tellg()), L"Line: " + to_wstring(actualLine) + L" Column: " + to_wstring(actualColumn));
+        Assert::AreEqual(GetFormattedStreamPositionA(ss, ss.tellg()),  "Line: " + to_string (actualLine) +  " Column: " + to_string (actualColumn));
+      }
+    }
   };
 }

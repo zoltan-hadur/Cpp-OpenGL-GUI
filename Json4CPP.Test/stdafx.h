@@ -14,6 +14,9 @@
 #include <optional>
 #include <iostream>
 #include <sstream>
+#include <tuple>
+#include <vector>
+#include <deque>
 
 #define _CRTDBG_MAP_ALLOC  
 #include <stdlib.h>  

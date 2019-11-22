@@ -43,4 +43,42 @@ namespace Json4CPP::Detail
   {
     return CW2A(string.c_str(), codePage);
   }
+
+  pair<uint64_t, uint64_t> GetStreamPosition(wistream& is, wistream::pos_type pos)
+  {
+    auto state = is.rdstate();
+    is.clear();
+    is.seekg(is.beg);
+    uint64_t column = 0;
+    uint64_t line = 1;
+    auto carriageReturn = false;
+    while (is.tellg() != pos)
+    {
+      if (carriageReturn && is.get() == L'\n')
+      {
+        carriageReturn = false;
+        column = 0;
+        line++;
+      }
+      else
+      {
+        carriageReturn = is.get() == L'\r';
+        column++;
+      }
+    }
+    is.setstate(state);
+    return { line, column };
+  }
+
+  wstring GetFormattedStreamPosition(wistream& is, wistream::pos_type pos)
+  {
+    auto [line, column] = GetStreamPosition(is, is.tellg());
+    return L"Line: " + to_wstring(line) + L" Column: " + to_wstring(column);
+  }
+
+  string GetFormattedStreamPositionA(wistream& is, wistream::pos_type pos)
+  {
+    auto [line, column] = GetStreamPosition(is, is.tellg());
+    return "Line: " + to_string(line) + " Column: " + to_string(column);
+  }
 }
