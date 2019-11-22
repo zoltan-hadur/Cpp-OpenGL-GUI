@@ -6,12 +6,12 @@ using namespace Json4CPP;
 using namespace Json4CPP::Detail;
 
 namespace Json4CPP::Test
-{		
-	TEST_CLASS(HelperTest)
-	{
-	public:
-		TEST_METHOD(TestOverload)
-		{
+{
+  TEST_CLASS(HelperTest)
+  {
+  public:
+    TEST_METHOD(TestOverload)
+    {
       variant<int, float, wstring> left;
       variant<int, float, wstring> right;
       variant<int, float, wstring> input[] = { 1, 0.5f, L"a" };
@@ -59,7 +59,7 @@ namespace Json4CPP::Test
           }
         }
       }
-		}
+    }
 
     TEST_METHOD(TestEscapeString)
     {
