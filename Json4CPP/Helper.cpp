@@ -34,6 +34,7 @@ namespace Json4CPP::Detail
     return os.str();
   }
 
+#pragma warning(disable : 4927)
   wstring String2WString(string const& string, uint32_t codePage)
   {
     return CA2W(string.c_str(), codePage);
@@ -43,6 +44,7 @@ namespace Json4CPP::Detail
   {
     return CW2A(string.c_str(), codePage);
   }
+#pragma warning(push)
 
   pair<uint64_t, uint64_t> GetStreamPosition(wistream& is, wistream::pos_type pos)
   {
