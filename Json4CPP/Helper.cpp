@@ -74,13 +74,13 @@ namespace Json4CPP::Detail
 
   wstring GetFormattedStreamPosition(wistream& is, wistream::pos_type pos)
   {
-    auto [line, column] = GetStreamPosition(is, is.tellg());
+    auto [line, column] = GetStreamPosition(is, pos);
     return L"Line: " + to_wstring(line) + L" Column: " + to_wstring(column);
   }
 
   string GetFormattedStreamPositionA(wistream& is, wistream::pos_type pos)
   {
-    auto [line, column] = GetStreamPosition(is, is.tellg());
+    auto [line, column] = GetStreamPosition(is, pos);
     return "Line: " + to_string(line) + " Column: " + to_string(column);
   }
 }
