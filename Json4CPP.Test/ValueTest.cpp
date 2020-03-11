@@ -14,6 +14,22 @@ namespace Json4CPP::Test
     static _CrtMemState _init;
     static _CrtMemState _dest;
     static _CrtMemState _result;
+
+    template<typename T, typename F>
+    static void ExceptException(F func, string const& msg)
+    {
+      auto found = false;
+      try
+      {
+        func();
+      }
+      catch (T e)
+      {
+        Assert::AreEqual(e.what(), msg.c_str());
+        found = true;
+      }
+      Assert::AreEqual(found, true);
+    }
   public:
     TEST_METHOD(TestGetType1)
     {
@@ -78,8 +94,8 @@ namespace Json4CPP::Test
         }
         else
         {
-          Assert::ExpectException<exception>([&]() { Value::ParseNull(input); });
-          Assert::ExpectException<exception>([&]() { Value::ParseNull(wstringstream(input)); });
+          ExceptException<exception>([&]() { Value::ParseNull(              input ); }, "Expected \"null\" at position Line: 1 Column: "s + to_string(input.size() > 0 ? 2 : 1) + "!"s);
+          ExceptException<exception>([&]() { Value::ParseNull(wstringstream(input)); }, "Expected \"null\" at position Line: 1 Column: "s + to_string(input.size() > 0 ? 2 : 1) + "!"s);
         }
       }
     }
@@ -140,8 +156,16 @@ namespace Json4CPP::Test
         }
         else
         {
-          Assert::ExpectException<exception>([&]() { Value::ParseBoolean(input); });
-          Assert::ExpectException<exception>([&]() { Value::ParseBoolean(wstringstream(input)); });
+          if (input.size() > 1)
+          {
+            ExceptException<exception>([&]() { Value::ParseBoolean(              input ); }, "Expected \"true\" at position Line: 1 Column: 2!"s);
+            ExceptException<exception>([&]() { Value::ParseBoolean(wstringstream(input)); }, "Expected \"true\" at position Line: 1 Column: 2!"s);
+          }
+          else
+          {
+            ExceptException<exception>([&]() { Value::ParseBoolean(              input ); }, "Expected \"true\" or \"false\" at position Line: 1 Column: "s + to_string(input.size() + 1) +"!"s);
+            ExceptException<exception>([&]() { Value::ParseBoolean(wstringstream(input)); }, "Expected \"true\" or \"false\" at position Line: 1 Column: "s + to_string(input.size() + 1) + "!"s);
+          }
         }
       }
     }
@@ -169,8 +193,16 @@ namespace Json4CPP::Test
         }
         else
         {
-          Assert::ExpectException<exception>([&]() { Value::ParseBoolean(input); });
-          Assert::ExpectException<exception>([&]() { Value::ParseBoolean(wstringstream(input)); });
+          if (input.size() > 1)
+          {
+            ExceptException<exception>([&]() { Value::ParseBoolean(              input ); }, "Expected \"false\" at position Line: 1 Column: 2!"s);
+            ExceptException<exception>([&]() { Value::ParseBoolean(wstringstream(input)); }, "Expected \"false\" at position Line: 1 Column: 2!"s);
+          }
+          else
+          {
+            ExceptException<exception>([&]() { Value::ParseBoolean(              input ); }, "Expected \"true\" or \"false\" at position Line: 1 Column: "s + to_string(input.size() + 1) +"!"s);
+            ExceptException<exception>([&]() { Value::ParseBoolean(wstringstream(input)); }, "Expected \"true\" or \"false\" at position Line: 1 Column: "s + to_string(input.size() + 1) + "!"s);
+          }
         }
       }
     }

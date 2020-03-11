@@ -57,11 +57,14 @@ namespace Json4CPP::Detail::Value
   {
     is >> ws;
     auto expected = L"null"s;
+    streampos pos;
     for (int i = 0; i < 4; ++i)
     {
-      if (is.get() != expected[i])
+      auto c = is.get();
+      if (i == 0) pos = is.tellg();
+      if (c != expected[i])
       {
-        auto message = "Expected \"null\" at position " + to_string(is.tellg()  - streamoff(i));
+        auto message = "Expected \"null\" at position " + GetFormattedStreamPositionA(is, pos) + "!";
         throw exception(message.c_str());
       }
     }
@@ -177,36 +180,23 @@ namespace Json4CPP::Detail::Value
   bool ParseBoolean(wistream& is)
   {
     is >> ws;
-    switch (is.peek())
+    wstring expected = is.peek() == L't' ? L"true" : is.peek() == L'f' ? L"false" : L"";
+    if (!expected.empty())
     {
-    case L't':
-    {
-      wstring expected = L"true";
-      for (int i = 0; i < 4; ++i)
+      streampos pos;
+      for (int i = 0; i < expected.size(); ++i)
       {
-        if (is.get() != expected[i])
+        auto c = is.get();
+        if (i == 0) pos = is.tellg();
+        if (c != expected[i])
         {
-          auto message = "Expected \"true\" at position " + to_string(is.tellg() - streamoff(i));
+          auto message = "Expected \"" + WString2String(expected) + "\" at position " + GetFormattedStreamPositionA(is, pos) + "!";
           throw exception(message.c_str());
         }
       }
-      return true;
+      return expected == L"true";
     }
-    case L'f':
-    {
-      wstring expected = L"false";
-      for (int i = 0; i < 5; ++i)
-      {
-        if (is.get() != expected[i])
-        {
-          auto message = "Expected \"false\" at position " + to_string(is.tellg() - streamoff(i));
-          throw exception(message.c_str());
-        }
-      }
-      return false;
-    }
-    }
-    auto message = "Expected \"true\" or \"false\" at position " + to_string(is.tellg());
+    auto message = "Expected \"true\" or \"false\" at position " + GetFormattedStreamPositionA(is, is.tellg()) + "!";
     throw exception(message.c_str());
   }
 
