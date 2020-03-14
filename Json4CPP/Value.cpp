@@ -81,9 +81,8 @@ namespace Json4CPP::Detail::Value
     is >> ws;
     auto text = L""s;
     // A string must start with a quote
-    if (is.peek() == L'\"')
+    if (is.get() == L'\"')
     {
-      is.get();
       // Check if it's an empty string in which case it's immediately ends with a quote
       if (is.peek() == L'\"')
       {
@@ -94,37 +93,32 @@ namespace Json4CPP::Detail::Value
         // Read the characters until the closing quote
         while (is.peek() != L'\"' && !is.eof())
         {
-          if (is.peek() == L'\\')
+          auto c = is.get();
+          if (c == L'\\')
           {
-            is.get();
-            auto c = is.peek();
-            switch (c)
+            switch (is.get())
             {
-            case L'b' : text.push_back(L'\b'); is.get(); break;
-            case L'f' : text.push_back(L'\f'); is.get(); break;
-            case L'n' : text.push_back(L'\n'); is.get(); break;
-            case L'r' : text.push_back(L'\r'); is.get(); break;
-            case L't' : text.push_back(L'\t'); is.get(); break;
-            case L'\"':
-            case L'\\':
-            case L'/' :
-            {
-              text.push_back(is.get());
-              break;
-            }
+            case L'b' : text.push_back(L'\b'); break;
+            case L'f' : text.push_back(L'\f'); break;
+            case L'n' : text.push_back(L'\n'); break;
+            case L'r' : text.push_back(L'\r'); break;
+            case L't' : text.push_back(L'\t'); break;
+            case L'\"': text.push_back(L'\"'); break;
+            case L'\\': text.push_back(L'\\'); break;
+            case L'/' : text.push_back(L'/');  break;
             case L'u' :
             {
-              is.get();
               auto hexCode = L""s;
               for (int i = 0; i < 4; ++i)
               {
-                if (iswxdigit(is.peek()))
+                c = is.get();
+                if (iswxdigit(c))
                 {
-                  hexCode.push_back(is.get());
+                  hexCode.push_back(c);
                 }
                 else
                 {
-                  auto message = "Expected a hexadecimal digit at position " + to_string(is.tellg());
+                  auto message = "Expected a hexadecimal digit at position " + GetFormattedStreamPositionA(is, is.tellg()) + "!";
                   throw exception(message.c_str());
                 }
               }
@@ -137,27 +131,30 @@ namespace Json4CPP::Detail::Value
             }
             default:
             {
-              auto message = "Expected one of the following characters: \", \\, /, b, f, n, r, t, u at position " + to_string(is.tellg());
+              is.get();
+              auto message = "Expected one of the following characters: '\"', '\\', '/', 'b', 'f', 'n', 'r', 't' or 'u' at position " + GetFormattedStreamPositionA(is, is.tellg()) + "!";
               throw exception(message.c_str());
               break;
             }
             }
           }
-          else if (!iswcntrl(is.peek()))
+          else if (!iswcntrl(c))
           {
-            text.push_back(is.get());
+            text.push_back(c);
           }
           else
           {
-            auto message = "Invalid character found at position " + to_string(is.tellg());
+            auto message = "Invalid character found at position " + GetFormattedStreamPositionA(is, is.tellg()) + "!";
             throw exception(message.c_str());
           }
         }
+        // If no closing quote, just eof
         if (is.eof())
         {
-          auto message = "Expected '\"' at position " + to_string(is.tellg());
+          auto message = "Expected '\"' at position " + GetFormattedStreamPositionA(is, is.tellg()) + "!";
           throw exception(message.c_str());
         }
+        // Otherwise it must be a closing quote, so get it
         else
         {
           is.get();
@@ -166,7 +163,7 @@ namespace Json4CPP::Detail::Value
     }
     else
     {
-      auto message = "Expected '\"' at position " + to_string(is.tellg());
+      auto message = "Expected '\"' at position " + GetFormattedStreamPositionA(is, is.tellg()) + "!";
       throw exception(message.c_str());
     }
     return text;
@@ -180,7 +177,7 @@ namespace Json4CPP::Detail::Value
   bool ParseBoolean(wistream& is)
   {
     is >> ws;
-    wstring expected = is.peek() == L't' ? L"true" : is.peek() == L'f' ? L"false" : L"";
+    auto expected = is.peek() == L't' ? L"true"s : is.peek() == L'f' ? L"false"s : L""s;
     if (!expected.empty())
     {
       streampos pos;
@@ -194,7 +191,7 @@ namespace Json4CPP::Detail::Value
           throw exception(message.c_str());
         }
       }
-      return expected == L"true";
+      return expected == L"true"s;
     }
     auto message = "Expected \"true\" or \"false\" at position " + GetFormattedStreamPositionA(is, is.tellg()) + "!";
     throw exception(message.c_str());
@@ -233,7 +230,8 @@ namespace Json4CPP::Detail::Value
     // Else it's not a number
     else
     {
-      auto message = "Expected '-' or digit at position " + to_string(is.tellg());
+      is.get();
+      auto message = "Expected digit at position " + GetFormattedStreamPositionA(is, is.tellg()) + "!";
       throw exception(message.c_str());
     }
 
@@ -250,7 +248,8 @@ namespace Json4CPP::Detail::Value
       }
       if (!hasAtLeastOneDigit)
       {
-        auto message = "Expected digit at position " + to_string(is.tellg());
+        is.get();
+        auto message = "Expected digit at position " + GetFormattedStreamPositionA(is, is.tellg()) + "!";
         throw exception(message.c_str());
       }
     }
@@ -273,7 +272,8 @@ namespace Json4CPP::Detail::Value
       }
       if (!hasAtLeastOneDigit)
       {
-        auto message = "Expected digit at position " + to_string(is.tellg());
+        is.get();
+        auto message = "Expected digit at position " + GetFormattedStreamPositionA(is, is.tellg()) + "!";
         throw exception(message.c_str());
       }
     }
@@ -327,12 +327,12 @@ namespace Json4CPP::Detail::Value
   wostream& Write(wostream& os, VALUE const& value)
   {
     visit(Overload{
-      [&](nullptr_t  const& v) { os << L"null";                           },
-      [&](wstring    const& v) { os << L"\"" << EscapeString(v) << L"\""; },
-      [&](bool       const& v) { os << (v ? L"true" : L"false");          },
-      [&](double     const& v) { os << +v;                                },
-      [&](JsonObject const& v) { os << v;                                 },
-      [&](JsonArray  const& v) { os << v;                                 }
+      [&](nullptr_t  const& v) { os << L"null"s;                            },
+      [&](wstring    const& v) { os << L"\""s << EscapeString(v) << L"\""s; },
+      [&](bool       const& v) { os << (v ? L"true"s : L"false"s);          },
+      [&](double     const& v) { os << +v;                                  },
+      [&](JsonObject const& v) { os << v;                                   },
+      [&](JsonArray  const& v) { os << v;                                   }
     }, value);
     return os;
   }

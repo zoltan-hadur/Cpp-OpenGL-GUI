@@ -149,6 +149,11 @@ namespace Json4CPP
     {
       is.get();
       is >> ws;
+      if (is.peek() == L',')
+      {
+        auto message = "Unexpected ',' at position " + GetFormattedStreamPositionA(is, is.tellg()) + "!";
+        throw exception(message.c_str());
+      }
       if (is.peek() != L']')
       {
         array._values.push_back(Value::ParseJson(is));
@@ -166,7 +171,7 @@ namespace Json4CPP
         }
         else
         {
-          auto message = "Expected ']' at position " + to_string(is.tellg());
+          auto message = "Expected ']' at position " + GetFormattedStreamPositionA(is, is.tellg()) + "!";
           throw exception(message.c_str());
         }
       }
@@ -177,7 +182,7 @@ namespace Json4CPP
     }
     else
     {
-      auto message = "Expected '[' at position " + to_string(is.tellg());
+      auto message = "Expected '[' at position " + GetFormattedStreamPositionA(is, is.tellg()) + "!";
       throw exception(message.c_str());
     }
     return is;

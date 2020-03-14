@@ -190,7 +190,7 @@ namespace Json4CPP
         }
         else
         {
-          auto message = "Expected ':' at position " + to_string(is.tellg());
+          auto message = "Expected ':' at position " + GetFormattedStreamPositionA(is, is.tellg()) + "!";
           throw exception(message.c_str());
         }
         auto value = Value::ParseJson(is);
@@ -209,7 +209,7 @@ namespace Json4CPP
           }
           else
           {
-            auto message = "Expected ':' at position " + to_string(is.tellg());
+            auto message = "Expected ':' at position " + GetFormattedStreamPositionA(is, is.tellg()) + "!";
             throw exception(message.c_str());
           }
           auto value = Value::ParseJson(is);
@@ -222,7 +222,7 @@ namespace Json4CPP
         }
         else
         {
-          auto message = "Expected '}' at position " + to_string(is.tellg());
+          auto message = "Expected '}' at position " + GetFormattedStreamPositionA(is, is.tellg()) + "!";
           throw exception(message.c_str());
         }
       }
@@ -233,7 +233,7 @@ namespace Json4CPP
     }
     else
     {
-      auto message = "Expected '{' at position " + to_string(is.tellg());
+      auto message = "Expected '{' at position " + GetFormattedStreamPositionA(is, is.tellg()) + "!";
       throw exception(message.c_str());
     }
     return is;
