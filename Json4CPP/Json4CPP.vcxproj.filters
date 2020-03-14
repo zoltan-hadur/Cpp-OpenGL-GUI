@@ -112,7 +112,7 @@
     <Natvis Include="JsonArray.natvis">
       <Filter>Natvis</Filter>
     </Natvis>
-    <Natvis Include="KeyValuePair.natvis">
+    <Natvis Include="JsonKeyValuePair.natvis">
       <Filter>Natvis</Filter>
     </Natvis>
   </ItemGroup>
