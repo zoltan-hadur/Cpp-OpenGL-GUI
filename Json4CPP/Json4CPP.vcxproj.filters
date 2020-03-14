@@ -54,6 +54,12 @@
     <ClInclude Include="JsonBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="JsonToken.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="JsonLinter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -87,6 +93,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="JsonBuilderType.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="JsonLinter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

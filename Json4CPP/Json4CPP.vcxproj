@@ -92,7 +92,9 @@
     <ClInclude Include="JsonBuilder.h" />
     <ClInclude Include="JsonBuilderType.h" />
     <ClInclude Include="JsonDefault.h" />
+    <ClInclude Include="JsonLinter.h" />
     <ClInclude Include="JsonObject.h" />
+    <ClInclude Include="JsonToken.h" />
     <ClInclude Include="JsonType.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -106,6 +108,7 @@
     <ClCompile Include="JsonBuilder.cpp" />
     <ClCompile Include="JsonBuilderType.cpp" />
     <ClCompile Include="JsonDefault.cpp" />
+    <ClCompile Include="JsonLinter.cpp" />
     <ClCompile Include="JsonObject.cpp" />
     <ClCompile Include="JsonType.cpp" />
     <ClCompile Include="stdafx.cpp">
