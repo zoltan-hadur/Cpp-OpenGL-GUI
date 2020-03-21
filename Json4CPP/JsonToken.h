@@ -6,6 +6,9 @@
 #define JSON_API __declspec(dllimport)
 #endif
 
+#include <sstream>
+#include <string>
+
 namespace Json4CPP::Detail
 {
   enum class JSON_API JsonToken
@@ -21,4 +24,7 @@ namespace Json4CPP::Detail
     StartArray,
     EndArray,
   };
+
+  JSON_API std::wostream& operator<<(std::wostream& os, JsonToken const& token);
+  JSON_API std::wstring Dump(JsonToken const& token);
 }

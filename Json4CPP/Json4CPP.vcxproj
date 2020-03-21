@@ -110,6 +110,7 @@
     <ClCompile Include="JsonDefault.cpp" />
     <ClCompile Include="JsonLinter.cpp" />
     <ClCompile Include="JsonObject.cpp" />
+    <ClCompile Include="JsonToken.cpp" />
     <ClCompile Include="JsonType.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
