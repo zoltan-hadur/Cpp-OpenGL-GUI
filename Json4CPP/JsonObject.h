@@ -40,7 +40,6 @@ namespace Json4CPP
 
     static JsonObject Read (                          Detail::TOKEN_COLLECTION& tokens);
     static void       Write(JsonObject const& object, Detail::TOKEN_COLLECTION& tokens);
-    void _Dump(std::wstringstream& os, uint8_t indentation, uint64_t level) const;
   public:
     JsonObject() = default;
     JsonObject(Detail::JsonBuilder builder);

@@ -36,7 +36,6 @@ namespace Json4CPP
 
     static JsonArray Read (                        Detail::TOKEN_COLLECTION& tokens);
     static void      Write(JsonArray const& array, Detail::TOKEN_COLLECTION& tokens);
-    void _Dump(std::wstringstream& os, uint8_t indentation, uint64_t level) const;
   public:
     JsonArray() = default;
     JsonArray(Detail::JsonBuilder builder);

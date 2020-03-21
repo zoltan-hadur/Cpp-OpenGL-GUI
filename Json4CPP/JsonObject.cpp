@@ -75,35 +75,6 @@ namespace Json4CPP
     tokens.push_back({ JsonToken::EndObject, L"}"s });
   }
 
-  void JsonObject::_Dump(wstringstream& os, uint8_t indentation, uint64_t level) const
-  {
-    auto indent = wstring(indentation * level, L' ');
-    auto single = wstring(indentation, L' ');
-    auto newLine = indentation == 0 ? L""s : L"\r\n"s;
-    auto space = indentation == 0 ? L""s : L" "s;
-    auto size = _pairs.size();
-
-    os << L"{"s << newLine;
-    for (int i = 0; i < size; ++i)
-    {
-      auto& [key, value] = _pairs[i];
-      os << indent << single;
-      os << L"\""s << key << L"\":"s << space;
-      switch (value.Type())
-      {
-      case JsonType::Object: value.Get<JsonObject>()._Dump(os, indentation, level + 1); break;
-      case JsonType::Array : value.Get<JsonArray >()._Dump(os, indentation, level + 1); break;
-      default: os << value; break;
-      }
-      if (i < size - 1)
-      {
-        os << L","s;
-      }
-      os << newLine;
-    }
-    os << indent << L"}"s;
-  }
-
   JsonObject::JsonObject(JsonBuilder builder)
   {
     if (auto object = get_if<JsonObject>(&builder._value))
@@ -156,9 +127,11 @@ namespace Json4CPP
 
   wstring JsonObject::Dump(uint8_t indentation) const
   {
-    wstringstream buffer;
-    _Dump(buffer, indentation, 0);
-    return buffer.str();
+    auto tokens = TOKEN_COLLECTION();
+    JsonObject::Write(*this, tokens);
+    wstringstream os;
+    JsonLinter::Write(os, tokens, indentation, 0);
+    return os.str();
   }
 
   int64_t JsonObject::Size() const

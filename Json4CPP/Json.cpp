@@ -51,26 +51,6 @@ namespace Json4CPP
     }
   }
 
-  void Json::_Dump(wstringstream& os, uint8_t indentation, uint64_t level) const
-  {
-    auto tokens = TOKEN_COLLECTION();
-    switch (Value::GetType(_value))
-    {
-    case JsonType::Null   : tokens.push_back({ JsonToken::Null   , get<nullptr_t>(_value) }); break;
-    case JsonType::String : tokens.push_back({ JsonToken::String , get<wstring>  (_value) }); break;
-    case JsonType::Boolean: tokens.push_back({ JsonToken::Boolean, get<bool>     (_value) }); break;
-    case JsonType::Number : tokens.push_back({ JsonToken::Number , get<double>   (_value) }); break;
-    case JsonType::Object : get<JsonObject>(_value)._Dump(os, indentation, level);            break;
-    case JsonType::Array  : get<JsonArray >(_value)._Dump(os, indentation, level);            break;
-    default:
-    {
-      auto message = WString2String(L"Invalid type: "s + Json::Stringify(Value::GetType(_value)) + L"!"s);
-      throw exception(message.c_str());
-    }
-    }
-    JsonLinter::Write(os, tokens, indentation, level);
-  }
-
   Json::Json()
   {
     _value = nullptr;
@@ -146,9 +126,11 @@ namespace Json4CPP
 
   wstring Json::Dump(uint8_t indentation) const
   {
-    wstringstream buffer;
-    _Dump(buffer, indentation, 0);
-    return buffer.str();
+    auto tokens = TOKEN_COLLECTION();
+    Json::Write(*this, tokens);
+    wstringstream os;
+    JsonLinter::Write(os, tokens, indentation, 0);
+    return os.str();
   }
 
   Json Json::Read(path filePath)

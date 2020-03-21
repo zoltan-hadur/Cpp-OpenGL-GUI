@@ -64,33 +64,6 @@ namespace Json4CPP
     tokens.push_back({ JsonToken::EndArray, L"]"s });
   }
 
-  void JsonArray::_Dump(wstringstream& os, uint8_t indentation, uint64_t level) const
-  {
-    auto indent = wstring(indentation * level, L' ');
-    auto single = wstring(indentation, L' ');
-    auto newLine = indentation == 0 ? L""s : L"\r\n"s;
-    auto size = _values.size();
-
-    os << L"["s << newLine;
-    for (int i = 0; i < size; ++i)
-    {
-      auto& value = _values[i];
-      os << indent << single;
-      switch (value.Type())
-      {
-      case JsonType::Object: value.Get<JsonObject>()._Dump(os, indentation, level + 1); break;
-      case JsonType::Array : value.Get<JsonArray >()._Dump(os, indentation, level + 1); break;
-      default: os << value; break;
-      }
-      if (i < size - 1)
-      {
-        os << L","s;
-      }
-      os << newLine;
-    }
-    os << indent << L"]"s;
-  }
-
   JsonArray::JsonArray(JsonBuilder builder)
   {
     if (auto array = get_if<JsonArray>(&builder._value))
@@ -123,9 +96,11 @@ namespace Json4CPP
 
   wstring JsonArray::Dump(uint8_t indentation) const
   {
-    wstringstream buffer;
-    _Dump(buffer, indentation, 0);
-    return buffer.str();
+    auto tokens = TOKEN_COLLECTION();
+    JsonArray::Write(*this, tokens);
+    wstringstream os;
+    JsonLinter::Write(os, tokens, indentation, 0);
+    return os.str();
   }
 
   int64_t JsonArray::Size() const
