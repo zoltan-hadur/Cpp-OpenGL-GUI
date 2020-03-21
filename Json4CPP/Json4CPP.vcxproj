@@ -125,6 +125,8 @@
     <Natvis Include="Json.natvis" />
     <Natvis Include="JsonArray.natvis" />
     <Natvis Include="JsonObject.natvis" />
+    <Natvis Include="JsonTokenValue.natvis" />
+    <Natvis Include="JsonTokenValuePair.natvis" />
     <Natvis Include="JsonKeyValuePair.natvis" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
