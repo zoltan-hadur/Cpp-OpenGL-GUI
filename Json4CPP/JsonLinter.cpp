@@ -218,9 +218,8 @@ namespace Json4CPP::Detail
     return number;
   }
 
-  deque<pair<JsonToken, VALUE_TOKEN>> JsonLinter::ParseObject(wistream& is, int& level)
+  void JsonLinter::ParseObject(wistream& is, deque<pair<JsonToken, VALUE_TOKEN>>& tokens, int& level)
   {
-    auto tokens = deque<pair<JsonToken, VALUE_TOKEN>>();
     if (is.peek() == L'{')
     {
       tokens.push_back({ JsonToken::StartObject, L""s + (wchar_t)is.get() });
@@ -238,10 +237,7 @@ namespace Json4CPP::Detail
           auto message = "Expected ':' at position "s + GetFormattedStreamPositionA(is, is.tellg()) + "!"s;
           throw exception(message.c_str());
         }
-        for (auto& token : Read(is, level))
-        {
-          tokens.push_back(token);
-        }
+        Read(is, tokens, level);
         is >> ws;
         while (is.peek() == L',')
         {
@@ -258,10 +254,7 @@ namespace Json4CPP::Detail
             auto message = "Expected ':' at position "s + GetFormattedStreamPositionA(is, is.tellg()) + "!"s;
             throw exception(message.c_str());
           }
-          for (auto& token : Read(is, level))
-          {
-            tokens.push_back(token);
-          }
+          Read(is, tokens, level);
           is >> ws;
         }
         if (is.peek() == L'}')
@@ -284,12 +277,10 @@ namespace Json4CPP::Detail
       auto message = "Expected '{' at position "s + GetFormattedStreamPositionA(is, is.tellg()) + "!"s;
       throw exception(message.c_str());
     }
-    return tokens;
   }
 
-  deque<pair<JsonToken, VALUE_TOKEN>> JsonLinter::ParseArray(wistream& is, int& level)
+  void JsonLinter::ParseArray(wistream& is, deque<pair<JsonToken, VALUE_TOKEN>>& tokens, int& level)
   {
-    auto tokens = deque<pair<JsonToken, VALUE_TOKEN>>();
     if (is.peek() == L'[')
     {
       tokens.push_back({ JsonToken::StartArray, L""s + (wchar_t)is.get() });
@@ -302,19 +293,13 @@ namespace Json4CPP::Detail
       }
       if (is.peek() != L']')
       {
-        for (auto& token : Read(is, level))
-        {
-          tokens.push_back(token);
-        }
+        Read(is, tokens, level);
         is >> ws;
         while (is.peek() == L',')
         {
           is.get();
           is >> ws;
-          for (auto& token : Read(is, level))
-          {
-            tokens.push_back(token);
-          }
+          Read(is, tokens, level);
           is >> ws;
         }
         if (is.peek() == L']')
@@ -338,56 +323,38 @@ namespace Json4CPP::Detail
       auto message = "Expected '[' at position "s + GetFormattedStreamPositionA(is, is.tellg()) + "!"s;
       throw exception(message.c_str());
     }
-    return tokens;
   }
 
-  deque<pair<JsonToken, VALUE_TOKEN>> JsonLinter::Read(wistream     & is   , int& level)
+  void JsonLinter::Read(wistream& is, deque<pair<JsonToken, VALUE_TOKEN>>& tokens, int& level)
   {
-    auto tokens = deque<pair<JsonToken, VALUE_TOKEN>>();
     is >> ws;
     switch (is.peek())
     {
     case L'n':
-    {
-      tokens.push_back({ JsonToken::Null   , ParseNull(is)    });
+      tokens.push_back({ JsonToken::Null   , ParseNull   (is) });
       break;
-    }
+
     case L'\"':
-    {
-      tokens.push_back({ JsonToken::String , ParseString(is)  });
+      tokens.push_back({ JsonToken::String , ParseString (is) });
       break;
-    }
+
     case L't':
     case L'f':
-    {
       tokens.push_back({ JsonToken::Boolean, ParseBoolean(is) });
       break;
-    }
+
     default:
-    {
-      tokens.push_back({ JsonToken::Number   , ParseNumber(is)  });
+      tokens.push_back({ JsonToken::Number , ParseNumber (is) });
       break;
-    }
+
     case L'{':
-    {
-      level++;
-      for (auto& token : ParseObject(is, level))
-      {
-        tokens.push_back(token);
-      }
+      ParseObject(is, tokens, ++level);
       break;
-    }
+
     case L'[':
-    {
-      level++;
-      for (auto& token : ParseArray(is, level))
-      {
-        tokens.push_back(token);
-      }
+      ParseArray(is, tokens, ++level);
       break;
     }
-    }
-    return tokens;
   }
 
   wostream& JsonLinter::Write(wostream& os, JsonToken const& token, VALUE_TOKEN const& value)
@@ -510,8 +477,8 @@ namespace Json4CPP::Detail
           break;
         default:
           auto message = WString2String(L"Expected one of the following tokens: "s +
-            Detail::Dump(JsonToken::Null) + L", "s + Detail::Dump(JsonToken::String) + L", "s +
-            Detail::Dump(JsonToken::Boolean) + L", "s + Detail::Dump(JsonToken::Number) + L", "s +
+            Detail::Dump(JsonToken::Null       ) + L", "s   + Detail::Dump(JsonToken::String    ) + L", "s +
+            Detail::Dump(JsonToken::Boolean    ) + L", "s   + Detail::Dump(JsonToken::Number    ) + L", "s +
             Detail::Dump(JsonToken::StartObject) + L" or "s + Detail::Dump(JsonToken::StartArray) + L"!"s);
           throw exception(message.c_str());
         }
@@ -536,8 +503,8 @@ namespace Json4CPP::Detail
       else
       {
         auto message = WString2String(L"Expected one of the following tokens: "s +
-          Detail::Dump(JsonToken::Null) + L", "s + Detail::Dump(JsonToken::String) + L", "s +
-          Detail::Dump(JsonToken::Boolean) + L", "s + Detail::Dump(JsonToken::Number) + L", "s +
+          Detail::Dump(JsonToken::Null       ) + L", "s   + Detail::Dump(JsonToken::String    ) + L", "s +
+          Detail::Dump(JsonToken::Boolean    ) + L", "s   + Detail::Dump(JsonToken::Number    ) + L", "s +
           Detail::Dump(JsonToken::StartObject) + L" or "s + Detail::Dump(JsonToken::StartArray) + L"!"s);
         throw exception(message.c_str());
       }
@@ -607,8 +574,8 @@ namespace Json4CPP::Detail
         break;
       default:
         auto message = WString2String(L"Expected one of the following tokens: "s +
-          Detail::Dump(JsonToken::Null) + L", "s + Detail::Dump(JsonToken::String) + L", "s +
-          Detail::Dump(JsonToken::Boolean) + L", "s + Detail::Dump(JsonToken::Number) + L", "s +
+          Detail::Dump(JsonToken::Null       ) + L", "s   + Detail::Dump(JsonToken::String    ) + L", "s +
+          Detail::Dump(JsonToken::Boolean    ) + L", "s   + Detail::Dump(JsonToken::Number    ) + L", "s +
           Detail::Dump(JsonToken::StartObject) + L" or "s + Detail::Dump(JsonToken::StartArray) + L"!"s);
         throw exception(message.c_str());
       }
@@ -637,7 +604,8 @@ namespace Json4CPP::Detail
   deque<pair<JsonToken, VALUE_TOKEN>> JsonLinter::Read(wistream     & is   )
   {
     auto level = 0;
-    auto tokens = Read(is, level);
+    auto tokens = deque<pair<JsonToken, VALUE_TOKEN>>();
+    Read(is, tokens, level);
     if (level >= 20)
     {
       auto message = "Depth is greater or equal to the maximum 20: "s + to_string(level) + "!"s;
