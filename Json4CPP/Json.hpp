@@ -8,4 +8,6 @@
 #include "JsonBuilderType.h"
 #include "JsonDefault.h"
 #include "JsonType.h"
+#include "JsonToken.h"
+#include "JsonLinter.h"
 #include "Value.h"
