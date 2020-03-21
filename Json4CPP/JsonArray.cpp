@@ -11,11 +11,11 @@ using namespace Json4CPP::Detail;
 
 namespace Json4CPP
 {
-  JsonArray JsonArray::Read(deque<pair<JsonToken, VALUE_TOKEN>>& tokens)
+  JsonArray JsonArray::Read(TOKEN_COLLECTION& tokens)
   {
     if (tokens.empty())
     {
-      auto message = WString2String(L"Expected token: " + Json::Stringify(JsonToken::StartArray) + L"!");
+      auto message = WString2String(L"Expected token: "s + Json::Stringify(JsonToken::StartArray) + L"!"s);
       throw exception(message.c_str());
     }
 
@@ -27,7 +27,7 @@ namespace Json4CPP
     }
     else
     {
-      auto message = WString2String(L"Expected token: " + Json::Stringify(JsonToken::StartArray) + L"!");
+      auto message = WString2String(L"Expected token: "s + Json::Stringify(JsonToken::StartArray) + L"!"s);
       throw exception(message.c_str());
     }
 
@@ -45,16 +45,16 @@ namespace Json4CPP
       case JsonToken::EndArray   : tokens.pop_front(); return array;
       default:
       {
-        auto message = WString2String(L"Invalid token: " + Json::Stringify(token) + L"!");
+        auto message = WString2String(L"Invalid token: "s + Json::Stringify(token) + L"!"s);
         throw exception(message.c_str());
       }
       }
     }
-    auto message = WString2String(L"Expected token: " + Json::Stringify(JsonToken::EndArray) + L"!");
+    auto message = WString2String(L"Expected token: "s + Json::Stringify(JsonToken::EndArray) + L"!"s);
     throw exception(message.c_str());
   }
 
-  void JsonArray::Write(JsonArray const& array, deque<pair<JsonToken, VALUE_TOKEN>>& tokens)
+  void JsonArray::Write(JsonArray const& array, TOKEN_COLLECTION& tokens)
   {
     tokens.push_back({ JsonToken::StartArray, L"["s });
     for (auto& value : array._values)
@@ -68,10 +68,10 @@ namespace Json4CPP
   {
     auto indent = wstring(indentation * level, L' ');
     auto single = wstring(indentation, L' ');
-    auto newLine = indentation == 0 ? L"" : L"\r\n";
+    auto newLine = indentation == 0 ? L""s : L"\r\n"s;
     auto size = _values.size();
 
-    os << L"[" << newLine;
+    os << L"["s << newLine;
     for (int i = 0; i < size; ++i)
     {
       auto& value = _values[i];
@@ -84,11 +84,11 @@ namespace Json4CPP
       }
       if (i < size - 1)
       {
-        os << L",";
+        os << L","s;
       }
       os << newLine;
     }
-    os << indent << L"]";
+    os << indent << L"]"s;
   }
 
   JsonArray::JsonArray(JsonBuilder builder)
@@ -106,12 +106,15 @@ namespace Json4CPP
     }
     else
     {
-      auto message = WString2String(L"JsonArray(JsonBuilder builder) is not defined for type " + Json::Stringify(builder.Type()) + L"!");
+      auto message = WString2String(L"JsonArray(JsonBuilder builder) is not defined for type "s + Json::Stringify(builder.Type()) + L"!"s);
       throw exception(message.c_str());
     }
   }
 
-  JsonArray::JsonArray(std::initializer_list<JsonBuilder> builders) : JsonArray(JsonBuilder(builders)) {}
+  JsonArray::JsonArray(initializer_list<JsonBuilder> builders) : JsonArray(JsonBuilder(builders))
+  {
+
+  }
 
   JsonArray::JsonArray(JsonArray const& array)
   {
@@ -170,22 +173,22 @@ namespace Json4CPP
     return _values[index];
   }
 
-  std::vector<Json>::iterator JsonArray::begin()
+  vector<Json>::iterator JsonArray::begin()
   {
     return _values.begin();
   }
 
-  std::vector<Json>::iterator JsonArray::end()
+  vector<Json>::iterator JsonArray::end()
   {
     return _values.end();
   }
 
-  std::vector<Json>::const_iterator JsonArray::begin() const
+  vector<Json>::const_iterator JsonArray::begin() const
   {
     return _values.begin();
   }
 
-  std::vector<Json>::const_iterator JsonArray::end() const
+  vector<Json>::const_iterator JsonArray::end() const
   {
     return _values.end();
   }

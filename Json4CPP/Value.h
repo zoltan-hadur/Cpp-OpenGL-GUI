@@ -10,7 +10,6 @@
 #include "JsonBuilderType.h"
 
 #include <variant>
-#include <cstddef>
 #include <string>
 #include <vector>
 #include <ostream>

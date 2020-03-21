@@ -218,7 +218,7 @@ namespace Json4CPP::Detail
     return number;
   }
 
-  void JsonLinter::ParseObject(wistream& is, deque<pair<JsonToken, VALUE_TOKEN>>& tokens, int& level)
+  void JsonLinter::ParseObject(wistream& is, TOKEN_COLLECTION& tokens, int& level)
   {
     if (is.peek() == L'{')
     {
@@ -279,7 +279,7 @@ namespace Json4CPP::Detail
     }
   }
 
-  void JsonLinter::ParseArray(wistream& is, deque<pair<JsonToken, VALUE_TOKEN>>& tokens, int& level)
+  void JsonLinter::ParseArray(wistream& is, TOKEN_COLLECTION& tokens, int& level)
   {
     if (is.peek() == L'[')
     {
@@ -325,7 +325,7 @@ namespace Json4CPP::Detail
     }
   }
 
-  void JsonLinter::Read(wistream& is, deque<pair<JsonToken, VALUE_TOKEN>>& tokens, int& level)
+  void JsonLinter::Read(wistream& is, TOKEN_COLLECTION& tokens, int& level)
   {
     is >> ws;
     switch (is.peek())
@@ -399,7 +399,7 @@ namespace Json4CPP::Detail
     return os;
   }
 
-  wostream& JsonLinter::WriteObject(wostream& os, deque<pair<JsonToken, VALUE_TOKEN>>& tokens, uint8_t indentation, uint64_t level)
+  wostream& JsonLinter::WriteObject(wostream& os, TOKEN_COLLECTION& tokens, uint8_t indentation, uint64_t level)
   {
     if (tokens.empty())
     {
@@ -513,7 +513,7 @@ namespace Json4CPP::Detail
     throw exception(message.c_str());
   }
 
-  wostream& JsonLinter::WriteArray(wostream& os, deque<pair<JsonToken, VALUE_TOKEN>>& tokens, uint8_t indentation, uint64_t level)
+  wostream& JsonLinter::WriteArray(wostream& os, TOKEN_COLLECTION& tokens, uint8_t indentation, uint64_t level)
   {
     if (tokens.empty())
     {
@@ -601,10 +601,10 @@ namespace Json4CPP::Detail
     throw exception(message.c_str());
   }
 
-  deque<pair<JsonToken, VALUE_TOKEN>> JsonLinter::Read(wistream     & is   )
+  TOKEN_COLLECTION JsonLinter::Read(wistream     & is   )
   {
     auto level = 0;
-    auto tokens = deque<pair<JsonToken, VALUE_TOKEN>>();
+    auto tokens = TOKEN_COLLECTION();
     Read(is, tokens, level);
     if (level >= 20)
     {
@@ -620,12 +620,12 @@ namespace Json4CPP::Detail
     throw exception(message.c_str());
   }
 
-  deque<pair<JsonToken, VALUE_TOKEN>> JsonLinter::Read(wstring const& value)
+  TOKEN_COLLECTION JsonLinter::Read(wstring const& value)
   {
     return Read(wstringstream(value));
   }
 
-  wostream& JsonLinter::Write(wostream& os, deque<pair<JsonToken, VALUE_TOKEN>>& tokens, uint8_t indentation, uint64_t level)
+  wostream& JsonLinter::Write(wostream& os, TOKEN_COLLECTION& tokens, uint8_t indentation, uint64_t level)
   {
     auto& [token, value] = tokens.front();
     switch (token)

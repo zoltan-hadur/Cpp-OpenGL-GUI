@@ -12,11 +12,11 @@ using namespace Json4CPP::Detail;
 
 namespace Json4CPP
 {
-  JsonObject JsonObject::Read(deque<pair<JsonToken, VALUE_TOKEN>>& tokens)
+  JsonObject JsonObject::Read(TOKEN_COLLECTION& tokens)
   {
     if (tokens.empty())
     {
-      auto message = WString2String(L"Expected token: " + Json::Stringify(JsonToken::StartObject) + L"!");
+      auto message = WString2String(L"Expected token: "s + Json::Stringify(JsonToken::StartObject) + L"!"s);
       throw exception(message.c_str());
     }
 
@@ -30,7 +30,7 @@ namespace Json4CPP
     }
     else
     {
-      auto message = WString2String(L"Expected token: " + Json::Stringify(JsonToken::StartObject) + L"!");
+      auto message = WString2String(L"Expected token: "s + Json::Stringify(JsonToken::StartObject) + L"!"s);
       throw exception(message.c_str());
     }
 
@@ -40,7 +40,7 @@ namespace Json4CPP
       // Property then value then property then value etc...
       if (counter++ % 2 == 0 && token != JsonToken::PropertyName)
       {
-        auto message = WString2String(L"Expected token: " + Json::Stringify(JsonToken::PropertyName) + L"!");
+        auto message = WString2String(L"Expected token: "s + Json::Stringify(JsonToken::PropertyName) + L"!"s);
         throw exception(message.c_str());
       }
       switch (token)
@@ -55,16 +55,16 @@ namespace Json4CPP
       case JsonToken::EndObject   : tokens.pop_front(); return object;
       default:
       {
-        auto message = WString2String(L"Invalid token: " + Json::Stringify(token) + L"!");
+        auto message = WString2String(L"Invalid token: "s + Json::Stringify(token) + L"!"s);
         throw exception(message.c_str());
       }
       }
     }
-    auto message = WString2String(L"Expected token: " + Json::Stringify(JsonToken::EndObject) + L"!");
+    auto message = WString2String(L"Expected token: "s + Json::Stringify(JsonToken::EndObject) + L"!"s);
     throw exception(message.c_str());
   }
 
-  void JsonObject::Write(JsonObject const& object, deque<pair<JsonToken, VALUE_TOKEN>>& tokens)
+  void JsonObject::Write(JsonObject const& object, TOKEN_COLLECTION& tokens)
   {
     tokens.push_back({ JsonToken::StartObject, L"{"s });
     for (auto& [key, value] : object._pairs)
@@ -79,16 +79,16 @@ namespace Json4CPP
   {
     auto indent = wstring(indentation * level, L' ');
     auto single = wstring(indentation, L' ');
-    auto newLine = indentation == 0 ? L"" : L"\r\n";
-    auto space = indentation == 0 ? L"" : L" ";
+    auto newLine = indentation == 0 ? L""s : L"\r\n"s;
+    auto space = indentation == 0 ? L""s : L" "s;
     auto size = _pairs.size();
 
-    os << L"{" << newLine;
+    os << L"{"s << newLine;
     for (int i = 0; i < size; ++i)
     {
       auto& [key, value] = _pairs[i];
       os << indent << single;
-      os << L"\"" << key << L"\":" << space;
+      os << L"\""s << key << L"\":"s << space;
       switch (value.Type())
       {
       case JsonType::Object: value.Get<JsonObject>()._Dump(os, indentation, level + 1); break;
@@ -97,11 +97,11 @@ namespace Json4CPP
       }
       if (i < size - 1)
       {
-        os << L",";
+        os << L","s;
       }
       os << newLine;
     }
-    os << indent << L"}";
+    os << indent << L"}"s;
   }
 
   JsonObject::JsonObject(JsonBuilder builder)
@@ -127,20 +127,23 @@ namespace Json4CPP
             [&](auto const& arg) { value = arg; },
             [&](vector<JsonBuilder> const& arg) { },  // Empty as it is impossible
           }, builder._value);
-          auto message = WString2String(L"JsonObject(JsonBuilder builder) is not defined for type " + Json::Stringify(builder.Type()) + L"!" +
-                                        L" Error at: " + Json::Stringify(Json(value)) + L".");
+          auto message = WString2String(L"JsonObject(JsonBuilder builder) is not defined for type "s + Json::Stringify(builder.Type()) + L"!"s +
+                                        L" Error at: "s + Json::Stringify(Json(value)) + L"."s);
           throw exception(message.c_str());
         }
       }
     }
     else
     {
-      auto message = WString2String(L"JsonObject(JsonBuilder builder) is not defined for type " + Json::Stringify(builder.Type()) + L"!");
+      auto message = WString2String(L"JsonObject(JsonBuilder builder) is not defined for type "s + Json::Stringify(builder.Type()) + L"!"s);
       throw exception(message.c_str());
     }
   }
 
-  JsonObject::JsonObject(std::initializer_list<JsonBuilder> builders) : JsonObject(JsonBuilder(builders)) {}
+  JsonObject::JsonObject(initializer_list<JsonBuilder> builders) : JsonObject(JsonBuilder(builders))
+  {
+
+  }
 
   JsonObject::JsonObject(JsonObject const& object)
   {
@@ -180,7 +183,7 @@ namespace Json4CPP
   void JsonObject::Erase(KEY key)
   {
     if (!_indexes.count(key)) return;
-    _pairs.erase(std::remove_if(_pairs.begin(), _pairs.end(), [&](std::pair<KEY, Json> const& pair) { return pair.first == key; }), _pairs.end());
+    _pairs.erase(remove_if(_pairs.begin(), _pairs.end(), [&](pair<KEY, Json> const& pair) { return pair.first == key; }), _pairs.end());
     _indexes.clear();
     for (int i = 0; i < _pairs.size(); ++i)
     {
@@ -188,7 +191,7 @@ namespace Json4CPP
     }
   }
 
-  std::vector<KEY> JsonObject::Keys() const
+  vector<KEY> JsonObject::Keys() const
   {
     vector<KEY> keys;
     transform(_pairs.begin(), _pairs.end(), back_inserter(keys), [](pair<KEY, Json> const& pair) { return pair.first; });
@@ -211,22 +214,22 @@ namespace Json4CPP
     return _pairs[_indexes.at(key)].second;
   }
 
-  std::vector<std::pair<KEY, Json>>::iterator JsonObject::begin()
+  vector<pair<KEY, Json>>::iterator JsonObject::begin()
   {
     return _pairs.begin();
   }
 
-  std::vector<std::pair<KEY, Json>>::iterator JsonObject::end()
+  vector<pair<KEY, Json>>::iterator JsonObject::end()
   {
     return _pairs.end();
   }
 
-  std::vector<std::pair<KEY, Json>>::const_iterator JsonObject::begin() const
+  vector<pair<KEY, Json>>::const_iterator JsonObject::begin() const
   {
     return _pairs.begin();
   }
 
-  std::vector<std::pair<KEY, Json>>::const_iterator JsonObject::end() const
+  vector<pair<KEY, Json>>::const_iterator JsonObject::end() const
   {
     return _pairs.end();
   }

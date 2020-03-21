@@ -47,8 +47,8 @@ namespace Json4CPP
 #pragma warning(suppress: 4251)
     Detail::VALUE _value;
 
-    static Json Read(std::deque<std::pair<Detail::JsonToken, Detail::VALUE_TOKEN>>& tokens);
-    static void Write(Json const& json, std::deque<std::pair<Detail::JsonToken, Detail::VALUE_TOKEN>>& tokens);
+    static Json Read (                  Detail::TOKEN_COLLECTION& tokens);
+    static void Write(Json const& json, Detail::TOKEN_COLLECTION& tokens);
     void _Dump(std::wstringstream& os, uint8_t indentation, uint64_t level) const;
   public:
     Json();
@@ -112,9 +112,9 @@ namespace Json4CPP
     std::vector<KEY> Keys() const;
     Json& operator[](KEY const& key);
     Json& operator[](int64_t const& index);
-    Json At(KEY const& key) const;
-    Json& At(KEY const& key);
-    Json At(int64_t const& index) const;
+    Json  At(KEY     const& key  ) const;
+    Json& At(KEY     const& key  );
+    Json  At(int64_t const& index) const;
     Json& At(int64_t const& index);
 
     explicit operator std::nullptr_t () const;

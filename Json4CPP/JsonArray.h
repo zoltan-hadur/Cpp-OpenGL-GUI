@@ -34,8 +34,8 @@ namespace Json4CPP
 #pragma warning(suppress: 4251)
     std::vector<Json> _values;
 
-    static JsonArray Read(std::deque<std::pair<Detail::JsonToken, Detail::VALUE_TOKEN>>& tokens);
-    static void Write(JsonArray const& array, std::deque<std::pair<Detail::JsonToken, Detail::VALUE_TOKEN>>& tokens);
+    static JsonArray Read (                        Detail::TOKEN_COLLECTION& tokens);
+    static void      Write(JsonArray const& array, Detail::TOKEN_COLLECTION& tokens);
     void _Dump(std::wstringstream& os, uint8_t indentation, uint64_t level) const;
   public:
     JsonArray() = default;
@@ -48,17 +48,17 @@ namespace Json4CPP
     int64_t Size() const;
     void Resize(int64_t size);
     void Clear();
-    void PushBack(Json value);
-    void Insert(Json value, int64_t index);
-    void Erase(int64_t index);
+    void PushBack(Json value               );
+    void Insert  (Json value, int64_t index);
+    void Erase   (            int64_t index);
     Json& operator[](int64_t const& index);
-    Json At(int64_t const& index) const;
-    Json& At(int64_t const& index);
+    Json  At        (int64_t const& index) const;
+    Json& At        (int64_t const& index);
 
-    std::vector<Json>::iterator begin();
-    std::vector<Json>::iterator end();
+    std::vector<Json>::      iterator begin();
+    std::vector<Json>::      iterator end  ();
     std::vector<Json>::const_iterator begin() const;
-    std::vector<Json>::const_iterator end() const;
+    std::vector<Json>::const_iterator end  () const;
 
     JSON_API friend std::wostream& operator<<(std::wostream& os, JsonArray const& array);
     JSON_API friend std::wistream& operator>>(std::wistream& is, JsonArray      & array);

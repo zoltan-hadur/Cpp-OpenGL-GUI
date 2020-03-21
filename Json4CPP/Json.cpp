@@ -17,33 +17,25 @@ using namespace Json4CPP::Detail;
 
 namespace Json4CPP
 {
-  Json operator""_json(const wchar_t* value, std::size_t size)
+  Json operator""_json(const wchar_t* value, size_t size)
   {
     return Json::Read(JsonLinter::Read(value));
   }
 
-  Json Json::Read(deque<pair<JsonToken, VALUE_TOKEN>>& tokens)
+  Json Json::Read(TOKEN_COLLECTION& tokens)
   {
     auto& [token, value] = tokens.front();
     switch (token)
     {
-    case JsonToken::StartObject:
-    {
-      return JsonObject::Read(tokens);
-    }
-    case JsonToken::StartArray:
-    {
-      return JsonArray::Read(tokens);
-    }
+    case JsonToken::StartObject: return JsonObject::Read(tokens);
+    case JsonToken::StartArray : return JsonArray ::Read(tokens);
     default:
-    {
-      auto message = WString2String(L"Invalid token: " + Json::Stringify(token) + L", with invalid data: "s + JsonLinter::Dump(value) + L"!");
+      auto message = WString2String(L"Invalid token: "s + Json::Stringify(token) + L", with invalid data: "s + JsonLinter::Dump(value) + L"!"s);
       throw exception(message.c_str());
-    }
     }
   }
 
-  void Json::Write(Json const& json, deque<pair<JsonToken, VALUE_TOKEN>>& tokens)
+  void Json::Write(Json const& json, TOKEN_COLLECTION& tokens)
   {
     switch (Value::GetType(json._value))
     {
@@ -54,16 +46,14 @@ namespace Json4CPP
     case JsonType::Object : JsonObject::Write(get<JsonObject>(json._value), tokens); break;
     case JsonType::Array  : JsonArray ::Write(get<JsonArray >(json._value), tokens); break;
     default:
-    {
-      auto message = WString2String(L"Invalid type: " + Json::Stringify(Value::GetType(json._value)) + L"!");
+      auto message = WString2String(L"Invalid type: "s + Json::Stringify(Value::GetType(json._value)) + L"!"s);
       throw exception(message.c_str());
-    }
     }
   }
 
   void Json::_Dump(wstringstream& os, uint8_t indentation, uint64_t level) const
   {
-    auto tokens = deque<pair<JsonToken, VALUE_TOKEN>>();
+    auto tokens = TOKEN_COLLECTION();
     switch (Value::GetType(_value))
     {
     case JsonType::Null   : tokens.push_back({ JsonToken::Null   , get<nullptr_t>(_value) }); break;
@@ -74,7 +64,7 @@ namespace Json4CPP
     case JsonType::Array  : get<JsonArray >(_value)._Dump(os, indentation, level);            break;
     default:
     {
-      auto message = WString2String(L"Invalid type: " + Json::Stringify(Value::GetType(_value)) + L"!");
+      auto message = WString2String(L"Invalid type: "s + Json::Stringify(Value::GetType(_value)) + L"!"s);
       throw exception(message.c_str());
     }
     }
@@ -99,9 +89,16 @@ namespace Json4CPP
         {
           switch (value.Type())
           {
-          case JsonBuilderType::Empty: case JsonBuilderType::Object: _value = JsonObject(arg); break;
-          case JsonBuilderType::Array: case JsonBuilderType::Pair  : _value = JsonArray (arg); break;
-          default: throw exception("Should not be possible!");
+          case JsonBuilderType::Empty:
+          case JsonBuilderType::Object:
+            _value = JsonObject(arg);
+            break;
+          case JsonBuilderType::Array:
+          case JsonBuilderType::Pair:
+            _value = JsonArray (arg);
+            break;
+          default:
+            throw exception("Should not be possible!");
           }
         }
       }, value._value);
@@ -109,7 +106,10 @@ namespace Json4CPP
     }
   }
 
-  Json::Json(initializer_list<JsonBuilder> values) : Json(JsonBuilder(values)) {}
+  Json::Json(initializer_list<JsonBuilder> values) : Json(JsonBuilder(values))
+  {
+
+  }
 
   Json::Json(Json const& json)
   {
@@ -190,11 +190,11 @@ namespace Json4CPP
     }
   }
 
-  bool Json::Insert(std::pair<KEY, Json> pair)
+  bool Json::Insert(pair<KEY, Json> pair)
   {
     switch (Type())
     {
-    case JsonType::Null  : _value = JsonObject();
+    case JsonType::Null  : _value = JsonObject();   // Break is missing intentionally
     case JsonType::Object: return get<JsonObject>(_value).Insert(pair);
     default: throw exception("Insert(pair<KEY, Json> pair) is only defined for JsonObject!");
     }
@@ -204,7 +204,7 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Null : _value = JsonArray();
+    case JsonType::Null : _value = JsonArray();     // Break is missing intentionally
     case JsonType::Array: get<JsonArray>(_value).PushBack(value); break;
     default: throw exception("PushBack(Json value) is only defined for JsonArray!");
     }
@@ -228,7 +228,7 @@ namespace Json4CPP
     }
   }
 
-  std::vector<KEY> Json::Keys() const
+  vector<KEY> Json::Keys() const
   {
     switch (Type())
     {
@@ -241,12 +241,9 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Null:
-      _value = JsonObject();
-    case JsonType::Object:
-      return get<JsonObject>(_value)[key];
-    default:
-      throw exception("Operator[KEY] is only defined for JsonObject!");
+    case JsonType::Null  : _value = JsonObject();   // Break is missing intentionally
+    case JsonType::Object: return get<JsonObject>(_value)[key];
+    default: throw exception("Operator[KEY] is only defined for JsonObject!");
     }
   }
 
@@ -298,15 +295,15 @@ namespace Json4CPP
 #pragma region Conversion operators
 #pragma warning(push)
 #pragma warning(disable : 4244)
-  Json::operator std::nullptr_t() const
+  Json::operator nullptr_t() const
   {
     if (Is(JsonType::Null)) return nullptr;
     throw exception("Invalid conversion!");
   }
 
-  Json::operator std::wstring() const
+  Json::operator wstring() const
   {
-    if (Is(JsonType::String)) return Get<std::wstring>();
+    if (Is(JsonType::String)) return Get<wstring>();
     throw exception("Invalid conversion!");
   }
 
@@ -401,30 +398,30 @@ namespace Json4CPP
 #pragma warning(pop)
 #pragma endregion
 
-  Json& Json::operator=(std::nullptr_t                      value) { _value = value;               return *this; }
-  Json& Json::operator=(const wchar_t*                      value) { _value = std::wstring(value); return *this; }
-  Json& Json::operator=(std::wstring                        value) { _value = value;               return *this; }
-  Json& Json::operator=(bool                                value) { _value = value;               return *this; }
-  Json& Json::operator=(char                                value) { _value = double(value);       return *this; }
-  Json& Json::operator=(int8_t                              value) { _value = double(value);       return *this; }
-  Json& Json::operator=(uint8_t                             value) { _value = double(value);       return *this; }
-  Json& Json::operator=(int16_t                             value) { _value = double(value);       return *this; }
-  Json& Json::operator=(uint16_t                            value) { _value = double(value);       return *this; }
-  Json& Json::operator=(int32_t                             value) { _value = double(value);       return *this; }
-  Json& Json::operator=(uint32_t                            value) { _value = double(value);       return *this; }
-  Json& Json::operator=(int64_t                             value) { _value = double(value);       return *this; }
-  Json& Json::operator=(uint64_t                            value) { _value = double(value);       return *this; }
-  Json& Json::operator=(float                               value) { _value = double(value);       return *this; }
-  Json& Json::operator=(double                              value) { _value = value;               return *this; }
-  Json& Json::operator=(Json                                value) { _value = value._value;        return *this; }
-  Json& Json::operator=(JsonObject                          value) { _value = value;               return *this; }
-  Json& Json::operator=(JsonArray                           value) { _value = value;               return *this; }
-  Json& Json::operator=(JsonBuilder                         value) { _value = Json(value)._value;  return *this; }
-  Json& Json::operator=(std::initializer_list<JsonBuilder> values) { _value = Json(values)._value; return *this; }
+  Json& Json::operator=(nullptr_t                     value ) { _value = value;               return *this; }
+  Json& Json::operator=(const wchar_t*                value ) { _value = wstring(value);      return *this; }
+  Json& Json::operator=(wstring                       value ) { _value = value;               return *this; }
+  Json& Json::operator=(bool                          value ) { _value = value;               return *this; }
+  Json& Json::operator=(char                          value ) { _value = double(value);       return *this; }
+  Json& Json::operator=(int8_t                        value ) { _value = double(value);       return *this; }
+  Json& Json::operator=(uint8_t                       value ) { _value = double(value);       return *this; }
+  Json& Json::operator=(int16_t                       value ) { _value = double(value);       return *this; }
+  Json& Json::operator=(uint16_t                      value ) { _value = double(value);       return *this; }
+  Json& Json::operator=(int32_t                       value ) { _value = double(value);       return *this; }
+  Json& Json::operator=(uint32_t                      value ) { _value = double(value);       return *this; }
+  Json& Json::operator=(int64_t                       value ) { _value = double(value);       return *this; }
+  Json& Json::operator=(uint64_t                      value ) { _value = double(value);       return *this; }
+  Json& Json::operator=(float                         value ) { _value = double(value);       return *this; }
+  Json& Json::operator=(double                        value ) { _value = value;               return *this; }
+  Json& Json::operator=(Json                          value ) { _value = value._value;        return *this; }
+  Json& Json::operator=(JsonObject                    value ) { _value = value;               return *this; }
+  Json& Json::operator=(JsonArray                     value ) { _value = value;               return *this; }
+  Json& Json::operator=(JsonBuilder                   value ) { _value = Json(value)._value;  return *this; }
+  Json& Json::operator=(initializer_list<JsonBuilder> values) { _value = Json(values)._value; return *this; }
 
   wostream& operator<<(wostream& os, Json const& json)
   {
-    auto tokens = deque<pair<JsonToken, VALUE_TOKEN>>();
+    auto tokens = TOKEN_COLLECTION();
     Json::Write(json, tokens);
     return JsonLinter::Write(os, tokens, JsonDefault::Indentation, 0);
   }
@@ -435,28 +432,28 @@ namespace Json4CPP
     return is;
   }
 
-  bool  operator==(Json const& left, Json const& right) { return Value::Equal(left._value, right._value);                }
-  bool  operator!=(Json const& left, Json const& right) { return Value::NotEqual(left._value, right._value);             }
-  bool  operator< (Json const& left, Json const& right) { return Value::LessThan(left._value, right._value);             }
-  bool  operator<=(Json const& left, Json const& right) { return Value::LessThanOrEqual(left._value, right._value);      }
-  bool  operator> (Json const& left, Json const& right) { return Value::GreaterThan(left._value, right._value);          }
-  bool  operator>=(Json const& left, Json const& right) { return Value::GreaterThanOrEqual(left._value, right._value);   }
-  Json  operator+ (Json const& left, Json const& right) { return Json(Value::Add(left._value, right._value));            }
-  Json& operator+=(Json&       left, Json const& right) { Value::AddAssign(left._value, right._value); return left;      }
-  Json  operator- (Json const& left, Json const& right) { return Json(Value::Subtract(left._value, right._value));       }
-  Json& operator-=(Json&       left, Json const& right) { Value::SubtractAssign(left._value, right._value); return left; }
-  Json  operator* (Json const& left, Json const& right) { return Json(Value::Multiply(left._value, right._value));       }
-  Json& operator*=(Json&       left, Json const& right) { Value::MultiplyAssign(left._value, right._value); return left; }
-  Json  operator/ (Json const& left, Json const& right) { return Json(Value::Divide(left._value, right._value));         }
-  Json& operator/=(Json&       left, Json const& right) { Value::DivideAssign(left._value, right._value); return left;   }
-  Json  operator% (Json const& left, Json const& right) { return Json(Value::Modulo(left._value, right._value));         }
-  Json& operator%=(Json&       left, Json const& right) { Value::ModuloAssign(left._value, right._value); return left;   }
-  Json  operator- (Json const& value)                   { return Json(Value::Negate(value._value));                      }
-  bool  operator! (Json const& value)                   { return Value::Not(value._value);                               }
-  Json& operator++(Json&       value)                   { Value::PreIncrement(value._value); return value;               }
-  Json  operator++(Json&       value, int)              { return Json(Value::PostIncrement(value._value));               }
-  Json& operator--(Json&       value)                   { Value::PreDecrement(value._value); return value;               }
-  Json  operator--(Json&       value, int)              { return Json(Value::PostDecrement(value._value));               }
-  bool  operator&&(Json const& left, Json const& right) { return Value::LogicalAnd(left._value, right._value);           }
-  bool  operator||(Json const& left, Json const& right) { return Value::LogicalOr(left._value, right._value);            }
+  bool  operator==(Json const& left , Json const& right) { return      Value::             Equal( left._value, right._value) ;               }
+  bool  operator!=(Json const& left , Json const& right) { return      Value::          NotEqual( left._value, right._value) ;               }
+  bool  operator< (Json const& left , Json const& right) { return      Value::   LessThan       ( left._value, right._value) ;               }
+  bool  operator<=(Json const& left , Json const& right) { return      Value::   LessThanOrEqual( left._value, right._value) ;               }
+  bool  operator> (Json const& left , Json const& right) { return      Value::GreaterThan       ( left._value, right._value) ;               }
+  bool  operator>=(Json const& left , Json const& right) { return      Value::GreaterThanOrEqual( left._value, right._value) ;               }
+  Json  operator+ (Json const& left , Json const& right) { return Json(Value::         Add      ( left._value, right._value));               }
+  Json& operator+=(Json      & left , Json const& right) {             Value::         AddAssign( left._value, right._value) ; return left ; }
+  Json  operator- (Json const& left , Json const& right) { return Json(Value::    Subtract      ( left._value, right._value));               }
+  Json& operator-=(Json      & left , Json const& right) {             Value::    SubtractAssign( left._value, right._value) ; return left ; }
+  Json  operator* (Json const& left , Json const& right) { return Json(Value::    Multiply      ( left._value, right._value));               }
+  Json& operator*=(Json      & left , Json const& right) {             Value::    MultiplyAssign( left._value, right._value) ; return left ; }
+  Json  operator/ (Json const& left , Json const& right) { return Json(Value::      Divide      ( left._value, right._value));               }
+  Json& operator/=(Json      & left , Json const& right) {             Value::      DivideAssign( left._value, right._value) ; return left ; }
+  Json  operator% (Json const& left , Json const& right) { return Json(Value::      Modulo      ( left._value, right._value));               }
+  Json& operator%=(Json      & left , Json const& right) {             Value::      ModuloAssign( left._value, right._value) ; return left ; }
+  Json  operator- (Json const& value                   ) { return Json(Value::Negate            (value._value              ));               }
+  bool  operator! (Json const& value                   ) { return      Value::Not               (value._value              ) ;               }
+  Json& operator++(Json      & value                   ) {             Value:: PreIncrement     (value._value              ) ; return value; }
+  Json  operator++(Json      & value, int              ) { return Json(Value::PostIncrement     (value._value              ));               }
+  Json& operator--(Json      & value                   ) {             Value:: PreDecrement     (value._value              ) ; return value; }
+  Json  operator--(Json      & value, int              ) { return Json(Value::PostDecrement     (value._value              ));               }
+  bool  operator&&(Json const& left , Json const& right) { return      Value::LogicalAnd        ( left._value, right._value) ;               }
+  bool  operator||(Json const& left , Json const& right) { return      Value::LogicalOr         ( left._value, right._value) ;               }
 }

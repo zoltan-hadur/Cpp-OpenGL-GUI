@@ -9,25 +9,25 @@ namespace Json4CPP::Detail
   wstring EscapeString(wstring value)
   {
     wostringstream os;
-    for (auto c = value.cbegin(); c != value.cend(); ++c)
+    for (auto& c : value)
     {
-      switch (*c)
+      switch (c)
       {
-      case L'"' : os << L"\\\""; break;
-      case L'\\': os << L"\\\\"; break;
-      case L'\b': os << L"\\b" ; break;
-      case L'\f': os << L"\\f" ; break;
-      case L'\n': os << L"\\n" ; break;
-      case L'\r': os << L"\\r" ; break;
-      case L'\t': os << L"\\t" ; break;
+      case L'"' : os << L"\\\""s; break;
+      case L'\\': os << L"\\\\"s; break;
+      case L'\b': os << L"\\b"s ; break;
+      case L'\f': os << L"\\f"s ; break;
+      case L'\n': os << L"\\n"s ; break;
+      case L'\r': os << L"\\r"s ; break;
+      case L'\t': os << L"\\t"s ; break;
       default:
-        if (L'\x00' <= *c && *c <= L'\x1f')
+        if (L'\x00' <= c && c <= L'\x1f')
         {
-          os << L"\\u" << hex << setw(4) << setfill(L'0') << (int)*c;
+          os << L"\\u"s << hex << setw(4) << setfill(L'0') << (int)c;
         }
         else
         {
-          os << *c;
+          os << c;
         }
       }
     }
@@ -75,12 +75,12 @@ namespace Json4CPP::Detail
   wstring GetFormattedStreamPosition(wistream& is, wistream::pos_type pos)
   {
     auto [line, column] = GetStreamPosition(is, pos);
-    return L"Line: " + to_wstring(line) + L" Column: " + to_wstring(column);
+    return L"Line: "s + to_wstring(line) + L" Column: "s + to_wstring(column);
   }
 
   string GetFormattedStreamPositionA(wistream& is, wistream::pos_type pos)
   {
     auto [line, column] = GetStreamPosition(is, pos);
-    return "Line: " + to_string(line) + " Column: " + to_string(column);
+    return "Line: "s + to_string(line) + " Column: "s + to_string(column);
   }
 }

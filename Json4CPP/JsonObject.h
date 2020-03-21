@@ -38,8 +38,8 @@ namespace Json4CPP
 #pragma warning(suppress: 4251)
     std::unordered_map<KEY, int64_t> _indexes;
 
-    static JsonObject Read(std::deque<std::pair<Detail::JsonToken, Detail::VALUE_TOKEN>>& tokens);
-    static void Write(JsonObject const& object, std::deque<std::pair<Detail::JsonToken, Detail::VALUE_TOKEN>>& tokens);
+    static JsonObject Read (                          Detail::TOKEN_COLLECTION& tokens);
+    static void       Write(JsonObject const& object, Detail::TOKEN_COLLECTION& tokens);
     void _Dump(std::wstringstream& os, uint8_t indentation, uint64_t level) const;
   public:
     JsonObject() = default;
@@ -55,13 +55,13 @@ namespace Json4CPP
     void Erase(KEY key);
     std::vector<KEY> Keys() const;
     Json& operator[](KEY const& key);
-    Json At(KEY const& key) const;
-    Json& At(KEY const& key);
+    Json  At        (KEY const& key) const;
+    Json& At        (KEY const& key);
 
-    std::vector<std::pair<KEY, Json>>::iterator begin();
-    std::vector<std::pair<KEY, Json>>::iterator end();
+    std::vector<std::pair<KEY, Json>>::      iterator begin();
+    std::vector<std::pair<KEY, Json>>::      iterator end  ();
     std::vector<std::pair<KEY, Json>>::const_iterator begin() const;
-    std::vector<std::pair<KEY, Json>>::const_iterator end() const;
+    std::vector<std::pair<KEY, Json>>::const_iterator end  () const;
 
     JSON_API friend std::wostream& operator<<(std::wostream& os, JsonObject const& object);
     JSON_API friend std::wistream& operator>>(std::wistream& is, JsonObject      & object);

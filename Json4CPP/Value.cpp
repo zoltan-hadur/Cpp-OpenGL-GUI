@@ -89,7 +89,7 @@ namespace Json4CPP::Detail::Value
       [&](double     const& l, double     const& r) { result = l < r; },
       [&](auto       const& l, auto       const& r)
       {
-        auto message = "Operator< is not defined for types " + string(typeid(l).name()) + " and " + string(typeid(r).name()) + "!";
+        auto message = "Operator< is not defined for types "s + string(typeid(l).name()) + " and "s + string(typeid(r).name()) + "!"s;
         throw exception(message.c_str());
       }
     }, left, right);
@@ -110,7 +110,7 @@ namespace Json4CPP::Detail::Value
       [&](double     const& l, double     const& r) { result = l <= r; },
       [&](auto       const& l, auto       const& r)
       {
-        auto message = "Operator<= is not defined for types " + string(typeid(l).name()) + " and " + string(typeid(r).name()) + "!";
+        auto message = "Operator<= is not defined for types "s + string(typeid(l).name()) + " and "s + string(typeid(r).name()) + "!"s;
         throw exception(message.c_str());
       }
     }, left, right);
@@ -131,7 +131,7 @@ namespace Json4CPP::Detail::Value
       [&](double     const& l, double     const& r) { result = l > r; },
       [&](auto       const& l, auto       const& r)
       {
-        auto message = "Operator> is not defined for types " + string(typeid(l).name()) + " and " + string(typeid(r).name()) + "!";
+        auto message = "Operator> is not defined for types "s + string(typeid(l).name()) + " and "s + string(typeid(r).name()) + "!"s;
         throw exception(message.c_str());
       }
     }, left, right);
@@ -152,7 +152,7 @@ namespace Json4CPP::Detail::Value
       [&](double     const& l, double     const& r) { result = l >= r; },
       [&](auto       const& l, auto       const& r)
       {
-        auto message = "Operator>= is not defined for types " + string(typeid(l).name()) + " and " + string(typeid(r).name()) + "!";
+        auto message = "Operator>= is not defined for types "s + string(typeid(l).name()) + " and "s + string(typeid(r).name()) + "!"s;
         throw exception(message.c_str());
       }
     }, left, right);
@@ -173,7 +173,7 @@ namespace Json4CPP::Detail::Value
       [&](double     const& l, double     const& r) { result = l + r;                 },
       [&](auto       const& l, auto       const& r)
       {
-        auto message = "Operator+ is not defined for types " + string(typeid(l).name()) + " and " + string(typeid(r).name()) + "!";
+        auto message = "Operator+ is not defined for types "s + string(typeid(l).name()) + " and "s + string(typeid(r).name()) + "!"s;
         throw exception(message.c_str());
       }
     }, left, right);
@@ -193,7 +193,7 @@ namespace Json4CPP::Detail::Value
       [&](double     & l, double     const& r) { left = l + r;                 },
       [&](auto       & l, auto       const& r)
       {
-        auto message = "Operator+= is not defined for types " + string(typeid(l).name()) + " and " + string(typeid(r).name()) + "!";
+        auto message = "Operator+= is not defined for types "s + string(typeid(l).name()) + " and "s + string(typeid(r).name()) + "!"s;
         throw exception(message.c_str());
       }
     }, left, right);
@@ -213,7 +213,7 @@ namespace Json4CPP::Detail::Value
       [&](double     const& l, double     const& r) { result = l - r;                 },
       [&](auto       const& l, auto       const& r)
       {
-        auto message = "Operator- is not defined for types " + string(typeid(l).name()) + " and " + string(typeid(r).name()) + "!";
+        auto message = "Operator- is not defined for types "s + string(typeid(l).name()) + " and "s + string(typeid(r).name()) + "!"s;
         throw exception(message.c_str());
       }
     }, left, right);
@@ -232,7 +232,7 @@ namespace Json4CPP::Detail::Value
       [&](double     & l, double     const& r) { left = l - r;                 },
       [&](auto       & l, auto       const& r)
       {
-        auto message = "Operator-= is not defined for types " + string(typeid(l).name()) + " and " + string(typeid(r).name()) + "!";
+        auto message = "Operator-= is not defined for types "s + string(typeid(l).name()) + " and "s + string(typeid(r).name()) + "!"s;
         throw exception(message.c_str());
       }
     }, left, right);
@@ -252,7 +252,7 @@ namespace Json4CPP::Detail::Value
       [&](double     const& l, double     const& r) { result = l * r;                 },
       [&](auto       const& l, auto       const& r)
       {
-        auto message = "Operator* is not defined for types " + string(typeid(l).name()) + " and " + string(typeid(r).name()) + "!";
+        auto message = "Operator* is not defined for types "s + string(typeid(l).name()) + " and "s + string(typeid(r).name()) + "!"s;
         throw exception(message.c_str());
       }
     }, left, right);
@@ -271,7 +271,7 @@ namespace Json4CPP::Detail::Value
       [&](double     & l, double     const& r) { left = l * r;                 },
       [&](auto       & l, auto       const& r)
       {
-        auto message = "Operator*= is not defined for types " + string(typeid(l).name()) + " and " + string(typeid(r).name()) + "!";
+        auto message = "Operator*= is not defined for types "s + string(typeid(l).name()) + " and "s + string(typeid(r).name()) + "!"s;
         throw exception(message.c_str());
       }
     }, left, right);
@@ -292,7 +292,7 @@ namespace Json4CPP::Detail::Value
       [&](double     const& l, double     const& r) { result = l / r;                      },
       [&](auto       const& l, auto       const& r)
       {
-        auto message = "Operator/ is not defined for types " + string(typeid(l).name()) + " and " + string(typeid(r).name()) + "!";
+        auto message = "Operator/ is not defined for types "s + string(typeid(l).name()) + " and "s + string(typeid(r).name()) + "!"s;
         throw exception(message.c_str());
       }
     }, left, right);
@@ -312,7 +312,7 @@ namespace Json4CPP::Detail::Value
       [&](double     & l, double     const& r) { left = l / r;                      },
       [&](auto       & l, auto       const& r)
       {
-        auto message = "Operator/= is not defined for types " + string(typeid(l).name()) + " and " + string(typeid(r).name()) + "!";
+        auto message = "Operator/= is not defined for types "s + string(typeid(l).name()) + " and "s + string(typeid(r).name()) + "!"s;
         throw exception(message.c_str());
       }
     }, left, right);
@@ -332,7 +332,7 @@ namespace Json4CPP::Detail::Value
       [&](double     const& l, double     const& r) { result = fmod(l, r); },
       [&](auto       const& l, auto       const& r)
       {
-        auto message = "Operator% is not defined for types " + string(typeid(l).name()) + " and " + string(typeid(r).name()) + "!";
+        auto message = "Operator% is not defined for types "s + string(typeid(l).name()) + " and "s + string(typeid(r).name()) + "!"s;
         throw exception(message.c_str());
       }
     }, left, right);
@@ -351,7 +351,7 @@ namespace Json4CPP::Detail::Value
       [&](double     & l, double     const& r) { left = fmod(l, r); },
       [&](auto       & l, auto       const& r)
       {
-        auto message = "Operator%= is not defined for types " + string(typeid(l).name()) + " and " + string(typeid(r).name()) + "!";
+        auto message = "Operator%= is not defined for types "s + string(typeid(l).name()) + " and "s + string(typeid(r).name()) + "!"s;
         throw exception(message.c_str());
       }
     }, left, right);
@@ -367,7 +367,7 @@ namespace Json4CPP::Detail::Value
       [&](double     const& v) { result = -v;         },
       [&](auto       const& v)
       {
-        auto message = "Operator- is not defined for type " + string(typeid(v).name()) + "!";
+        auto message = "Operator- is not defined for type "s + string(typeid(v).name()) + "!"s;
         throw exception(message.c_str());
       }
     }, value);
@@ -383,7 +383,7 @@ namespace Json4CPP::Detail::Value
       [&](double     const& v) { result = !v;   },
       [&](auto       const& v)
       {
-        auto message = "Operator! is not defined for type " + string(typeid(v).name()) + "!";
+        auto message = "Operator! is not defined for type "s + string(typeid(v).name()) + "!"s;
         throw exception(message.c_str());
       }
     }, value);
@@ -397,7 +397,7 @@ namespace Json4CPP::Detail::Value
       [&](double     & v) { value = ++v;     },
       [&](auto       & v)
       {
-        auto message = "Operator++ (pre-increment) is not defined for type " + string(typeid(v).name()) + "!";
+        auto message = "Operator++ (pre-increment) is not defined for type "s + string(typeid(v).name()) + "!"s;
         throw exception(message.c_str());
       }
     }, value);
@@ -412,7 +412,7 @@ namespace Json4CPP::Detail::Value
       [&](double     & v) { result = v++;     },
       [&](auto       & v)
       {
-        auto message = "Operator++ (post-increment) is not defined for type " + string(typeid(v).name()) + "!";
+        auto message = "Operator++ (post-increment) is not defined for type "s + string(typeid(v).name()) + "!"s;
         throw exception(message.c_str());
       }
     }, value);
@@ -426,7 +426,7 @@ namespace Json4CPP::Detail::Value
       [&](double     & v) { value = --v;     },
       [&](auto       & v)
       {
-        auto message = "Operator-- (pre-decrement) is not defined for type " + string(typeid(v).name()) + "!";
+        auto message = "Operator-- (pre-decrement) is not defined for type "s + string(typeid(v).name()) + "!"s;
         throw exception(message.c_str());
       }
     }, value);
@@ -441,7 +441,7 @@ namespace Json4CPP::Detail::Value
       [&](double     & v) { result = v--;     },
       [&](auto       & v)
       {
-        auto message = "Operator-- (post-decrement) is not defined for type " + string(typeid(v).name()) + "!";
+        auto message = "Operator-- (post-decrement) is not defined for type "s + string(typeid(v).name()) + "!"s;
         throw exception(message.c_str());
       }
     }, value);
