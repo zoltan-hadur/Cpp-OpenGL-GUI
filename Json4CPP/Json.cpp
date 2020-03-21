@@ -19,17 +19,66 @@ namespace Json4CPP
 {
   Json operator""_json(const wchar_t* value, std::size_t size)
   {
-    return Value::ParseJson(wstring(value));
+    return Json::Read(JsonLinter::Read(value));
+  }
+
+  Json Json::Read(deque<pair<JsonToken, VALUE_TOKEN>>& tokens)
+  {
+    auto& [token, value] = tokens.front();
+    switch (token)
+    {
+    case JsonToken::StartObject:
+    {
+      return JsonObject::Read(tokens);
+    }
+    case JsonToken::StartArray:
+    {
+      return JsonArray::Read(tokens);
+    }
+    default:
+    {
+      auto message = WString2String(L"Invalid token: " + Json::Stringify(token) + L", with invalid data: "s + JsonLinter::Dump(value) + L"!");
+      throw exception(message.c_str());
+    }
+    }
+  }
+
+  void Json::Write(Json const& json, deque<pair<JsonToken, VALUE_TOKEN>>& tokens)
+  {
+    switch (Value::GetType(json._value))
+    {
+    case JsonType::Null   : tokens.push_back({ JsonToken::Null   , get<nullptr_t>(json._value) }); break;
+    case JsonType::String : tokens.push_back({ JsonToken::String , get<wstring>  (json._value) }); break;
+    case JsonType::Boolean: tokens.push_back({ JsonToken::Boolean, get<bool>     (json._value) }); break;
+    case JsonType::Number : tokens.push_back({ JsonToken::Number , get<double>   (json._value) }); break;
+    case JsonType::Object : JsonObject::Write(get<JsonObject>(json._value), tokens); break;
+    case JsonType::Array  : JsonArray ::Write(get<JsonArray >(json._value), tokens); break;
+    default:
+    {
+      auto message = WString2String(L"Invalid type: " + Json::Stringify(Value::GetType(json._value)) + L"!");
+      throw exception(message.c_str());
+    }
+    }
   }
 
   void Json::_Dump(wstringstream& os, uint8_t indentation, uint64_t level) const
   {
+    auto tokens = deque<pair<JsonToken, VALUE_TOKEN>>();
     switch (Value::GetType(_value))
     {
-    case JsonType::Object: get<JsonObject>(_value)._Dump(os, indentation, level); break;
-    case JsonType::Array : get<JsonArray >(_value)._Dump(os, indentation, level); break;
-    default: Value::Write(os, _value); break;
+    case JsonType::Null   : tokens.push_back({ JsonToken::Null   , get<nullptr_t>(_value) }); break;
+    case JsonType::String : tokens.push_back({ JsonToken::String , get<wstring>  (_value) }); break;
+    case JsonType::Boolean: tokens.push_back({ JsonToken::Boolean, get<bool>     (_value) }); break;
+    case JsonType::Number : tokens.push_back({ JsonToken::Number , get<double>   (_value) }); break;
+    case JsonType::Object : get<JsonObject>(_value)._Dump(os, indentation, level);            break;
+    case JsonType::Array  : get<JsonArray >(_value)._Dump(os, indentation, level);            break;
+    default:
+    {
+      auto message = WString2String(L"Invalid type: " + Json::Stringify(Value::GetType(_value)) + L"!");
+      throw exception(message.c_str());
     }
+    }
+    JsonLinter::Write(os, tokens, indentation, level);
   }
 
   Json::Json()
@@ -104,7 +153,7 @@ namespace Json4CPP
 
   Json Json::Read(path filePath)
   {
-    return Value::ParseJson(wfstream(filePath, wfstream::in));
+    return Json::Read(JsonLinter::Read(wfstream(filePath, wfstream::in | wfstream::binary)));
   }
 
   void Json::Write(path filePath) const
@@ -375,12 +424,15 @@ namespace Json4CPP
 
   wostream& operator<<(wostream& os, Json const& json)
   {
-    return os << json.Dump(JsonDefault::Indentation);
+    auto tokens = deque<pair<JsonToken, VALUE_TOKEN>>();
+    Json::Write(json, tokens);
+    return JsonLinter::Write(os, tokens, JsonDefault::Indentation, 0);
   }
 
   wistream& operator>>(wistream&is, Json& json)
   {
-    return Value::Read(is, json._value);
+    json = Json::Read(JsonLinter::Read(is));
+    return is;
   }
 
   bool  operator==(Json const& left, Json const& right) { return Value::Equal(left._value, right._value);                }

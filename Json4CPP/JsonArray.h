@@ -6,7 +6,11 @@
 #define JSON_API __declspec(dllimport)
 #endif
 
+#include "Value.h"
+#include "JsonLinter.h"
+
 #include <vector>
+#include <deque>
 #include <sstream>
 #include <iostream>
 #include <initializer_list>
@@ -30,6 +34,8 @@ namespace Json4CPP
 #pragma warning(suppress: 4251)
     std::vector<Json> _values;
 
+    static JsonArray Read(std::deque<std::pair<Detail::JsonToken, Detail::VALUE_TOKEN>>& tokens);
+    static void Write(JsonArray const& array, std::deque<std::pair<Detail::JsonToken, Detail::VALUE_TOKEN>>& tokens);
     void _Dump(std::wstringstream& os, uint8_t indentation, uint64_t level) const;
   public:
     JsonArray() = default;

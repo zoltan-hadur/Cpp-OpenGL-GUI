@@ -7,8 +7,10 @@
 #endif
 
 #include "Value.h"
+#include "JsonLinter.h"
 
 #include <vector>
+#include <deque>
 #include <unordered_map>
 #include <utility>
 #include <sstream>
@@ -36,6 +38,8 @@ namespace Json4CPP
 #pragma warning(suppress: 4251)
     std::unordered_map<KEY, int64_t> _indexes;
 
+    static JsonObject Read(std::deque<std::pair<Detail::JsonToken, Detail::VALUE_TOKEN>>& tokens);
+    static void Write(JsonObject const& object, std::deque<std::pair<Detail::JsonToken, Detail::VALUE_TOKEN>>& tokens);
     void _Dump(std::wstringstream& os, uint8_t indentation, uint64_t level) const;
   public:
     JsonObject() = default;

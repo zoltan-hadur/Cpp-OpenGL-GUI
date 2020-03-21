@@ -11,6 +11,59 @@ using namespace Json4CPP::Detail;
 
 namespace Json4CPP
 {
+  JsonArray JsonArray::Read(deque<pair<JsonToken, VALUE_TOKEN>>& tokens)
+  {
+    if (tokens.empty())
+    {
+      auto message = WString2String(L"Expected token: " + Json::Stringify(JsonToken::StartArray) + L"!");
+      throw exception(message.c_str());
+    }
+
+    auto array = JsonArray();
+    auto& [token, value] = tokens.front();
+    if (token == JsonToken::StartArray)
+    {
+      tokens.pop_front();
+    }
+    else
+    {
+      auto message = WString2String(L"Expected token: " + Json::Stringify(JsonToken::StartArray) + L"!");
+      throw exception(message.c_str());
+    }
+
+    while (tokens.size())
+    {
+      tie(token, value) = tokens.front();
+      switch (token)
+      {
+      case JsonToken::Null       : array._values.push_back(Json(get<nullptr_t>(value))); tokens.pop_front(); break;
+      case JsonToken::String     : array._values.push_back(Json(get<wstring  >(value))); tokens.pop_front(); break;
+      case JsonToken::Boolean    : array._values.push_back(Json(get<bool     >(value))); tokens.pop_front(); break;
+      case JsonToken::Number     : array._values.push_back(Json(get<double   >(value))); tokens.pop_front(); break;
+      case JsonToken::StartObject: array._values.push_back(JsonObject::Read   (tokens));                     break;
+      case JsonToken::StartArray : array._values.push_back(JsonArray::Read    (tokens));                     break;
+      case JsonToken::EndArray   : tokens.pop_front(); return array;
+      default:
+      {
+        auto message = WString2String(L"Invalid token: " + Json::Stringify(token) + L"!");
+        throw exception(message.c_str());
+      }
+      }
+    }
+    auto message = WString2String(L"Expected token: " + Json::Stringify(JsonToken::EndArray) + L"!");
+    throw exception(message.c_str());
+  }
+
+  void JsonArray::Write(JsonArray const& array, deque<pair<JsonToken, VALUE_TOKEN>>& tokens)
+  {
+    tokens.push_back({ JsonToken::StartArray, L"["s });
+    for (auto& value : array._values)
+    {
+      Json::Write(value, tokens);
+    }
+    tokens.push_back({ JsonToken::EndArray, L"]"s });
+  }
+
   void JsonArray::_Dump(wstringstream& os, uint8_t indentation, uint64_t level) const
   {
     auto indent = wstring(indentation * level, L' ');
@@ -144,47 +197,7 @@ namespace Json4CPP
 
   wistream& operator>>(wistream& is, JsonArray& array)
   {
-    is >> ws;
-    if (is.peek() == L'[')
-    {
-      is.get();
-      is >> ws;
-      if (is.peek() == L',')
-      {
-        auto message = "Unexpected ',' at position " + GetFormattedStreamPositionA(is, is.tellg()) + "!";
-        throw exception(message.c_str());
-      }
-      if (is.peek() != L']')
-      {
-        array._values.push_back(Value::ParseJson(is));
-        is >> ws;
-        while (is.peek() == L',')
-        {
-          is.get();
-          is >> ws;
-          array._values.push_back(Value::ParseJson(is));
-          is >> ws;
-        }
-        if (is.peek() == L']')
-        {
-          is.get();
-        }
-        else
-        {
-          auto message = "Expected ']' at position " + GetFormattedStreamPositionA(is, is.tellg()) + "!";
-          throw exception(message.c_str());
-        }
-      }
-      else
-      {
-        is.get();
-      }
-    }
-    else
-    {
-      auto message = "Expected '[' at position " + GetFormattedStreamPositionA(is, is.tellg()) + "!";
-      throw exception(message.c_str());
-    }
+    array = JsonArray::Read(JsonLinter::Read(is));
     return is;
   }
 

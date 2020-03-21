@@ -39,24 +39,6 @@ namespace Json4CPP
       JSON_API JsonType         GetType(VALUE         const& value);
       JSON_API JsonBuilderType  GetType(VALUE_BUILDER const& value);
 
-      JSON_API std::nullptr_t ParseNull       (std::wistream     & is   );
-      JSON_API std::nullptr_t ParseNull       (std::wstring const& value);
-      JSON_API std::wstring   ParseString     (std::wistream     & is   );
-      JSON_API std::wstring   ParseString     (std::wstring const& value);
-      JSON_API bool           ParseBoolean    (std::wistream     & is   );
-      JSON_API bool           ParseBoolean    (std::wstring const& value);
-      JSON_API double         ParseNumber     (std::wistream     & is   );
-      JSON_API double         ParseNumber     (std::wstring const& value);
-      JSON_API JsonObject     ParseJsonObject (std::wistream     & is   );
-      JSON_API JsonObject     ParseJsonObject (std::wstring const& value);
-      JSON_API JsonArray      ParseJsonArray  (std::wistream     & is   );
-      JSON_API JsonArray      ParseJsonArray  (std::wstring const& value);
-      JSON_API Json           ParseJson       (std::wistream     & is   );
-      JSON_API Json           ParseJson       (std::wstring const& value);
-
-      JSON_API std::wostream& Write(std::wostream& os, VALUE const& value);
-      JSON_API std::wistream& Read (std::wistream& is, VALUE      & value);
-
       JSON_API bool   Equal              (VALUE const& left, VALUE const& right);
       JSON_API bool   NotEqual           (VALUE const& left, VALUE const& right);
       JSON_API bool   LessThan           (VALUE const& left, VALUE const& right);

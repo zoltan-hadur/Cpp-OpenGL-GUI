@@ -5,12 +5,76 @@
 #include "JsonBuilder.h"
 #include "Value.h"
 #include "Helper.h"
+#include "JsonLinter.h"
 
 using namespace std;
 using namespace Json4CPP::Detail;
 
 namespace Json4CPP
 {
+  JsonObject JsonObject::Read(deque<pair<JsonToken, VALUE_TOKEN>>& tokens)
+  {
+    if (tokens.empty())
+    {
+      auto message = WString2String(L"Expected token: " + Json::Stringify(JsonToken::StartObject) + L"!");
+      throw exception(message.c_str());
+    }
+
+    auto object = JsonObject();
+    auto property = L""s;
+    auto counter = 0;
+    auto& [token, value] = tokens.front();
+    if (token == JsonToken::StartObject)
+    {
+      tokens.pop_front();
+    }
+    else
+    {
+      auto message = WString2String(L"Expected token: " + Json::Stringify(JsonToken::StartObject) + L"!");
+      throw exception(message.c_str());
+    }
+
+    while (tokens.size())
+    {
+      tie(token, value) = tokens.front();
+      // Property then value then property then value etc...
+      if (counter++ % 2 == 0 && token != JsonToken::PropertyName)
+      {
+        auto message = WString2String(L"Expected token: " + Json::Stringify(JsonToken::PropertyName) + L"!");
+        throw exception(message.c_str());
+      }
+      switch (token)
+      {
+      case JsonToken::PropertyName: property = get<wstring>(value);                                     tokens.pop_front(); break;
+      case JsonToken::Null        : object._pairs.push_back({ property, Json(get<nullptr_t>(value)) }); tokens.pop_front(); break;
+      case JsonToken::String      : object._pairs.push_back({ property, Json(get<wstring  >(value)) }); tokens.pop_front(); break;
+      case JsonToken::Boolean     : object._pairs.push_back({ property, Json(get<bool     >(value)) }); tokens.pop_front(); break;
+      case JsonToken::Number      : object._pairs.push_back({ property, Json(get<double   >(value)) }); tokens.pop_front(); break;
+      case JsonToken::StartObject : object._pairs.push_back({ property, JsonObject::Read   (tokens) });                     break;
+      case JsonToken::StartArray  : object._pairs.push_back({ property, JsonArray::Read    (tokens) });                     break;
+      case JsonToken::EndObject   : tokens.pop_front(); return object;
+      default:
+      {
+        auto message = WString2String(L"Invalid token: " + Json::Stringify(token) + L"!");
+        throw exception(message.c_str());
+      }
+      }
+    }
+    auto message = WString2String(L"Expected token: " + Json::Stringify(JsonToken::EndObject) + L"!");
+    throw exception(message.c_str());
+  }
+
+  void JsonObject::Write(JsonObject const& object, deque<pair<JsonToken, VALUE_TOKEN>>& tokens)
+  {
+    tokens.push_back({ JsonToken::StartObject, L"{"s });
+    for (auto& [key, value] : object._pairs)
+    {
+      tokens.push_back({ JsonToken::PropertyName, key });
+      Json::Write(value, tokens);
+    }
+    tokens.push_back({ JsonToken::EndObject, L"}"s });
+  }
+
   void JsonObject::_Dump(wstringstream& os, uint8_t indentation, uint64_t level) const
   {
     auto indent = wstring(indentation * level, L' ');
@@ -174,68 +238,7 @@ namespace Json4CPP
 
   wistream& operator>>(wistream& is, JsonObject& object)
   {
-    is >> ws;
-    if (is.peek() == L'{')
-    {
-      is.get();
-      is >> ws;
-      if (is.peek() != L'}')
-      {
-        auto key = Value::ParseString(is);
-        is >> ws;
-        if (is.peek() == L':')
-        {
-          is.get();
-          is >> ws;
-        }
-        else
-        {
-          auto message = "Expected ':' at position " + GetFormattedStreamPositionA(is, is.tellg()) + "!";
-          throw exception(message.c_str());
-        }
-        auto value = Value::ParseJson(is);
-        is >> ws;
-        object.Insert({ key, value });
-        while (is.peek() == L',')
-        {
-          is.get();
-          is >> ws;
-          key = Value::ParseString(is);
-          is >> ws;
-          if (is.peek() == L':')
-          {
-            is.get();
-            is >> ws;
-          }
-          else
-          {
-            auto message = "Expected ':' at position " + GetFormattedStreamPositionA(is, is.tellg()) + "!";
-            throw exception(message.c_str());
-          }
-          auto value = Value::ParseJson(is);
-          is >> ws;
-          object.Insert({ key, value });
-        }
-        if (is.peek() == L'}')
-        {
-          is.get();
-        }
-        else
-        {
-          auto message = "Expected '}' at position " + GetFormattedStreamPositionA(is, is.tellg()) + "!";
-          throw exception(message.c_str());
-        }
-      }
-      else
-      {
-        is.get();
-      }
-    }
-    else
-    {
-      auto message = "Expected '{' at position " + GetFormattedStreamPositionA(is, is.tellg()) + "!";
-      throw exception(message.c_str());
-    }
+    object = JsonObject::Read(JsonLinter::Read(is));
     return is;
   }
 

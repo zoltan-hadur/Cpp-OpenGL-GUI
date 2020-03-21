@@ -10,6 +10,8 @@
 #include "Value.h"
 #include "JsonArray.h"
 #include "JsonObject.h"
+#include "JsonLinter.h"
+#include "JsonToken.h"
 
 #include <variant>
 #include <string>
@@ -45,6 +47,8 @@ namespace Json4CPP
 #pragma warning(suppress: 4251)
     Detail::VALUE _value;
 
+    static Json Read(std::deque<std::pair<Detail::JsonToken, Detail::VALUE_TOKEN>>& tokens);
+    static void Write(Json const& json, std::deque<std::pair<Detail::JsonToken, Detail::VALUE_TOKEN>>& tokens);
     void _Dump(std::wstringstream& os, uint8_t indentation, uint64_t level) const;
   public:
     Json();
@@ -156,6 +160,8 @@ namespace Json4CPP
     {
       Detail::TypeDebug<T>(); // Type T is not supported. See output error C2027 for the exact type.
     }
+
+    JSON_API friend Json operator""_json(const wchar_t* value, std::size_t size);
 
     JSON_API friend std::wostream& operator<<(std::wostream& os, Json const& json);
     JSON_API friend std::wistream& operator>>(std::wistream& is, Json      & json);
