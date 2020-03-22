@@ -409,7 +409,7 @@ namespace Json4CPP::Detail
       throw exception(message.c_str());
     }
 
-    auto indent = wstring(indentation * level, L' ');
+    auto indent = wstring((size_t)indentation * level, L' ');
     auto single = wstring(indentation, L' ');
     auto newLine = indentation == 0 ? L""s : L"\r\n"s;
     auto space = indentation == 0 ? L""s : L" "s;
@@ -523,7 +523,7 @@ namespace Json4CPP::Detail
       throw exception(message.c_str());
     }
 
-    auto indent = wstring(indentation * level, L' ');
+    auto indent = wstring((size_t)indentation * level, L' ');
     auto single = wstring(indentation, L' ');
     auto newLine = indentation == 0 ? L""s : L"\r\n"s;
 
