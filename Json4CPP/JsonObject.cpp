@@ -12,11 +12,11 @@ using namespace Json4CPP::Detail;
 
 namespace Json4CPP
 {
-  JsonObject JsonObject::Read(TOKEN_COLLECTION& tokens)
+  JsonObject JsonObject::Read(deque<TOKEN>& tokens)
   {
     if (tokens.empty())
     {
-      auto message = WString2String(L"Expected token: "s + Json::Stringify(JsonToken::StartObject) + L"!"s);
+      auto message = WString2String(L"Expected token: "s + Json::Stringify(JsonTokenType::StartObject) + L"!"s);
       throw exception(message.c_str());
     }
 
@@ -24,13 +24,13 @@ namespace Json4CPP
     auto property = L""s;
     auto counter = 0;
     auto& [token, value] = tokens.front();
-    if (token == JsonToken::StartObject)
+    if (token == JsonTokenType::StartObject)
     {
       tokens.pop_front();
     }
     else
     {
-      auto message = WString2String(L"Expected token: "s + Json::Stringify(JsonToken::StartObject) + L"!"s);
+      auto message = WString2String(L"Expected token: "s + Json::Stringify(JsonTokenType::StartObject) + L"!"s);
       throw exception(message.c_str());
     }
 
@@ -38,21 +38,21 @@ namespace Json4CPP
     {
       tie(token, value) = tokens.front();
       // Property then value then property then value etc...
-      if (counter++ % 2 == 0 && token != JsonToken::PropertyName)
+      if (counter++ % 2 == 0 && token != JsonTokenType::PropertyName)
       {
-        auto message = WString2String(L"Expected token: "s + Json::Stringify(JsonToken::PropertyName) + L"!"s);
+        auto message = WString2String(L"Expected token: "s + Json::Stringify(JsonTokenType::PropertyName) + L"!"s);
         throw exception(message.c_str());
       }
       switch (token)
       {
-      case JsonToken::PropertyName: property = get<wstring>(value);                                     tokens.pop_front(); break;
-      case JsonToken::Null        : object._pairs.push_back({ property, Json(get<nullptr_t>(value)) }); tokens.pop_front(); break;
-      case JsonToken::String      : object._pairs.push_back({ property, Json(get<wstring  >(value)) }); tokens.pop_front(); break;
-      case JsonToken::Boolean     : object._pairs.push_back({ property, Json(get<bool     >(value)) }); tokens.pop_front(); break;
-      case JsonToken::Number      : object._pairs.push_back({ property, Json(get<double   >(value)) }); tokens.pop_front(); break;
-      case JsonToken::StartObject : object._pairs.push_back({ property, JsonObject::Read   (tokens) });                     break;
-      case JsonToken::StartArray  : object._pairs.push_back({ property, JsonArray::Read    (tokens) });                     break;
-      case JsonToken::EndObject   : tokens.pop_front(); return object;
+      case JsonTokenType::PropertyName: property = get<wstring>(value);                                     tokens.pop_front(); break;
+      case JsonTokenType::Null        : object._pairs.push_back({ property, Json(get<nullptr_t>(value)) }); tokens.pop_front(); break;
+      case JsonTokenType::String      : object._pairs.push_back({ property, Json(get<wstring  >(value)) }); tokens.pop_front(); break;
+      case JsonTokenType::Boolean     : object._pairs.push_back({ property, Json(get<bool     >(value)) }); tokens.pop_front(); break;
+      case JsonTokenType::Number      : object._pairs.push_back({ property, Json(get<double   >(value)) }); tokens.pop_front(); break;
+      case JsonTokenType::StartObject : object._pairs.push_back({ property, JsonObject::Read   (tokens) });                     break;
+      case JsonTokenType::StartArray  : object._pairs.push_back({ property, JsonArray::Read    (tokens) });                     break;
+      case JsonTokenType::EndObject   : tokens.pop_front(); return object;
       default:
       {
         auto message = WString2String(L"Invalid token: "s + Json::Stringify(token) + L"!"s);
@@ -60,19 +60,19 @@ namespace Json4CPP
       }
       }
     }
-    auto message = WString2String(L"Expected token: "s + Json::Stringify(JsonToken::EndObject) + L"!"s);
+    auto message = WString2String(L"Expected token: "s + Json::Stringify(JsonTokenType::EndObject) + L"!"s);
     throw exception(message.c_str());
   }
 
-  void JsonObject::Write(JsonObject const& object, TOKEN_COLLECTION& tokens)
+  void JsonObject::Write(JsonObject const& object, deque<TOKEN>& tokens)
   {
-    tokens.push_back({ JsonToken::StartObject, L"{"s });
+    tokens.push_back({ JsonTokenType::StartObject, L"{"s });
     for (auto& [key, value] : object._pairs)
     {
-      tokens.push_back({ JsonToken::PropertyName, key });
+      tokens.push_back({ JsonTokenType::PropertyName, key });
       Json::Write(value, tokens);
     }
-    tokens.push_back({ JsonToken::EndObject, L"}"s });
+    tokens.push_back({ JsonTokenType::EndObject, L"}"s });
   }
 
   JsonObject::JsonObject(JsonBuilder builder)
@@ -127,7 +127,7 @@ namespace Json4CPP
 
   wstring JsonObject::Dump(uint8_t indentation) const
   {
-    auto tokens = TOKEN_COLLECTION();
+    auto tokens = deque<TOKEN>();
     JsonObject::Write(*this, tokens);
     wstringstream os;
     JsonLinter::Write(os, tokens, indentation, 0);

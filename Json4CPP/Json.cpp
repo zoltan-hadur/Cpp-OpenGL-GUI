@@ -22,27 +22,27 @@ namespace Json4CPP
     return Json::Read(JsonLinter::Read(value));
   }
 
-  Json Json::Read(TOKEN_COLLECTION& tokens)
+  Json Json::Read(deque<TOKEN>& tokens)
   {
     auto& [token, value] = tokens.front();
     switch (token)
     {
-    case JsonToken::StartObject: return JsonObject::Read(tokens);
-    case JsonToken::StartArray : return JsonArray ::Read(tokens);
+    case JsonTokenType::StartObject: return JsonObject::Read(tokens);
+    case JsonTokenType::StartArray : return JsonArray ::Read(tokens);
     default:
       auto message = WString2String(L"Invalid token: "s + Json::Stringify(token) + L", with invalid data: "s + JsonLinter::Dump(value) + L"!"s);
       throw exception(message.c_str());
     }
   }
 
-  void Json::Write(Json const& json, TOKEN_COLLECTION& tokens)
+  void Json::Write(Json const& json, deque<TOKEN>& tokens)
   {
     switch (Value::GetType(json._value))
     {
-    case JsonType::Null   : tokens.push_back({ JsonToken::Null   , get<nullptr_t>(json._value) }); break;
-    case JsonType::String : tokens.push_back({ JsonToken::String , get<wstring>  (json._value) }); break;
-    case JsonType::Boolean: tokens.push_back({ JsonToken::Boolean, get<bool>     (json._value) }); break;
-    case JsonType::Number : tokens.push_back({ JsonToken::Number , get<double>   (json._value) }); break;
+    case JsonType::Null   : tokens.push_back({ JsonTokenType::Null   , get<nullptr_t>(json._value) }); break;
+    case JsonType::String : tokens.push_back({ JsonTokenType::String , get<wstring>  (json._value) }); break;
+    case JsonType::Boolean: tokens.push_back({ JsonTokenType::Boolean, get<bool>     (json._value) }); break;
+    case JsonType::Number : tokens.push_back({ JsonTokenType::Number , get<double>   (json._value) }); break;
     case JsonType::Object : JsonObject::Write(get<JsonObject>(json._value), tokens); break;
     case JsonType::Array  : JsonArray ::Write(get<JsonArray >(json._value), tokens); break;
     default:
@@ -126,7 +126,7 @@ namespace Json4CPP
 
   wstring Json::Dump(uint8_t indentation) const
   {
-    auto tokens = TOKEN_COLLECTION();
+    auto tokens = deque<TOKEN>();
     Json::Write(*this, tokens);
     wstringstream os;
     JsonLinter::Write(os, tokens, indentation, 0);
@@ -403,7 +403,7 @@ namespace Json4CPP
 
   wostream& operator<<(wostream& os, Json const& json)
   {
-    auto tokens = TOKEN_COLLECTION();
+    auto tokens = deque<TOKEN>();
     Json::Write(json, tokens);
     return JsonLinter::Write(os, tokens, JsonDefault::Indentation, 0);
   }

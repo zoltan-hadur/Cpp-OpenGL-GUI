@@ -54,10 +54,10 @@
     <ClInclude Include="JsonBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="JsonToken.h">
+    <ClInclude Include="JsonLinter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="JsonLinter.h">
+    <ClInclude Include="JsonTokenType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -98,7 +98,7 @@
     <ClCompile Include="JsonLinter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="JsonToken.cpp">
+    <ClCompile Include="JsonTokenType.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

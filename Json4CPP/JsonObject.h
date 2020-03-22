@@ -38,8 +38,8 @@ namespace Json4CPP
 #pragma warning(suppress: 4251)
     std::unordered_map<KEY, int64_t> _indexes;
 
-    static JsonObject Read (                          Detail::TOKEN_COLLECTION& tokens);
-    static void       Write(JsonObject const& object, Detail::TOKEN_COLLECTION& tokens);
+    static JsonObject Read (                          std::deque<Detail::TOKEN>& tokens);
+    static void       Write(JsonObject const& object, std::deque<Detail::TOKEN>& tokens);
   public:
     JsonObject() = default;
     JsonObject(Detail::JsonBuilder builder);

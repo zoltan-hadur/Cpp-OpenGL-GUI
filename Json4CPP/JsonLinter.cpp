@@ -218,15 +218,15 @@ namespace Json4CPP::Detail
     return number;
   }
 
-  void JsonLinter::ParseObject(wistream& is, TOKEN_COLLECTION& tokens, int& level)
+  void JsonLinter::ParseObject(wistream& is, std::deque<TOKEN>& tokens, int& level)
   {
     if (is.peek() == L'{')
     {
-      tokens.push_back({ JsonToken::StartObject, L""s + (wchar_t)is.get() });
+      tokens.push_back({ JsonTokenType::StartObject, L""s + (wchar_t)is.get() });
       is >> ws;
       if (is.peek() != L'}')
       {
-        tokens.push_back({ JsonToken::PropertyName, ParseString(is) });
+        tokens.push_back({ JsonTokenType::PropertyName, ParseString(is) });
         is >> ws;
         if (is.get() == L':')
         {
@@ -243,7 +243,7 @@ namespace Json4CPP::Detail
         {
           is.get();
           is >> ws;
-          tokens.push_back({ JsonToken::PropertyName, ParseString(is) });
+          tokens.push_back({ JsonTokenType::PropertyName, ParseString(is) });
           is >> ws;
           if (is.get() == L':')
           {
@@ -259,7 +259,7 @@ namespace Json4CPP::Detail
         }
         if (is.peek() == L'}')
         {
-          tokens.push_back({ JsonToken::EndObject, L""s + (wchar_t)is.get() });
+          tokens.push_back({ JsonTokenType::EndObject, L""s + (wchar_t)is.get() });
         }
         else
         {
@@ -269,7 +269,7 @@ namespace Json4CPP::Detail
       }
       else
       {
-        tokens.push_back({ JsonToken::EndObject, L""s + (wchar_t)is.get() });
+        tokens.push_back({ JsonTokenType::EndObject, L""s + (wchar_t)is.get() });
       }
     }
     else
@@ -279,11 +279,11 @@ namespace Json4CPP::Detail
     }
   }
 
-  void JsonLinter::ParseArray(wistream& is, TOKEN_COLLECTION& tokens, int& level)
+  void JsonLinter::ParseArray(wistream& is, std::deque<TOKEN>& tokens, int& level)
   {
     if (is.peek() == L'[')
     {
-      tokens.push_back({ JsonToken::StartArray, L""s + (wchar_t)is.get() });
+      tokens.push_back({ JsonTokenType::StartArray, L""s + (wchar_t)is.get() });
       is >> ws;
       if (is.peek() == L',')
       {
@@ -304,7 +304,7 @@ namespace Json4CPP::Detail
         }
         if (is.peek() == L']')
         {
-          tokens.push_back({ JsonToken::EndArray, L""s + (wchar_t)is.get() });
+          tokens.push_back({ JsonTokenType::EndArray, L""s + (wchar_t)is.get() });
         }
         else
         {
@@ -315,7 +315,7 @@ namespace Json4CPP::Detail
       }
       else
       {
-        tokens.push_back({ JsonToken::EndArray, L""s + (wchar_t)is.get() });
+        tokens.push_back({ JsonTokenType::EndArray, L""s + (wchar_t)is.get() });
       }
     }
     else
@@ -325,26 +325,26 @@ namespace Json4CPP::Detail
     }
   }
 
-  void JsonLinter::Read(wistream& is, TOKEN_COLLECTION& tokens, int& level)
+  void JsonLinter::Read(wistream& is, std::deque<TOKEN>& tokens, int& level)
   {
     is >> ws;
     switch (is.peek())
     {
     case L'n':
-      tokens.push_back({ JsonToken::Null   , ParseNull   (is) });
+      tokens.push_back({ JsonTokenType::Null   , ParseNull   (is) });
       break;
 
     case L'\"':
-      tokens.push_back({ JsonToken::String , ParseString (is) });
+      tokens.push_back({ JsonTokenType::String , ParseString (is) });
       break;
 
     case L't':
     case L'f':
-      tokens.push_back({ JsonToken::Boolean, ParseBoolean(is) });
+      tokens.push_back({ JsonTokenType::Boolean, ParseBoolean(is) });
       break;
 
     default:
-      tokens.push_back({ JsonToken::Number , ParseNumber (is) });
+      tokens.push_back({ JsonTokenType::Number , ParseNumber (is) });
       break;
 
     case L'{':
@@ -357,35 +357,35 @@ namespace Json4CPP::Detail
     }
   }
 
-  wostream& JsonLinter::Write(wostream& os, JsonToken const& token, VALUE_TOKEN const& value)
+  wostream& JsonLinter::Write(wostream& os, JsonTokenType const& token, VALUE_TOKEN const& value)
   {
     switch (token)
     {
-    case JsonToken::Null:
+    case JsonTokenType::Null:
       os << L"null"s;
       break;
 
-    case JsonToken::String:
-    case JsonToken::PropertyName:
+    case JsonTokenType::String:
+    case JsonTokenType::PropertyName:
       os << L"\""s << EscapeString(get<wstring>(value)) << L"\""s;
       break;
 
-    case JsonToken::Boolean:
+    case JsonTokenType::Boolean:
       os << (get<bool>(value) ? L"true"s : L"false"s);
       break;
 
-    case JsonToken::Number:
+    case JsonTokenType::Number:
       os << +(get<double>(value));
       break;
 
-    case JsonToken::StartObject:
-    case JsonToken::EndObject:
-    case JsonToken::StartArray:
-    case JsonToken::EndArray:
+    case JsonTokenType::StartObject:
+    case JsonTokenType::EndObject:
+    case JsonTokenType::StartArray:
+    case JsonTokenType::EndArray:
       os << get<wstring>(value);
       break;
 
-    case JsonToken::Undefined:
+    case JsonTokenType::Undefined:
     default:
       visit(Overload{
         [&](nullptr_t  const& v) { os << L"null"s;                            },
@@ -399,11 +399,11 @@ namespace Json4CPP::Detail
     return os;
   }
 
-  wostream& JsonLinter::WriteObject(wostream& os, TOKEN_COLLECTION& tokens, uint8_t indentation, uint64_t level)
+  wostream& JsonLinter::WriteObject(wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation, uint64_t level)
   {
     if (tokens.empty())
     {
-      auto message = WString2String(L"Expected token: "s + Detail::Dump(JsonToken::StartObject) + L"!"s);
+      auto message = WString2String(L"Expected token: "s + Detail::Dump(JsonTokenType::StartObject) + L"!"s);
       throw exception(message.c_str());
     }
 
@@ -414,10 +414,10 @@ namespace Json4CPP::Detail
 
     // Write StartObject and a new line if needed
     auto& [token, value] = tokens.front();
-    if (token == JsonToken::StartObject)
+    if (token == JsonTokenType::StartObject)
     {
       // But first, check if it is an empty object
-      if (tokens.size() >= 2 && tokens[1].first == JsonToken::EndObject)
+      if (tokens.size() >= 2 && tokens[1].first == JsonTokenType::EndObject)
       {
         Write(os, token, value);
         tokens.pop_front();
@@ -434,7 +434,7 @@ namespace Json4CPP::Detail
     }
     else
     {
-      auto message = WString2String(L"Expected token: "s + Detail::Dump(JsonToken::StartObject) + L"!"s);
+      auto message = WString2String(L"Expected token: "s + Detail::Dump(JsonTokenType::StartObject) + L"!"s);
       throw exception(message.c_str());
     }
 
@@ -444,14 +444,14 @@ namespace Json4CPP::Detail
       // Write "key"
       os << indent << single;
       tie(token, value) = tokens.front();
-      if (token == JsonToken::PropertyName)
+      if (token == JsonTokenType::PropertyName)
       {
         Write(os, token, value) << L":"s << space;
         tokens.pop_front();
       }
       else
       {
-        auto message = WString2String(L"Expected token: "s + Detail::Dump(JsonToken::PropertyName) + L"!"s);
+        auto message = WString2String(L"Expected token: "s + Detail::Dump(JsonTokenType::PropertyName) + L"!"s);
         throw exception(message.c_str());
       }
 
@@ -462,24 +462,24 @@ namespace Json4CPP::Detail
         tie(token, value) = tokens.front();
         switch (token)
         {
-        case JsonToken::StartObject:
+        case JsonTokenType::StartObject:
           WriteObject(os, tokens, indentation, level + 1);
           break;
-        case JsonToken::StartArray:
+        case JsonTokenType::StartArray:
           WriteArray(os, tokens, indentation, level + 1);
           break;
-        case JsonToken::Null:
-        case JsonToken::String:
-        case JsonToken::Boolean:
-        case JsonToken::Number:
+        case JsonTokenType::Null:
+        case JsonTokenType::String:
+        case JsonTokenType::Boolean:
+        case JsonTokenType::Number:
           Write(os, token, value);
           tokens.pop_front();
           break;
         default:
           auto message = WString2String(L"Expected one of the following tokens: "s +
-            Detail::Dump(JsonToken::Null       ) + L", "s   + Detail::Dump(JsonToken::String    ) + L", "s +
-            Detail::Dump(JsonToken::Boolean    ) + L", "s   + Detail::Dump(JsonToken::Number    ) + L", "s +
-            Detail::Dump(JsonToken::StartObject) + L" or "s + Detail::Dump(JsonToken::StartArray) + L"!"s);
+            Detail::Dump(JsonTokenType::Null       ) + L", "s   + Detail::Dump(JsonTokenType::String    ) + L", "s +
+            Detail::Dump(JsonTokenType::Boolean    ) + L", "s   + Detail::Dump(JsonTokenType::Number    ) + L", "s +
+            Detail::Dump(JsonTokenType::StartObject) + L" or "s + Detail::Dump(JsonTokenType::StartArray) + L"!"s);
           throw exception(message.c_str());
         }
 
@@ -488,7 +488,7 @@ namespace Json4CPP::Detail
         {
           // Write EndObject or a coma
           tie(token, value) = tokens.front();
-          if (token == JsonToken::EndObject)
+          if (token == JsonTokenType::EndObject)
           {
             Write(os << newLine << indent, token, value);
             tokens.pop_front();
@@ -503,21 +503,21 @@ namespace Json4CPP::Detail
       else
       {
         auto message = WString2String(L"Expected one of the following tokens: "s +
-          Detail::Dump(JsonToken::Null       ) + L", "s   + Detail::Dump(JsonToken::String    ) + L", "s +
-          Detail::Dump(JsonToken::Boolean    ) + L", "s   + Detail::Dump(JsonToken::Number    ) + L", "s +
-          Detail::Dump(JsonToken::StartObject) + L" or "s + Detail::Dump(JsonToken::StartArray) + L"!"s);
+          Detail::Dump(JsonTokenType::Null       ) + L", "s   + Detail::Dump(JsonTokenType::String    ) + L", "s +
+          Detail::Dump(JsonTokenType::Boolean    ) + L", "s   + Detail::Dump(JsonTokenType::Number    ) + L", "s +
+          Detail::Dump(JsonTokenType::StartObject) + L" or "s + Detail::Dump(JsonTokenType::StartArray) + L"!"s);
         throw exception(message.c_str());
       }
     }
-    auto message = WString2String(L"Expected token: "s + Detail::Dump(JsonToken::EndObject) + L"!"s);
+    auto message = WString2String(L"Expected token: "s + Detail::Dump(JsonTokenType::EndObject) + L"!"s);
     throw exception(message.c_str());
   }
 
-  wostream& JsonLinter::WriteArray(wostream& os, TOKEN_COLLECTION& tokens, uint8_t indentation, uint64_t level)
+  wostream& JsonLinter::WriteArray(wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation, uint64_t level)
   {
     if (tokens.empty())
     {
-      auto message = WString2String(L"Expected token: "s + Detail::Dump(JsonToken::StartArray) + L"!"s);
+      auto message = WString2String(L"Expected token: "s + Detail::Dump(JsonTokenType::StartArray) + L"!"s);
       throw exception(message.c_str());
     }
 
@@ -527,10 +527,10 @@ namespace Json4CPP::Detail
 
     // Write StartArray and a new line if needed
     auto& [token, value] = tokens.front();
-    if (token == JsonToken::StartArray)
+    if (token == JsonTokenType::StartArray)
     {
       // But first, check if it is an empty array
-      if (tokens.size() >= 2 && tokens[1].first == JsonToken::EndArray)
+      if (tokens.size() >= 2 && tokens[1].first == JsonTokenType::EndArray)
       {
         Write(os, token, value);
         tokens.pop_front();
@@ -547,7 +547,7 @@ namespace Json4CPP::Detail
     }
     else
     {
-      auto message = WString2String(L"Expected token: "s + Detail::Dump(JsonToken::StartArray) + L"!"s);
+      auto message = WString2String(L"Expected token: "s + Detail::Dump(JsonTokenType::StartArray) + L"!"s);
       throw exception(message.c_str());
     }
 
@@ -559,24 +559,24 @@ namespace Json4CPP::Detail
       tie(token, value) = tokens.front();
       switch (token)
       {
-      case JsonToken::StartObject:
+      case JsonTokenType::StartObject:
         WriteObject(os, tokens, indentation, level + 1);
         break;
-      case JsonToken::StartArray:
+      case JsonTokenType::StartArray:
         WriteArray(os, tokens, indentation, level + 1);
         break;
-      case JsonToken::Null:
-      case JsonToken::String:
-      case JsonToken::Boolean:
-      case JsonToken::Number:
+      case JsonTokenType::Null:
+      case JsonTokenType::String:
+      case JsonTokenType::Boolean:
+      case JsonTokenType::Number:
         Write(os, token, value);
         tokens.pop_front();
         break;
       default:
         auto message = WString2String(L"Expected one of the following tokens: "s +
-          Detail::Dump(JsonToken::Null       ) + L", "s   + Detail::Dump(JsonToken::String    ) + L", "s +
-          Detail::Dump(JsonToken::Boolean    ) + L", "s   + Detail::Dump(JsonToken::Number    ) + L", "s +
-          Detail::Dump(JsonToken::StartObject) + L" or "s + Detail::Dump(JsonToken::StartArray) + L"!"s);
+          Detail::Dump(JsonTokenType::Null       ) + L", "s   + Detail::Dump(JsonTokenType::String    ) + L", "s +
+          Detail::Dump(JsonTokenType::Boolean    ) + L", "s   + Detail::Dump(JsonTokenType::Number    ) + L", "s +
+          Detail::Dump(JsonTokenType::StartObject) + L" or "s + Detail::Dump(JsonTokenType::StartArray) + L"!"s);
         throw exception(message.c_str());
       }
 
@@ -585,7 +585,7 @@ namespace Json4CPP::Detail
       {
         // Write EndArray or a coma
         tie(token, value) = tokens.front();
-        if (token == JsonToken::EndArray)
+        if (token == JsonTokenType::EndArray)
         {
           Write(os << newLine << indent, token, value);
           tokens.pop_front();
@@ -597,14 +597,14 @@ namespace Json4CPP::Detail
         }
       }
     }
-    auto message = WString2String(L"Expected token: "s + Detail::Dump(JsonToken::EndArray) + L"!"s);
+    auto message = WString2String(L"Expected token: "s + Detail::Dump(JsonTokenType::EndArray) + L"!"s);
     throw exception(message.c_str());
   }
 
-  TOKEN_COLLECTION JsonLinter::Read(wistream     & is   )
+  std::deque<TOKEN> JsonLinter::Read(wistream     & is   )
   {
     auto level = 0;
-    auto tokens = TOKEN_COLLECTION();
+    auto tokens = std::deque<TOKEN>();
     Read(is, tokens, level);
     if (level >= 20)
     {
@@ -620,18 +620,18 @@ namespace Json4CPP::Detail
     throw exception(message.c_str());
   }
 
-  TOKEN_COLLECTION JsonLinter::Read(wstring const& value)
+  std::deque<TOKEN> JsonLinter::Read(wstring const& value)
   {
     return Read(wstringstream(value));
   }
 
-  wostream& JsonLinter::Write(wostream& os, TOKEN_COLLECTION& tokens, uint8_t indentation, uint64_t level)
+  wostream& JsonLinter::Write(wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation, uint64_t level)
   {
     auto& [token, value] = tokens.front();
     switch (token)
     {
-    case JsonToken::StartObject: WriteObject(os, tokens, indentation, level); break;
-    case JsonToken::StartArray : WriteArray (os, tokens, indentation, level); break;
+    case JsonTokenType::StartObject: WriteObject(os, tokens, indentation, level); break;
+    case JsonTokenType::StartArray : WriteArray (os, tokens, indentation, level); break;
     default                    : Write(os, token, value);                     break;
     }
     return os;
@@ -640,7 +640,7 @@ namespace Json4CPP::Detail
   wstring JsonLinter::Dump(VALUE_TOKEN value)
   {
     wostringstream os;
-    Write(os, JsonToken::Undefined, value);
+    Write(os, JsonTokenType::Undefined, value);
     return os.str();
   }
 }

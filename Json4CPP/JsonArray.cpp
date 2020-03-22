@@ -11,23 +11,23 @@ using namespace Json4CPP::Detail;
 
 namespace Json4CPP
 {
-  JsonArray JsonArray::Read(TOKEN_COLLECTION& tokens)
+  JsonArray JsonArray::Read(deque<TOKEN>& tokens)
   {
     if (tokens.empty())
     {
-      auto message = WString2String(L"Expected token: "s + Json::Stringify(JsonToken::StartArray) + L"!"s);
+      auto message = WString2String(L"Expected token: "s + Json::Stringify(JsonTokenType::StartArray) + L"!"s);
       throw exception(message.c_str());
     }
 
     auto array = JsonArray();
     auto& [token, value] = tokens.front();
-    if (token == JsonToken::StartArray)
+    if (token == JsonTokenType::StartArray)
     {
       tokens.pop_front();
     }
     else
     {
-      auto message = WString2String(L"Expected token: "s + Json::Stringify(JsonToken::StartArray) + L"!"s);
+      auto message = WString2String(L"Expected token: "s + Json::Stringify(JsonTokenType::StartArray) + L"!"s);
       throw exception(message.c_str());
     }
 
@@ -36,13 +36,13 @@ namespace Json4CPP
       tie(token, value) = tokens.front();
       switch (token)
       {
-      case JsonToken::Null       : array._values.push_back(Json(get<nullptr_t>(value))); tokens.pop_front(); break;
-      case JsonToken::String     : array._values.push_back(Json(get<wstring  >(value))); tokens.pop_front(); break;
-      case JsonToken::Boolean    : array._values.push_back(Json(get<bool     >(value))); tokens.pop_front(); break;
-      case JsonToken::Number     : array._values.push_back(Json(get<double   >(value))); tokens.pop_front(); break;
-      case JsonToken::StartObject: array._values.push_back(JsonObject::Read   (tokens));                     break;
-      case JsonToken::StartArray : array._values.push_back(JsonArray::Read    (tokens));                     break;
-      case JsonToken::EndArray   : tokens.pop_front(); return array;
+      case JsonTokenType::Null       : array._values.push_back(Json(get<nullptr_t>(value))); tokens.pop_front(); break;
+      case JsonTokenType::String     : array._values.push_back(Json(get<wstring  >(value))); tokens.pop_front(); break;
+      case JsonTokenType::Boolean    : array._values.push_back(Json(get<bool     >(value))); tokens.pop_front(); break;
+      case JsonTokenType::Number     : array._values.push_back(Json(get<double   >(value))); tokens.pop_front(); break;
+      case JsonTokenType::StartObject: array._values.push_back(JsonObject::Read   (tokens));                     break;
+      case JsonTokenType::StartArray : array._values.push_back(JsonArray::Read    (tokens));                     break;
+      case JsonTokenType::EndArray   : tokens.pop_front(); return array;
       default:
       {
         auto message = WString2String(L"Invalid token: "s + Json::Stringify(token) + L"!"s);
@@ -50,18 +50,18 @@ namespace Json4CPP
       }
       }
     }
-    auto message = WString2String(L"Expected token: "s + Json::Stringify(JsonToken::EndArray) + L"!"s);
+    auto message = WString2String(L"Expected token: "s + Json::Stringify(JsonTokenType::EndArray) + L"!"s);
     throw exception(message.c_str());
   }
 
-  void JsonArray::Write(JsonArray const& array, TOKEN_COLLECTION& tokens)
+  void JsonArray::Write(JsonArray const& array, deque<TOKEN>& tokens)
   {
-    tokens.push_back({ JsonToken::StartArray, L"["s });
+    tokens.push_back({ JsonTokenType::StartArray, L"["s });
     for (auto& value : array._values)
     {
       Json::Write(value, tokens);
     }
-    tokens.push_back({ JsonToken::EndArray, L"]"s });
+    tokens.push_back({ JsonTokenType::EndArray, L"]"s });
   }
 
   JsonArray::JsonArray(JsonBuilder builder)
@@ -96,7 +96,7 @@ namespace Json4CPP
 
   wstring JsonArray::Dump(uint8_t indentation) const
   {
-    auto tokens = TOKEN_COLLECTION();
+    auto tokens = deque<TOKEN>();
     JsonArray::Write(*this, tokens);
     wstringstream os;
     JsonLinter::Write(os, tokens, indentation, 0);

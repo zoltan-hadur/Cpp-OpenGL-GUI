@@ -11,7 +11,7 @@
 #include "JsonArray.h"
 #include "JsonObject.h"
 #include "JsonLinter.h"
-#include "JsonToken.h"
+#include "JsonTokenType.h"
 
 #include <variant>
 #include <string>
@@ -47,8 +47,8 @@ namespace Json4CPP
 #pragma warning(suppress: 4251)
     Detail::VALUE _value;
 
-    static Json Read (                  Detail::TOKEN_COLLECTION& tokens);
-    static void Write(Json const& json, Detail::TOKEN_COLLECTION& tokens);
+    static Json Read (                  std::deque<Detail::TOKEN>& tokens);
+    static void Write(Json const& json, std::deque<Detail::TOKEN>& tokens);
   public:
     Json();
     Json(Detail::JsonBuilder value);
