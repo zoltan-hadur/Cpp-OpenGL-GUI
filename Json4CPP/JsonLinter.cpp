@@ -218,7 +218,7 @@ namespace Json4CPP::Detail
     return number;
   }
 
-  void JsonLinter::ParseObject(wistream& is, std::deque<TOKEN>& tokens, int& level)
+  void JsonLinter::ParseObject(wistream& is, std::deque<TOKEN>& tokens, uint8_t level, uint8_t& maxLevel)
   {
     if (is.peek() == L'{')
     {
@@ -237,7 +237,7 @@ namespace Json4CPP::Detail
           auto message = "Expected ':' at position "s + GetFormattedStreamPositionA(is, is.tellg()) + "!"s;
           throw exception(message.c_str());
         }
-        Read(is, tokens, level);
+        Read(is, tokens, level, maxLevel);
         is >> ws;
         while (is.peek() == L',')
         {
@@ -254,7 +254,7 @@ namespace Json4CPP::Detail
             auto message = "Expected ':' at position "s + GetFormattedStreamPositionA(is, is.tellg()) + "!"s;
             throw exception(message.c_str());
           }
-          Read(is, tokens, level);
+          Read(is, tokens, level, maxLevel);
           is >> ws;
         }
         if (is.peek() == L'}')
@@ -279,7 +279,7 @@ namespace Json4CPP::Detail
     }
   }
 
-  void JsonLinter::ParseArray(wistream& is, std::deque<TOKEN>& tokens, int& level)
+  void JsonLinter::ParseArray(wistream& is, std::deque<TOKEN>& tokens, uint8_t level, uint8_t& maxLevel)
   {
     if (is.peek() == L'[')
     {
@@ -293,13 +293,13 @@ namespace Json4CPP::Detail
       }
       if (is.peek() != L']')
       {
-        Read(is, tokens, level);
+        Read(is, tokens, level, maxLevel);
         is >> ws;
         while (is.peek() == L',')
         {
           is.get();
           is >> ws;
-          Read(is, tokens, level);
+          Read(is, tokens, level, maxLevel);
           is >> ws;
         }
         if (is.peek() == L']')
@@ -325,7 +325,7 @@ namespace Json4CPP::Detail
     }
   }
 
-  void JsonLinter::Read(wistream& is, std::deque<TOKEN>& tokens, int& level)
+  void JsonLinter::Read(wistream& is, std::deque<TOKEN>& tokens, uint8_t level, uint8_t& maxLevel)
   {
     is >> ws;
     switch (is.peek())
@@ -348,11 +348,13 @@ namespace Json4CPP::Detail
       break;
 
     case L'{':
-      ParseObject(is, tokens, ++level);
+      maxLevel = max(++level, maxLevel);
+      ParseObject(is, tokens, level, maxLevel);
       break;
 
     case L'[':
-      ParseArray(is, tokens, ++level);
+      maxLevel = max(++level, maxLevel);
+      ParseArray(is, tokens, level, maxLevel);
       break;
     }
   }
@@ -399,7 +401,7 @@ namespace Json4CPP::Detail
     return os;
   }
 
-  wostream& JsonLinter::WriteObject(wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation, uint64_t level)
+  wostream& JsonLinter::WriteObject(wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation, uint8_t level)
   {
     if (tokens.empty())
     {
@@ -513,7 +515,7 @@ namespace Json4CPP::Detail
     throw exception(message.c_str());
   }
 
-  wostream& JsonLinter::WriteArray(wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation, uint64_t level)
+  wostream& JsonLinter::WriteArray(wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation, uint8_t level)
   {
     if (tokens.empty())
     {
@@ -603,12 +605,12 @@ namespace Json4CPP::Detail
 
   std::deque<TOKEN> JsonLinter::Read(wistream     & is   )
   {
-    auto level = 0;
+    auto maxLevel = 0ui8;
     auto tokens = std::deque<TOKEN>();
-    Read(is, tokens, level);
-    if (level >= 20)
+    Read(is, tokens, 0, maxLevel);
+    if (maxLevel >= 20)
     {
-      auto message = "Depth is greater or equal to the maximum 20: "s + to_string(level) + "!"s;
+      auto message = "Depth is greater or equal to the maximum 20: "s + to_string(maxLevel) + "!"s;
       throw exception(message.c_str());
     }
     if (is.peek(), is.eof())
@@ -625,7 +627,7 @@ namespace Json4CPP::Detail
     return Read(wstringstream(value));
   }
 
-  wostream& JsonLinter::Write(wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation, uint64_t level)
+  wostream& JsonLinter::Write(wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation, uint8_t level)
   {
     auto& [token, value] = tokens.front();
     switch (token)
