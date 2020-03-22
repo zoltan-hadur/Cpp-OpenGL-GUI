@@ -38,7 +38,7 @@ namespace Json4CPP
     {
       tie(token, value) = tokens.front();
       // Property then value then property then value etc...
-      if (counter++ % 2 == 0 && token != JsonTokenType::PropertyName)
+      if (counter++ % 2 == 0 && token != JsonTokenType::PropertyName && token != JsonTokenType::EndObject)
       {
         auto message = WString2String(L"Expected token: "s + Json::Stringify(JsonTokenType::PropertyName) + L"!"s);
         throw exception(message.c_str());
