@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
@@ -69,18 +69,34 @@ namespace Json4CPP::Test
       Assert::AreEqual(expected, output);
     }
 
+    TEST_METHOD(TestWidenString)
+    {
+      auto expected = wstring{ 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120 };
+      auto input    = string { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120 };
+      auto actual = WidenString(input);
+      Assert::AreEqual(expected, actual);
+    }
+
+    TEST_METHOD(TestNarrowString)
+    {
+      auto expected = string { (char)0x00CD, (char)0x000D, (char)0x00AD };
+      auto input    = wstring{       0xABCD,       0xF00D,       0xBAAD };
+      auto actual = NarrowString(input);
+      Assert::AreEqual(expected, actual);
+    }
+
     TEST_METHOD(TestString2WString)
     {
-      auto expected = L"!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~€‚ƒ„…†‡ˆ‰Š‹Œ‘’“”•–—˜™š›œŸ¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖ×ØÙÚÛÜİŞßàáâãäåæçèéêëìíîïğñòóôõö÷øùúûüışÿ"s;
-      auto input = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~€‚ƒ„…†‡ˆ‰Š‹Œ‘’“”•–—˜™š›œŸ¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖ×ØÙÚÛÜİŞßàáâãäåæçèéêëìíîïğñòóôõö÷øùúûüışÿ"s;
+      auto expected = L"A, Ã, B, C, Cs, D, Dz, Dzs, E, Ã‰, F, G, Gy, H, I, Ã, J, K, L, Ly, M, N, Ny, O, Ã“, Ã–, Å, P, Q, R, S, Sz, T, Ty, U, Ãš, Ãœ, Å°, V, W, X, Y, Z, Zs, a, Ã¡, b, c, cs, d, dz, dzs, e, Ã©, f, g, gy, h, i, Ã­, j, k, l, ly, m, n, ny, o, Ã³, Ã¶, Å‘, p, q, r, s, sz, t, ty, u, Ãº, Ã¼, Å±, v, w, x, y, z, zs"s;
+      auto input = "A, ÃƒÂ, B, C, Cs, D, Dz, Dzs, E, Ãƒâ€°, F, G, Gy, H, I, ÃƒÂ, J, K, L, Ly, M, N, Ny, O, Ãƒâ€œ, Ãƒâ€“, Ã…Â, P, Q, R, S, Sz, T, Ty, U, ÃƒÅ¡, ÃƒÅ“, Ã…Â°, V, W, X, Y, Z, Zs, a, ÃƒÂ¡, b, c, cs, d, dz, dzs, e, ÃƒÂ©, f, g, gy, h, i, ÃƒÂ­, j, k, l, ly, m, n, ny, o, ÃƒÂ³, ÃƒÂ¶, Ã…â€˜, p, q, r, s, sz, t, ty, u, ÃƒÂº, ÃƒÂ¼, Ã…Â±, v, w, x, y, z, zs"s;
       auto actual = String2WString(input);
       Assert::AreEqual(expected, actual);
     }
 
     TEST_METHOD(TestWString2String)
     {
-      auto expected = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~€‚ƒ„…†‡ˆ‰Š‹Œ‘’“”•–—˜™š›œŸ¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖ×ØÙÚÛÜİŞßàáâãäåæçèéêëìíîïğñòóôõö÷øùúûüışÿ"s;
-      auto input = L"!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~€‚ƒ„…†‡ˆ‰Š‹Œ‘’“”•–—˜™š›œŸ¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖ×ØÙÚÛÜİŞßàáâãäåæçèéêëìíîïğñòóôõö÷øùúûüışÿ"s;
+      auto expected = "A, ÃƒÂ, B, C, Cs, D, Dz, Dzs, E, Ãƒâ€°, F, G, Gy, H, I, ÃƒÂ, J, K, L, Ly, M, N, Ny, O, Ãƒâ€œ, Ãƒâ€“, Ã…Â, P, Q, R, S, Sz, T, Ty, U, ÃƒÅ¡, ÃƒÅ“, Ã…Â°, V, W, X, Y, Z, Zs, a, ÃƒÂ¡, b, c, cs, d, dz, dzs, e, ÃƒÂ©, f, g, gy, h, i, ÃƒÂ­, j, k, l, ly, m, n, ny, o, ÃƒÂ³, ÃƒÂ¶, Ã…â€˜, p, q, r, s, sz, t, ty, u, ÃƒÂº, ÃƒÂ¼, Ã…Â±, v, w, x, y, z, zs"s;
+      auto input = L"A, Ã, B, C, Cs, D, Dz, Dzs, E, Ã‰, F, G, Gy, H, I, Ã, J, K, L, Ly, M, N, Ny, O, Ã“, Ã–, Å, P, Q, R, S, Sz, T, Ty, U, Ãš, Ãœ, Å°, V, W, X, Y, Z, Zs, a, Ã¡, b, c, cs, d, dz, dzs, e, Ã©, f, g, gy, h, i, Ã­, j, k, l, ly, m, n, ny, o, Ã³, Ã¶, Å‘, p, q, r, s, sz, t, ty, u, Ãº, Ã¼, Å±, v, w, x, y, z, zs"s;
       auto actual = WString2String(input);
       Assert::AreEqual(expected, actual);
     }

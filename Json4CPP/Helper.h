@@ -22,10 +22,12 @@ namespace Json4CPP::Detail
   template<typename ...Args>
   Overload(Args...)->Overload<Args...>;
 
-  JSON_API std::wstring EscapeString(std::wstring value);
+  JSON_API std::wstring EscapeString(std::wstring const& value);
+  JSON_API std::wstring WidenString(std::string  const& value);
+  JSON_API std::string  NarrowString(std::wstring const& value);
 
-  JSON_API std::wstring String2WString(std::string  const& string, uint32_t codePage = 1252);
-  JSON_API std::string  WString2String(std::wstring const& string, uint32_t codePage = 1252);
+  JSON_API std::wstring String2WString(std::string  const& string);
+  JSON_API std::string  WString2String(std::wstring const& string);
 
   // Returns the {Line, Column} pair of the specified position in the stream.
   JSON_API std::pair<uint64_t, uint64_t> GetStreamPosition(std::wistream& is, std::wistream::pos_type pos);

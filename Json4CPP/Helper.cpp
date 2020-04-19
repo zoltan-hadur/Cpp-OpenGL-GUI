@@ -1,12 +1,14 @@
 #include "stdafx.h"
 
 #include "Helper.h"
+#include <locale>
+#include <codecvt>
 
 using namespace std;
 
 namespace Json4CPP::Detail
 {
-  wstring EscapeString(wstring value)
+  wstring EscapeString(wstring const& value)
   {
     wostringstream os;
     for (auto& c : value)
@@ -34,17 +36,25 @@ namespace Json4CPP::Detail
     return os.str();
   }
 
-#pragma warning(disable : 4927)
-  wstring String2WString(string const& string, uint32_t codePage)
+  wstring WidenString(string const& value)
   {
-    return CA2W(string.c_str(), codePage);
+    return wstring(value.begin(), value.end());
   }
 
-  string WString2String(const wstring& string, uint32_t codePage)
+  string  NarrowString(wstring const& value)
   {
-    return CW2A(string.c_str(), codePage);
+    return string(value.begin(), value.end());
   }
-#pragma warning(push)
+
+  wstring String2WString(string const& string)
+  {
+    return wstring_convert<codecvt_utf8<wchar_t>>().from_bytes(string);
+  }
+
+  string WString2String(const wstring& string)
+  {
+    return wstring_convert<codecvt_utf8<wchar_t>>().to_bytes(string);
+  }
 
   pair<uint64_t, uint64_t> GetStreamPosition(wistream& is, wistream::pos_type pos)
   {
