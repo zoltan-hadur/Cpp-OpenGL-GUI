@@ -5,9 +5,18 @@
 #include <codecvt>
 
 using namespace std;
+using namespace std::filesystem;
 
 namespace Json4CPP::Detail
 {
+  wstring ReadAllText(path const& path)
+  {
+    auto is = ifstream(path, fstream::in | fstream::binary);
+    stringstream ss;
+    ss << is.rdbuf();
+    return String2WString(ss.str());
+  }
+
   wstring EscapeString(wstring const& value)
   {
     wostringstream os;
@@ -38,22 +47,32 @@ namespace Json4CPP::Detail
 
   wstring WidenString(string const& value)
   {
-    return wstring(value.begin(), value.end());
+    auto str = wstring(value.size(), L'\0');
+    for (int i = 0; i < str.size(); ++i)
+    {
+      str[i] = value[i] & 0x00FF;
+    }
+    return str;
   }
 
-  string  NarrowString(wstring const& value)
+  string  NarrowWString(wstring const& value)
   {
-    return string(value.begin(), value.end());
+    auto str = string(value.size(), L'\0');
+    for (int i = 0; i < str.size(); ++i)
+    {
+      str[i] = value[i] & 0x00FF;
+    }
+    return str;
   }
 
   wstring String2WString(string const& string)
   {
-    return wstring_convert<codecvt_utf8<wchar_t>>().from_bytes(string);
+    return wstring_convert<codecvt_utf8_utf16<wchar_t>>().from_bytes(string);
   }
 
   string WString2String(const wstring& string)
   {
-    return wstring_convert<codecvt_utf8<wchar_t>>().to_bytes(string);
+    return wstring_convert<codecvt_utf8_utf16<wchar_t>>().to_bytes(string);
   }
 
   pair<uint64_t, uint64_t> GetStreamPosition(wistream& is, wistream::pos_type pos)

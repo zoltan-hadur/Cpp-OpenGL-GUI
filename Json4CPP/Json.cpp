@@ -135,7 +135,7 @@ namespace Json4CPP
 
   Json Json::Read(path filePath)
   {
-    return Json::Read(JsonLinter::Read(wfstream(filePath, wfstream::in | wfstream::binary)));
+    return Json::Read(JsonLinter::Read(ReadAllText(filePath)));
   }
 
   void Json::Write(path filePath) const

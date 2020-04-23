@@ -50,6 +50,9 @@
     <ClCompile Include="JsonTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="JsonTokenTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="JsonLinterTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

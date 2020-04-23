@@ -71,32 +71,32 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestWidenString)
     {
-      auto expected = wstring{ 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120 };
-      auto input    = string { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120 };
+      auto expected = wstring{ ((wchar_t)-100) & 0x00FF, ((wchar_t)-50) & 0x00FF, 50, 100 };
+      auto input    = string { -100, -50, 50, 100 };
       auto actual = WidenString(input);
       Assert::AreEqual(expected, actual);
     }
 
-    TEST_METHOD(TestNarrowString)
+    TEST_METHOD(TestNarrowWString)
     {
-      auto expected = string { (char)0x00CD, (char)0x000D, (char)0x00AD };
-      auto input    = wstring{       0xABCD,       0xF00D,       0xBAAD };
-      auto actual = NarrowString(input);
+      auto expected = string { (char)0x00CD, (char)0x000D, (char)0x00AD, -100   };
+      auto input    = wstring{       0xABCD,       0xF00D,       0xBAAD, 0x009C };
+      auto actual = NarrowWString(input);
       Assert::AreEqual(expected, actual);
     }
 
     TEST_METHOD(TestString2WString)
     {
-      auto expected = L"A, Á, B, C, Cs, D, Dz, Dzs, E, É, F, G, Gy, H, I, Í, J, K, L, Ly, M, N, Ny, O, Ó, Ö, Ő, P, Q, R, S, Sz, T, Ty, U, Ú, Ü, Ű, V, W, X, Y, Z, Zs, a, á, b, c, cs, d, dz, dzs, e, é, f, g, gy, h, i, í, j, k, l, ly, m, n, ny, o, ó, ö, ő, p, q, r, s, sz, t, ty, u, ú, ü, ű, v, w, x, y, z, zs"s;
-      auto input = "A, Ã, B, C, Cs, D, Dz, Dzs, E, Ã‰, F, G, Gy, H, I, Ã, J, K, L, Ly, M, N, Ny, O, Ã“, Ã–, Å, P, Q, R, S, Sz, T, Ty, U, Ãš, Ãœ, Å°, V, W, X, Y, Z, Zs, a, Ã¡, b, c, cs, d, dz, dzs, e, Ã©, f, g, gy, h, i, Ã­, j, k, l, ly, m, n, ny, o, Ã³, Ã¶, Å‘, p, q, r, s, sz, t, ty, u, Ãº, Ã¼, Å±, v, w, x, y, z, zs"s;
+      auto expected = L"💰, A, Á, B, C, Cs, D, Dz, Dzs, E, É, F, G, Gy, H, I, Í, J, K, L, Ly, M, N, Ny, O, Ó, Ö, Ő, P, Q, R, S, Sz, T, Ty, U, Ú, Ü, Ű, V, W, X, Y, Z, Zs, a, á, b, c, cs, d, dz, dzs, e, é, f, g, gy, h, i, í, j, k, l, ly, m, n, ny, o, ó, ö, ő, p, q, r, s, sz, t, ty, u, ú, ü, ű, v, w, x, y, z, zs"s;
+      auto input = "ðŸ’°, A, Ã, B, C, Cs, D, Dz, Dzs, E, Ã‰, F, G, Gy, H, I, Ã, J, K, L, Ly, M, N, Ny, O, Ã“, Ã–, Å, P, Q, R, S, Sz, T, Ty, U, Ãš, Ãœ, Å°, V, W, X, Y, Z, Zs, a, Ã¡, b, c, cs, d, dz, dzs, e, Ã©, f, g, gy, h, i, Ã­, j, k, l, ly, m, n, ny, o, Ã³, Ã¶, Å‘, p, q, r, s, sz, t, ty, u, Ãº, Ã¼, Å±, v, w, x, y, z, zs"s;
       auto actual = String2WString(input);
       Assert::AreEqual(expected, actual);
     }
 
     TEST_METHOD(TestWString2String)
     {
-      auto expected = "A, Ã, B, C, Cs, D, Dz, Dzs, E, Ã‰, F, G, Gy, H, I, Ã, J, K, L, Ly, M, N, Ny, O, Ã“, Ã–, Å, P, Q, R, S, Sz, T, Ty, U, Ãš, Ãœ, Å°, V, W, X, Y, Z, Zs, a, Ã¡, b, c, cs, d, dz, dzs, e, Ã©, f, g, gy, h, i, Ã­, j, k, l, ly, m, n, ny, o, Ã³, Ã¶, Å‘, p, q, r, s, sz, t, ty, u, Ãº, Ã¼, Å±, v, w, x, y, z, zs"s;
-      auto input = L"A, Á, B, C, Cs, D, Dz, Dzs, E, É, F, G, Gy, H, I, Í, J, K, L, Ly, M, N, Ny, O, Ó, Ö, Ő, P, Q, R, S, Sz, T, Ty, U, Ú, Ü, Ű, V, W, X, Y, Z, Zs, a, á, b, c, cs, d, dz, dzs, e, é, f, g, gy, h, i, í, j, k, l, ly, m, n, ny, o, ó, ö, ő, p, q, r, s, sz, t, ty, u, ú, ü, ű, v, w, x, y, z, zs"s;
+      auto expected = "ðŸ’°, A, Ã, B, C, Cs, D, Dz, Dzs, E, Ã‰, F, G, Gy, H, I, Ã, J, K, L, Ly, M, N, Ny, O, Ã“, Ã–, Å, P, Q, R, S, Sz, T, Ty, U, Ãš, Ãœ, Å°, V, W, X, Y, Z, Zs, a, Ã¡, b, c, cs, d, dz, dzs, e, Ã©, f, g, gy, h, i, Ã­, j, k, l, ly, m, n, ny, o, Ã³, Ã¶, Å‘, p, q, r, s, sz, t, ty, u, Ãº, Ã¼, Å±, v, w, x, y, z, zs"s;
+      auto input = L"💰, A, Á, B, C, Cs, D, Dz, Dzs, E, É, F, G, Gy, H, I, Í, J, K, L, Ly, M, N, Ny, O, Ó, Ö, Ő, P, Q, R, S, Sz, T, Ty, U, Ú, Ü, Ű, V, W, X, Y, Z, Zs, a, á, b, c, cs, d, dz, dzs, e, é, f, g, gy, h, i, í, j, k, l, ly, m, n, ny, o, ó, ö, ő, p, q, r, s, sz, t, ty, u, ú, ü, ű, v, w, x, y, z, zs"s;
       auto actual = WString2String(input);
       Assert::AreEqual(expected, actual);
     }

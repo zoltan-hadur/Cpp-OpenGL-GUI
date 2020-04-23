@@ -369,7 +369,7 @@ namespace Json4CPP::Detail
 
     case JsonTokenType::String:
     case JsonTokenType::PropertyName:
-      os << L"\""s << EscapeString(get<wstring>(value)) << L"\""s;
+      os << L"\""s << WidenString(WString2String(EscapeString(get<wstring>(value)))) << L"\""s;
       break;
 
     case JsonTokenType::Boolean:
