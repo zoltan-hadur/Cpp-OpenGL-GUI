@@ -67,7 +67,7 @@ namespace Json4CPP
   void JsonObject::Write(JsonObject const& object, deque<TOKEN>& tokens)
   {
     tokens.push_back({ JsonTokenType::StartObject, L"{"s });
-    for (auto& [key, value] : object._pairs)
+    for (auto& [key, value] : object)
     {
       tokens.push_back({ JsonTokenType::PropertyName, key });
       Json::Write(value, tokens);
@@ -119,10 +119,7 @@ namespace Json4CPP
   JsonObject::JsonObject(JsonObject const& object)
   {
     _pairs = object._pairs;
-    for (int i = 0; i < _pairs.size(); ++i)
-    {
-      _indexes[_pairs[i].first] = i;
-    }
+    _indexes = object._indexes;
   }
 
   wstring JsonObject::Dump(uint8_t indentation) const
