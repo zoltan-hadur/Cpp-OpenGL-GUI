@@ -61,6 +61,14 @@ namespace Json4CPP::Test
       }
     }
 
+    TEST_METHOD(TestReadAllText)
+    {
+      auto input = L"名前:前田あゆみ\\n第一印象:なんか怖っ！\\n今の印象:とりあえずキモい。噛み合わない\\n好きなところ:ぶすでキモいとこ😋✨✨\\n思い出:んーーー、ありすぎ😊❤️\\nLINE交換できる？:あぁ……ごめん✋\\nトプ画をみて:照れますがな😘✨"s;
+      auto excepted = ReadAllText(L"UTF-8.txt");
+      Assert::AreEqual(excepted, input);
+      Assert::ExpectException<exception>([]() -> void { ReadAllText(L"NonExistent.file"); });
+    }
+
     TEST_METHOD(TestEscapeString)
     {
       auto input    =   L"test\r\n\t\"test\"\\test\\"s;
