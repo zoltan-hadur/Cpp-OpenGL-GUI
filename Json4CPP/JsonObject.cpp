@@ -46,12 +46,12 @@ namespace Json4CPP
       switch (token)
       {
       case JsonTokenType::PropertyName: property = get<wstring>(value);                                     tokens.pop_front(); break;
-      case JsonTokenType::Null        : object._pairs.push_back({ property, Json(get<nullptr_t>(value)) }); tokens.pop_front(); break;
-      case JsonTokenType::String      : object._pairs.push_back({ property, Json(get<wstring  >(value)) }); tokens.pop_front(); break;
-      case JsonTokenType::Boolean     : object._pairs.push_back({ property, Json(get<bool     >(value)) }); tokens.pop_front(); break;
-      case JsonTokenType::Number      : object._pairs.push_back({ property, Json(get<double   >(value)) }); tokens.pop_front(); break;
-      case JsonTokenType::StartObject : object._pairs.push_back({ property, JsonObject::Read   (tokens) });                     break;
-      case JsonTokenType::StartArray  : object._pairs.push_back({ property, JsonArray::Read    (tokens) });                     break;
+      case JsonTokenType::Null        : object.Insert({ property, Json(get<nullptr_t>(value)) }); tokens.pop_front(); break;
+      case JsonTokenType::String      : object.Insert({ property, Json(get<wstring  >(value)) }); tokens.pop_front(); break;
+      case JsonTokenType::Boolean     : object.Insert({ property, Json(get<bool     >(value)) }); tokens.pop_front(); break;
+      case JsonTokenType::Number      : object.Insert({ property, Json(get<double   >(value)) }); tokens.pop_front(); break;
+      case JsonTokenType::StartObject : object.Insert({ property, JsonObject::Read   (tokens) });                     break;
+      case JsonTokenType::StartArray  : object.Insert({ property, JsonArray::Read    (tokens) });                     break;
       case JsonTokenType::EndObject   : tokens.pop_front(); return object;
       default:
       {
