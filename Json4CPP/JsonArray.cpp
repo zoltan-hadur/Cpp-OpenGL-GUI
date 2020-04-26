@@ -170,7 +170,9 @@ namespace Json4CPP
 
   wostream& operator<<(wostream& os, JsonArray const& array)
   {
-    return os << array.Dump(JsonDefault::Indentation);
+    auto tokens = deque<TOKEN>();
+    JsonArray::Write(array, tokens);
+    return JsonLinter::Write(os, tokens, JsonDefault::Indentation, 0);
   }
 
   wistream& operator>>(wistream& is, JsonArray& array)
