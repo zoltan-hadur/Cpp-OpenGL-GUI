@@ -11,10 +11,14 @@ namespace Json4CPP::Detail
 {
   wstring ReadAllText(path const& path)
   {
-    auto is = ifstream(path, fstream::in | fstream::binary);
-    stringstream ss;
-    ss << is.rdbuf();
-    return String2WString(ss.str());
+    if (auto is = ifstream(path, fstream::in | fstream::binary))
+    {
+      stringstream ss;
+      ss << is.rdbuf();
+      return String2WString(ss.str());
+    }
+    auto message = "Could not open file: "s + path.string() + "!"s;
+    throw exception(message.c_str());
   }
 
   wstring EscapeString(wstring const& value)
