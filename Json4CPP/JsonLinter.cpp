@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "JsonLinter.h"
+#include "JsonDefault.h"
 #include "Helper.h"
 
 using namespace std;
@@ -218,8 +219,13 @@ namespace Json4CPP::Detail
     return number;
   }
 
-  void JsonLinter::ParseObject(wistream& is, std::deque<TOKEN>& tokens, uint8_t level, uint8_t& maxLevel)
+  void JsonLinter::ParseObject(wistream& is, std::deque<TOKEN>& tokens, uint8_t depth)
   {
+    if (depth >= JsonDefault::MaxDepth)
+    {
+      auto message = "Depth is greater or equal to the maximum "s + to_string(JsonDefault::MaxDepth) + "!"s;
+      throw exception(message.c_str());
+    }
     if (is.peek() == L'{')
     {
       tokens.push_back({ JsonTokenType::StartObject, L""s + (wchar_t)is.get() });
@@ -237,7 +243,7 @@ namespace Json4CPP::Detail
           auto message = "Expected ':' at position "s + GetFormattedStreamPositionA(is, is.tellg()) + "!"s;
           throw exception(message.c_str());
         }
-        Read(is, tokens, level, maxLevel);
+        Read(is, tokens, depth);
         is >> ws;
         while (is.peek() == L',')
         {
@@ -254,7 +260,7 @@ namespace Json4CPP::Detail
             auto message = "Expected ':' at position "s + GetFormattedStreamPositionA(is, is.tellg()) + "!"s;
             throw exception(message.c_str());
           }
-          Read(is, tokens, level, maxLevel);
+          Read(is, tokens, depth);
           is >> ws;
         }
         if (is.peek() == L'}')
@@ -279,8 +285,13 @@ namespace Json4CPP::Detail
     }
   }
 
-  void JsonLinter::ParseArray(wistream& is, std::deque<TOKEN>& tokens, uint8_t level, uint8_t& maxLevel)
+  void JsonLinter::ParseArray(wistream& is, std::deque<TOKEN>& tokens, uint8_t depth)
   {
+    if (depth >= JsonDefault::MaxDepth)
+    {
+      auto message = "Depth is greater or equal to the maximum "s + to_string(JsonDefault::MaxDepth) + "!"s;
+      throw exception(message.c_str());
+    }
     if (is.peek() == L'[')
     {
       tokens.push_back({ JsonTokenType::StartArray, L""s + (wchar_t)is.get() });
@@ -293,13 +304,13 @@ namespace Json4CPP::Detail
       }
       if (is.peek() != L']')
       {
-        Read(is, tokens, level, maxLevel);
+        Read(is, tokens, depth);
         is >> ws;
         while (is.peek() == L',')
         {
           is.get();
           is >> ws;
-          Read(is, tokens, level, maxLevel);
+          Read(is, tokens, depth);
           is >> ws;
         }
         if (is.peek() == L']')
@@ -325,7 +336,7 @@ namespace Json4CPP::Detail
     }
   }
 
-  void JsonLinter::Read(wistream& is, std::deque<TOKEN>& tokens, uint8_t level, uint8_t& maxLevel)
+  void JsonLinter::Read(wistream& is, std::deque<TOKEN>& tokens, uint8_t depth)
   {
     is >> ws;
     switch (is.peek())
@@ -348,13 +359,11 @@ namespace Json4CPP::Detail
       break;
 
     case L'{':
-      maxLevel = max(++level, maxLevel);
-      ParseObject(is, tokens, level, maxLevel);
+      ParseObject(is, tokens, depth + 1);
       break;
 
     case L'[':
-      maxLevel = max(++level, maxLevel);
-      ParseArray(is, tokens, level, maxLevel);
+      ParseArray(is, tokens, depth + 1);
       break;
     }
   }
@@ -401,7 +410,7 @@ namespace Json4CPP::Detail
     return os;
   }
 
-  wostream& JsonLinter::WriteObject(wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation, uint8_t level)
+  wostream& JsonLinter::WriteObject(wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation, uint8_t depth)
   {
     if (tokens.empty())
     {
@@ -409,7 +418,7 @@ namespace Json4CPP::Detail
       throw exception(message.c_str());
     }
 
-    auto indent = wstring((size_t)indentation * level, L' ');
+    auto indent = wstring((size_t)indentation * depth, L' ');
     auto single = wstring(indentation, L' ');
     auto newLine = indentation == 0 ? L""s : L"\r\n"s;
     auto space = indentation == 0 ? L""s : L" "s;
@@ -465,10 +474,10 @@ namespace Json4CPP::Detail
         switch (token)
         {
         case JsonTokenType::StartObject:
-          WriteObject(os, tokens, indentation, level + 1);
+          WriteObject(os, tokens, indentation, depth + 1);
           break;
         case JsonTokenType::StartArray:
-          WriteArray(os, tokens, indentation, level + 1);
+          WriteArray(os, tokens, indentation, depth + 1);
           break;
         case JsonTokenType::Null:
         case JsonTokenType::String:
@@ -515,7 +524,7 @@ namespace Json4CPP::Detail
     throw exception(message.c_str());
   }
 
-  wostream& JsonLinter::WriteArray(wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation, uint8_t level)
+  wostream& JsonLinter::WriteArray(wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation, uint8_t depth)
   {
     if (tokens.empty())
     {
@@ -523,7 +532,7 @@ namespace Json4CPP::Detail
       throw exception(message.c_str());
     }
 
-    auto indent = wstring((size_t)indentation * level, L' ');
+    auto indent = wstring((size_t)indentation * depth, L' ');
     auto single = wstring(indentation, L' ');
     auto newLine = indentation == 0 ? L""s : L"\r\n"s;
 
@@ -562,10 +571,10 @@ namespace Json4CPP::Detail
       switch (token)
       {
       case JsonTokenType::StartObject:
-        WriteObject(os, tokens, indentation, level + 1);
+        WriteObject(os, tokens, indentation, depth + 1);
         break;
       case JsonTokenType::StartArray:
-        WriteArray(os, tokens, indentation, level + 1);
+        WriteArray(os, tokens, indentation, depth + 1);
         break;
       case JsonTokenType::Null:
       case JsonTokenType::String:
@@ -605,14 +614,8 @@ namespace Json4CPP::Detail
 
   std::deque<TOKEN> JsonLinter::Read(wistream     & is   )
   {
-    auto maxLevel = 0ui8;
     auto tokens = std::deque<TOKEN>();
-    Read(is, tokens, 0, maxLevel);
-    if (maxLevel >= 20)
-    {
-      auto message = "Depth is greater or equal to the maximum 20: "s + to_string(maxLevel) + "!"s;
-      throw exception(message.c_str());
-    }
+    Read(is, tokens, 0);
     if (is.peek(), is.eof())
     {
       return tokens;
@@ -627,14 +630,14 @@ namespace Json4CPP::Detail
     return Read(wstringstream(value));
   }
 
-  wostream& JsonLinter::Write(wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation, uint8_t level)
+  wostream& JsonLinter::Write(wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation, uint8_t depth)
   {
     auto& [token, value] = tokens.front();
     switch (token)
     {
-    case JsonTokenType::StartObject: WriteObject(os, tokens, indentation, level); break;
-    case JsonTokenType::StartArray : WriteArray (os, tokens, indentation, level); break;
-    default                    : Write(os, token, value);                     break;
+    case JsonTokenType::StartObject: WriteObject(os, tokens, indentation, depth); break;
+    case JsonTokenType::StartArray : WriteArray (os, tokens, indentation, depth); break;
+    default                        : Write(os, token, value);                     break;
     }
     return os;
   }

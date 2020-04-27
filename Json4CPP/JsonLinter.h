@@ -26,19 +26,19 @@ namespace Json4CPP::Detail
     static std::wstring   ParseString (std::wistream& is);
     static bool           ParseBoolean(std::wistream& is);
     static double         ParseNumber (std::wistream& is);
-    static void           ParseObject (std::wistream& is, std::deque<TOKEN>& tokens, uint8_t level, uint8_t& maxLevel);
-    static void           ParseArray  (std::wistream& is, std::deque<TOKEN>& tokens, uint8_t level, uint8_t& maxLevel);
+    static void           ParseObject (std::wistream& is, std::deque<TOKEN>& tokens, uint8_t depth);
+    static void           ParseArray  (std::wistream& is, std::deque<TOKEN>& tokens, uint8_t depth);
 
-    static void           Read        (std::wistream& is, std::deque<TOKEN>& tokens, uint8_t level, uint8_t& maxLevel);
+    static void           Read        (std::wistream& is, std::deque<TOKEN>& tokens, uint8_t depth);
 
     static std::wostream& Write       (std::wostream& os, JsonTokenType const& token, VALUE_TOKEN const& value);
-    static std::wostream& WriteObject (std::wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation, uint8_t level);
-    static std::wostream& WriteArray  (std::wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation, uint8_t level);
+    static std::wostream& WriteObject (std::wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation, uint8_t depth);
+    static std::wostream& WriteArray  (std::wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation, uint8_t depth);
   public:
     static std::deque<TOKEN> Read(std::wistream     & is   );
     static std::deque<TOKEN> Read(std::wstring const& value);
 
-    static std::wostream& Write(std::wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation, uint8_t level);
+    static std::wostream& Write(std::wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation, uint8_t depth);
 
     static std::wstring Dump(VALUE_TOKEN value);
   };

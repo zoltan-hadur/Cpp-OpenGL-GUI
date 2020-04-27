@@ -45,7 +45,7 @@ namespace Json4CPP
       }
       switch (token)
       {
-      case JsonTokenType::PropertyName: property = get<wstring>(value);                                     tokens.pop_front(); break;
+      case JsonTokenType::PropertyName: property = get<wstring>(value);                           tokens.pop_front(); break;
       case JsonTokenType::Null        : object.Insert({ property, Json(get<nullptr_t>(value)) }); tokens.pop_front(); break;
       case JsonTokenType::String      : object.Insert({ property, Json(get<wstring  >(value)) }); tokens.pop_front(); break;
       case JsonTokenType::Boolean     : object.Insert({ property, Json(get<bool     >(value)) }); tokens.pop_front(); break;
