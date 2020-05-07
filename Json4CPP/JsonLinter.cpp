@@ -403,7 +403,11 @@ namespace Json4CPP::Detail
         [&](wstring    const& v) { os << L"\""s << EscapeString(v) << L"\""s; },
         [&](bool       const& v) { os << (v ? L"true"s : L"false"s);          },
         [&](double     const& v) { os << +v;                                  },
-        [&](auto       const& v) { throw exception("Invalid type"s)           }
+        [&](auto       const& v)
+        {
+          auto message = "Invalid type: "s + string(typeid(v).name()) + "!"s;
+          throw exception(message.c_str());
+        }
       }, value);
       break;
     }
