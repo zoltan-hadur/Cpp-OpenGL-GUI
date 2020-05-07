@@ -38,7 +38,7 @@ namespace Json4CPP::Detail
     static std::deque<TOKEN> Read(std::wistream     & is   );
     static std::deque<TOKEN> Read(std::wstring const& value);
 
-    static std::wostream& Write(std::wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation, uint8_t depth);
+    static std::wostream& Write(std::wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation);
 
     static std::wstring Dump(VALUE_TOKEN value);
   };

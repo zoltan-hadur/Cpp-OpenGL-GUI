@@ -630,14 +630,14 @@ namespace Json4CPP::Detail
     return Read(wstringstream(value));
   }
 
-  wostream& JsonLinter::Write(wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation, uint8_t depth)
+  wostream& JsonLinter::Write(wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation)
   {
     auto& [token, value] = tokens.front();
     switch (token)
     {
-    case JsonTokenType::StartObject: WriteObject(os, tokens, indentation, depth); break;
-    case JsonTokenType::StartArray : WriteArray (os, tokens, indentation, depth); break;
-    default                        : Write(os, token, value);                     break;
+    case JsonTokenType::StartObject: WriteObject(os, tokens, indentation, 0);            break;
+    case JsonTokenType::StartArray : WriteArray (os, tokens, indentation, 0);            break;
+    default:                         Write      (os, token , value); tokens.pop_front(); break;
     }
     return os;
   }
