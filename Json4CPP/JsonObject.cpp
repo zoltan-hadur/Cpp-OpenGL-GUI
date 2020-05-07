@@ -125,10 +125,8 @@ namespace Json4CPP
 
   wstring JsonObject::Dump(uint8_t indentation) const
   {
-    auto tokens = deque<TOKEN>();
-    JsonObject::Write(*this, tokens);
     wstringstream os;
-    JsonLinter::Write(os, tokens, indentation, 0);
+    JsonLinter::Write(os, JsonObject::Write(*this, deque<TOKEN>()), indentation);
     return os.str();
   }
 
@@ -207,9 +205,7 @@ namespace Json4CPP
 
   wostream& operator<<(wostream& os, JsonObject const& object)
   {
-    auto tokens = deque<TOKEN>();
-    JsonObject::Write(object, tokens);
-    return JsonLinter::Write(os, tokens, JsonDefault::Indentation, 0);
+    return JsonLinter::Write(os, JsonObject::Write(object, deque<TOKEN>()), JsonDefault::Indentation);
   }
 
   wistream& operator>>(wistream& is, JsonObject& object)

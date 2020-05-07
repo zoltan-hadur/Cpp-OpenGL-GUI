@@ -127,10 +127,8 @@ namespace Json4CPP
 
   wstring Json::Dump(uint8_t indentation) const
   {
-    auto tokens = deque<TOKEN>();
-    Json::Write(*this, tokens);
     wstringstream os;
-    JsonLinter::Write(os, tokens, indentation, 0);
+    JsonLinter::Write(os, Json::Write(*this, deque<TOKEN>()), indentation);
     return os.str();
   }
 
@@ -141,7 +139,7 @@ namespace Json4CPP
 
   void Json::Write(path filePath) const
   {
-    wfstream(filePath, wfstream::out | wfstream::binary) << *this;
+    WriteAllText(filePath, Dump(JsonDefault::Indentation));
   }
 
   int64_t Json::Size() const
@@ -404,9 +402,7 @@ namespace Json4CPP
 
   wostream& operator<<(wostream& os, Json const& json)
   {
-    auto tokens = deque<TOKEN>();
-    Json::Write(json, tokens);
-    return JsonLinter::Write(os, tokens, JsonDefault::Indentation, 0);
+    return JsonLinter::Write(os, Json::Write(json, deque<TOKEN>()), JsonDefault::Indentation);
   }
 
   wistream& operator>>(wistream&is, Json& json)

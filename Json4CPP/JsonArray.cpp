@@ -97,10 +97,8 @@ namespace Json4CPP
 
   wstring JsonArray::Dump(uint8_t indentation) const
   {
-    auto tokens = deque<TOKEN>();
-    JsonArray::Write(*this, tokens);
     wstringstream os;
-    JsonLinter::Write(os, tokens, indentation, 0);
+    JsonLinter::Write(os, JsonArray::Write(*this, deque<TOKEN>()), indentation);
     return os.str();
   }
 
@@ -171,9 +169,7 @@ namespace Json4CPP
 
   wostream& operator<<(wostream& os, JsonArray const& array)
   {
-    auto tokens = deque<TOKEN>();
-    JsonArray::Write(array, tokens);
-    return JsonLinter::Write(os, tokens, JsonDefault::Indentation, 0);
+    return JsonLinter::Write(os, JsonArray::Write(array, deque<TOKEN>()), JsonDefault::Indentation);
   }
 
   wistream& operator>>(wistream& is, JsonArray& array)
