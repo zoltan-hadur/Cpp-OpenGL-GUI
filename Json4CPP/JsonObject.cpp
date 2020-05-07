@@ -64,7 +64,7 @@ namespace Json4CPP
     throw exception(message.c_str());
   }
 
-  void JsonObject::Write(JsonObject const& object, deque<TOKEN>& tokens)
+  deque<TOKEN>& JsonObject::Write(JsonObject const& object, deque<TOKEN>& tokens)
   {
     tokens.push_back({ JsonTokenType::StartObject, L"{"s });
     for (auto& [key, value] : object)
@@ -73,6 +73,7 @@ namespace Json4CPP
       Json::Write(value, tokens);
     }
     tokens.push_back({ JsonTokenType::EndObject, L"}"s });
+    return tokens;
   }
 
   JsonObject::JsonObject(JsonBuilder builder)

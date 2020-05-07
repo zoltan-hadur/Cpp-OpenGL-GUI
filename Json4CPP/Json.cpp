@@ -35,7 +35,7 @@ namespace Json4CPP
     }
   }
 
-  void Json::Write(Json const& json, deque<TOKEN>& tokens)
+  deque<TOKEN>& Json::Write(Json const& json, deque<TOKEN>& tokens)
   {
     switch (Value::GetType(json._value))
     {
@@ -49,6 +49,7 @@ namespace Json4CPP
       auto message = WString2String(L"Invalid type: "s + Json::Stringify(Value::GetType(json._value)) + L"!"s);
       throw exception(message.c_str());
     }
+    return tokens;
   }
 
   Json::Json()

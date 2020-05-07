@@ -34,8 +34,8 @@ namespace Json4CPP
 #pragma warning(suppress: 4251)
     std::vector<Json> _values;
 
-    static JsonArray Read (                        std::deque<Detail::TOKEN>& tokens);
-    static void      Write(JsonArray const& array, std::deque<Detail::TOKEN>& tokens);
+    static JsonArray                  Read (                        std::deque<Detail::TOKEN>& tokens);
+    static std::deque<Detail::TOKEN>& Write(JsonArray const& array, std::deque<Detail::TOKEN>& tokens);
   public:
     JsonArray() = default;
     JsonArray(Detail::JsonBuilder builder);

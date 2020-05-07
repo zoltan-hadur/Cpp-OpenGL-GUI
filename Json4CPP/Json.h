@@ -47,8 +47,8 @@ namespace Json4CPP
 #pragma warning(suppress: 4251)
     Detail::VALUE _value;
 
-    static Json Read (                  std::deque<Detail::TOKEN>& tokens);
-    static void Write(Json const& json, std::deque<Detail::TOKEN>& tokens);
+    static Json                       Read (                  std::deque<Detail::TOKEN>& tokens);
+    static std::deque<Detail::TOKEN>& Write(Json const& json, std::deque<Detail::TOKEN>& tokens);
   public:
     Json();
     Json(Detail::JsonBuilder value);

@@ -54,7 +54,7 @@ namespace Json4CPP
     throw exception(message.c_str());
   }
 
-  void JsonArray::Write(JsonArray const& array, deque<TOKEN>& tokens)
+  deque<TOKEN>& JsonArray::Write(JsonArray const& array, deque<TOKEN>& tokens)
   {
     tokens.push_back({ JsonTokenType::StartArray, L"["s });
     for (auto& value : array)
@@ -62,6 +62,7 @@ namespace Json4CPP
       Json::Write(value, tokens);
     }
     tokens.push_back({ JsonTokenType::EndArray, L"]"s });
+    return tokens;
   }
 
   JsonArray::JsonArray(JsonBuilder builder)
