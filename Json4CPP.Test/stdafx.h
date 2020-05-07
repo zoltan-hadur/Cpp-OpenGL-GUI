@@ -14,9 +14,11 @@
 #include <optional>
 #include <iostream>
 #include <sstream>
+#include <fstream>
 #include <tuple>
 #include <vector>
 #include <deque>
+#include <map>
 
 #define _CRTDBG_MAP_ALLOC  
 #include <stdlib.h>  
@@ -28,7 +30,6 @@
 #define new new
 #endif
 #include "..\Json4CPP\Json.hpp"
-#include "..\Foundation\Enumerable.h"
 
 namespace Microsoft::VisualStudio::CppUnitTestFramework
 {

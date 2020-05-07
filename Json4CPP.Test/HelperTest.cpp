@@ -69,6 +69,18 @@ namespace Json4CPP::Test
       Assert::ExpectException<exception>([]() -> void { ReadAllText(L"NonExistent.file"); });
     }
 
+    TEST_METHOD(TestWriteAllText)
+    {
+      auto input = L"名前:前田あゆみ\\n第一印象:なんか怖っ！\\n今の印象:とりあえずキモい。噛み合わない\\n好きなところ:ぶすでキモいとこ😋✨✨\\n思い出:んーーー、ありすぎ😊❤️\\nLINE交換できる？:あぁ……ごめん✋\\nトプ画をみて:照れますがな😘✨"s;
+      WriteAllText(L"UTF-8_copy.txt", input);
+      auto is1 = wifstream(L"UTF-8.txt"     , wifstream::binary | wifstream::ate);
+      auto is2 = wifstream(L"UTF-8_copy.txt", wifstream::binary | wifstream::ate);
+      if (is1.fail() || is2.fail() || is1.tellg() != is2.tellg()) Assert::Fail();
+      is1.seekg(0, wifstream::beg);
+      is2.seekg(0, wifstream::beg);
+      equal(istreambuf_iterator<wchar_t>(is1.rdbuf()), istreambuf_iterator<wchar_t>(), istreambuf_iterator<wchar_t>(is2.rdbuf()));
+    }
+
     TEST_METHOD(TestEscapeString)
     {
       auto input    =   L"test\r\n\t\"test\"\\test\\"s;
