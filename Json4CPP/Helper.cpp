@@ -21,6 +21,11 @@ namespace Json4CPP::Detail
     throw exception(message.c_str());
   }
 
+  void WriteAllText(path const& path, wstring const& value)
+  {
+    wfstream(path, wfstream::out | wfstream::binary) << WidenString(WString2String(value));
+  }
+
   wstring EscapeString(wstring const& value)
   {
     wostringstream os;

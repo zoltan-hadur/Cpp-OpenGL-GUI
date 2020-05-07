@@ -24,16 +24,19 @@ namespace Json4CPP::Detail
   Overload(Args...)->Overload<Args...>;
 
   // Reads UTF-8 without BOM encoded file into UTF-16 encoded wstring.
-  JSON_API std::wstring ReadAllText(std::filesystem::path const& path);
+  JSON_API std::wstring ReadAllText (std::filesystem::path const& path);
+
+  // Writes UTF-16 encoded wstring into UTF-8 without BOM encoded file.
+  JSON_API void         WriteAllText(std::filesystem::path const& path, std::wstring const& value);
 
   // Escapes ", \, \b, \f, \n, \r, \t characters and any other character between 0x00 and 0x1f.
-  JSON_API std::wstring EscapeString(std::wstring const& value);
+  JSON_API std::wstring EscapeString  (std::wstring const& value);
 
   // Widens the string character by character, for example: 'a' (0x61) -> L'a' (0x0061) or (char)-100 -> (wchar_t)156.
-  JSON_API std::wstring WidenString (std::string  const& value);
+  JSON_API std::wstring WidenString   (std::string  const& value);
 
   // Narrows the wstring character by character, for example: L'a' (0x0061) -> 'a' (0x61) or (wchar_t)156 -> (char)-100.
-  JSON_API std::string  NarrowWString(std::wstring const& value);
+  JSON_API std::string  NarrowWString (std::wstring const& value);
 
   // Converts UTF-8 encoded string into UTF-16 encoded wstring.
   JSON_API std::wstring String2WString(std::string  const& string);
