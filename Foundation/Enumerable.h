@@ -1317,16 +1317,10 @@ namespace OpenGLUI::Foundation
   template<typename Iterable>
   Enumerable(Iterable values, bool isReference = true) -> Enumerable<typename std::iterator_traits<decltype(values.begin())>::value_type>;
 
-  template<typename Source>
-  auto From(Enumerable<Source> const& values)
-  {
-    return values;
-  }
-
   template<typename Iterable>
-  auto From(Iterable const& values)
+  auto From(Iterable && values)
   {
-    return Enumerable(values);
+    return Enumerable(values, is_lvalue_reference_v<decltype(values)>);
   }
 
   template<typename Source>

@@ -1285,6 +1285,38 @@ namespace OpenGLUI::Foundation::Test
       }
     }
 
+    TEST_METHOD(TestFrom1)
+    {
+      Enumerable<int> input = { 1, 2, 3 };
+      auto output = From(input);
+      Assert::IsTrue(Equal(input, output));
+      for (int i = 0; i < input.Count(); ++i)
+      {
+        Assert::AreEqual(input._values[i], output._values[i]);
+      }
+      *output._values[0] = 1337;
+      Assert::AreEqual(1337, *input._values[0]);
+    }
+
+    TEST_METHOD(TestFrom2)
+    {
+      Enumerable<int> input = { 1, 2, 3 };
+      auto output = From(Enumerable(input, false));
+      Assert::IsTrue(Equal(input, output));
+      for (int i = 0; i < input.Count(); ++i)
+      {
+        Assert::AreNotEqual(input._values[i], output._values[i]);
+      }
+      *output._values[0] = 1337;
+      Assert::AreNotEqual(1337, *input._values[0]);
+    }
+
+    TEST_METHOD(TestFrom3)
+    {
+      auto output = From({ 1, 2, 3 });
+      Assert::IsTrue(Equal(array{ 1, 2, 3 }, output));
+    }
+
     TEST_CLASS_INITIALIZE(ClassInitialize)
     {
       _CrtMemCheckpoint(&_init);
