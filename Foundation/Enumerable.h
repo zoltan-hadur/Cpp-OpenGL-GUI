@@ -37,7 +37,6 @@ namespace OpenGLUI::Foundation
 
 #pragma region Iterator
     friend class Iterator;
-    friend class ConstIterator;
     class Iterator
     {
     private:
@@ -45,7 +44,7 @@ namespace OpenGLUI::Foundation
       Enumerable* _enumerable;
       int64_t _position;
 
-      Iterator(Enumerable& enumerable, int64_t position) : _enumerable(&enumerable), _position(position) {}
+      Iterator(Enumerable* enumerable, int64_t position) : _enumerable(enumerable), _position(position) {}
     public:
       using difference_type = int64_t;
       using value_type = Source;
@@ -173,6 +172,7 @@ namespace OpenGLUI::Foundation
 #pragma endregion
 
 #pragma region ConstIterator
+    friend class ConstIterator;
     class ConstIterator
     {
     private:
@@ -180,7 +180,7 @@ namespace OpenGLUI::Foundation
       Enumerable const* _enumerable;
       int64_t _position;
 
-      ConstIterator(Enumerable const& enumerable, int64_t position) : _enumerable(&enumerable), _position(position) {}
+      ConstIterator(Enumerable const* enumerable, int64_t position) : _enumerable(enumerable), _position(position) {}
     public:
       using difference_type = int64_t;
       using value_type = Source const;
@@ -346,25 +346,25 @@ namespace OpenGLUI::Foundation
 
     Iterator begin()
     {
-      return Iterator(*this, 0);
+      return Iterator(this, 0);
     }
 
     Iterator end()
     {
-      return Iterator(*this, Size());
+      return Iterator(this, Size());
     }
 
     ConstIterator begin() const
     {
-      return ConstIterator(*this, 0);
+      return ConstIterator(this, 0);
     }
 
     ConstIterator end() const
     {
-      return ConstIterator(*this, Size());
+      return ConstIterator(this, Size());
     }
 
-    void Add(Source const& value)
+    inline void Add(Source const& value)
     {
       _values.push_back(_isReference ? (Source*)&value : new Source(value));
     }
