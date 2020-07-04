@@ -901,10 +901,8 @@ namespace OpenGLUI::Foundation::Test
     {
       struct Pet { wstring Name; int Age; };
       auto input = array<Pet, 3>{ { { L"Whiskers", 1 }, { L"Boots", 4 }, { L"Barley", 8 } }};
-      auto expected = Pet{ L"Barley", 8 };
 
-      auto output = From(input).Max<int>([](Pet const& pet) { return pet.Age; });
-      Assert::IsTrue(Equal(array{ expected }, array{ output }, [](Pet const& left, Pet const& right) { return left.Name == right.Name && left.Age == right.Age; }));
+      Assert::AreEqual(8, From(input).Max<int>([](Pet const& pet) { return pet.Age; }));
     }
 
     TEST_METHOD(TestMin1)
@@ -917,10 +915,8 @@ namespace OpenGLUI::Foundation::Test
     {
       struct Pet { wstring Name; int Age; };
       auto input = array<Pet, 3>{ { { L"Whiskers", 1 }, { L"Boots", 4 }, { L"Barley", 8 } }};
-      auto expected = Pet{ L"Whiskers", 1 };
 
-      auto output = From(input).Min<int>([](Pet const& pet) { return pet.Age; });
-      Assert::IsTrue(Equal(array{ expected }, array{ output }, [](Pet const& left, Pet const& right) { return left.Name == right.Name && left.Age == right.Age; }));
+      Assert::AreEqual(1, From(input).Min<int>([](Pet const& pet) { return pet.Age; }));
     }
 
     TEST_METHOD(TestSum1)

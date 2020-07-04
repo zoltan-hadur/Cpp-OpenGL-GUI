@@ -931,21 +931,18 @@ namespace OpenGLUI::Foundation
 
     // Invokes a projection function on each element in a sequence and returns the maximum resulting value.
     template<typename Key>
-    Source Max(Delegate<Key(Source const&)> selector) const
+    Key Max(Delegate<Key(Source const&)> selector) const
     {
       auto max = std::numeric_limits<Key>::lowest();
-      auto maxi = 0i64;
-      auto size = Size();
-      for (int64_t i = 0; i < size; ++i)
+      for (auto& value : _values)
       {
-        auto projected = selector(*_values[i]);
+        auto projected = selector(*value);
         if (projected > max)
         {
           max = projected;
-          maxi = i;
         }
       }
-      return *_values[maxi];
+      return max;
     }
 
     // Returns the minimum value in a sequence.
@@ -956,21 +953,18 @@ namespace OpenGLUI::Foundation
 
     // Invokes a projection function on each element in a sequence and returns the minimum resulting value.
     template<typename Key>
-    Source Min(Delegate<Key(Source const&)> selector) const
+    Key Min(Delegate<Key(Source const&)> selector) const
     {
       auto min = std::numeric_limits<Key>::max();
-      auto mini = 0i64;
-      auto size = Size();
-      for (int64_t i = 0; i < size; ++i)
+      for (auto& value: _values)
       {
-        auto projected = selector(*_values[i]);
+        auto projected = selector(*value);
         if (projected < min)
         {
           min = projected;
-          mini = i;
         }
       }
-      return *_values[mini];
+      return min;
     }
 
     // Computes the sum of a sequence.
