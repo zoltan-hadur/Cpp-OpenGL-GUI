@@ -987,6 +987,12 @@ namespace OpenGLUI::Foundation::Test
       Assert::AreEqual(2, From(input).ElementAt(1));
       Assert::AreEqual(3, From(input).ElementAt(2));
       Assert::ExpectException<out_of_range>([&]() { From(input).ElementAt(3); });
+
+      Assert::ExpectException<out_of_range>([&]() { From({ 1, 2, 3 }).ElementAt(-1); });
+      Assert::AreEqual(1, From({ 1, 2, 3 }).ElementAt(0));
+      Assert::AreEqual(2, From({ 1, 2, 3 }).ElementAt(1));
+      Assert::AreEqual(3, From({ 1, 2, 3 }).ElementAt(2));
+      Assert::ExpectException<out_of_range>([&]() { From({ 1, 2, 3 }).ElementAt(3); });
     }
 
     TEST_METHOD(TestElementAtOrDefault)
@@ -998,22 +1004,50 @@ namespace OpenGLUI::Foundation::Test
       Assert::AreEqual(2, From(input).ElementAtOrDefault(1));
       Assert::AreEqual(3, From(input).ElementAtOrDefault(2));
       Assert::AreEqual(decltype(input)::value_type(), From(input).ElementAtOrDefault(3));
+
+      Assert::AreEqual(decltype(input)::value_type(), From({ 1, 2, 3 }).ElementAtOrDefault(-1));
+      Assert::AreEqual(1, From({ 1, 2, 3 }).ElementAtOrDefault(0));
+      Assert::AreEqual(2, From({ 1, 2, 3 }).ElementAtOrDefault(1));
+      Assert::AreEqual(3, From({ 1, 2, 3 }).ElementAtOrDefault(2));
+      Assert::AreEqual(decltype(input)::value_type(), From({ 1, 2, 3 }).ElementAtOrDefault(3));
     }
 
     TEST_METHOD(TestFirst1)
     {
+      auto input1 = array{ 1, 2, 3 };
+      auto input2 = array{ L"a"s, L"b"s, L"c"s };
+
+      Assert::AreEqual(1, From(input1).First());
+      Assert::AreEqual(L"a"s, From(input2).First());
+
       Assert::AreEqual(1, From({ 1, 2, 3 }).First());
       Assert::AreEqual(L"a"s, From({ L"a"s, L"b"s, L"c"s }).First());
     }
 
     TEST_METHOD(TestFirst2)
     {
+      auto input1 = array{ 1, 2, 3 };
+      auto input2 = array{ L"a"s, L"b"s, L"c"s };
+
+      Assert::AreEqual(2, From(input1).First([](int const& value) { return value > 1; }));
+      Assert::AreEqual(L"b"s, From(input2).First([](wstring const& value) { return value > L"a"; }));
+
       Assert::AreEqual(2, From({ 1, 2, 3 }).First([](int const& value) { return value > 1; }));
       Assert::AreEqual(L"b"s, From({ L"a"s, L"b"s, L"c"s }).First([](wstring const& value) { return value > L"a"; }));
     }
 
     TEST_METHOD(TestFirstOrDefault1)
     {
+      auto input1 = array{ 1, 2, 3 };
+      auto input2 = array{ L"a"s, L"b"s, L"c"s };
+      auto input3 = array<int, 0>{ };
+      auto input4 = array<wstring, 0>{ };
+
+      Assert::AreEqual(1, From(input1).FirstOrDefault());
+      Assert::AreEqual(L"a"s, From(input2).FirstOrDefault());
+      Assert::AreEqual(int(), From(input3).FirstOrDefault());
+      Assert::AreEqual(wstring(), From(input4).FirstOrDefault());
+
       Assert::AreEqual(1, From({ 1, 2, 3 }).FirstOrDefault());
       Assert::AreEqual(L"a"s, From({ L"a"s, L"b"s, L"c"s }).FirstOrDefault());
       Assert::AreEqual(int(), From(array<int, 0>{ }).FirstOrDefault());
@@ -1022,6 +1056,16 @@ namespace OpenGLUI::Foundation::Test
 
     TEST_METHOD(TestFirstOrDefault2)
     {
+      auto input1 = array{ 1, 2, 3 };
+      auto input2 = array{ L"a"s, L"b"s, L"c"s };
+      auto input3 = array<int, 0>{ };
+      auto input4 = array<wstring, 0>{ };
+
+      Assert::AreEqual(2, From(input1).FirstOrDefault([](int const& value) { return value > 1; }));
+      Assert::AreEqual(L"b"s, From(input2).FirstOrDefault([](wstring const& value) { return value > L"a"; }));
+      Assert::AreEqual(int(), From(input3).FirstOrDefault([](int const& value) { return value > 1; }));
+      Assert::AreEqual(wstring(), From(input4).FirstOrDefault([](wstring const& value) { return value > L"a"; }));
+
       Assert::AreEqual(2, From({ 1, 2, 3 }).FirstOrDefault([](int const& value) { return value > 1; }));
       Assert::AreEqual(L"b"s, From({ L"a"s, L"b"s, L"c"s }).FirstOrDefault([](wstring const& value) { return value > L"a"; }));
       Assert::AreEqual(int(), From(array<int, 0>{ }).FirstOrDefault([](int const& value) { return value > 1; }));
