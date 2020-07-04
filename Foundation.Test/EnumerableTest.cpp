@@ -1357,6 +1357,237 @@ namespace OpenGLUI::Foundation::Test
       Assert::IsTrue(Equal(array{ 1, 2, 3 }, output));
     }
 
+    // https://stackoverflow.com/questions/12353011/how-to-convert-a-utc-date-time-to-a-time-t-in-c
+    const int SecondsPerMinute = 60;
+    const int SecondsPerHour = 3600;
+    const int SecondsPerDay = 86400;
+    const int DaysOfMonth[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+
+    // https://stackoverflow.com/questions/12353011/how-to-convert-a-utc-date-time-to-a-time-t-in-c
+    bool IsLeapYear(short year)
+    {
+      if (year % 4 != 0) return false;
+      if (year % 100 != 0) return true;
+      return (year % 400) == 0;
+    }
+
+    // https://stackoverflow.com/questions/12353011/how-to-convert-a-utc-date-time-to-a-time-t-in-c
+    time_t mkgmtime(short year, short month, short day, short hour, short minute, short second)
+    {
+      time_t secs = 0;
+      for (short y = 1970; y < year; ++y)
+        secs += (IsLeapYear(y) ? 366 : 365) * SecondsPerDay;
+      for (short m = 1; m < month; ++m)
+      {
+        secs += DaysOfMonth[m - 1] * SecondsPerDay;
+        if (m == 2 && IsLeapYear(year)) secs += SecondsPerDay;
+      }
+      secs += (day - 1) * SecondsPerDay;
+      secs += hour * SecondsPerHour;
+      secs += minute * SecondsPerMinute;
+      secs += second;
+      return secs;
+    }
+
+    // https://www.c-sharpcorner.com/article/writing-complex-queries-using-linq-and-lambda/
+    TEST_METHOD(TestSomeQuery)
+    {
+      struct OrderMaster
+      {
+        int OrderId;
+        time_t OrderDate;
+        wstring OrderNo;
+        wstring ShippingAddress;
+        float TotalPrice;
+        int UserId;
+      };
+      struct OrderDetail
+      {
+        int OrderDetailId;
+        int OrderId;
+        float Price;
+        int ProductId;
+        wstring ProductName;
+        int Qty;
+        int UserId;
+      };
+      auto orderMasters = vector<OrderMaster>
+      {
+        { 1, mkgmtime(2016, 10, 02, 0, 0, 0), L"C1001"s, L"Mumbai"s, 2300.0f, 101 },
+        { 2, mkgmtime(2017, 10, 12, 0, 0, 0), L"C1002"s, L"Delhi"s , 3950.0f, 102 }
+      };
+      auto orderDetails = vector<OrderDetail>
+      {
+        { 1, 1, 1500.0f, 1, L"Shirt"s       , 1, 101 },
+        { 2, 1,  200.0f, 2, L"Tie"s         , 1, 101 },
+        { 3, 1,  300.0f, 3, L"Tee 1"s       , 1, 101 },
+        { 4, 1,  150.0f, 4, L"Handkerchief"s, 2, 101 },
+        { 5, 2, 1000.0f, 5, L"Jeans"s       , 1, 102 },
+        { 6, 2,  500.0f, 6, L"Tee 2"s       , 1, 102 },
+        { 7, 2,  400.0f, 7, L"TShirt"s      , 5, 102 },
+        { 8, 2,  150.0f, 4, L"Handkerchief"s, 3, 102 }
+      };
+
+      auto today = mkgmtime(2017, 6, 26, 0, 0, 0);
+      auto result1 = From(orderMasters).Where([&](OrderMaster const& orderMaster) { return orderMaster.OrderDate < today - 100 * SecondsPerDay; });
+      Assert::AreEqual(1i64, result1.Size());
+      Assert::AreEqual(L"C1001"s, result1.ElementAt(0).OrderNo);
+
+      struct ResultType2 { wstring OrderNo; wstring ProductName; time_t OrderDate; };
+      auto result2 = From(orderMasters)
+        .Join<OrderDetail, int, ResultType2>(
+          From(orderDetails),
+          [](OrderMaster const& orderMaster) { return orderMaster.OrderId; },
+          [](OrderDetail const& orderDetail) { return orderDetail.OrderId; },
+          [](OrderMaster const& orderMaster, OrderDetail const& orderDetail)
+          {
+            return ResultType2{ orderMaster.OrderNo, orderDetail.ProductName, orderMaster.OrderDate };
+          }
+        );
+      Assert::AreEqual(8i64, result2.Size());
+      Assert::AreEqual(L"C1001"s       , result2.ElementAt(0).OrderNo);
+      Assert::AreEqual(L"Shirt"s       , result2.ElementAt(0).ProductName);
+      Assert::AreEqual(L"C1001"s       , result2.ElementAt(1).OrderNo);
+      Assert::AreEqual(L"Tie"s         , result2.ElementAt(1).ProductName);
+      Assert::AreEqual(L"C1001"s       , result2.ElementAt(2).OrderNo);
+      Assert::AreEqual(L"Tee 1"s       , result2.ElementAt(2).ProductName);
+      Assert::AreEqual(L"C1001"s       , result2.ElementAt(3).OrderNo);
+      Assert::AreEqual(L"Handkerchief"s, result2.ElementAt(3).ProductName);
+      Assert::AreEqual(L"C1002"s       , result2.ElementAt(4).OrderNo);
+      Assert::AreEqual(L"Jeans"s       , result2.ElementAt(4).ProductName);
+      Assert::AreEqual(L"C1002"s       , result2.ElementAt(5).OrderNo);
+      Assert::AreEqual(L"Tee 2"s       , result2.ElementAt(5).ProductName);
+      Assert::AreEqual(L"C1002"s       , result2.ElementAt(6).OrderNo);
+      Assert::AreEqual(L"TShirt"s      , result2.ElementAt(6).ProductName);
+      Assert::AreEqual(L"C1002"s       , result2.ElementAt(7).OrderNo);
+      Assert::AreEqual(L"Handkerchief"s, result2.ElementAt(7).ProductName);
+
+      struct ResultType3 { wstring OrderNo; wstring ProductName; time_t OrderDate; int UserId; };
+      auto result3 = From(orderMasters)
+        .Join<OrderDetail, pair<int, int>, ResultType3>(
+          From(orderDetails),
+          [](OrderMaster const& orderMaster) { return make_pair(orderMaster.OrderId, orderMaster.UserId); },
+          [](OrderDetail const& orderDetail) { return make_pair(orderDetail.OrderId, orderDetail.UserId); },
+          [](OrderMaster const& orderMaster, OrderDetail const& orderDetail)
+          {
+            return ResultType3{ orderMaster.OrderNo, orderDetail.ProductName, orderMaster.OrderDate, orderDetail.UserId };
+          }
+        );
+      Assert::AreEqual(8i64, result3.Size());
+      Assert::AreEqual(L"C1001"s       , result3.ElementAt(0).OrderNo);
+      Assert::AreEqual(L"Shirt"s       , result3.ElementAt(0).ProductName);
+      Assert::AreEqual(101             , result3.ElementAt(0).UserId);
+      Assert::AreEqual(L"C1001"s       , result3.ElementAt(1).OrderNo);
+      Assert::AreEqual(L"Tie"s         , result3.ElementAt(1).ProductName);
+      Assert::AreEqual(101             , result3.ElementAt(1).UserId);
+      Assert::AreEqual(L"C1001"s       , result3.ElementAt(2).OrderNo);
+      Assert::AreEqual(L"Tee 1"s       , result3.ElementAt(2).ProductName);
+      Assert::AreEqual(101             , result3.ElementAt(2).UserId);
+      Assert::AreEqual(L"C1001"s       , result3.ElementAt(3).OrderNo);
+      Assert::AreEqual(L"Handkerchief"s, result3.ElementAt(3).ProductName);
+      Assert::AreEqual(101             , result3.ElementAt(3).UserId);
+      Assert::AreEqual(L"C1002"s       , result3.ElementAt(4).OrderNo);
+      Assert::AreEqual(L"Jeans"s       , result3.ElementAt(4).ProductName);
+      Assert::AreEqual(102             , result3.ElementAt(4).UserId);
+      Assert::AreEqual(L"C1002"s       , result3.ElementAt(5).OrderNo);
+      Assert::AreEqual(L"Tee 2"s       , result3.ElementAt(5).ProductName);
+      Assert::AreEqual(102             , result3.ElementAt(5).UserId);
+      Assert::AreEqual(L"C1002"s       , result3.ElementAt(6).OrderNo);
+      Assert::AreEqual(L"TShirt"s      , result3.ElementAt(6).ProductName);
+      Assert::AreEqual(102             , result3.ElementAt(6).UserId);
+      Assert::AreEqual(L"C1002"s       , result3.ElementAt(7).OrderNo);
+      Assert::AreEqual(L"Handkerchief"s, result3.ElementAt(7).ProductName);
+      Assert::AreEqual(102             , result3.ElementAt(7).UserId);
+
+      auto result4 = From(orderDetails)
+        .GroupBy<int>([](OrderDetail const& orderDetail) { return orderDetail.OrderId; })
+        .OrderBy<int>([](Grouping<int, OrderDetail> const& group) { return group.Key(); });
+      Assert::AreEqual(2i64, result4.Size());
+      Assert::AreEqual(1, result4.ElementAt(0).Key());
+      Assert::AreEqual(2, result4.ElementAt(1).Key());
+
+      struct KeyType { int OrderId; int UserId; bool operator==(KeyType const& key) const { return OrderId == key.OrderId && UserId == key.UserId; } };
+      auto result5 = From(orderDetails)
+        .GroupBy<KeyType>([](OrderDetail const& orderDetail) { return KeyType{ orderDetail.OrderId, orderDetail.UserId }; })
+        .OrderBy<int>([](Grouping<KeyType, OrderDetail> const& group) { return group.Key().OrderId; });
+      Assert::AreEqual(2i64, result5.Size());
+      Assert::AreEqual(1  , result5.ElementAt(0).Key().OrderId);
+      Assert::AreEqual(101, result5.ElementAt(0).Key().UserId);
+      Assert::AreEqual(2  , result5.ElementAt(1).Key().OrderId);
+      Assert::AreEqual(102, result5.ElementAt(1).Key().UserId);
+
+      auto result6 = From(orderMasters)
+        .GroupJoin<OrderDetail, int, pair<OrderMaster, Enumerable<OrderDetail>>>(
+          From(orderDetails),
+          [](OrderMaster const& orderMaster) { return orderMaster.OrderId; },
+          [](OrderDetail const& orderDetail) { return orderDetail.OrderId; },
+          [](OrderMaster const& orderMaster, Enumerable<OrderDetail> const& orderDetail)
+          {
+            return make_pair(orderMaster, orderDetail);
+          }
+        );
+      Assert::AreEqual(2i64, result6.Size());
+      Assert::AreEqual(L"C1001"s       , result6.ElementAt(0).first.OrderNo);
+      Assert::AreEqual(4i64            , result6.ElementAt(0).second.Size());
+      Assert::AreEqual(1               , result6.ElementAt(0).second.ElementAt(0).Qty        );
+      Assert::AreEqual(1500.0f         , result6.ElementAt(0).second.ElementAt(0).Price      );
+      Assert::AreEqual(L"Shirt"s       , result6.ElementAt(0).second.ElementAt(0).ProductName);
+      Assert::AreEqual(1               , result6.ElementAt(0).second.ElementAt(1).Qty        );
+      Assert::AreEqual(200.0f          , result6.ElementAt(0).second.ElementAt(1).Price      );
+      Assert::AreEqual(L"Tie"s         , result6.ElementAt(0).second.ElementAt(1).ProductName);
+      Assert::AreEqual(1               , result6.ElementAt(0).second.ElementAt(2).Qty        );
+      Assert::AreEqual(300.0f          , result6.ElementAt(0).second.ElementAt(2).Price      );
+      Assert::AreEqual(L"Tee 1"s       , result6.ElementAt(0).second.ElementAt(2).ProductName);
+      Assert::AreEqual(2               , result6.ElementAt(0).second.ElementAt(3).Qty        );
+      Assert::AreEqual(150.0f          , result6.ElementAt(0).second.ElementAt(3).Price      );
+      Assert::AreEqual(L"Handkerchief"s, result6.ElementAt(0).second.ElementAt(3).ProductName);
+      Assert::AreEqual(1               , result6.ElementAt(1).second.ElementAt(0).Qty        );
+      Assert::AreEqual(1000.0f         , result6.ElementAt(1).second.ElementAt(0).Price      );
+      Assert::AreEqual(L"Jeans"s       , result6.ElementAt(1).second.ElementAt(0).ProductName);
+      Assert::AreEqual(1               , result6.ElementAt(1).second.ElementAt(1).Qty        );
+      Assert::AreEqual(500.0f          , result6.ElementAt(1).second.ElementAt(1).Price      );
+      Assert::AreEqual(L"Tee 2"s       , result6.ElementAt(1).second.ElementAt(1).ProductName);
+      Assert::AreEqual(5               , result6.ElementAt(1).second.ElementAt(2).Qty        );
+      Assert::AreEqual(400.0f          , result6.ElementAt(1).second.ElementAt(2).Price      );
+      Assert::AreEqual(L"TShirt"s      , result6.ElementAt(1).second.ElementAt(2).ProductName);
+      Assert::AreEqual(3               , result6.ElementAt(1).second.ElementAt(3).Qty        );
+      Assert::AreEqual(150.0f          , result6.ElementAt(1).second.ElementAt(3).Price      );
+      Assert::AreEqual(L"Handkerchief"s, result6.ElementAt(1).second.ElementAt(3).ProductName);
+
+      auto result7 = From(orderDetails)
+        .Join<OrderMaster, int, pair<OrderMaster, OrderDetail>>(
+          From(orderMasters),
+          [](OrderDetail const& orderDetail) { return orderDetail.OrderId; },
+          [](OrderMaster const& orderMaster) { return orderMaster.OrderId; },
+          [](OrderDetail const& orderDetail, OrderMaster const& orderMaster)
+          {
+            return make_pair(orderMaster, orderDetail);
+          }
+        ).GroupBy<pair<int, wstring>>([](pair<OrderMaster, OrderDetail> const& pair)
+          {
+            return make_pair(pair.second.OrderId, pair.first.OrderNo);
+          }
+        ).OrderBy<wstring>([](Grouping<pair<int, wstring>, pair<OrderMaster, OrderDetail>> const& group)
+          {
+            return group.Key().second;
+          }
+        ).Select<pair<wstring, float>>(
+          [](Grouping<pair<int, wstring>, pair<OrderMaster, OrderDetail>> const& group)
+          {
+            auto asd = group.First();
+            return make_pair(group.Key().second, group.Sum<float>([](pair<OrderMaster, OrderDetail> const& pair)
+              {
+                return pair.second.Price * pair.second.Qty;
+              }));
+          }
+        );
+      Assert::AreEqual(2i64, result7.Size());
+      Assert::AreEqual(L"C1001"s, result7.ElementAt(0).first );
+      Assert::AreEqual(2300.0f  , result7.ElementAt(0).second);
+      Assert::AreEqual(L"C1002"s, result7.ElementAt(1).first );
+      Assert::AreEqual(3950.0f  , result7.ElementAt(1).second);
+    }
+
     TEST_CLASS_INITIALIZE(ClassInitialize)
     {
       _CrtMemCheckpoint(&_init);
