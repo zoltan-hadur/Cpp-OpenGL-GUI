@@ -4,33 +4,11 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using namespace Json4CPP;
 using namespace Json4CPP::Detail;
-using namespace OpenGLUI::Foundation;
 
 namespace Json4CPP::Test
 {
   TEST_CLASS(ValueTest)
   {
-  private:
-    static _CrtMemState _init;
-    static _CrtMemState _dest;
-    static _CrtMemState _result;
-
-    template<typename T, typename F>
-    static void ExceptException(F func, string const& msg)
-    {
-      auto found = false;
-      try
-      {
-        func();
-      }
-      catch (T e)
-      {
-        Assert::AreEqual(e.what(), msg.c_str());
-        found = true;
-      }
-      Assert::AreEqual(found, true);
-    }
-  public:
     TEST_METHOD(TestGetType1)
     {
       auto pairs = vector<pair<VALUE, JsonType>>
@@ -67,651 +45,6 @@ namespace Json4CPP::Test
       for (auto& [input, expected] : pairs)
       {
         Assert::AreEqual(expected, Value::GetType(input));
-      }
-    }
-
-    TEST_METHOD(TestParseNull)
-    {
-      auto pairs = vector<pair<wstring, bool>>
-      {
-        { L""      , true  },
-        { L" "     , true  },
-        { L" n"    , true  },
-        { L" nu"   , true  },
-        { L" nul"  , true  },
-        { L" null" , false },
-        { L" null ", false },
-        { L" nu11 ", true  },
-        { L" nill ", true  },
-        { L" mull ", true  },
-      };
-      for (auto& [input, expectException] : pairs)
-      {
-        if (!expectException)
-        {
-          Assert::AreEqual<VALUE>(nullptr, Value::ParseNull(input));
-          Assert::AreEqual<VALUE>(nullptr, Value::ParseNull(wstringstream(input)));
-        }
-        else
-        {
-          ExceptException<exception>([&]() { Value::ParseNull(              input ); }, "Expected \"null\" at position Line: 1 Column: "s + to_string(input.size() > 0 ? 2 : 1) + "!"s);
-          ExceptException<exception>([&]() { Value::ParseNull(wstringstream(input)); }, "Expected \"null\" at position Line: 1 Column: "s + to_string(input.size() > 0 ? 2 : 1) + "!"s);
-        }
-      }
-    }
-
-    TEST_METHOD(TestParseString)
-    {
-      auto pairs = vector<pair<wstring, wstring>>
-      {
-        { L"\"\""s        , L""s        },  // Empty
-        { L"\"a\""s       , L"a"s       },  // a
-        { L"\"\\\"\""s    , L"\""s      },  // Quote
-        { L"\"\\\\\""s    , L"\\"s      },  // Backslash
-        { L"\"\\/\""s     , L"/"s       },  // Slash
-        { L"\"\\b\""s     , L"\b"s      },  // Backspace
-        { L"\"\\f\""s     , L"\f"s      },  // Form feed
-        { L"\"\\n\""s     , L"\n"s      },  // New line
-        { L"\"\\r\""s     , L"\r"s      },  // Carriage return
-        { L"\"\\t\""s     , L"\t"s      },  // Tab
-        { L"\"\\u03A9\""s , L"\u03A9"s  },  // Ω
-        { L"\"ab\""s      , L"ab"s      },
-        { L"\"\\\"b\""s   , L"\"b"s     },
-        { L"\"\\\\b\""s   , L"\\b"s     },
-        { L"\"\\/b\""s    , L"/b"s      },
-        { L"\"\\bb\""s    , L"\bb"s     },
-        { L"\"\\fb\""s    , L"\fb"s     },
-        { L"\"\\nb\""s    , L"\nb"s     },
-        { L"\"\\rb\""s    , L"\rb"s     },
-        { L"\"\\tb\""s    , L"\tb"s     },
-        { L"\"\\u03A9b\""s, L"\u03A9b"s },
-      };
-
-      for (auto& [value, expected] : pairs)
-      {
-        Assert::AreEqual(expected, Value::ParseString(value));
-        Assert::AreEqual(expected, Value::ParseString(wstringstream(value)));
-      }
-    }
-
-    TEST_METHOD(TestParseBoolean1)
-    {
-      auto pairs = vector<pair<wstring, bool>>
-      {
-        { L"",       true  },
-        { L" ",      true  },
-        { L" t",     true  },
-        { L" tr",    true  },
-        { L" tru",   true  },
-        { L" true",  false },
-        { L" true ", false },
-        { L" trie ", true  },
-      };
-      for (auto& [input, expectException] : pairs)
-      {
-        if (!expectException)
-        {
-          Assert::IsTrue(Value::ParseBoolean(input));
-          Assert::IsTrue(Value::ParseBoolean(wstringstream(input)));
-        }
-        else
-        {
-          if (input.size() > 1)
-          {
-            ExceptException<exception>([&]() { Value::ParseBoolean(              input ); }, "Expected \"true\" at position Line: 1 Column: 2!"s);
-            ExceptException<exception>([&]() { Value::ParseBoolean(wstringstream(input)); }, "Expected \"true\" at position Line: 1 Column: 2!"s);
-          }
-          else
-          {
-            ExceptException<exception>([&]() { Value::ParseBoolean(              input ); }, "Expected \"true\" or \"false\" at position Line: 1 Column: "s + to_string(input.size() + 1) +"!"s);
-            ExceptException<exception>([&]() { Value::ParseBoolean(wstringstream(input)); }, "Expected \"true\" or \"false\" at position Line: 1 Column: "s + to_string(input.size() + 1) + "!"s);
-          }
-        }
-      }
-    }
-
-    TEST_METHOD(TestParseBoolean2)
-    {
-      auto pairs = vector<pair<wstring, bool>>
-      {
-        { L"",        true  },
-        { L" ",       true  },
-        { L" f",      true  },
-        { L" fa",     true  },
-        { L" fal",    true  },
-        { L" fals",   true  },
-        { L" false",  false },
-        { L" false ", false },
-        { L" fakse ", true  }
-      };
-      for (auto& [input, expectException] : pairs)
-      {
-        if (!expectException)
-        {
-          Assert::IsFalse(Value::ParseBoolean(input));
-          Assert::IsFalse(Value::ParseBoolean(wstringstream(input)));
-        }
-        else
-        {
-          if (input.size() > 1)
-          {
-            ExceptException<exception>([&]() { Value::ParseBoolean(              input ); }, "Expected \"false\" at position Line: 1 Column: 2!"s);
-            ExceptException<exception>([&]() { Value::ParseBoolean(wstringstream(input)); }, "Expected \"false\" at position Line: 1 Column: 2!"s);
-          }
-          else
-          {
-            ExceptException<exception>([&]() { Value::ParseBoolean(              input ); }, "Expected \"true\" or \"false\" at position Line: 1 Column: "s + to_string(input.size() + 1) +"!"s);
-            ExceptException<exception>([&]() { Value::ParseBoolean(wstringstream(input)); }, "Expected \"true\" or \"false\" at position Line: 1 Column: "s + to_string(input.size() + 1) + "!"s);
-          }
-        }
-      }
-    }
-
-    TEST_METHOD(TestParseNumber)
-    {
-      auto pairs = vector<pair<wstring, double>>
-      {
-        { L"0"s          , 0.0                },
-        { L"0E+1"s       , 0.0                },
-        { L"0E+12"s      , 0.0                },
-        { L"0E1"s        , 0.0                },
-        { L"0E12"s       , 0.0                },
-        { L"0E-1"s       , 0.0                },
-        { L"0E-12"s      , 0.0                },
-        { L"0e+1"s       , 0.0                },
-        { L"0e+12"s      , 0.0                },
-        { L"0e1"s        , 0.0                },
-        { L"0e12"s       , 0.0                },
-        { L"0e-1"s       , 0.0                },
-        { L"0e-12"s      , 0.0                },
-        { L"0.1"s        , 0.1                },
-        { L"0.1E+1"s     , 1.0                },
-        { L"0.1E+12"s    , 100000000000.0     },
-        { L"0.1E1"s      , 1.0                },
-        { L"0.1E12"s     , 100000000000.0     },
-        { L"0.1E-1"s     , 0.01               },
-        { L"0.1E-12"s    , 0.0000000000001    },
-        { L"0.1e+1"s     , 1.0                },
-        { L"0.1e+12"s    , 100000000000.0     },
-        { L"0.1e1"s      , 1.0                },
-        { L"0.1e12"s     , 100000000000.0     },
-        { L"0.1e-1"s     , 0.01               },
-        { L"0.1e-12"s    , 0.0000000000001    },
-        { L"0.12"s       , 0.12               },
-        { L"0.12E+1"s    , 1.2                },
-        { L"0.12E+12"s   , 120000000000.0     },
-        { L"0.12E1"s     , 1.2                },
-        { L"0.12E12"s    , 120000000000.0     },
-        { L"0.12E-1"s    , 0.012              },
-        { L"0.12E-12"s   , 0.00000000000012   },
-        { L"0.12e+1"s    , 1.2                },
-        { L"0.12e+12"s   , 120000000000.0     },
-        { L"0.12e1"s     , 1.2                },
-        { L"0.12e12"s    , 120000000000.0     },
-        { L"0.12e-1"s    , 0.012              },
-        { L"0.12e-12"s   , 0.00000000000012   },
-        { L"1"s          , 1.0                },
-        { L"1E+1"s       , 10.0               },
-        { L"1E+12"s      , 1000000000000.0    },
-        { L"1E1"s        , 10.0               },
-        { L"1E12"s       , 1000000000000.0    },
-        { L"1E-1"s       , 0.1                },
-        { L"1E-12"s      , 0.000000000001     },
-        { L"1e+1"s       , 10.0               },
-        { L"1e+12"s      , 1000000000000.0    },
-        { L"1e1"s        , 10.0               },
-        { L"1e12"s       , 1000000000000.0    },
-        { L"1e-1"s       , 0.1                },
-        { L"1e-12"s      , 0.000000000001     },
-        { L"1.1"s        , 1.1                },
-        { L"1.1E+1"s     , 11.0               },
-        { L"1.1E+12"s    , 1100000000000.0    },
-        { L"1.1E1"s      , 11.0               },
-        { L"1.1E12"s     , 1100000000000.0    },
-        { L"1.1E-1"s     , 0.11               },
-        { L"1.1E-12"s    , 0.0000000000011    },
-        { L"1.1e+1"s     , 11.0               },
-        { L"1.1e+12"s    , 1100000000000.0    },
-        { L"1.1e1"s      , 11.0               },
-        { L"1.1e12"s     , 1100000000000.0    },
-        { L"1.1e-1"s     , 0.11               },
-        { L"1.1e-12"s    , 0.0000000000011    },
-        { L"1.12"s       , 1.12               },
-        { L"1.12E+1"s    , 11.2               },
-        { L"1.12E+12"s   , 1120000000000.0    },
-        { L"1.12E1"s     , 11.2               },
-        { L"1.12E12"s    , 1120000000000.0    },
-        { L"1.12E-1"s    , 0.112              },
-        { L"1.12E-12"s   , 0.00000000000112   },
-        { L"1.12e+1"s    , 11.2               },
-        { L"1.12e+12"s   , 1120000000000.0    },
-        { L"1.12e1"s     , 11.2               },
-        { L"1.12e12"s    , 1120000000000.0    },
-        { L"1.12e-1"s    , 0.112              },
-        { L"1.12e-12"s   , 0.00000000000112   },
-        { L"12"s         , 12.0               },
-        { L"12E+1"s      , 120.0              },
-        { L"12E+12"s     , 12000000000000.0   },
-        { L"12E1"s       , 120.0              },
-        { L"12E12"s      , 12000000000000.0   },
-        { L"12E-1"s      , 1.2                },
-        { L"12E-12"s     , 0.000000000012     },
-        { L"12e+1"s      , 120.0              },
-        { L"12e+12"s     , 12000000000000.0   },
-        { L"12e1"s       , 120.0              },
-        { L"12e12"s      , 12000000000000.0   },
-        { L"12e-1"s      , 1.2                },
-        { L"12e-12"s     , 0.000000000012     },
-        { L"12.1"s       , 12.1               },
-        { L"12.1E+1"s    , 121.0              },
-        { L"12.1E+12"s   , 12100000000000.0   },
-        { L"12.1E1"s     , 121.0              },
-        { L"12.1E12"s    , 12100000000000.0   },
-        { L"12.1E-1"s    , 1.21               },
-        { L"12.1E-12"s   , 0.0000000000121    },
-        { L"12.1e+1"s    , 121.0              },
-        { L"12.1e+12"s   , 12100000000000.0   },
-        { L"12.1e1"s     , 121.0              },
-        { L"12.1e12"s    , 12100000000000.0   },
-        { L"12.1e-1"s    , 1.21               },
-        { L"12.1e-12"s   , 0.0000000000121    },
-        { L"12.12"s      , 12.12              },
-        { L"12.12E+1"s   , 121.2              },
-        { L"12.12E+12"s  , 12120000000000.0   },
-        { L"12.12E1"s    , 121.2              },
-        { L"12.12E12"s   , 12120000000000.0   },
-        { L"12.12E-1"s   , 1.212              },
-        { L"12.12E-12"s  , 0.00000000001212   },
-        { L"12.12e+1"s   , 121.2              },
-        { L"12.12e+12"s  , 12120000000000.0   },
-        { L"12.12e1"s    , 121.2              },
-        { L"12.12e12"s   , 12120000000000.0   },
-        { L"12.12e-1"s   , 1.212              },
-        { L"12.12e-12"s  , 0.00000000001212   },
-        { L"123"s        , 123.0              },
-        { L"123E+1"s     , 1230.0             },
-        { L"123E+12"s    , 123000000000000.0  },
-        { L"123E1"s      , 1230.0             },
-        { L"123E12"s     , 123000000000000.0  },
-        { L"123E-1"s     , 12.3               },
-        { L"123E-12"s    , 0.000000000123     },
-        { L"123e+1"s     , 1230.0             },
-        { L"123e+12"s    , 123000000000000.0  },
-        { L"123e1"s      , 1230.0             },
-        { L"123e12"s     , 123000000000000.0  },
-        { L"123e-1"s     , 12.3               },
-        { L"123e-12"s    , 0.000000000123     },
-        { L"123.1"s      , 123.1              },
-        { L"123.1E+1"s   , 1231.0             },
-        { L"123.1E+12"s  , 123100000000000.0  },
-        { L"123.1E1"s    , 1231.0             },
-        { L"123.1E12"s   , 123100000000000.0  },
-        { L"123.1E-1"s   , 12.31              },
-        { L"123.1E-12"s  , 0.0000000001231    },
-        { L"123.1e+1"s   , 1231.0             },
-        { L"123.1e+12"s  , 123100000000000.0  },
-        { L"123.1e1"s    , 1231.0             },
-        { L"123.1e12"s   , 123100000000000.0  },
-        { L"123.1e-1"s   , 12.31              },
-        { L"123.1e-12"s  , 0.0000000001231    },
-        { L"123.12"s     , 123.12             },
-        { L"123.12E+1"s  , 1231.2             },
-        { L"123.12E+12"s , 123120000000000.0  },
-        { L"123.12E1"s   , 1231.2             },
-        { L"123.12E12"s  , 123120000000000.0  },
-        { L"123.12E-1"s  , 12.312             },
-        { L"123.12E-12"s , 0.00000000012312   },
-        { L"123.12e+1"s  , 1231.2             },
-        { L"123.12e+12"s , 123120000000000.0  },
-        { L"123.12e1"s   , 1231.2             },
-        { L"123.12e12"s  , 123120000000000.0  },
-        { L"123.12e-1"s  , 12.312             },
-        { L"123.12e-12"s , 0.00000000012312   },
-        { L"-0"s         , 0.0                },
-        { L"-0E+1"s      , 0.0                },
-        { L"-0E+12"s     , 0.0                },
-        { L"-0E1"s       , 0.0                },
-        { L"-0E12"s      , 0.0                },
-        { L"-0E-1"s      , 0.0                },
-        { L"-0E-12"s     , 0.0                },
-        { L"-0e+1"s      , 0.0                },
-        { L"-0e+12"s     , 0.0                },
-        { L"-0e1"s       , 0.0                },
-        { L"-0e12"s      , 0.0                },
-        { L"-0e-1"s      , 0.0                },
-        { L"-0e-12"s     , 0.0                },
-        { L"-0.1"s       , -0.1               },
-        { L"-0.1E+1"s    , -1.0               },
-        { L"-0.1E+12"s   , -100000000000.0    },
-        { L"-0.1E1"s     , -1.0               },
-        { L"-0.1E12"s    , -100000000000.0    },
-        { L"-0.1E-1"s    , -0.01              },
-        { L"-0.1E-12"s   , -0.0000000000001   },
-        { L"-0.1e+1"s    , -1.0               },
-        { L"-0.1e+12"s   , -100000000000.0    },
-        { L"-0.1e1"s     , -1.0               },
-        { L"-0.1e12"s    , -100000000000.0    },
-        { L"-0.1e-1"s    , -0.01              },
-        { L"-0.1e-12"s   , -0.0000000000001   },
-        { L"-0.12"s      , -0.12              },
-        { L"-0.12E+1"s   , -1.2               },
-        { L"-0.12E+12"s  , -120000000000.0    },
-        { L"-0.12E1"s    , -1.2               },
-        { L"-0.12E12"s   , -120000000000.0    },
-        { L"-0.12E-1"s   , -0.012             },
-        { L"-0.12E-12"s  , -0.00000000000012  },
-        { L"-0.12e+1"s   , -1.2               },
-        { L"-0.12e+12"s  , -120000000000.0    },
-        { L"-0.12e1"s    , -1.2               },
-        { L"-0.12e12"s   , -120000000000.0    },
-        { L"-0.12e-1"s   , -0.012             },
-        { L"-0.12e-12"s  , -0.00000000000012  },
-        { L"-1"s         , -1.0               },
-        { L"-1E+1"s      , -10.0              },
-        { L"-1E+12"s     , -1000000000000.0   },
-        { L"-1E1"s       , -10.0              },
-        { L"-1E12"s      , -1000000000000.0   },
-        { L"-1E-1"s      , -0.1               },
-        { L"-1E-12"s     , -0.000000000001    },
-        { L"-1e+1"s      , -10.0              },
-        { L"-1e+12"s     , -1000000000000.0   },
-        { L"-1e1"s       , -10.0              },
-        { L"-1e12"s      , -1000000000000.0   },
-        { L"-1e-1"s      , -0.1               },
-        { L"-1e-12"s     , -0.000000000001    },
-        { L"-1.1"s       , -1.1               },
-        { L"-1.1E+1"s    , -11.0              },
-        { L"-1.1E+12"s   , -1100000000000.0   },
-        { L"-1.1E1"s     , -11.0              },
-        { L"-1.1E12"s    , -1100000000000.0   },
-        { L"-1.1E-1"s    , -0.11              },
-        { L"-1.1E-12"s   , -0.0000000000011   },
-        { L"-1.1e+1"s    , -11.0              },
-        { L"-1.1e+12"s   , -1100000000000.0   },
-        { L"-1.1e1"s     , -11.0              },
-        { L"-1.1e12"s    , -1100000000000.0   },
-        { L"-1.1e-1"s    , -0.11              },
-        { L"-1.1e-12"s   , -0.0000000000011   },
-        { L"-1.12"s      , -1.12              },
-        { L"-1.12E+1"s   , -11.2              },
-        { L"-1.12E+12"s  , -1120000000000.0   },
-        { L"-1.12E1"s    , -11.2              },
-        { L"-1.12E12"s   , -1120000000000.0   },
-        { L"-1.12E-1"s   , -0.112             },
-        { L"-1.12E-12"s  , -0.00000000000112  },
-        { L"-1.12e+1"s   , -11.2              },
-        { L"-1.12e+12"s  , -1120000000000.0   },
-        { L"-1.12e1"s    , -11.2              },
-        { L"-1.12e12"s   , -1120000000000.0   },
-        { L"-1.12e-1"s   , -0.112             },
-        { L"-1.12e-12"s  , -0.00000000000112  },
-        { L"-12"s        , -12.0              },
-        { L"-12E+1"s     , -120.0             },
-        { L"-12E+12"s    , -12000000000000.0  },
-        { L"-12E1"s      , -120.0             },
-        { L"-12E12"s     , -12000000000000.0  },
-        { L"-12E-1"s     , -1.2               },
-        { L"-12E-12"s    , -0.000000000012    },
-        { L"-12e+1"s     , -120.0             },
-        { L"-12e+12"s    , -12000000000000.0  },
-        { L"-12e1"s      , -120.0             },
-        { L"-12e12"s     , -12000000000000.0  },
-        { L"-12e-1"s     , -1.2               },
-        { L"-12e-12"s    , -0.000000000012    },
-        { L"-12.1"s      , -12.1              },
-        { L"-12.1E+1"s   , -121.0             },
-        { L"-12.1E+12"s  , -12100000000000.0  },
-        { L"-12.1E1"s    , -121.0             },
-        { L"-12.1E12"s   , -12100000000000.0  },
-        { L"-12.1E-1"s   , -1.21              },
-        { L"-12.1E-12"s  , -0.0000000000121   },
-        { L"-12.1e+1"s   , -121.0             },
-        { L"-12.1e+12"s  , -12100000000000.0  },
-        { L"-12.1e1"s    , -121.0             },
-        { L"-12.1e12"s   , -12100000000000.0  },
-        { L"-12.1e-1"s   , -1.21              },
-        { L"-12.1e-12"s  , -0.0000000000121   },
-        { L"-12.12"s     , -12.12             },
-        { L"-12.12E+1"s  , -121.2             },
-        { L"-12.12E+12"s , -12120000000000.0  },
-        { L"-12.12E1"s   , -121.2             },
-        { L"-12.12E12"s  , -12120000000000.0  },
-        { L"-12.12E-1"s  , -1.212             },
-        { L"-12.12E-12"s , -0.00000000001212  },
-        { L"-12.12e+1"s  , -121.2             },
-        { L"-12.12e+12"s , -12120000000000.0  },
-        { L"-12.12e1"s   , -121.2             },
-        { L"-12.12e12"s  , -12120000000000.0  },
-        { L"-12.12e-1"s  , -1.212             },
-        { L"-12.12e-12"s , -0.00000000001212  },
-        { L"-123"s       , -123.0             },
-        { L"-123E+1"s    , -1230.0            },
-        { L"-123E+12"s   , -123000000000000.0 },
-        { L"-123E1"s     , -1230.0            },
-        { L"-123E12"s    , -123000000000000.0 },
-        { L"-123E-1"s    , -12.3              },
-        { L"-123E-12"s   , -0.000000000123    },
-        { L"-123e+1"s    , -1230.0            },
-        { L"-123e+12"s   , -123000000000000.0 },
-        { L"-123e1"s     , -1230.0            },
-        { L"-123e12"s    , -123000000000000.0 },
-        { L"-123e-1"s    , -12.3              },
-        { L"-123e-12"s   , -0.000000000123    },
-        { L"-123.1"s     , -123.1             },
-        { L"-123.1E+1"s  , -1231.0            },
-        { L"-123.1E+12"s , -123100000000000.0 },
-        { L"-123.1E1"s   , -1231.0            },
-        { L"-123.1E12"s  , -123100000000000.0 },
-        { L"-123.1E-1"s  , -12.31             },
-        { L"-123.1E-12"s , -0.0000000001231   },
-        { L"-123.1e+1"s  , -1231.0            },
-        { L"-123.1e+12"s , -123100000000000.0 },
-        { L"-123.1e1"s   , -1231.0            },
-        { L"-123.1e12"s  , -123100000000000.0 },
-        { L"-123.1e-1"s  , -12.31             },
-        { L"-123.1e-12"s , -0.0000000001231   },
-        { L"-123.12"s    , -123.12            },
-        { L"-123.12E+1"s , -1231.2            },
-        { L"-123.12E+12"s, -123120000000000.0 },
-        { L"-123.12E1"s  , -1231.2            },
-        { L"-123.12E12"s , -123120000000000.0 },
-        { L"-123.12E-1"s , -12.312            },
-        { L"-123.12E-12"s, -0.00000000012312  },
-        { L"-123.12e+1"s , -1231.2            },
-        { L"-123.12e+12"s, -123120000000000.0 },
-        { L"-123.12e1"s  , -1231.2            },
-        { L"-123.12e12"s , -123120000000000.0 },
-        { L"-123.12e-1"s , -12.312            },
-        { L"-123.12e-12"s, -0.00000000012312  }
-      };
-
-      for (auto& [value, expected] : pairs)
-      {
-        Assert::AreEqual(expected, Value::ParseNumber(value));
-        Assert::AreEqual(expected, Value::ParseNumber(wstringstream(value)));
-      }
-    }
-
-    TEST_METHOD(TestParseJsonObject)
-    {
-      auto pairs = vector<pair<wstring, JsonObject>>
-      {
-        // Test whitespace handling
-        { L"{}"s, {} },
-        { L"{  }"s, {} },
-        { L"{\"key1\":1337}"s,         { { L"key1", 1337 } } },
-        { L"{  \"key1\":1337}"s,       { { L"key1", 1337 } } },
-        { L"{\"key1\"  :1337}"s,       { { L"key1", 1337 } } },
-        { L"{  \"key1\"  :1337}"s,     { { L"key1", 1337 } } },
-        { L"{\"key1\":  1337}"s,       { { L"key1", 1337 } } },
-        { L"{  \"key1\":  1337}"s,     { { L"key1", 1337 } } },
-        { L"{\"key1\"  :  1337}"s,     { { L"key1", 1337 } } },
-        { L"{  \"key1\"  :  1337}"s,   { { L"key1", 1337 } } },
-        { L"{\"key1\":1337  }"s,       { { L"key1", 1337 } } },
-        { L"{  \"key1\":1337  }"s,     { { L"key1", 1337 } } },
-        { L"{\"key1\"  :1337  }"s,     { { L"key1", 1337 } } },
-        { L"{  \"key1\"  :1337  }"s,   { { L"key1", 1337 } } },
-        { L"{\"key1\":  1337  }"s,     { { L"key1", 1337 } } },
-        { L"{  \"key1\":  1337  }"s,   { { L"key1", 1337 } } },
-        { L"{\"key1\"  :  1337  }"s,   { { L"key1", 1337 } } },
-        { L"{  \"key1\"  :  1337  }"s, { { L"key1", 1337 } } },
-        // Simple object with 2 key value pair
-        { L"{\"key1\":1337,\"key2\":\"value2\"}"s, { { L"key1", 1337 }, { L"key2", L"value2" } } },
-        // Complex object with all types of values (string, number, object, array, bool, null)
-        { L"{   \"string\":\"string\" ,   \"number\":1337  ,   \"object\":{   \"key1\":\"value1\" ,   \"key2\":\"value2\"  }  ,   \"array\":[ 1, 3, 3, 7 ]  ,   \"true\":true  ,   \"false\":false  ,   \"null\":null      }"s,
-            { { L"string", L"string" }, { L"number", 1337 }, { L"object", { { L"key1", L"value1" }, { L"key2", L"value2" } } }, { L"array", { 1, 3, 3, 7 } }, { L"true", true }, { L"false", false }, { L"null", nullptr } } },
-      };
-
-      for (auto& [value, expected] : pairs)
-      {
-        Assert::AreEqual(expected, Value::ParseJsonObject(value));
-        Assert::AreEqual(expected, Value::ParseJsonObject(wstringstream(value)));
-      }
-    }
-
-    TEST_METHOD(TestParseJsonArray)
-    {
-      auto pairs = vector<pair<wstring, JsonArray>>
-      {
-        // Test whitespace handling
-        { L"[]"s, {} },
-        { L"[  ]"s, {} },
-        { L"[1,2]"s,         { 1, 2 } },
-        { L"[  1,2]"s,       { 1, 2 } },
-        { L"[1  ,2]"s,       { 1, 2 } },
-        { L"[1,  2]"s,       { 1, 2 } },
-        { L"[1,2  ]"s,       { 1, 2 } },
-        { L"[  1  ,2]"s,     { 1, 2 } },
-        { L"[  1,  2]"s,     { 1, 2 } },
-        { L"[  1,2  ]"s,     { 1, 2 } },
-        { L"[1  ,  2]"s,     { 1, 2 } },
-        { L"[1  ,2  ]"s,     { 1, 2 } },
-        { L"[1,  2  ]"s,     { 1, 2 } },
-        { L"[  1  ,  2]"s,   { 1, 2 } },
-        { L"[  1  ,2  ]"s,   { 1, 2 } },
-        { L"[  1,  2  ]"s,   { 1, 2 } },
-        { L"[1  ,  2  ]"s,   { 1, 2 } },
-        { L"[  1  ,  2  ]"s, { 1, 2 } },
-        // Complex array with all types of values (string, number, object, array, bool, null)
-        { L"[ \"string\",1337, {   \"key1\":\"value1\" ,   \"key2\":\"value2\"  }, [ 1, 3, 3, 7 ], true, false, null    ]"s,
-            { L"string" ,1337, { { L"key1", L"value1" }, { L"key2", L"value2" } }, { 1, 3, 3, 7 }, true, false, nullptr } },
-      };
-
-      for (auto& [value, expected] : pairs)
-      {
-        Assert::AreEqual(expected, Value::ParseJsonArray(value));
-        Assert::AreEqual(expected, Value::ParseJsonArray(wstringstream(value)));
-      }
-    }
-
-    TEST_METHOD(TestParseJson)
-    {
-      auto pairs = vector<pair<wstring, Json>>
-      {
-        { L"\"string\""s, L"string"s },
-        { L"1337"s, 1337 },
-
-        // Test whitespace handling
-        { L"{}"s, JsonObject{} },   // Must use explicit JsonObject, becase Json{} evalutes to null
-        { L"{  }"s, JsonObject{} }, // Must use explicit JsonObject, becase Json{} evalutes to null
-        { L"{\"key1\":1337}"s,         { { L"key1", 1337 } } },
-        { L"{  \"key1\":1337}"s,       { { L"key1", 1337 } } },
-        { L"{\"key1\"  :1337}"s,       { { L"key1", 1337 } } },
-        { L"{  \"key1\"  :1337}"s,     { { L"key1", 1337 } } },
-        { L"{\"key1\":  1337}"s,       { { L"key1", 1337 } } },
-        { L"{  \"key1\":  1337}"s,     { { L"key1", 1337 } } },
-        { L"{\"key1\"  :  1337}"s,     { { L"key1", 1337 } } },
-        { L"{  \"key1\"  :  1337}"s,   { { L"key1", 1337 } } },
-        { L"{\"key1\":1337  }"s,       { { L"key1", 1337 } } },
-        { L"{  \"key1\":1337  }"s,     { { L"key1", 1337 } } },
-        { L"{\"key1\"  :1337  }"s,     { { L"key1", 1337 } } },
-        { L"{  \"key1\"  :1337  }"s,   { { L"key1", 1337 } } },
-        { L"{\"key1\":  1337  }"s,     { { L"key1", 1337 } } },
-        { L"{  \"key1\":  1337  }"s,   { { L"key1", 1337 } } },
-        { L"{\"key1\"  :  1337  }"s,   { { L"key1", 1337 } } },
-        { L"{  \"key1\"  :  1337  }"s, { { L"key1", 1337 } } },
-        // Simple object with 2 key value pair
-        { L"{\"key1\":1337,\"key2\":\"value2\"}"s, { { L"key1", 1337 }, { L"key2", L"value2" } } },
-        // Complex object with all types of values (string, number, object, array, bool, null)
-        { L"{   \"string\":\"string\" ,   \"number\":1337  ,   \"object\":{   \"key1\":\"value1\" ,   \"key2\":\"value2\"  }  ,   \"array\":[ 1, 3, 3, 7 ]  ,   \"true\":true  ,   \"false\":false  ,   \"null\":null      }"s,
-            { { L"string", L"string" }, { L"number", 1337 }, { L"object", { { L"key1", L"value1" }, { L"key2", L"value2" } } }, { L"array", { 1, 3, 3, 7 } }, { L"true", true }, { L"false", false }, { L"null", nullptr } } },
-
-        // Test whitespace handling
-        { L"[]"s, JsonArray{} },   // Must use explicit JsonArray, becase Json{} evalutes to null
-        { L"[  ]"s, JsonArray{} }, // Must use explicit JsonArray, becase Json{} evalutes to null
-        { L"[1,2]"s,         { 1, 2 } },
-        { L"[  1,2]"s,       { 1, 2 } },
-        { L"[1  ,2]"s,       { 1, 2 } },
-        { L"[1,  2]"s,       { 1, 2 } },
-        { L"[1,2  ]"s,       { 1, 2 } },
-        { L"[  1  ,2]"s,     { 1, 2 } },
-        { L"[  1,  2]"s,     { 1, 2 } },
-        { L"[  1,2  ]"s,     { 1, 2 } },
-        { L"[1  ,  2]"s,     { 1, 2 } },
-        { L"[1  ,2  ]"s,     { 1, 2 } },
-        { L"[1,  2  ]"s,     { 1, 2 } },
-        { L"[  1  ,  2]"s,   { 1, 2 } },
-        { L"[  1  ,2  ]"s,   { 1, 2 } },
-        { L"[  1,  2  ]"s,   { 1, 2 } },
-        { L"[1  ,  2  ]"s,   { 1, 2 } },
-        { L"[  1  ,  2  ]"s, { 1, 2 } },
-        // Complex array with all types of values (string, number, object, array, bool, null)
-        { L"[ \"string\",1337, {   \"key1\":\"value1\" ,   \"key2\":\"value2\"  }, [ 1, 3, 3, 7 ], true, false, null    ]"s,
-            { L"string" ,1337, { { L"key1", L"value1" }, { L"key2", L"value2" } }, { 1, 3, 3, 7 }, true, false, nullptr } },
-
-        { L"true"s, true },
-        { L"false"s, false },
-        { L"null"s, nullptr },
-      };
-
-      for (auto& [value, expected] : pairs)
-      {
-        Assert::AreEqual(expected, Value::ParseJson(value));
-        Assert::AreEqual(expected, Value::ParseJson(wstringstream(value)));
-      }
-    }
-
-    TEST_METHOD(TestValueWrite)
-    {
-      JsonDefault::Indentation = 0;
-      auto pairs = vector<pair<VALUE, wstring>>
-      {
-        { L"Hello \"World\""s                         , L"\"Hello \\\"World\\\"\""s },
-        { 13.37                                       , L"13.37"s                   },
-        { JsonObject{ { L"key1", 1 }, { L"key2", 2 } }, L"{\"key1\":1,\"key2\":2}"s },
-        { JsonArray{ 1, 3, 3, 7 }                     , L"[1,3,3,7]"s               },
-        { true                                        , L"true"s                    },
-        { false                                       , L"false"s                   },
-        { nullptr                                     , L"null"s                    },
-      };
-
-      for (auto& [value, expected] : pairs)
-      {
-        auto os = wostringstream();
-        Value::Write(os, value);
-        Assert::AreEqual(expected, os.str());
-      }
-    }
-
-    TEST_METHOD(TestValueRead)
-    {
-      auto pairs = vector<pair<wstring, VALUE>>
-      {
-        { L"\"Hello \\\"World\\\"\""s, L"Hello \"World\""s                          },
-        { L"13.37"s                  , 13.37                                        },
-        { L"{\"key1\":1,\"key2\":2}"s, JsonObject{ { L"key1", 1 }, { L"key2", 2 } } },
-        { L"[1,3,3,7]"s              , JsonArray{ 1, 3, 3, 7 }                      },
-        { L"true"s                   , true                                         },
-        { L"false"s                  , false                                        },
-        { L"null"s                   , nullptr                                      },
-      };
-
-      for (auto& [value, expected] : pairs)
-      {
-        auto is = wistringstream(value);
-        VALUE actual;
-        Value::Read(is, actual);
-        Assert::AreEqual(expected, actual);
       }
     }
 
@@ -1593,8 +926,6 @@ namespace Json4CPP::Test
       VALUE array1 = JsonArray{ 1, 2, 3 };
       VALUE array2 = JsonArray{ 4, 5, 6 };
 
-#pragma warning(push)
-#pragma warning(disable : 26444)
       Assert::ExpectException<exception>([&] { Value::Add(array1, array1); });
       Assert::ExpectException<exception>([&] { Value::Add(array1, array2); });
       Assert::ExpectException<exception>([&] { Value::Add(array1, boolean1); });
@@ -1716,7 +1047,6 @@ namespace Json4CPP::Test
       Assert::ExpectException<exception>([&] { Value::Add(string2, object2); });
       Assert::AreEqual<VALUE>(L"TestString1TestString0"s, Value::Add(string2, string1));
       Assert::AreEqual<VALUE>(L"TestString1TestString1"s, Value::Add(string2, string2));
-#pragma warning( pop )
     }
 
     TEST_METHOD(TestAddAssign)
@@ -2124,8 +1454,6 @@ namespace Json4CPP::Test
       VALUE array1 = JsonArray{ 1, 2, 3 };
       VALUE array2 = JsonArray{ 4, 5, 6 };
 
-#pragma warning(push)
-#pragma warning(disable : 26444)
       Assert::ExpectException<exception>([&] { Value::Subtract(array1, array1); });
       Assert::ExpectException<exception>([&] { Value::Subtract(array1, array2); });
       Assert::ExpectException<exception>([&] { Value::Subtract(array1, boolean1); });
@@ -2247,7 +1575,6 @@ namespace Json4CPP::Test
       Assert::ExpectException<exception>([&] { Value::Subtract(string2, object2); });
       Assert::ExpectException<exception>([&] { Value::Subtract(string2, string1); });
       Assert::ExpectException<exception>([&] { Value::Subtract(string2, string2); });
-#pragma warning( pop )
     }
 
     TEST_METHOD(TestValueSubtractAssign)
@@ -2655,8 +1982,6 @@ namespace Json4CPP::Test
       VALUE array1 = JsonArray{ 1, 2, 3 };
       VALUE array2 = JsonArray{ 4, 5, 6 };
 
-#pragma warning(push)
-#pragma warning(disable : 26444)
       Assert::ExpectException<exception>([&] { Value::Multiply(array1, array1); });
       Assert::ExpectException<exception>([&] { Value::Multiply(array1, array2); });
       Assert::ExpectException<exception>([&] { Value::Multiply(array1, boolean1); });
@@ -2778,7 +2103,6 @@ namespace Json4CPP::Test
       Assert::ExpectException<exception>([&] { Value::Multiply(string2, object2); });
       Assert::ExpectException<exception>([&] { Value::Multiply(string2, string1); });
       Assert::ExpectException<exception>([&] { Value::Multiply(string2, string2); });
-#pragma warning( pop )
     }
 
     TEST_METHOD(TestValueMultiplyAssign)
@@ -3186,8 +2510,6 @@ namespace Json4CPP::Test
       VALUE array1 = JsonArray{ 1, 2, 3 };
       VALUE array2 = JsonArray{ 4, 5, 6 };
 
-#pragma warning(push)
-#pragma warning(disable : 26444)
       Assert::ExpectException<exception>([&] { Value::Divide(array1, array1); });
       Assert::ExpectException<exception>([&] { Value::Divide(array1, array2); });
       Assert::ExpectException<exception>([&] { Value::Divide(array1, boolean1); });
@@ -3309,7 +2631,6 @@ namespace Json4CPP::Test
       Assert::ExpectException<exception>([&] { Value::Divide(string2, object2); });
       Assert::AreEqual<VALUE>(wstring(L"TestString1"s / L"TestString0"s), Value::Divide(string2, string1));
       Assert::AreEqual<VALUE>(wstring(L"TestString1"s / L"TestString1"s), Value::Divide(string2, string2));
-#pragma warning( pop )
     }
 
     TEST_METHOD(TestDivideAssign)
@@ -3717,8 +3038,6 @@ namespace Json4CPP::Test
       VALUE array1 = JsonArray{ 1, 2, 3 };
       VALUE array2 = JsonArray{ 4, 5, 6 };
 
-#pragma warning(push)
-#pragma warning(disable : 26444)
       Assert::ExpectException<exception>([&] { Value::Modulo(array1, array1); });
       Assert::ExpectException<exception>([&] { Value::Modulo(array1, array2); });
       Assert::ExpectException<exception>([&] { Value::Modulo(array1, boolean1); });
@@ -3840,7 +3159,6 @@ namespace Json4CPP::Test
       Assert::ExpectException<exception>([&] { Value::Modulo(string2, object2); });
       Assert::ExpectException<exception>([&] { Value::Modulo(string2, string1); });
       Assert::ExpectException<exception>([&] { Value::Modulo(string2, string2); });
-#pragma warning( pop )
     }
 
     TEST_METHOD(TestModuloAssign)
@@ -4240,15 +3558,12 @@ namespace Json4CPP::Test
       };
       VALUE array = JsonArray{ 1, 2, 3 };
 
-#pragma warning(push)
-#pragma warning(disable : 26444)
       Assert::ExpectException<exception>([&] { Value::Negate(array); });
       Assert::AreEqual<VALUE>(-1.0, Value::Negate(boolean));
       Assert::AreEqual<VALUE>(null, Value::Negate(null));
       Assert::AreEqual<VALUE>(-1.0, Value::Negate(number));
       Assert::ExpectException<exception>([&] { Value::Negate(object); });
       Assert::ExpectException<exception>([&] { Value::Negate(string); });
-#pragma warning( pop )
     }
 
     TEST_METHOD(TestValueNot)
@@ -4263,15 +3578,12 @@ namespace Json4CPP::Test
       };
       VALUE array = JsonArray{ 1, 2, 3 };
 
-#pragma warning(push)
-#pragma warning(disable : 26444)
       Assert::ExpectException<exception>([&] { Value::Not(array); });
       Assert::AreEqual<VALUE>(!true, Value::Not(boolean));
       Assert::AreEqual<VALUE>(!nullptr, Value::Not(null));
       Assert::AreEqual<VALUE>(!1.0, Value::Not(number));
       Assert::ExpectException<exception>([&] { Value::Not(object); });
       Assert::ExpectException<exception>([&] { Value::Not(string); });
-#pragma warning( pop )
     }
 
     TEST_METHOD(TestValuePreIncrement)
@@ -4318,8 +3630,6 @@ namespace Json4CPP::Test
       };
       VALUE array = JsonArray{ 1, 2, 3 };
 
-#pragma warning(push)
-#pragma warning(disable : 26444)
       VALUE value = array;
       Assert::ExpectException<exception>([&] { Value::PostIncrement(value); });
       Assert::AreEqual<VALUE>(array, value);
@@ -4338,7 +3648,6 @@ namespace Json4CPP::Test
       value = string;
       Assert::ExpectException<exception>([&] { Value::PostIncrement(value); });
       Assert::AreEqual<VALUE>(string, value);
-#pragma warning( pop )
     }
 
     TEST_METHOD(TestValuePreDecrement)
@@ -4385,8 +3694,6 @@ namespace Json4CPP::Test
       };
       VALUE array = JsonArray{ 1, 2, 3 };
 
-#pragma warning(push)
-#pragma warning(disable : 26444)
       VALUE value = array;
       Assert::ExpectException<exception>([&] { Value::PostDecrement(value); });
       Assert::AreEqual<VALUE>(array, value);
@@ -4405,7 +3712,6 @@ namespace Json4CPP::Test
       value = string;
       Assert::ExpectException<exception>([&] { Value::PostDecrement(value); });
       Assert::AreEqual<VALUE>(string, value);
-#pragma warning( pop )
     }
 
     TEST_METHOD(TestValueLogicalAnd)
@@ -4693,27 +3999,5 @@ namespace Json4CPP::Test
       Assert::IsTrue (Value::LogicalOr(string2 , string1 ));
       Assert::IsTrue (Value::LogicalOr(string2 , string2 ));
     }
-
-    TEST_CLASS_INITIALIZE(ClassInitialize)
-    {
-      _CrtMemCheckpoint(&_init);
-    }
-
-    TEST_CLASS_CLEANUP(ClassCleanup)
-    {
-      _CrtMemCheckpoint(&_dest);
-      if (_CrtMemDifference(&_result, &_init, &_dest))
-      {
-        _CrtMemDumpStatistics(&_result);
-        _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
-        _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_DEBUG);
-        _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_DEBUG);
-        _CrtDumpMemoryLeaks();
-        Assert::Fail();
-      }
-    }
   };
-  _CrtMemState ValueTest::_init;
-  _CrtMemState ValueTest::_dest;
-  _CrtMemState ValueTest::_result;
 }
