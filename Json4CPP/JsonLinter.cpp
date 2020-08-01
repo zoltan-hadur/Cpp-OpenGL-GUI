@@ -638,6 +638,11 @@ namespace Json4CPP::Detail
 
   wostream& JsonLinter::Write(wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation)
   {
+    if (tokens.empty())
+    {
+      auto message = WString2String(L"Parameter 'tokens' is empty!"s);
+      throw exception(message.c_str());
+    }
     auto& [token, value] = tokens.front();
     switch (token)
     {
