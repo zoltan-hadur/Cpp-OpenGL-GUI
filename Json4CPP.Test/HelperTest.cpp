@@ -78,7 +78,7 @@ namespace Json4CPP::Test
       if (is1.fail() || is2.fail() || is1.tellg() != is2.tellg()) Assert::Fail();
       is1.seekg(0, wifstream::beg);
       is2.seekg(0, wifstream::beg);
-      equal(istreambuf_iterator<wchar_t>(is1.rdbuf()), istreambuf_iterator<wchar_t>(), istreambuf_iterator<wchar_t>(is2.rdbuf()));
+      Assert::IsTrue(equal(istreambuf_iterator<wchar_t>(is1.rdbuf()), istreambuf_iterator<wchar_t>(), istreambuf_iterator<wchar_t>(is2.rdbuf())));
     }
 
     TEST_METHOD(TestEscapeString)
