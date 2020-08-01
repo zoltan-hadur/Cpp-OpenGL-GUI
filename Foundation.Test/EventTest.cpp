@@ -228,5 +228,15 @@ namespace OpenGLUI::Foundation::Test
       event2();
       Assert::AreEqual(4, called);
     }
+
+    TEST_METHOD(TestNewlyAddedDelegateDoesNotGetCalledWhileEventIsBeingFired)
+    {
+      auto event = Event<Delegate<void()>>();
+      event.Add([&]()
+      {
+        event.Add([]() { Assert::Fail(); });
+      });
+      event();
+    }
   };
 }
