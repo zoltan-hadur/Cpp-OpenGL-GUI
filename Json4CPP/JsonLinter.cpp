@@ -405,7 +405,9 @@ namespace Json4CPP::Detail
         [&](double     const& v) { os << +v;                                  },
         [&](auto       const& v)
         {
-          auto message = "Invalid type: "s + string(typeid(v).name()) + "!"s;
+          auto message = WString2String(L"Got type "s + wstring(typeid(v)) + L"!"s L"Expected one of the following types: "s +
+            wstring(typeid(nullptr_t())) + L", "s   + wstring(typeid(wstring())) + L", "s +
+            wstring(typeid(bool     ())) + L" or "s + wstring(typeid(double ())) + L"!"s);
           throw exception(message.c_str());
         }
       }, value);
