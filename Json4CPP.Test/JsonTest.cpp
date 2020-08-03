@@ -402,6 +402,9 @@ namespace Json4CPP::Test
         { 9ui64    , L"9"s         },
         { 13.37f   , L"13.37"s     },
         { 313.37   , L"313.37"s    },
+        { 337184288, L"337184288"s },
+        { 1.3f     , L"1.3"        },
+        { 1.3      , L"1.3"        }
       };
       for (auto& [input, expected] : pairs)
       {

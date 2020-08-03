@@ -32,6 +32,7 @@ namespace Json4CPP::Detail
     static void           Read        (std::wistream& is, std::deque<TOKEN>& tokens, uint8_t depth);
 
     static std::wostream& Write       (std::wostream& os, JsonTokenType const& token, VALUE_TOKEN const& value);
+    static std::wostream& WriteNumber (std::wostream& os, double number);
     static std::wostream& WriteObject (std::wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation, uint8_t depth);
     static std::wostream& WriteArray  (std::wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation, uint8_t depth);
   public:

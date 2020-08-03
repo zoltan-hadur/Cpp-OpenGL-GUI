@@ -697,6 +697,87 @@ namespace Json4CPP::Test
       }
     }
 
+    TEST_METHOD(TestWriteNumber)
+    {
+      auto pairs = vector<pair<deque<TOKEN>, wstring>>
+      {
+        { { { JsonTokenType::Number, 13.37f } }, L"13.37"s },
+        { { { JsonTokenType::Number, 13.37 } }, L"13.37"s },
+        { { { JsonTokenType::Number, 0.00000123456789 } }, L"1.23456789e-06"s },
+        { { { JsonTokenType::Number, 0.00000000000001 } }, L"1e-14"s },
+        { { { JsonTokenType::Number, 123456789123456.0 } }, L"123456789123456"s },
+        { { { JsonTokenType::Number, 987654321987654.0 } }, L"987654321987654"s },
+        { { { JsonTokenType::Number, 0.5f } }, L"0.5"s },
+        { { { JsonTokenType::Number, 0.5 } }, L"0.5"s },
+        { { { JsonTokenType::Number, 1337.1337 } }, L"1337.1337"s },
+        { { { JsonTokenType::Number, 1.3f } }, L"1.3"s },
+        { { { JsonTokenType::Number, 1.3 } }, L"1.3"s },
+        { { { JsonTokenType::Number, 3.141592653589793 } }, L"3.141592653589793"s },
+        { { { JsonTokenType::Number, 1.414213562373095 } }, L"1.414213562373095"s },
+        { { { JsonTokenType::Number, 1.618033988749894 } }, L"1.618033988749894"s },
+        { { { JsonTokenType::Number, 2.718281828459045 } }, L"2.718281828459045"s },
+        { { { JsonTokenType::Number, 1.0                                                   } }, L"1"s                   },
+        { { { JsonTokenType::Number, 10.0                                                  } }, L"10"s                  },
+        { { { JsonTokenType::Number, 100.0                                                 } }, L"100"s                 },
+        { { { JsonTokenType::Number, 1000.0                                                } }, L"1000"s                },
+        { { { JsonTokenType::Number, 10000.0                                               } }, L"10000"s               },
+        { { { JsonTokenType::Number, 100000.0                                              } }, L"100000"s              },
+        { { { JsonTokenType::Number, 1000000.0                                             } }, L"1000000"s             },
+        { { { JsonTokenType::Number, 10000000.0                                            } }, L"10000000"s            },
+        { { { JsonTokenType::Number, 100000000.0                                           } }, L"100000000"s           },
+        { { { JsonTokenType::Number, 1000000000.0                                          } }, L"1000000000"s          },
+        { { { JsonTokenType::Number, 10000000000.0                                         } }, L"10000000000"s         },
+        { { { JsonTokenType::Number, 100000000000.0                                        } }, L"100000000000"s        },
+        { { { JsonTokenType::Number, 1000000000000.0                                       } }, L"1000000000000"s       },
+        { { { JsonTokenType::Number, 10000000000000.0                                      } }, L"10000000000000"s      },
+        { { { JsonTokenType::Number, 100000000000000.0                                     } }, L"100000000000000"s     },
+        { { { JsonTokenType::Number, 1000000000000000.0                                    } }, L"1000000000000000"s    },
+        { { { JsonTokenType::Number, 10000000000000000.0                                   } }, L"10000000000000000"s   },
+        { { { JsonTokenType::Number, 100000000000000000.0                                  } }, L"100000000000000000"s  },
+        { { { JsonTokenType::Number, 1000000000000000000.0                                 } }, L"1000000000000000000"s },
+        { { { JsonTokenType::Number, 10000000000000000000.0                                } }, L"1e+19"s               },
+        { { { JsonTokenType::Number, 100000000000000000000.0                               } }, L"1e+20"s               },
+        { { { JsonTokenType::Number, 1000000000000000000000.0                              } }, L"1e+21"s               },
+        { { { JsonTokenType::Number, 10000000000000000000000.0                             } }, L"1e+22"s               },
+        { { { JsonTokenType::Number, 100000000000000000000000.0                            } }, L"1e+23"s               },
+        { { { JsonTokenType::Number, 1000000000000000000000000.0                           } }, L"1e+24"s               },
+        { { { JsonTokenType::Number, 10000000000000000000000000.0                          } }, L"1e+25"s               },
+        { { { JsonTokenType::Number, 100000000000000000000000000.0                         } }, L"1e+26"s               },
+        { { { JsonTokenType::Number, 1000000000000000000000000000.0                        } }, L"1e+27"s               },
+        { { { JsonTokenType::Number, 10000000000000000000000000000.0                       } }, L"1e+28"s               },
+        { { { JsonTokenType::Number, 100000000000000000000000000000.0                      } }, L"1e+29"s               },
+        { { { JsonTokenType::Number, 1000000000000000000000000000000.0                     } }, L"1e+30"s               },
+        { { { JsonTokenType::Number, 10000000000000000000000000000000.0                    } }, L"1e+31"s               },
+        { { { JsonTokenType::Number, 100000000000000000000000000000000.0                   } }, L"1e+32"s               },
+        { { { JsonTokenType::Number, 1000000000000000000000000000000000.0                  } }, L"1e+33"s               },
+        { { { JsonTokenType::Number, 10000000000000000000000000000000000.0                 } }, L"1e+34"s               },
+        { { { JsonTokenType::Number, 100000000000000000000000000000000000.0                } }, L"1e+35"s               },
+        { { { JsonTokenType::Number, 1000000000000000000000000000000000000.0               } }, L"1e+36"s               },
+        { { { JsonTokenType::Number, 10000000000000000000000000000000000000.0              } }, L"1e+37"s               },
+        { { { JsonTokenType::Number, 100000000000000000000000000000000000000.0             } }, L"1e+38"s               },
+        { { { JsonTokenType::Number, 1000000000000000000000000000000000000000.0            } }, L"1e+39"s               },
+        { { { JsonTokenType::Number, 10000000000000000000000000000000000000000.0           } }, L"1e+40"s               },
+        { { { JsonTokenType::Number, 100000000000000000000000000000000000000000.0          } }, L"1e+41"s               },
+        { { { JsonTokenType::Number, 1000000000000000000000000000000000000000000.0         } }, L"1e+42"s               },
+        { { { JsonTokenType::Number, 10000000000000000000000000000000000000000000.0        } }, L"1e+43"s               },
+        { { { JsonTokenType::Number, 100000000000000000000000000000000000000000000.0       } }, L"1e+44"s               },
+        { { { JsonTokenType::Number, 1000000000000000000000000000000000000000000000.0      } }, L"1e+45"s               },
+        { { { JsonTokenType::Number, 10000000000000000000000000000000000000000000000.0     } }, L"1e+46"s               },
+        { { { JsonTokenType::Number, 100000000000000000000000000000000000000000000000.0    } }, L"1e+47"s               },
+        { { { JsonTokenType::Number, 1000000000000000000000000000000000000000000000000.0   } }, L"1e+48"s               },
+        { { { JsonTokenType::Number, 10000000000000000000000000000000000000000000000000.0  } }, L"1e+49"s               },
+        { { { JsonTokenType::Number, 100000000000000000000000000000000000000000000000000.0 } }, L"1e+50"s               },
+      };
+
+      for (auto [input, expected] : pairs)
+      {
+        auto os = wstringstream();
+        JsonLinter::Write(os, input, 0);
+        Assert::AreEqual<size_t>(0, input.size());
+        Assert::AreEqual(expected, os.str());
+      }
+    }
+
     TEST_METHOD(TestWriteObject)
     {
       auto pairs = vector<tuple<uint8_t, deque<TOKEN>, wstring>>

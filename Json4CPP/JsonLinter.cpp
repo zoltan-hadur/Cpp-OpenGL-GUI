@@ -386,7 +386,7 @@ namespace Json4CPP::Detail
       break;
 
     case JsonTokenType::Number:
-      os << +(get<double>(value));
+      WriteNumber(os, get<double>(value));
       break;
 
     case JsonTokenType::StartObject:
@@ -402,7 +402,7 @@ namespace Json4CPP::Detail
         [&](nullptr_t  const& v) { os << L"null"s;                            },
         [&](wstring    const& v) { os << L"\""s << EscapeString(v) << L"\""s; },
         [&](bool       const& v) { os << (v ? L"true"s : L"false"s);          },
-        [&](double     const& v) { os << +v;                                  },
+        [&](double     const& v) { WriteNumber(os, v);                        },
         [&](auto       const& v)
         {
           auto message = WString2String(L"Got type "s + wstring(typeid(v)) + L"!"s L"Expected one of the following types: "s +
@@ -413,6 +413,29 @@ namespace Json4CPP::Detail
       }, value);
       break;
     }
+    return os;
+  }
+
+  wostream& JsonLinter::WriteNumber(wostream& os, double number)
+  {
+    enum class Type { Integer, Float, Double };
+    auto type = (int64_t)number == number ? Type::Integer :
+                (float  )number == number ? Type::Float   :
+                                            Type::Double;
+    static auto converters = map<Type, function<to_chars_result(string&, double)>>
+    {
+      { Type::Integer, [](string& convertedNumber, int64_t actualNumber) { return to_chars(convertedNumber.data(), convertedNumber.data() + convertedNumber.size(), actualNumber); } },
+      { Type::Float  , [](string& convertedNumber, float   actualNumber) { return to_chars(convertedNumber.data(), convertedNumber.data() + convertedNumber.size(), actualNumber); } },
+      { Type::Double , [](string& convertedNumber, double  actualNumber) { return to_chars(convertedNumber.data(), convertedNumber.data() + convertedNumber.size(), actualNumber); } }
+    };
+    auto convertedNumber = string();
+    auto conversionResult = to_chars_result{ nullptr, errc::value_too_large };
+    for (int count = 10; conversionResult.ec == errc::value_too_large; count = count * 2)
+    {
+      convertedNumber = string(count, ' ');
+      conversionResult = converters[type](convertedNumber, number);
+    }
+    os << WidenString(string(convertedNumber.data(), conversionResult.ptr));
     return os;
   }
 
