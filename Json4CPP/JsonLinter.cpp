@@ -368,54 +368,6 @@ namespace Json4CPP::Detail
     }
   }
 
-  wostream& JsonLinter::Write(wostream& os, JsonTokenType const& token, VALUE_TOKEN const& value)
-  {
-    switch (token)
-    {
-    case JsonTokenType::Null:
-      os << L"null"s;
-      break;
-
-    case JsonTokenType::String:
-    case JsonTokenType::PropertyName:
-      os << L"\""s << EscapeString(get<wstring>(value)) << L"\""s;
-      break;
-
-    case JsonTokenType::Boolean:
-      os << (get<bool>(value) ? L"true"s : L"false"s);
-      break;
-
-    case JsonTokenType::Number:
-      WriteNumber(os, get<double>(value));
-      break;
-
-    case JsonTokenType::StartObject:
-    case JsonTokenType::EndObject:
-    case JsonTokenType::StartArray:
-    case JsonTokenType::EndArray:
-      os << get<wstring>(value);
-      break;
-
-    case JsonTokenType::Undefined:
-    default:
-      visit(Overload{
-        [&](nullptr_t  const& v) { os << L"null"s;                            },
-        [&](wstring    const& v) { os << L"\""s << EscapeString(v) << L"\""s; },
-        [&](bool       const& v) { os << (v ? L"true"s : L"false"s);          },
-        [&](double     const& v) { WriteNumber(os, v);                        },
-        [&](auto       const& v)
-        {
-          auto message = WString2String(L"Got type "s + wstring(typeid(v)) + L"!"s L"Expected one of the following types: "s +
-            wstring(typeid(nullptr_t())) + L", "s   + wstring(typeid(wstring())) + L", "s +
-            wstring(typeid(bool     ())) + L" or "s + wstring(typeid(double ())) + L"!"s);
-          throw exception(message.c_str());
-        }
-      }, value);
-      break;
-    }
-    return os;
-  }
-
   wostream& JsonLinter::WriteNumber(wostream& os, double number)
   {
     enum class Type { Integer, Float, Double };
@@ -639,6 +591,54 @@ namespace Json4CPP::Detail
     }
     auto message = WString2String(L"Expected token: "s + Detail::Dump(JsonTokenType::EndArray) + L"!"s);
     throw exception(message.c_str());
+  }
+
+  wostream& JsonLinter::Write(wostream& os, JsonTokenType const& token, VALUE_TOKEN const& value)
+  {
+    switch (token)
+    {
+    case JsonTokenType::Null:
+      os << L"null"s;
+      break;
+
+    case JsonTokenType::String:
+    case JsonTokenType::PropertyName:
+      os << L"\""s << EscapeString(get<wstring>(value)) << L"\""s;
+      break;
+
+    case JsonTokenType::Boolean:
+      os << (get<bool>(value) ? L"true"s : L"false"s);
+      break;
+
+    case JsonTokenType::Number:
+      WriteNumber(os, get<double>(value));
+      break;
+
+    case JsonTokenType::StartObject:
+    case JsonTokenType::EndObject:
+    case JsonTokenType::StartArray:
+    case JsonTokenType::EndArray:
+      os << get<wstring>(value);
+      break;
+
+    case JsonTokenType::Undefined:
+    default:
+      visit(Overload{
+        [&](nullptr_t  const& v) { os << L"null"s; },
+        [&](wstring    const& v) { os << L"\""s << EscapeString(v) << L"\""s; },
+        [&](bool       const& v) { os << (v ? L"true"s : L"false"s); },
+        [&](double     const& v) { WriteNumber(os, v); },
+        [&](auto       const& v)
+        {
+          auto message = WString2String(L"Got type "s + wstring(typeid(v)) + L"!"s L"Expected one of the following types: "s +
+            wstring(typeid(nullptr_t())) + L", "s + wstring(typeid(wstring())) + L", "s +
+            wstring(typeid(bool())) + L" or "s + wstring(typeid(double())) + L"!"s);
+          throw exception(message.c_str());
+        }
+        }, value);
+      break;
+    }
+    return os;
   }
 
   std::deque<TOKEN> JsonLinter::Read(wistream     & is   )

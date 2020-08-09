@@ -669,34 +669,6 @@ namespace Json4CPP::Test
       }
     }
 
-    TEST_METHOD(TestWrite)
-    {
-      auto pairs = vector<pair<deque<TOKEN>, wstring>>
-      {
-        { { { JsonTokenType::Null, nullptr      } }, L"null"s  },
-        { { { JsonTokenType::String      , L"\"💰\", A, Á, B, C"s } }, L"\"\\\"💰\\\", A, Á, B, C\""s },
-        { { { JsonTokenType::PropertyName, L"\"💰\", A, Á, B, C"s } }, L"\"\\\"💰\\\", A, Á, B, C\""s },
-        { { { JsonTokenType::Boolean, true      } }, L"true"s  },
-        { { { JsonTokenType::Boolean, false     } }, L"false"s },
-        { { { JsonTokenType::Number, 13.37      } }, L"13.37"s },
-        { { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::EndObject, L"}"s } }, L"{}"s },
-        { { { JsonTokenType::StartArray , L"["s }, { JsonTokenType::EndArray , L"]"s } }, L"[]"s },
-        { { { JsonTokenType::Undefined, nullptr } }, L"null"s  },
-        { { { JsonTokenType::Undefined, L"\"💰\", A, Á, B, C"s } }, L"\"\\\"💰\\\", A, Á, B, C\""s },
-        { { { JsonTokenType::Undefined, true    } }, L"true"s  },
-        { { { JsonTokenType::Undefined, false   } }, L"false"s },
-        { { { JsonTokenType::Undefined, 13.37   } }, L"13.37"s },
-      };
-
-      for (auto [input, expected] : pairs)
-      {
-        auto os = wstringstream();
-        JsonLinter::Write(os, input, JsonDefault::Indentation);
-        Assert::AreEqual<size_t>(0, input.size());
-        Assert::AreEqual(expected, os.str());
-      }
-    }
-
     TEST_METHOD(TestWriteNumber)
     {
       auto pairs = vector<pair<deque<TOKEN>, wstring>>
@@ -880,6 +852,34 @@ namespace Json4CPP::Test
         auto os = wstringstream();
         auto inputRef = input;
         ExceptException<exception>([&]() { JsonLinter::Write(os, inputRef, 0ui8); }, exceptionMessage);
+      }
+    }
+
+    TEST_METHOD(TestWrite)
+    {
+      auto pairs = vector<pair<deque<TOKEN>, wstring>>
+      {
+        { { { JsonTokenType::Null, nullptr      } }, L"null"s  },
+        { { { JsonTokenType::String      , L"\"💰\", A, Á, B, C"s } }, L"\"\\\"💰\\\", A, Á, B, C\""s },
+        { { { JsonTokenType::PropertyName, L"\"💰\", A, Á, B, C"s } }, L"\"\\\"💰\\\", A, Á, B, C\""s },
+        { { { JsonTokenType::Boolean, true      } }, L"true"s  },
+        { { { JsonTokenType::Boolean, false     } }, L"false"s },
+        { { { JsonTokenType::Number, 13.37      } }, L"13.37"s },
+        { { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::EndObject, L"}"s } }, L"{}"s },
+        { { { JsonTokenType::StartArray , L"["s }, { JsonTokenType::EndArray , L"]"s } }, L"[]"s },
+        { { { JsonTokenType::Undefined, nullptr } }, L"null"s  },
+        { { { JsonTokenType::Undefined, L"\"💰\", A, Á, B, C"s } }, L"\"\\\"💰\\\", A, Á, B, C\""s },
+        { { { JsonTokenType::Undefined, true    } }, L"true"s  },
+        { { { JsonTokenType::Undefined, false   } }, L"false"s },
+        { { { JsonTokenType::Undefined, 13.37   } }, L"13.37"s },
+      };
+
+      for (auto [input, expected] : pairs)
+      {
+        auto os = wstringstream();
+        JsonLinter::Write(os, input, JsonDefault::Indentation);
+        Assert::AreEqual<size_t>(0, input.size());
+        Assert::AreEqual(expected, os.str());
       }
     }
 
