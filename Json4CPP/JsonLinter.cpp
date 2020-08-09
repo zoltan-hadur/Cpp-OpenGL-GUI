@@ -424,9 +424,9 @@ namespace Json4CPP::Detail
                                             Type::Double;
     static auto converters = map<Type, function<to_chars_result(string&, double)>>
     {
-      { Type::Integer, [](string& convertedNumber, int64_t actualNumber) { return to_chars(convertedNumber.data(), convertedNumber.data() + convertedNumber.size(), actualNumber); } },
-      { Type::Float  , [](string& convertedNumber, float   actualNumber) { return to_chars(convertedNumber.data(), convertedNumber.data() + convertedNumber.size(), actualNumber); } },
-      { Type::Double , [](string& convertedNumber, double  actualNumber) { return to_chars(convertedNumber.data(), convertedNumber.data() + convertedNumber.size(), actualNumber); } }
+      { Type::Integer, [](string& convertedNumber, double actualNumber) { return to_chars(convertedNumber.data(), convertedNumber.data() + convertedNumber.size(), (int64_t)actualNumber); } },
+      { Type::Float  , [](string& convertedNumber, double actualNumber) { return to_chars(convertedNumber.data(), convertedNumber.data() + convertedNumber.size(), (float  )actualNumber); } },
+      { Type::Double , [](string& convertedNumber, double actualNumber) { return to_chars(convertedNumber.data(), convertedNumber.data() + convertedNumber.size(),          actualNumber); } }
     };
     auto convertedNumber = string();
     auto conversionResult = to_chars_result{ nullptr, errc::value_too_large };
