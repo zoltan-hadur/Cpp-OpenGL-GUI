@@ -175,7 +175,7 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Null  : _value = JsonObject();   // Break is missing intentionally
+    case JsonType::Null  : _value = JsonObject(); [[fallthrough]];
     case JsonType::Object: return get<JsonObject>(_value).Insert(pair);
     default: throw exception("Insert(pair<KEY, Json> pair) is only defined for JsonObject!");
     }
@@ -185,7 +185,7 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Null : _value = JsonArray();     // Break is missing intentionally
+    case JsonType::Null : _value = JsonArray(); [[fallthrough]];
     case JsonType::Array: get<JsonArray>(_value).PushBack(value); break;
     default: throw exception("PushBack(Json value) is only defined for JsonArray!");
     }
@@ -222,7 +222,7 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Null  : _value = JsonObject();   // Break is missing intentionally
+    case JsonType::Null  : _value = JsonObject(); [[fallthrough]];
     case JsonType::Object: return get<JsonObject>(_value)[key];
     default: throw exception("Operator[KEY] is only defined for JsonObject!");
     }
