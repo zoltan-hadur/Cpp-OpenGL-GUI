@@ -9,22 +9,6 @@ namespace Json4CPP::Test
 {
   TEST_CLASS(JsonLinterTest)
   {
-  private:
-    template<typename T, typename F>
-    static void ExceptException(F func, string const& msg)
-    {
-      auto found = false;
-      try
-      {
-        func();
-      }
-      catch (T e)
-      {
-        Assert::AreEqual(msg.c_str(), e.what());
-        found = true;
-      }
-      Assert::AreEqual(found, true);
-    }
   public:
     TEST_METHOD(TestParseNull)
     {

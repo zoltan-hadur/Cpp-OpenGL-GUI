@@ -41,4 +41,20 @@ namespace Microsoft::VisualStudio::CppUnitTestFramework
   template<> static std::wstring ToString<Json4CPP::Detail::JsonTokenType  >(Json4CPP::Detail::JsonTokenType   const& type  ) { return Json4CPP::Json::Stringify(               type  ); }
   template<> static std::wstring ToString<Json4CPP::Detail::VALUE          >(Json4CPP::Detail::VALUE           const& value ) { return Json4CPP::Json::Stringify(Json4CPP::Json(value)); }
   template<> static std::wstring ToString<Json4CPP::Detail::VALUE_TOKEN    >(Json4CPP::Detail::VALUE_TOKEN     const& value ) { return Json4CPP::Detail::JsonLinter::Dump(value);        }
+
+  template<typename T, typename F>
+  static void ExceptException(F func, std::string const& msg)
+  {
+    auto found = false;
+    try
+    {
+      func();
+    }
+    catch (T e)
+    {
+      Assert::AreEqual(msg.c_str(), e.what());
+      found = true;
+    }
+    Assert::AreEqual(found, true);
+  }
 }
