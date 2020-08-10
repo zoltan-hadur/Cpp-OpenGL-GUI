@@ -171,6 +171,16 @@ namespace Json4CPP
     }
   }
 
+  void Json::PushBack(Json value)
+  {
+    switch (Type())
+    {
+    case JsonType::Null: _value = JsonArray(); [[fallthrough]];
+    case JsonType::Array: get<JsonArray>(_value).PushBack(value); break;
+    default: throw exception("PushBack(Json value) is only defined for JsonArray!");
+    }
+  }
+
   bool Json::Insert(pair<KEY, Json> pair)
   {
     switch (Type())
@@ -181,13 +191,13 @@ namespace Json4CPP
     }
   }
 
-  void Json::PushBack(Json value)
+  void Json::Insert(int64_t index, Json value)
   {
     switch (Type())
     {
-    case JsonType::Null : _value = JsonArray(); [[fallthrough]];
-    case JsonType::Array: get<JsonArray>(_value).PushBack(value); break;
-    default: throw exception("PushBack(Json value) is only defined for JsonArray!");
+    case JsonType::Null  : _value = JsonArray(); [[fallthrough]];
+    case JsonType::Array: return get<JsonArray>(_value).Insert(index, value);
+    default: throw exception("Insert(Json value, int64_t index) is only defined for JsonArray!");
     }
   }
 

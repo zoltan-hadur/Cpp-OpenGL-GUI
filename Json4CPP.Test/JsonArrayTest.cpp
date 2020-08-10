@@ -290,12 +290,12 @@ namespace Json4CPP::Test
     {
       JsonArray array;
       array.Resize(6);
-      array.Insert(nullptr, 0);
-      array.Insert(L"Test"s, 1);
-      array.Insert(true, 2);
-      array.Insert(1337, 3);
-      array.Insert({ { L"key1", 1 }, { L"key2", 2 } }, 4);
-      array.Insert({ 1, 2, 3 }, 5);
+      array.Insert(0, nullptr);
+      array.Insert(1, L"Test"s);
+      array.Insert(2, true);
+      array.Insert(3, 1337);
+      array.Insert(4, { { L"key1", 1 }, { L"key2", 2 } });
+      array.Insert(5, { 1, 2, 3 });
       Assert::AreEqual(12i64, array.Size());
       Assert::AreEqual<Json>(nullptr, array[0]);
       Assert::AreEqual<Json>(L"Test"s, array[1]);

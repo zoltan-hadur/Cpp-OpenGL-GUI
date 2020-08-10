@@ -104,8 +104,9 @@ namespace Json4CPP
     int64_t Size() const;
     void Resize(int64_t size);
     void Clear();
-    bool Insert(std::pair<KEY, Json> pair);
     void PushBack(Json value);
+    bool Insert(std::pair<KEY, Json> pair);
+    void Insert(int64_t index, Json value);
     void Erase(KEY key);
     void Erase(int64_t index);
     std::vector<KEY> Keys() const;
