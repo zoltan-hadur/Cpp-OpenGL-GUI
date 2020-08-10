@@ -96,9 +96,21 @@ namespace Json4CPP
     template<typename T>
     static std::wstring Stringify(T const& value)
     {
-      std::wostringstream os;
-      os << value;
-      return os.str();
+      if constexpr (std::is_same_v<typename std::decay_t<decltype(value)>, std::nullptr_t> ||
+                    std::is_same_v<typename std::decay_t<decltype(value)>, std::wstring>   ||
+                    std::is_same_v<typename std::decay_t<decltype(value)>, bool>           ||
+                    std::is_same_v<typename std::decay_t<decltype(value)>, double>         ||
+                    std::is_same_v<typename std::decay_t<decltype(value)>, JsonObject>     ||
+                    std::is_same_v<typename std::decay_t<decltype(value)>, JsonArray>)
+      {
+        return Json(value).Dump();
+      }
+      else
+      {
+        std::wostringstream os;
+        os << value;
+        return os.str();
+      }
     }
 
     int64_t Size() const;
