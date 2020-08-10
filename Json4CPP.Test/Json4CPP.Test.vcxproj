@@ -116,6 +116,9 @@
     <CopyFileToFolders Include="UTF-8.txt">
       <DeploymentContent>true</DeploymentContent>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="pass01.json">
+      <DeploymentContent>true</DeploymentContent>
+    </CopyFileToFolders>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

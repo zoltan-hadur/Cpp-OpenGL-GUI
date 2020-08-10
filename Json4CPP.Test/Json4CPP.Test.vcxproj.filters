@@ -62,4 +62,9 @@
       <Filter>Resource Files</Filter>
     </CopyFileToFolders>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="pass01.json">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>
