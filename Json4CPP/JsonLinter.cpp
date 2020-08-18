@@ -139,8 +139,9 @@ namespace Json4CPP::Detail
     throw exception(message.c_str());
   }
 
-  double JsonLinter::ParseNumber(wistream& is)
+  NUMBER JsonLinter::ParseNumber(wistream& is)
   {
+    auto isInteger = true;
     wstring text;
 
     // Can start with '-'
@@ -174,6 +175,7 @@ namespace Json4CPP::Detail
     // Can contain '.'
     if (is.peek() == L'.')
     {
+      isInteger = false;
       text.push_back(is.get());
       // And then it contains at least one digit
       auto hasAtLeastOneDigit = false;
@@ -193,6 +195,7 @@ namespace Json4CPP::Detail
     // Can contain 'e' or 'E'
     if (is.peek() == L'e' || is.peek() == L'E')
     {
+      isInteger = false;
       text.push_back(is.get());
       // And then it can contain either '+' or '-'
       if (is.peek() == L'+' || is.peek() == L'-')
@@ -214,9 +217,18 @@ namespace Json4CPP::Detail
       }
     }
 
-    double number;
-    wstringstream(text) >> number;
-    return number;
+    if (isInteger)
+    {
+      int64_t number;
+      wstringstream(text) >> number;
+      return number;
+    }
+    else
+    {
+      double number;
+      wstringstream(text) >> number;
+      return number;
+    }
   }
 
   void JsonLinter::ParseObject(wistream& is, std::deque<TOKEN>& tokens, uint8_t depth)
@@ -355,8 +367,14 @@ namespace Json4CPP::Detail
       break;
 
     default:
-      tokens.push_back({ JsonTokenType::Number , ParseNumber (is) });
+    {
+      auto number = ParseNumber(is);
+      visit(Overload{
+        [&](double  const& value) { tokens.push_back({ JsonTokenType::Real    , value }); },
+        [&](int64_t const& value) { tokens.push_back({ JsonTokenType::Integer , value }); }
+      }, number);
       break;
+    }
 
     case L'{':
       ParseObject(is, tokens, depth + 1);
@@ -368,24 +386,26 @@ namespace Json4CPP::Detail
     }
   }
 
-  wostream& JsonLinter::WriteNumber(wostream& os, double number)
+  wostream& JsonLinter::WriteNumber(wostream& os, NUMBER number)
   {
-    enum class Type { Integer, Float, Double };
-    auto type = (int64_t)number == number ? Type::Integer :
-                (float  )number == number ? Type::Float   :
-                                            Type::Double;
-    static auto converters = map<Type, function<to_chars_result(string&, double)>>
-    {
-      { Type::Integer, [](string& convertedNumber, double actualNumber) { return to_chars(convertedNumber.data(), convertedNumber.data() + convertedNumber.size(), (int64_t)actualNumber); } },
-      { Type::Float  , [](string& convertedNumber, double actualNumber) { return to_chars(convertedNumber.data(), convertedNumber.data() + convertedNumber.size(), (float  )actualNumber); } },
-      { Type::Double , [](string& convertedNumber, double actualNumber) { return to_chars(convertedNumber.data(), convertedNumber.data() + convertedNumber.size(),          actualNumber); } }
-    };
+    enum class Type { IntegerI, IntegerD, Float, Double };
+    Type type;
+    visit(Overload{
+      [&](double  const& value) { type = (int64_t)value == value ? Type::IntegerD : (float)value == value ? Type::Float : Type::Double; },
+      [&](int64_t const& value) { type = Type::IntegerI; }
+    }, number);
     auto convertedNumber = string();
     auto conversionResult = to_chars_result{ nullptr, errc::value_too_large };
     for (int count = 10; conversionResult.ec == errc::value_too_large; count = count * 2)
     {
       convertedNumber = string(count, ' ');
-      conversionResult = converters[type](convertedNumber, number);
+      switch (type)
+      {
+      case Type::IntegerI: conversionResult = to_chars(convertedNumber.data(), convertedNumber.data() + convertedNumber.size(),          get<int64_t>(number)); break;
+      case Type::IntegerD: conversionResult = to_chars(convertedNumber.data(), convertedNumber.data() + convertedNumber.size(), (int64_t)get<double >(number)); break;
+      case Type::Float   : conversionResult = to_chars(convertedNumber.data(), convertedNumber.data() + convertedNumber.size(), (float  )get<double >(number)); break;
+      case Type::Double  : conversionResult = to_chars(convertedNumber.data(), convertedNumber.data() + convertedNumber.size(),          get<double >(number)); break;
+      }
     }
     os << WidenString(string(convertedNumber.data(), conversionResult.ptr));
     return os;
@@ -463,15 +483,17 @@ namespace Json4CPP::Detail
         case JsonTokenType::Null:
         case JsonTokenType::String:
         case JsonTokenType::Boolean:
-        case JsonTokenType::Number:
+        case JsonTokenType::Real:
+        case JsonTokenType::Integer:
           Write(os, token, value);
           tokens.pop_front();
           break;
         default:
           auto message = WString2String(L"Expected one of the following tokens: "s +
-            Detail::Dump(JsonTokenType::Null       ) + L", "s   + Detail::Dump(JsonTokenType::String    ) + L", "s +
-            Detail::Dump(JsonTokenType::Boolean    ) + L", "s   + Detail::Dump(JsonTokenType::Number    ) + L", "s +
-            Detail::Dump(JsonTokenType::StartObject) + L" or "s + Detail::Dump(JsonTokenType::StartArray) + L"!"s);
+            Detail::Dump(JsonTokenType::Null      ) + L", "s + Detail::Dump(JsonTokenType::String     ) + L", "s +
+            Detail::Dump(JsonTokenType::Boolean   ) + L", "s + Detail::Dump(JsonTokenType::Real       ) + L", "s +
+            Detail::Dump(JsonTokenType::Integer   ) + L", "s + Detail::Dump(JsonTokenType::StartObject) + L" or "s +
+            Detail::Dump(JsonTokenType::StartArray) + L"!"s);
           throw exception(message.c_str());
         }
 
@@ -495,9 +517,10 @@ namespace Json4CPP::Detail
       else
       {
         auto message = WString2String(L"Expected one of the following tokens: "s +
-          Detail::Dump(JsonTokenType::Null       ) + L", "s   + Detail::Dump(JsonTokenType::String    ) + L", "s +
-          Detail::Dump(JsonTokenType::Boolean    ) + L", "s   + Detail::Dump(JsonTokenType::Number    ) + L", "s +
-          Detail::Dump(JsonTokenType::StartObject) + L" or "s + Detail::Dump(JsonTokenType::StartArray) + L"!"s);
+          Detail::Dump(JsonTokenType::Null      ) + L", "s + Detail::Dump(JsonTokenType::String     ) + L", "s +
+          Detail::Dump(JsonTokenType::Boolean   ) + L", "s + Detail::Dump(JsonTokenType::Real       ) + L", "s +
+          Detail::Dump(JsonTokenType::Integer   ) + L", "s + Detail::Dump(JsonTokenType::StartObject) + L" or "s +
+          Detail::Dump(JsonTokenType::StartArray) + L"!"s);
         throw exception(message.c_str());
       }
     }
@@ -560,15 +583,17 @@ namespace Json4CPP::Detail
       case JsonTokenType::Null:
       case JsonTokenType::String:
       case JsonTokenType::Boolean:
-      case JsonTokenType::Number:
+      case JsonTokenType::Real:
+      case JsonTokenType::Integer:
         Write(os, token, value);
         tokens.pop_front();
         break;
       default:
         auto message = WString2String(L"Expected one of the following tokens: "s +
-          Detail::Dump(JsonTokenType::Null       ) + L", "s   + Detail::Dump(JsonTokenType::String    ) + L", "s +
-          Detail::Dump(JsonTokenType::Boolean    ) + L", "s   + Detail::Dump(JsonTokenType::Number    ) + L", "s +
-          Detail::Dump(JsonTokenType::StartObject) + L" or "s + Detail::Dump(JsonTokenType::StartArray) + L"!"s);
+          Detail::Dump(JsonTokenType::Null      ) + L", "s + Detail::Dump(JsonTokenType::String     ) + L", "s +
+          Detail::Dump(JsonTokenType::Boolean   ) + L", "s + Detail::Dump(JsonTokenType::Real       ) + L", "s +
+          Detail::Dump(JsonTokenType::Integer   ) + L", "s + Detail::Dump(JsonTokenType::StartObject) + L" or "s +
+          Detail::Dump(JsonTokenType::StartArray) + L"!"s);
         throw exception(message.c_str());
       }
 
@@ -610,8 +635,12 @@ namespace Json4CPP::Detail
       os << (get<bool>(value) ? L"true"s : L"false"s);
       break;
 
-    case JsonTokenType::Number:
+    case JsonTokenType::Real:
       WriteNumber(os, get<double>(value));
+      break;
+
+    case JsonTokenType::Integer:
+      WriteNumber(os, get<int64_t>(value));
       break;
 
     case JsonTokenType::StartObject:
@@ -628,14 +657,15 @@ namespace Json4CPP::Detail
         [&](wstring    const& v) { os << L"\""s << EscapeString(v) << L"\""s; },
         [&](bool       const& v) { os << (v ? L"true"s : L"false"s); },
         [&](double     const& v) { WriteNumber(os, v); },
+        [&](int64_t    const& v) { WriteNumber(os, v); },
         [&](auto       const& v)
         {
           auto message = WString2String(L"Got type "s + wstring(typeid(v)) + L"!"s L"Expected one of the following types: "s +
-            wstring(typeid(nullptr_t())) + L", "s + wstring(typeid(wstring())) + L", "s +
-            wstring(typeid(bool())) + L" or "s + wstring(typeid(double())) + L"!"s);
+            wstring(typeid(nullptr_t())) + L", "s   + wstring(typeid(wstring())) + L", "s +
+            wstring(typeid(bool     ())) + L" or "s + wstring(typeid(double ())) + L"!"s);
           throw exception(message.c_str());
         }
-        }, value);
+      }, value);
       break;
     }
     return os;

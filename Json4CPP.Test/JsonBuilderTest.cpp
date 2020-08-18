@@ -22,7 +22,8 @@ namespace Json4CPP::Test
         { nullptr_t (), JsonBuilderType::Null    },
         { wstring   (), JsonBuilderType::String  },
         { bool      (), JsonBuilderType::Boolean },
-        { double    (), JsonBuilderType::Number  },
+        { double    (), JsonBuilderType::Real    },
+        { int64_t   (), JsonBuilderType::Integer },
         { JsonObject(), JsonBuilderType::Object  },
         { JsonArray (), JsonBuilderType::Array   },
       };
@@ -54,57 +55,57 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestConstructorChar)
     {
-      Assert::IsTrue(JsonBuilder(char()).Is(JsonBuilderType::Number));
+      Assert::IsTrue(JsonBuilder(char()).Is(JsonBuilderType::Integer));
     }
 
     TEST_METHOD(TestConstructorInt8_t)
     {
-      Assert::IsTrue(JsonBuilder(int8_t()).Is(JsonBuilderType::Number));
+      Assert::IsTrue(JsonBuilder(int8_t()).Is(JsonBuilderType::Integer));
     }
 
     TEST_METHOD(TestConstructorUInt8_t)
     {
-      Assert::IsTrue(JsonBuilder(uint8_t()).Is(JsonBuilderType::Number));
+      Assert::IsTrue(JsonBuilder(uint8_t()).Is(JsonBuilderType::Integer));
     }
 
     TEST_METHOD(TestConstructorInt16_t)
     {
-      Assert::IsTrue(JsonBuilder(int16_t()).Is(JsonBuilderType::Number));
+      Assert::IsTrue(JsonBuilder(int16_t()).Is(JsonBuilderType::Integer));
     }
 
     TEST_METHOD(TestConstructorUInt16_t)
     {
-      Assert::IsTrue(JsonBuilder(uint16_t()).Is(JsonBuilderType::Number));
+      Assert::IsTrue(JsonBuilder(uint16_t()).Is(JsonBuilderType::Integer));
     }
 
     TEST_METHOD(TestConstructorInt32_t)
     {
-      Assert::IsTrue(JsonBuilder(int32_t()).Is(JsonBuilderType::Number));
+      Assert::IsTrue(JsonBuilder(int32_t()).Is(JsonBuilderType::Integer));
     }
 
     TEST_METHOD(TestConstructorUInt32_t)
     {
-      Assert::IsTrue(JsonBuilder(uint32_t()).Is(JsonBuilderType::Number));
+      Assert::IsTrue(JsonBuilder(uint32_t()).Is(JsonBuilderType::Integer));
     }
 
     TEST_METHOD(TestConstructorInt64_t)
     {
-      Assert::IsTrue(JsonBuilder(int64_t()).Is(JsonBuilderType::Number));
+      Assert::IsTrue(JsonBuilder(int64_t()).Is(JsonBuilderType::Integer));
     }
 
     TEST_METHOD(TestConstructorUInt64_t)
     {
-      Assert::IsTrue(JsonBuilder(uint64_t()).Is(JsonBuilderType::Number));
+      Assert::IsTrue(JsonBuilder(uint64_t()).Is(JsonBuilderType::Integer));
     }
 
     TEST_METHOD(TestConstructorFloat)
     {
-      Assert::IsTrue(JsonBuilder(float()).Is(JsonBuilderType::Number));
+      Assert::IsTrue(JsonBuilder(float()).Is(JsonBuilderType::Real));
     }
 
     TEST_METHOD(TestConstructorDouble)
     {
-      Assert::IsTrue(JsonBuilder(double()).Is(JsonBuilderType::Number));
+      Assert::IsTrue(JsonBuilder(double()).Is(JsonBuilderType::Real));
     }
 
     TEST_METHOD(TestConstructorJsonObject)
@@ -124,7 +125,8 @@ namespace Json4CPP::Test
         { nullptr_t (), JsonBuilderType::Null    },
         { wstring   (), JsonBuilderType::String  },
         { bool      (), JsonBuilderType::Boolean },
-        { double    (), JsonBuilderType::Number  },
+        { double    (), JsonBuilderType::Real    },
+        { int64_t   (), JsonBuilderType::Integer },
         { JsonObject(), JsonBuilderType::Object  },
         { JsonArray (), JsonBuilderType::Array   },
       };

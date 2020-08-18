@@ -13,7 +13,8 @@ namespace Json4CPP::Detail
     case JsonTokenType::Null        : return os << L"Null"s;
     case JsonTokenType::String      : return os << L"String"s;
     case JsonTokenType::Boolean     : return os << L"Boolean"s;
-    case JsonTokenType::Number      : return os << L"Number"s;
+    case JsonTokenType::Real        : return os << L"Real"s;
+    case JsonTokenType::Integer     : return os << L"Integer"s;
     case JsonTokenType::PropertyName: return os << L"PropertyName"s;
     case JsonTokenType::StartObject : return os << L"StartObject"s;
     case JsonTokenType::EndObject   : return os << L"EndObject"s;

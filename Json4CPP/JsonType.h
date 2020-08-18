@@ -13,9 +13,11 @@ namespace Json4CPP
     Null    = 1 << 0,                             // Value is std::nullptr.
     String  = 1 << 1,                             // Value is std::wstring.
     Boolean = 1 << 2,                             // Value is bool.
-    Number  = 1 << 3,                             // Value is double.
-    Object  = 1 << 4,                             // Value is JsonObject.
-    Array   = 1 << 5,                             // Value is JsonArray.
+    Real    = 1 << 3,                             // Value is double.
+    Integer = 1 << 4,                             // Value is int64_t.
+    Number  = Real | Integer,                     // Value is Real | Integer.
+    Object  = 1 << 5,                             // Value is JsonObject.
+    Array   = 1 << 6,                             // Value is JsonArray.
     Simple  = Null | String | Boolean | Number,   // Value is Null | String | Boolean | Number.
     Complex = Object | Array,                     // Value is Object | Array.
     Invalid = 1 << 31

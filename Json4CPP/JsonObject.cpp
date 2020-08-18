@@ -49,7 +49,8 @@ namespace Json4CPP
       case JsonTokenType::Null        : object.Insert({ property, Json(get<nullptr_t>(value)) }); tokens.pop_front(); break;
       case JsonTokenType::String      : object.Insert({ property, Json(get<wstring  >(value)) }); tokens.pop_front(); break;
       case JsonTokenType::Boolean     : object.Insert({ property, Json(get<bool     >(value)) }); tokens.pop_front(); break;
-      case JsonTokenType::Number      : object.Insert({ property, Json(get<double   >(value)) }); tokens.pop_front(); break;
+      case JsonTokenType::Real        : object.Insert({ property, Json(get<double   >(value)) }); tokens.pop_front(); break;
+      case JsonTokenType::Integer     : object.Insert({ property, Json(get<int64_t  >(value)) }); tokens.pop_front(); break;
       case JsonTokenType::StartObject : object.Insert({ property, JsonObject::Read   (tokens) });                     break;
       case JsonTokenType::StartArray  : object.Insert({ property, JsonArray::Read    (tokens) });                     break;
       case JsonTokenType::EndObject   : tokens.pop_front(); return object;

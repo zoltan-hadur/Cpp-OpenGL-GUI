@@ -28,7 +28,7 @@ namespace Json4CPP
     class JSON_API JsonBuilder;
 
     template<typename ...Args>
-    using VALUE_EXT = std::variant<std::nullptr_t, std::wstring, bool, double, JsonObject, JsonArray, Args...>;
+    using VALUE_EXT = std::variant<std::nullptr_t, std::wstring, bool, double, int64_t, JsonObject, JsonArray, Args...>;
 
     using VALUE = VALUE_EXT<>;
     using VALUE_BUILDER = VALUE_EXT<std::vector<JsonBuilder>>;

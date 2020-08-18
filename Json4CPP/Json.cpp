@@ -40,9 +40,10 @@ namespace Json4CPP
     switch (Value::GetType(json._value))
     {
     case JsonType::Null   : tokens.push_back({ JsonTokenType::Null   , get<nullptr_t>(json._value) }); break;
-    case JsonType::String : tokens.push_back({ JsonTokenType::String , get<wstring>  (json._value) }); break;
-    case JsonType::Boolean: tokens.push_back({ JsonTokenType::Boolean, get<bool>     (json._value) }); break;
-    case JsonType::Number : tokens.push_back({ JsonTokenType::Number , get<double>   (json._value) }); break;
+    case JsonType::String : tokens.push_back({ JsonTokenType::String , get<wstring  >(json._value) }); break;
+    case JsonType::Boolean: tokens.push_back({ JsonTokenType::Boolean, get<bool     >(json._value) }); break;
+    case JsonType::Real   : tokens.push_back({ JsonTokenType::Real   , get<double   >(json._value) }); break;
+    case JsonType::Integer: tokens.push_back({ JsonTokenType::Integer, get<int64_t  >(json._value) }); break;
     case JsonType::Object : JsonObject::Write(get<JsonObject>(json._value), tokens); break;
     case JsonType::Array  : JsonArray ::Write(get<JsonArray >(json._value), tokens); break;
     default:
@@ -97,23 +98,23 @@ namespace Json4CPP
     _value = json._value;
   }
 
-  Json::Json(nullptr_t      value) { _value = value;          }
+  Json::Json(nullptr_t      value) { _value =         value;  }
   Json::Json(const wchar_t* value) { _value = wstring(value); }
-  Json::Json(wstring        value) { _value = value;          }
-  Json::Json(bool           value) { _value = value;          }
-  Json::Json(char           value) { _value = double(value);  }
-  Json::Json(int8_t         value) { _value = double(value);  }
-  Json::Json(uint8_t        value) { _value = double(value);  }
-  Json::Json(int16_t        value) { _value = double(value);  }
-  Json::Json(uint16_t       value) { _value = double(value);  }
-  Json::Json(int32_t        value) { _value = double(value);  }
-  Json::Json(uint32_t       value) { _value = double(value);  }
-  Json::Json(int64_t        value) { _value = double(value);  }
-  Json::Json(uint64_t       value) { _value = double(value);  }
-  Json::Json(float          value) { _value = double(value);  }
-  Json::Json(double         value) { _value = value;          }
-  Json::Json(JsonObject     value) { _value = value;          }
-  Json::Json(JsonArray      value) { _value = value;          }
+  Json::Json(wstring        value) { _value =         value;  }
+  Json::Json(bool           value) { _value =         value;  }
+  Json::Json(char           value) { _value = int64_t(value); }
+  Json::Json(int8_t         value) { _value = int64_t(value); }
+  Json::Json(uint8_t        value) { _value = int64_t(value); }
+  Json::Json(int16_t        value) { _value = int64_t(value); }
+  Json::Json(uint16_t       value) { _value = int64_t(value); }
+  Json::Json(int32_t        value) { _value = int64_t(value); }
+  Json::Json(uint32_t       value) { _value = int64_t(value); }
+  Json::Json(int64_t        value) { _value =         value;  }
+  Json::Json(uint64_t       value) { _value = int64_t(value); }
+  Json::Json(float          value) { _value = double (value); }
+  Json::Json(double         value) { _value =         value;  }
+  Json::Json(JsonObject     value) { _value =         value;  }
+  Json::Json(JsonArray      value) { _value =         value;  }
 
   JsonType Json::Type() const
   {
@@ -288,14 +289,20 @@ namespace Json4CPP
 #pragma warning(disable : 4244)
   Json::operator nullptr_t() const
   {
-    if (Is(JsonType::Null)) return nullptr;
-    throw exception("Invalid conversion!");
+    switch (Type())
+    {
+    case JsonType::Null: return nullptr;
+    default: throw exception("Invalid conversion!");
+    }
   }
 
   Json::operator wstring() const
   {
-    if (Is(JsonType::String)) return Get<wstring>();
-    throw exception("Invalid conversion!");
+    switch (Type())
+    {
+    case JsonType::String: return Get<wstring>();
+    default: throw exception("Invalid conversion!");
+    }
   }
 
   Json::operator bool() const
@@ -303,112 +310,163 @@ namespace Json4CPP
     switch (Type())
     {
     case JsonType::Null   : return false;
-    case JsonType::Boolean: return Get<bool>();
-    case JsonType::Number : return Get<double>();
+    case JsonType::Boolean: return Get<bool   >();
+    case JsonType::Real   : return Get<double >();
+    case JsonType::Integer: return Get<int64_t>();
     default: return true;
     }
   }
 
   Json::operator char() const
   {
-    if (Is(JsonType::Number)) return Get<double>();
-    throw exception("Invalid conversion!");
+    switch (Type())
+    {
+    case JsonType::Real   : return Get<double >();
+    case JsonType::Integer: return Get<int64_t>();
+    default: throw exception("Invalid conversion!");
+    }
   }
 
   Json::operator int8_t() const
   {
-    if (Is(JsonType::Number)) return Get<double>();
-    throw exception("Invalid conversion!");
+    switch (Type())
+    {
+    case JsonType::Real   : return Get<double >();
+    case JsonType::Integer: return Get<int64_t>();
+    default: throw exception("Invalid conversion!");
+    }
   }
 
   Json::operator uint8_t() const
   {
-    if (Is(JsonType::Number)) return Get<double>();
-    throw exception("Invalid conversion!");
+    switch (Type())
+    {
+    case JsonType::Real   : return Get<double >();
+    case JsonType::Integer: return Get<int64_t>();
+    default: throw exception("Invalid conversion!");
+    }
   }
 
   Json::operator int16_t() const
   {
-    if (Is(JsonType::Number)) return Get<double>();
-    throw exception("Invalid conversion!");
+    switch (Type())
+    {
+    case JsonType::Real   : return Get<double >();
+    case JsonType::Integer: return Get<int64_t>();
+    default: throw exception("Invalid conversion!");
+    }
   }
 
   Json::operator uint16_t() const
   {
-    if (Is(JsonType::Number)) return Get<double>();
-    throw exception("Invalid conversion!");
+    switch (Type())
+    {
+    case JsonType::Real   : return Get<double >();
+    case JsonType::Integer: return Get<int64_t>();
+    default: throw exception("Invalid conversion!");
+    }
   }
 
   Json::operator int32_t() const
   {
-    if (Is(JsonType::Number)) return Get<double>();
-    throw exception("Invalid conversion!");
+    switch (Type())
+    {
+    case JsonType::Real   : return Get<double >();
+    case JsonType::Integer: return Get<int64_t>();
+    default: throw exception("Invalid conversion!");
+    }
   }
 
   Json::operator uint32_t() const
   {
-    if (Is(JsonType::Number)) return Get<double>();
-    throw exception("Invalid conversion!");
+    switch (Type())
+    {
+    case JsonType::Real   : return Get<double >();
+    case JsonType::Integer: return Get<int64_t>();
+    default: throw exception("Invalid conversion!");
+    }
   }
 
   Json::operator int64_t() const
   {
-    if (Is(JsonType::Number)) return Get<double>();
-    throw exception("Invalid conversion!");
+    switch (Type())
+    {
+    case JsonType::Real   : return Get<double >();
+    case JsonType::Integer: return Get<int64_t>();
+    default: throw exception("Invalid conversion!");
+    }
   }
 
   Json::operator uint64_t() const
   {
-    if (Is(JsonType::Number)) return Get<double>();
-    throw exception("Invalid conversion!");
+    switch (Type())
+    {
+    case JsonType::Real   : return Get<double >();
+    case JsonType::Integer: return Get<int64_t>();
+    default: throw exception("Invalid conversion!");
+    }
   }
 
   Json::operator float() const
   {
-    if (Is(JsonType::Number)) return Get<double>();
-    throw exception("Invalid conversion!");
+    switch (Type())
+    {
+    case JsonType::Real   : return Get<double >();
+    case JsonType::Integer: return Get<int64_t>();
+    default: throw exception("Invalid conversion!");
+    }
   }
 
   Json::operator double() const
   {
-    if (Is(JsonType::Number)) return Get<double>();
-    throw exception("Invalid conversion!");
+    switch (Type())
+    {
+    case JsonType::Real   : return Get<double >();
+    case JsonType::Integer: return Get<int64_t>();
+    default: throw exception("Invalid conversion!");
+    }
   }
 
   Json::operator JsonObject() const
   {
-    if (Is(JsonType::Object)) return Get<JsonObject>();
-    throw exception("Invalid conversion!");
+    switch (Type())
+    {
+    case JsonType::Object: return Get<JsonObject>();
+    default: throw exception("Invalid conversion!");
+    }
   }
 
   Json::operator JsonArray() const
   {
-    if (Is(JsonType::Array)) return Get<JsonArray>();
-    throw exception("Invalid conversion!");
+    switch (Type())
+    {
+    case JsonType::Array: return Get<JsonArray>();
+    default: throw exception("Invalid conversion!");
+    }
   }
 #pragma warning(pop)
 #pragma endregion
 
-  Json& Json::operator=(nullptr_t                     value ) { _value = value;               return *this; }
-  Json& Json::operator=(const wchar_t*                value ) { _value = wstring(value);      return *this; }
-  Json& Json::operator=(wstring                       value ) { _value = value;               return *this; }
-  Json& Json::operator=(bool                          value ) { _value = value;               return *this; }
-  Json& Json::operator=(char                          value ) { _value = double(value);       return *this; }
-  Json& Json::operator=(int8_t                        value ) { _value = double(value);       return *this; }
-  Json& Json::operator=(uint8_t                       value ) { _value = double(value);       return *this; }
-  Json& Json::operator=(int16_t                       value ) { _value = double(value);       return *this; }
-  Json& Json::operator=(uint16_t                      value ) { _value = double(value);       return *this; }
-  Json& Json::operator=(int32_t                       value ) { _value = double(value);       return *this; }
-  Json& Json::operator=(uint32_t                      value ) { _value = double(value);       return *this; }
-  Json& Json::operator=(int64_t                       value ) { _value = double(value);       return *this; }
-  Json& Json::operator=(uint64_t                      value ) { _value = double(value);       return *this; }
-  Json& Json::operator=(float                         value ) { _value = double(value);       return *this; }
-  Json& Json::operator=(double                        value ) { _value = value;               return *this; }
-  Json& Json::operator=(Json                          value ) { _value = value._value;        return *this; }
-  Json& Json::operator=(JsonObject                    value ) { _value = value;               return *this; }
-  Json& Json::operator=(JsonArray                     value ) { _value = value;               return *this; }
-  Json& Json::operator=(JsonBuilder                   value ) { _value = Json(value)._value;  return *this; }
-  Json& Json::operator=(initializer_list<JsonBuilder> values) { _value = Json(values)._value; return *this; }
+  Json& Json::operator=(nullptr_t                     value ) { _value =         value;          return *this; }
+  Json& Json::operator=(const wchar_t*                value ) { _value = wstring(value);         return *this; }
+  Json& Json::operator=(wstring                       value ) { _value =         value;          return *this; }
+  Json& Json::operator=(bool                          value ) { _value =         value;          return *this; }
+  Json& Json::operator=(char                          value ) { _value = int64_t(value);         return *this; }
+  Json& Json::operator=(int8_t                        value ) { _value = int64_t(value);         return *this; }
+  Json& Json::operator=(uint8_t                       value ) { _value = int64_t(value);         return *this; }
+  Json& Json::operator=(int16_t                       value ) { _value = int64_t(value);         return *this; }
+  Json& Json::operator=(uint16_t                      value ) { _value = int64_t(value);         return *this; }
+  Json& Json::operator=(int32_t                       value ) { _value = int64_t(value);         return *this; }
+  Json& Json::operator=(uint32_t                      value ) { _value = int64_t(value);         return *this; }
+  Json& Json::operator=(int64_t                       value ) { _value =         value;          return *this; }
+  Json& Json::operator=(uint64_t                      value ) { _value = int64_t(value);         return *this; }
+  Json& Json::operator=(float                         value ) { _value = double (value);         return *this; }
+  Json& Json::operator=(double                        value ) { _value =         value;          return *this; }
+  Json& Json::operator=(Json                          value ) { _value =         value._value;   return *this; }
+  Json& Json::operator=(JsonObject                    value ) { _value =         value;          return *this; }
+  Json& Json::operator=(JsonArray                     value ) { _value =         value;          return *this; }
+  Json& Json::operator=(JsonBuilder                   value ) { _value = Json   (value )._value; return *this; }
+  Json& Json::operator=(initializer_list<JsonBuilder> values) { _value = Json   (values)._value; return *this; }
 
   wostream& operator<<(wostream& os, Json const& json)
   {

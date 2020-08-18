@@ -16,8 +16,9 @@
 
 namespace Json4CPP::Detail
 {
-  using VALUE_TOKEN = std::variant<std::nullptr_t, std::wstring, bool, double>;
+  using VALUE_TOKEN = std::variant<std::nullptr_t, std::wstring, bool, double, int64_t>;
   using TOKEN = std::pair<JsonTokenType, VALUE_TOKEN>;
+  using NUMBER = std::variant<double, int64_t>;
 
   class JSON_API JsonLinter
   {
@@ -25,12 +26,12 @@ namespace Json4CPP::Detail
     static std::nullptr_t ParseNull   (std::wistream& is);
     static std::wstring   ParseString (std::wistream& is);
     static bool           ParseBoolean(std::wistream& is);
-    static double         ParseNumber (std::wistream& is);
+    static NUMBER         ParseNumber (std::wistream& is);
     static void           ParseObject (std::wistream& is, std::deque<TOKEN>& tokens, uint8_t depth);
     static void           ParseArray  (std::wistream& is, std::deque<TOKEN>& tokens, uint8_t depth);
     static void           Read        (std::wistream& is, std::deque<TOKEN>& tokens, uint8_t depth);
 
-    static std::wostream& WriteNumber (std::wostream& os, double number);
+    static std::wostream& WriteNumber (std::wostream& os, NUMBER number);
     static std::wostream& WriteObject (std::wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation, uint8_t depth);
     static std::wostream& WriteArray  (std::wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation, uint8_t depth);
     static std::wostream& Write(std::wostream& os, JsonTokenType const& token, VALUE_TOKEN const& value);

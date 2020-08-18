@@ -7,12 +7,13 @@
     <DisplayString Condition="_value._Which == 3">{_value._Tail._Tail._Tail._Head}</DisplayString>
     <DisplayString Condition="_value._Which == 4">{_value._Tail._Tail._Tail._Tail._Head}</DisplayString>
     <DisplayString Condition="_value._Which == 5">{_value._Tail._Tail._Tail._Tail._Tail._Head}</DisplayString>
+    <DisplayString Condition="_value._Which == 6">{_value._Tail._Tail._Tail._Tail._Tail._Tail._Head}</DisplayString>
     <Expand HideRawView="true">
-      <ExpandedItem Condition="_value._Which == 4">
-        _value._Tail._Tail._Tail._Tail._Head
-      </ExpandedItem>
       <ExpandedItem Condition="_value._Which == 5">
         _value._Tail._Tail._Tail._Tail._Tail._Head
+      </ExpandedItem>
+      <ExpandedItem Condition="_value._Which == 6">
+        _value._Tail._Tail._Tail._Tail._Tail._Tail._Head
       </ExpandedItem>
     </Expand>
   </Type>

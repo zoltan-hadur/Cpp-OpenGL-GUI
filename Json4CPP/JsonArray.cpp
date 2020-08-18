@@ -39,9 +39,10 @@ namespace Json4CPP
       case JsonTokenType::Null       : array._values.push_back(Json(get<nullptr_t>(value))); tokens.pop_front(); break;
       case JsonTokenType::String     : array._values.push_back(Json(get<wstring  >(value))); tokens.pop_front(); break;
       case JsonTokenType::Boolean    : array._values.push_back(Json(get<bool     >(value))); tokens.pop_front(); break;
-      case JsonTokenType::Number     : array._values.push_back(Json(get<double   >(value))); tokens.pop_front(); break;
+      case JsonTokenType::Real       : array._values.push_back(Json(get<double   >(value))); tokens.pop_front(); break;
+      case JsonTokenType::Integer    : array._values.push_back(Json(get<int64_t  >(value))); tokens.pop_front(); break;
       case JsonTokenType::StartObject: array._values.push_back(JsonObject::Read   (tokens));                     break;
-      case JsonTokenType::StartArray : array._values.push_back(JsonArray::Read    (tokens));                     break;
+      case JsonTokenType::StartArray : array._values.push_back(JsonArray ::Read   (tokens));                     break;
       case JsonTokenType::EndArray   : tokens.pop_front(); return array;
       default:
       {
