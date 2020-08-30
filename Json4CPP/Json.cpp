@@ -62,26 +62,24 @@ namespace Json4CPP
   {
     switch (value.Type())
     {
-    case JsonBuilderType::Object: _value = JsonObject(value); break;
-    case JsonBuilderType::Array : _value = JsonArray (value); break;
+    case JsonBuilderType::Empty :
+    case JsonBuilderType::Object:
+      _value = JsonObject(value);
+      break;
+    case JsonBuilderType::Pair  :
+    case JsonBuilderType::Array :
+      _value = JsonArray (value);
+      break;
     default:
       visit(Overload{
-        [&](auto arg) { _value = arg; },
-        [&](vector<JsonBuilder> const& arg)
+        [&](nullptr_t const& arg) { _value = arg; },
+        [&](wstring   const& arg) { _value = arg; },
+        [&](bool      const& arg) { _value = arg; },
+        [&](double    const& arg) { _value = arg; },
+        [&](int64_t   const& arg) { _value = arg; },
+        [&](auto const& arg)
         {
-          switch (value.Type())
-          {
-          case JsonBuilderType::Empty:
-          case JsonBuilderType::Object:
-            _value = JsonObject(arg);
-            break;
-          case JsonBuilderType::Array:
-          case JsonBuilderType::Pair:
-            _value = JsonArray (arg);
-            break;
-          default:
-            throw exception("Should not be possible!");
-          }
+          throw exception("Should not be possible!");
         }
       }, value._value);
       break;

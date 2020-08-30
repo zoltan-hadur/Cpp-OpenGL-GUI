@@ -1129,6 +1129,463 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>(1340, json.At(3));
     }
 
+    TEST_METHOD(TestOperatorConversionNullptr)
+    {
+      ExceptException<exception>([]() { auto temp = (nullptr_t)Json(wstring   ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (nullptr_t)Json(bool      ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (nullptr_t)Json(double    ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (nullptr_t)Json(int64_t   ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (nullptr_t)Json(JsonObject()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (nullptr_t)Json(JsonArray ()); }, "Invalid conversion!");
+      Assert::AreEqual(nullptr, (nullptr_t)Json(nullptr_t()));
+    }
+
+    TEST_METHOD(TestOperatorConversionWstring)
+    {
+      ExceptException<exception>([]() { auto temp = (wstring)Json(nullptr_t ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (wstring)Json(bool      ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (wstring)Json(double    ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (wstring)Json(int64_t   ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (wstring)Json(JsonObject()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (wstring)Json(JsonArray ()); }, "Invalid conversion!");
+      Assert::AreEqual<wstring>(L"Test"s, (wstring)Json(L"Test"s));
+    }
+
+    TEST_METHOD(TestOperatorConversionBool)
+    {
+      Assert::IsFalse((bool)Json(nullptr_t ()));
+      Assert::IsTrue ((bool)Json(L"Test"s    ));
+      Assert::IsTrue ((bool)Json(true        ));
+      Assert::IsFalse((bool)Json(false       ));
+      Assert::IsTrue ((bool)Json(1.0         ));
+      Assert::IsFalse((bool)Json(0.0         ));
+      Assert::IsTrue ((bool)Json(1i64        ));
+      Assert::IsFalse((bool)Json(0i64        ));
+      Assert::IsTrue ((bool)Json(JsonObject()));
+      Assert::IsTrue ((bool)Json(JsonArray ()));
+    }
+
+    TEST_METHOD(TestOperatorConversionChar)
+    {
+      ExceptException<exception>([]() { auto temp = (char)Json(nullptr_t ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (char)Json(wstring   ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (char)Json(bool      ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (char)Json(JsonObject()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (char)Json(JsonArray ()); }, "Invalid conversion!");
+      Assert::AreEqual<char>('A', (char)Json(65.0));
+      Assert::AreEqual<char>('A', (char)Json('A'));
+    }
+
+    TEST_METHOD(TestOperatorConversionInt8)
+    {
+      ExceptException<exception>([]() { auto temp = (int8_t)Json(nullptr_t ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (int8_t)Json(wstring   ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (int8_t)Json(bool      ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (int8_t)Json(JsonObject()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (int8_t)Json(JsonArray ()); }, "Invalid conversion!");
+      Assert::AreEqual<int8_t>(-100, (int8_t)Json(-100.0));
+      Assert::AreEqual<int8_t>(-100, (int8_t)Json(-100));
+    }
+
+    TEST_METHOD(TestOperatorConversionUInt8)
+    {
+      ExceptException<exception>([]() { auto temp = (uint8_t)Json(nullptr_t ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (uint8_t)Json(wstring   ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (uint8_t)Json(bool      ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (uint8_t)Json(JsonObject()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (uint8_t)Json(JsonArray ()); }, "Invalid conversion!");
+      Assert::AreEqual<uint8_t>(200, (uint8_t)Json(200.0));
+      Assert::AreEqual<uint8_t>(200, (uint8_t)Json(200));
+    }
+
+    TEST_METHOD(TestOperatorConversionInt16)
+    {
+      ExceptException<exception>([]() { auto temp = (int16_t)Json(nullptr_t ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (int16_t)Json(wstring   ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (int16_t)Json(bool      ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (int16_t)Json(JsonObject()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (int16_t)Json(JsonArray ()); }, "Invalid conversion!");
+      Assert::AreEqual<int16_t>(-30'000, (int16_t)Json(-30'000.0));
+      Assert::AreEqual<int16_t>(-30'000, (int16_t)Json(-30'000));
+    }
+
+    TEST_METHOD(TestOperatorConversionUInt16)
+    {
+      ExceptException<exception>([]() { auto temp = (uint16_t)Json(nullptr_t ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (uint16_t)Json(wstring   ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (uint16_t)Json(bool      ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (uint16_t)Json(JsonObject()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (uint16_t)Json(JsonArray ()); }, "Invalid conversion!");
+      Assert::AreEqual<uint16_t>(60'000, (uint16_t)Json(60'000.0));
+      Assert::AreEqual<uint16_t>(60'000, (uint16_t)Json(60'000));
+    }
+
+    TEST_METHOD(TestOperatorConversionInt32)
+    {
+      ExceptException<exception>([]() { auto temp = (int32_t)Json(nullptr_t ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (int32_t)Json(wstring   ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (int32_t)Json(bool      ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (int32_t)Json(JsonObject()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (int32_t)Json(JsonArray ()); }, "Invalid conversion!");
+      Assert::AreEqual<int32_t>(-2'000'000'000, (int32_t)Json(-2'000'000'000.0));
+      Assert::AreEqual<int32_t>(-2'000'000'000, (int32_t)Json(-2'000'000'000));
+    }
+
+    TEST_METHOD(TestOperatorConversionUInt32)
+    {
+      ExceptException<exception>([]() { auto temp = (uint32_t)Json(nullptr_t ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (uint32_t)Json(wstring   ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (uint32_t)Json(bool      ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (uint32_t)Json(JsonObject()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (uint32_t)Json(JsonArray ()); }, "Invalid conversion!");
+      Assert::AreEqual<uint32_t>(4'000'000'000, (uint32_t)Json(4'000'000'000.0));
+      Assert::AreEqual<uint32_t>(4'000'000'000, (uint32_t)Json(4'000'000'000ui32));
+    }
+
+    TEST_METHOD(TestOperatorConversionInt64)
+    {
+      ExceptException<exception>([]() { auto temp = (int64_t)Json(nullptr_t ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (int64_t)Json(wstring   ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (int64_t)Json(bool      ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (int64_t)Json(JsonObject()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (int64_t)Json(JsonArray ()); }, "Invalid conversion!");
+      Assert::AreEqual<int64_t>(-16'000'000'000, (int64_t)Json(-16'000'000'000.0));
+      Assert::AreEqual<int64_t>(-16'000'000'000, (int64_t)Json(-16'000'000'000i64));
+    }
+
+    TEST_METHOD(TestOperatorConversionUInt64)
+    {
+      ExceptException<exception>([]() { auto temp = (uint64_t)Json(nullptr_t ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (uint64_t)Json(wstring   ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (uint64_t)Json(bool      ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (uint64_t)Json(JsonObject()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (uint64_t)Json(JsonArray ()); }, "Invalid conversion!");
+      Assert::AreEqual<uint64_t>(32'000'000'000, (uint64_t)Json(32'000'000'000.0));
+      Assert::AreEqual<uint64_t>(32'000'000'000, (uint64_t)Json(32'000'000'000ui64));
+    }
+
+    TEST_METHOD(TestOperatorConversionFloat)
+    {
+      ExceptException<exception>([]() { auto temp = (float)Json(nullptr_t ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (float)Json(wstring   ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (float)Json(bool      ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (float)Json(JsonObject()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (float)Json(JsonArray ()); }, "Invalid conversion!");
+      Assert::AreEqual<float>(13.37f, (float)Json(13.37));
+      Assert::AreEqual<float>(13.37f, (float)Json(13.37f));
+      Assert::AreEqual<float>(1337.0, (float)Json(1337));
+    }
+
+    TEST_METHOD(TestOperatorConversionDouble)
+    {
+      ExceptException<exception>([]() { auto temp = (double)Json(nullptr_t ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (double)Json(wstring   ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (double)Json(bool      ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (double)Json(JsonObject()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (double)Json(JsonArray ()); }, "Invalid conversion!");
+      Assert::AreEqual<double>(13.37, (double)Json(13.37));
+      Assert::AreEqual<double>(13.37f, (double)Json(13.37f));
+      Assert::AreEqual<double>(1337.0, (double)Json(1337));
+    }
+
+    TEST_METHOD(TestOperatorConversionJsonObject)
+    {
+      ExceptException<exception>([]() { auto temp = (JsonObject)Json(nullptr_t ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (JsonObject)Json(wstring   ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (JsonObject)Json(bool      ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (JsonObject)Json(double    ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (JsonObject)Json(int64_t   ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (JsonObject)Json(JsonArray ()); }, "Invalid conversion!");
+      Assert::AreEqual<JsonObject>(JsonObject{ { L"Key1"s, 1 }, { L"Key2"s, 2 } }, (JsonObject)Json(JsonObject{ { L"Key1"s, 1 }, { L"Key2"s, 2 } }));
+    }
+
+    TEST_METHOD(TestOperatorConversionJsonArray)
+    {
+      ExceptException<exception>([]() { auto temp = (JsonArray)Json(nullptr_t ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (JsonArray)Json(wstring   ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (JsonArray)Json(bool      ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (JsonArray)Json(double    ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (JsonArray)Json(int64_t   ()); }, "Invalid conversion!");
+      ExceptException<exception>([]() { auto temp = (JsonArray)Json(JsonObject()); }, "Invalid conversion!");
+      Assert::AreEqual<JsonArray>(JsonArray{ 1, 3, 3, 7 }, (JsonArray)Json(JsonArray{ 1, 3, 3, 7 }));
+    }
+
+    TEST_METHOD(TestOperatorAssignmentNullptr)
+    {
+      auto json = Json(1337);
+      Assert::IsTrue(json.Is(JsonType::Integer));
+      json = nullptr;
+      Assert::AreEqual(nullptr, json.Get<nullptr_t>());
+    }
+
+    TEST_METHOD(TestOperatorAssignmentConstWcharPointer)
+    {
+      auto json = Json();
+      Assert::IsTrue(json.Is(JsonType::Null));
+      json = L"Test";
+      Assert::AreEqual(L"Test"s, json.Get<wstring>());
+    }
+
+    TEST_METHOD(TestOperatorAssignmentWstring)
+    {
+      auto json = Json();
+      Assert::IsTrue(json.Is(JsonType::Null));
+      json = L"Test"s;
+      Assert::AreEqual(L"Test"s, json.Get<wstring>());
+    }
+
+    TEST_METHOD(TestOperatorAssignmentBool)
+    {
+      auto json = Json();
+      Assert::IsTrue(json.Is(JsonType::Null));
+      json = true;
+      Assert::AreEqual(true, json.Get<bool>());
+    }
+
+    TEST_METHOD(TestOperatorAssignmentChar)
+    {
+      auto json = Json();
+      Assert::IsTrue(json.Is(JsonType::Null));
+      json = 'A';
+      Assert::AreEqual(65i64, json.Get<int64_t>());
+    }
+
+    TEST_METHOD(TestOperatorAssignmentInt8)
+    {
+      auto json = Json();
+      Assert::IsTrue(json.Is(JsonType::Null));
+      json = (int8_t)-100;
+      Assert::AreEqual(-100i64, json.Get<int64_t>());
+    }
+
+    TEST_METHOD(TestOperatorAssignmentUInt8)
+    {
+      auto json = Json();
+      Assert::IsTrue(json.Is(JsonType::Null));
+      json = (uint8_t)200;
+      Assert::AreEqual(200i64, json.Get<int64_t>());
+    }
+
+    TEST_METHOD(TestOperatorAssignmentInt16)
+    {
+      auto json = Json();
+      Assert::IsTrue(json.Is(JsonType::Null));
+      json = (int16_t)-30'000;
+      Assert::AreEqual(-30'000i64, json.Get<int64_t>());
+    }
+
+    TEST_METHOD(TestOperatorAssignmentUInt16)
+    {
+      auto json = Json();
+      Assert::IsTrue(json.Is(JsonType::Null));
+      json = (uint16_t)60'000;
+      Assert::AreEqual(60'000i64, json.Get<int64_t>());
+    }
+
+    TEST_METHOD(TestOperatorAssignmentInt32)
+    {
+      auto json = Json();
+      Assert::IsTrue(json.Is(JsonType::Null));
+      json = (int32_t)-2'000'000'000;
+      Assert::AreEqual(-2'000'000'000i64, json.Get<int64_t>());
+    }
+
+    TEST_METHOD(TestOperatorAssignmentUInt32)
+    {
+      auto json = Json();
+      Assert::IsTrue(json.Is(JsonType::Null));
+      json = (uint32_t)4'000'000'000;
+      Assert::AreEqual(4'000'000'000i64, json.Get<int64_t>());
+    }
+
+    TEST_METHOD(TestOperatorAssignmentInt64)
+    {
+      auto json = Json();
+      Assert::IsTrue(json.Is(JsonType::Null));
+      json = (int64_t)-16'000'000'000;
+      Assert::AreEqual(-16'000'000'000i64, json.Get<int64_t>());
+    }
+
+    TEST_METHOD(TestOperatorAssignmentUInt64)
+    {
+      auto json = Json();
+      Assert::IsTrue(json.Is(JsonType::Null));
+      json = (uint64_t)32'000'000'000;
+      Assert::AreEqual(32'000'000'000i64, json.Get<int64_t>());
+    }
+
+    TEST_METHOD(TestOperatorAssignmentFloat)
+    {
+      auto json = Json();
+      Assert::IsTrue(json.Is(JsonType::Null));
+      json = 13.37f;
+      Assert::AreEqual<double>(13.37f, json.Get<double>());
+    }
+
+    TEST_METHOD(TestOperatorAssignmentDouble)
+    {
+      auto json = Json();
+      Assert::IsTrue(json.Is(JsonType::Null));
+      json = 13.37;
+      Assert::AreEqual(13.37, json.Get<double>());
+    }
+
+    TEST_METHOD(TestOperatorAssignmentJson)
+    {
+      auto json = Json(1337);
+      Assert::IsTrue(json.Is(JsonType::Integer));
+      json = Json(nullptr);
+      Assert::IsTrue(json.Is(JsonType::Null));
+      Assert::AreEqual(nullptr, json.Get<nullptr_t>());
+
+      json = Json(L"Test"s);
+      Assert::IsTrue(json.Is(JsonType::String));
+      Assert::AreEqual(L"Test"s, json.Get<wstring>());
+
+      json = Json(true);
+      Assert::IsTrue(json.Is(JsonType::Boolean));
+      Assert::AreEqual(true, json.Get<bool>());
+
+      json = Json(13.37);
+      Assert::IsTrue(json.Is(JsonType::Real));
+      Assert::AreEqual(13.37, json.Get<double>());
+
+      json = Json(1337);
+      Assert::IsTrue(json.Is(JsonType::Integer));
+      Assert::AreEqual(1337i64, json.Get<int64_t>());
+
+      json = Json(JsonObject{ { L"Key1"s, 1 }, { L"Key2"s, 2 } });
+      Assert::IsTrue(json.Is(JsonType::Object));
+      Assert::AreEqual(JsonObject{ { L"Key1"s, 1 }, { L"Key2"s, 2 } }, json.Get<JsonObject>());
+
+      json = Json(JsonArray{ 1, 3, 3, 7 });
+      Assert::IsTrue(json.Is(JsonType::Array));
+      Assert::AreEqual(JsonArray{ 1, 3, 3, 7 }, json.Get<JsonArray>());
+    }
+
+    TEST_METHOD(TestOperatorAssignmentJsonObject)
+    {
+      auto json = Json();
+      Assert::IsTrue(json.Is(JsonType::Null));
+      json = JsonObject{ { L"Key1"s, 1 }, { L"Key2"s, 2 } };
+      Assert::AreEqual(JsonObject{ { L"Key1"s, 1 }, { L"Key2"s, 2 } }, json.Get<JsonObject>());
+    }
+
+    TEST_METHOD(TestOperatorAssignmentJsonArray)
+    {
+      auto json = Json();
+      Assert::IsTrue(json.Is(JsonType::Null));
+      json = JsonArray{ 1, 3, 3, 7 };
+      Assert::AreEqual(JsonArray{ 1, 3, 3, 7 }, json.Get<JsonArray>());
+    }
+
+    TEST_METHOD(TestOperatorAssignmentJsonBuilder)
+    {
+      auto json = Json(1337);
+      Assert::IsTrue(json.Is(JsonType::Integer));
+      json = JsonBuilder(nullptr);
+      Assert::AreEqual(nullptr, json.Get<nullptr_t>());
+
+      json = JsonBuilder(L"Test"s);
+      Assert::IsTrue(json.Is(JsonType::String));
+      Assert::AreEqual(L"Test"s, json.Get<wstring>());
+
+      json = JsonBuilder(true);
+      Assert::IsTrue(json.Is(JsonType::Boolean));
+      Assert::AreEqual(true, json.Get<bool>());
+
+      json = JsonBuilder(13.37);
+      Assert::IsTrue(json.Is(JsonType::Real));
+      Assert::AreEqual(13.37, json.Get<double>());
+
+      json = JsonBuilder(1337);
+      Assert::IsTrue(json.Is(JsonType::Integer));
+      Assert::AreEqual(1337i64, json.Get<int64_t>());
+
+      json = JsonBuilder(JsonObject{ { L"Key1"s, 1 }, { L"Key2"s, 2 } });
+      Assert::IsTrue(json.Is(JsonType::Object));
+      Assert::AreEqual(JsonObject{ { L"Key1"s, 1 }, { L"Key2"s, 2 } }, json.Get<JsonObject>());
+
+      json = JsonBuilder(JsonArray{ 1, 3, 3, 7 });
+      Assert::IsTrue(json.Is(JsonType::Array));
+      Assert::AreEqual(JsonArray{ 1, 3, 3, 7 }, json.Get<JsonArray>());
+    }
+
+    TEST_METHOD(TestOperatorAssignmentInitializerList)
+    {
+      auto json = Json(initializer_list<JsonBuilder>());
+      Assert::IsTrue(json.Is(JsonType::Object));
+      Assert::AreEqual(0i64, json.Size());
+
+      json = Json(initializer_list<JsonBuilder>{ nullptr });
+      Assert::IsTrue(json.Is(JsonType::Array));
+      Assert::AreEqual(1i64, json.Size());
+      Assert::AreEqual<Json>(nullptr, json[0]);
+
+      json = Json(initializer_list<JsonBuilder>{ L"Test"s });
+      Assert::IsTrue(json.Is(JsonType::Array));
+      Assert::AreEqual(1i64, json.Size());
+      Assert::AreEqual<Json>(L"Test"s, json[0]);
+
+      json = Json(initializer_list<JsonBuilder>{ true });
+      Assert::IsTrue(json.Is(JsonType::Array));
+      Assert::AreEqual(1i64, json.Size());
+      Assert::AreEqual<Json>(true, json[0]);
+
+      json = Json(initializer_list<JsonBuilder>{ 13.37 });
+      Assert::IsTrue(json.Is(JsonType::Array));
+      Assert::AreEqual(1i64, json.Size());
+      Assert::AreEqual<Json>(13.37, json[0]);
+
+      json = Json(initializer_list<JsonBuilder>{ 1337 });
+      Assert::IsTrue(json.Is(JsonType::Array));
+      Assert::AreEqual(1i64, json.Size());
+      Assert::AreEqual<Json>(1337, json[0]);
+
+      json = Json(initializer_list<JsonBuilder>{ JsonObject{ { L"Key1"s, 1 }, { L"Key2"s, 2 } } });
+      Assert::IsTrue(json.Is(JsonType::Array));
+      Assert::AreEqual(1i64, json.Size());
+      Assert::AreEqual<Json>(JsonObject{ { L"Key1"s, 1 }, { L"Key2"s, 2 } }, json[0]);
+
+      json = Json(initializer_list<JsonBuilder>{ JsonArray{ 1, 3, 3, 7 } });
+      Assert::IsTrue(json.Is(JsonType::Array));
+      Assert::AreEqual(1i64, json.Size());
+      Assert::AreEqual<Json>(JsonArray{ 1, 3, 3, 7 }, json[0]);
+
+      json = Json(initializer_list<JsonBuilder>{ 1, 2 });
+      Assert::IsTrue(json.Is(JsonType::Array));
+      Assert::AreEqual(2i64, json.Size());
+      Assert::AreEqual<Json>(1, json[0]);
+      Assert::AreEqual<Json>(2, json[1]);
+
+      json = Json(initializer_list<JsonBuilder>{ L"Key1"s, 1 });
+      Assert::IsTrue(json.Is(JsonType::Array));
+      Assert::AreEqual(2i64, json.Size());
+      Assert::AreEqual<Json>(L"Key1"s, json[0]);
+      Assert::AreEqual<Json>(1, json[1]);
+
+      json = Json(initializer_list<JsonBuilder>{ L"Key1"s, 1, L"Key2"s });
+      Assert::IsTrue(json.Is(JsonType::Array));
+      Assert::AreEqual(3i64, json.Size());
+      Assert::AreEqual<Json>(L"Key1"s, json[0]);
+      Assert::AreEqual<Json>(1, json[1]);
+      Assert::AreEqual<Json>(L"Key2"s, json[2]);
+
+      json = Json(initializer_list<JsonBuilder>{ L"Key1"s, 1, L"Key2"s, 2 });
+      Assert::IsTrue(json.Is(JsonType::Array));
+      Assert::AreEqual(4i64, json.Size());
+      Assert::AreEqual<Json>(L"Key1"s, json[0]);
+      Assert::AreEqual<Json>(1, json[1]);
+      Assert::AreEqual<Json>(L"Key2"s, json[2]);
+      Assert::AreEqual<Json>(2, json[3]);
+
+      json = Json(initializer_list<JsonBuilder>{ initializer_list<JsonBuilder>{ L"Key1"s, 1 }, initializer_list<JsonBuilder>{ L"Key2"s, 2 } });
+      Assert::IsTrue(json.Is(JsonType::Object));
+      Assert::AreEqual(2i64, json.Size());
+      Assert::AreEqual<Json>(1, json[L"Key1"s]);
+      Assert::AreEqual<Json>(2, json[L"Key2"s]);
+    }
+
     TEST_METHOD(TestLiteral)
     {
       Assert::AreEqual<Json>({ nullptr }, L"[null]"_json);
@@ -1137,6 +1594,50 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>({ 13.37 }, L"[13.37]"_json);
       Assert::AreEqual<Json>({ { L"Key1", 1 }, { L"Key2", 2 } }, L"{ \"Key1\": 1, \"Key2\": 2 }"_json);
       Assert::AreEqual<Json>({ 1, 2, 3 }, L"[ 1, 2, 3 ]"_json);
+    }
+
+    TEST_METHOD(TestOperatorInsertion)
+    {
+      auto pairs = vector<pair<Json, wstring>>
+      {
+        { Json(nullptr ), L"null"s     },
+        { Json(L"Test"s), L"\"Test\""s },
+        { Json(true    ), L"true"s     },
+        { Json(false   ), L"false"s    },
+        { Json(13.37   ), L"13.37"s    },
+        { Json(1337    ), L"1337"s     },
+        { Json{ { L"Key1"s, 1 }, { L"Key2"s, 2 } }, L"{\r\n  \"Key1\": 1,\r\n  \"Key2\": 2\r\n}"s },
+        { Json{ 1, 3, 3, 7 }, L"[\r\n  1,\r\n  3,\r\n  3,\r\n  7\r\n]"s }
+      };
+      for (auto& [input, expected] : pairs)
+      {
+        wstringstream is;
+        is << input;
+        Assert::AreEqual(expected, is.str());
+      }
+    }
+
+    TEST_METHOD(TestOperatorExtraction)
+    {
+      auto pairs = vector<pair<wstring, Json>>
+      {
+        { L"[null]"s    , Json{nullptr } },
+        { L"[\"Test\"]"s, Json{L"Test"s} },
+        { L"[true]"s    , Json{true    } },
+        { L"[false]"s   , Json{false   } },
+        { L"[13.37]"s   , Json{13.37   } },
+        { L"[1337]"s    , Json{1337    } },
+        { L"{\r\n  \"Key1\": 1,\r\n  \"Key2\": 2\r\n}"s, Json{ { L"Key1"s, 1 }, { L"Key2"s, 2 } } },
+        { L"[\r\n  1,\r\n  3,\r\n  3,\r\n  7\r\n]"s, Json{ 1, 3, 3, 7 } }
+      };
+      for (auto& [input, expected] : pairs)
+      {
+        wstringstream is;
+        is.str(input);
+        Json output;
+        is >> output;
+        Assert::AreEqual(expected, output);
+      }
     }
   };
 }
