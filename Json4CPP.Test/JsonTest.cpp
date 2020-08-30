@@ -1639,5 +1639,24 @@ namespace Json4CPP::Test
         Assert::AreEqual(expected, output);
       }
     }
+
+    //http://json.org/JSON_checker/
+    TEST_METHOD(TestRoundtrip)
+    {
+      auto indentation = JsonDefault::Indentation;
+      JsonDefault::Indentation = 0;
+      for (int i = 1; i <= 27; ++i)
+      {
+        wstringstream ss;
+        ss << setw(2) << setfill(L'0') << i;
+        auto const index = ss.str();
+        auto origPath = L"roundtrip"s + index + L".json"s;
+        auto newPath = L"roundtrip"s + index + L"_new.json"s;
+
+        Json::Read(origPath).Write(newPath);
+        Assert::AreEqual(Json::Read(origPath), Json::Read(newPath));
+      }
+      JsonDefault::Indentation = indentation;
+    }
   };
 }
