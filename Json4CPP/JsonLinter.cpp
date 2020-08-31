@@ -675,6 +675,7 @@ namespace Json4CPP::Detail
   {
     auto tokens = std::deque<TOKEN>();
     Read(is, tokens, 0);
+    is >> ws;
     if (is.peek(), is.eof())
     {
       return tokens;
