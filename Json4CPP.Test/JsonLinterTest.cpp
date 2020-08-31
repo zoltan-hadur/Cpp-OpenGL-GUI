@@ -14,8 +14,8 @@ namespace Json4CPP::Test
     {
       auto pairs = vector<tuple<wstring, bool, string>>
       {
-        { L""s       , true , "Expected digit at position Line: 1 Column: 1!"s    },
-        { L" "s      , true , "Expected digit at position Line: 1 Column: 2!"s    },
+        { L""s       , true , "Expected one of the following characters: 'n', '\"', 't', 'f', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '{' or '[' at position Line: 1 Column: 1!"s },
+        { L" "s      , true , "Expected one of the following characters: 'n', '\"', 't', 'f', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '{' or '[' at position Line: 1 Column: 2!"s },
         { L" n"s     , true , "Expected \"null\" at position Line: 1 Column: 2!"s },
         { L" nu"s    , true , "Expected \"null\" at position Line: 1 Column: 2!"s },
         { L" nul"s   , true , "Expected \"null\" at position Line: 1 Column: 2!"s },
@@ -24,7 +24,7 @@ namespace Json4CPP::Test
         { L" null 0"s, true , "Unexpected '0' at position Line: 1 Column: 7!"s    },
         { L" nu11 "s , true , "Expected \"null\" at position Line: 1 Column: 2!"s },
         { L" nill "s , true , "Expected \"null\" at position Line: 1 Column: 2!"s },
-        { L" mull "s , true , "Expected digit at position Line: 1 Column: 2!"s    },
+        { L" mull "s , true , "Expected one of the following characters: 'n', '\"', 't', 'f', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '{' or '[' at position Line: 1 Column: 2!"s    },
       };
       for (auto& [input, expectException, exceptionMessage] : pairs)
       {
@@ -105,8 +105,8 @@ namespace Json4CPP::Test
     {
       auto pairs = vector<tuple<wstring, bool, string>>
       {
-        { L""       , true , "Expected digit at position Line: 1 Column: 1!"s    },
-        { L" "      , true , "Expected digit at position Line: 1 Column: 2!"s    },
+        { L""       , true , "Expected one of the following characters: 'n', '\"', 't', 'f', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '{' or '[' at position Line: 1 Column: 1!"s },
+        { L" "      , true , "Expected one of the following characters: 'n', '\"', 't', 'f', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '{' or '[' at position Line: 1 Column: 2!"s },
         { L" t"     , true , "Expected \"true\" at position Line: 1 Column: 2!"s },
         { L" tr"    , true , "Expected \"true\" at position Line: 1 Column: 2!"s },
         { L" tru"   , true , "Expected \"true\" at position Line: 1 Column: 2!"s },
@@ -140,8 +140,8 @@ namespace Json4CPP::Test
     {
       auto pairs = vector<tuple<wstring, bool, string>>
       {
-        { L""        , true , "Expected digit at position Line: 1 Column: 1!"s     },
-        { L" "       , true , "Expected digit at position Line: 1 Column: 2!"s     },
+        { L""        , true , "Expected one of the following characters: 'n', '\"', 't', 'f', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '{' or '[' at position Line: 1 Column: 1!"s },
+        { L" "       , true , "Expected one of the following characters: 'n', '\"', 't', 'f', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '{' or '[' at position Line: 1 Column: 2!"s },
         { L" f"      , true , "Expected \"false\" at position Line: 1 Column: 2!"s },
         { L" fa"     , true , "Expected \"false\" at position Line: 1 Column: 2!"s },
         { L" fal"    , true , "Expected \"false\" at position Line: 1 Column: 2!"s },
@@ -504,7 +504,7 @@ namespace Json4CPP::Test
 
       auto pairs2 = vector<pair<wstring, string>>
       {
-        { L"asd"s, "Expected digit at position Line: 1 Column: 1!"s },
+        { L"asd"s, "Expected one of the following characters: 'n', '\"', 't', 'f', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '{' or '[' at position Line: 1 Column: 1!"s },
         { L"1."s , "Expected digit at position Line: 1 Column: 3!"s },
         { L"1e"s , "Expected digit at position Line: 1 Column: 3!"s },
       };

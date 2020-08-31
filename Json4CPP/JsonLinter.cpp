@@ -366,15 +366,22 @@ namespace Json4CPP::Detail
       tokens.push_back({ JsonTokenType::Boolean, ParseBoolean(is) });
       break;
 
-    default:
-    {
-      auto number = ParseNumber(is);
+    case L'-':
+    case L'0':
+    case L'1':
+    case L'2':
+    case L'3':
+    case L'4':
+    case L'5':
+    case L'6':
+    case L'7':
+    case L'8':
+    case L'9':
       visit(Overload{
         [&](double  const& value) { tokens.push_back({ JsonTokenType::Real    , value }); },
         [&](int64_t const& value) { tokens.push_back({ JsonTokenType::Integer , value }); }
-      }, number);
+      }, ParseNumber(is));
       break;
-    }
 
     case L'{':
       ParseObject(is, tokens, depth + 1);
@@ -383,6 +390,13 @@ namespace Json4CPP::Detail
     case L'[':
       ParseArray(is, tokens, depth + 1);
       break;
+
+    default:
+    {
+      is.get();
+      auto message = "Expected one of the following characters: 'n', '\"', 't', 'f', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '{' or '[' at position "s + GetFormattedStreamPositionA(is, is.tellg()) + "!"s;
+      throw exception(message.c_str());
+    }
     }
   }
 
