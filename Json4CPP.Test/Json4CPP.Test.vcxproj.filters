@@ -64,6 +64,12 @@
     <CopyFileToFolders Include="pass01.json">
       <Filter>Resource Files</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="pass02.json">
+      <Filter>Resource Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="pass03.json">
+      <Filter>Resource Files</Filter>
+    </CopyFileToFolders>
     <CopyFileToFolders Include="roundtrip01.json">
       <Filter>Resource Files</Filter>
     </CopyFileToFolders>

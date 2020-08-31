@@ -1641,6 +1641,174 @@ namespace Json4CPP::Test
     }
 
     //http://json.org/JSON_checker/
+    TEST_METHOD(TestPass)
+    {
+      auto input = Json::Read(L"pass01.json");
+      
+      Assert::IsTrue(input.Is(JsonType::Array));
+      Assert::AreEqual(20i64, input.Size());
+
+      Assert::AreEqual<Json>(L"JSON Test Pattern pass1"s, input[0]);
+
+      Assert::IsTrue(input[1].Is(JsonType::Object));
+      Assert::AreEqual(1i64, input[1].Size());
+      Assert::IsTrue(input[1][L"object with 1 member"].Is(JsonType::Array));
+      Assert::AreEqual(1i64, input[1][L"object with 1 member"].Size());
+      Assert::AreEqual<Json>(L"array with 1 element", input[1][L"object with 1 member"][0]);
+
+      Assert::IsTrue(input[2].Is(JsonType::Object));
+      Assert::AreEqual(0i64, input[2].Size());
+      Assert::AreEqual<Json>(JsonObject{}, input[2]);
+
+      Assert::IsTrue(input[3].Is(JsonType::Array));
+      Assert::AreEqual(0i64, input[3].Size());
+      Assert::AreEqual<Json>(JsonArray{}, input[3]);
+
+      Assert::AreEqual<Json>(-42, input[4]);
+
+      Assert::AreEqual<Json>(true, input[5]);
+
+      Assert::AreEqual<Json>(false, input[6]);
+
+      Assert::AreEqual<Json>(nullptr, input[7]);
+
+      Assert::IsTrue(input[8].Is(JsonType::Object));
+      Assert::AreEqual(32i64, input[8].Size());
+      Assert::AreEqual<Json>(1234567890, input[8][L"integer"]);
+      Assert::AreEqual<Json>(-9876.543210, input[8][L"real"]);
+      Assert::AreEqual<Json>(0.123456789e-12, input[8][L"e"]);
+      Assert::AreEqual<Json>(1.234567890E+34, input[8][L"E"]);
+      Assert::AreEqual<Json>(23456789012E66, input[8][L""]);
+      Assert::AreEqual<Json>(0, input[8][L"zero"]);
+      Assert::AreEqual<Json>(1, input[8][L"one"]);
+      Assert::AreEqual<Json>(L" "s, input[8][L"space"]);
+      Assert::AreEqual<Json>(L"\""s, input[8][L"quote"]);
+      Assert::AreEqual<Json>(L"\\"s, input[8][L"backslash"]);
+      Assert::AreEqual<Json>(L"\b\f\n\r\t"s, input[8][L"controls"]);
+      Assert::AreEqual<Json>(L"/ & /"s, input[8][L"slash"]);
+      Assert::AreEqual<Json>(L"abcdefghijklmnopqrstuvwyz"s, input[8][L"alpha"]);
+      Assert::AreEqual<Json>(L"ABCDEFGHIJKLMNOPQRSTUVWYZ"s, input[8][L"ALPHA"]);
+      Assert::AreEqual<Json>(L"0123456789"s, input[8][L"digit"]);
+      Assert::AreEqual<Json>(L"digit"s, input[8][L"0123456789"]);
+      Assert::AreEqual<Json>(L"`1~!@#$%^&*()_+-={':[,]}|;.</>?"s, input[8][L"special"]);
+      Assert::AreEqual<Json>(L"\u0123\u4567\u89AB\uCDEF\uabcd\uef4A"s, input[8][L"hex"]);
+      Assert::AreEqual<Json>(true, input[8][L"true"]);
+      Assert::AreEqual<Json>(false, input[8][L"false"]);
+      Assert::AreEqual<Json>(nullptr, input[8][L"null"]);
+      Assert::IsTrue(input[8][L"array"].Is(JsonType::Array));
+      Assert::AreEqual(0i64, input[8][L"array"].Size());
+      Assert::AreEqual<Json>(JsonArray{}, input[8][L"array"]);
+      Assert::IsTrue(input[8][L"object"].Is(JsonType::Object));
+      Assert::AreEqual(0i64, input[8][L"object"].Size());
+      Assert::AreEqual<Json>(JsonObject{}, input[8][L"object"]);
+      Assert::AreEqual<Json>(L"50 St. James Street", input[8][L"address"]);
+      Assert::AreEqual<Json>(L"http://www.JSON.org/", input[8][L"url"]);
+      Assert::AreEqual<Json>(L"// /* <!-- --", input[8][L"comment"]);
+      Assert::AreEqual<Json>(L" ", input[8][L"# -- --> */"]);
+      Assert::IsTrue(input[8][L" s p a c e d "].Is(JsonType::Array));
+      Assert::AreEqual(7i64, input[8][L" s p a c e d "].Size());
+      Assert::AreEqual<Json>(1, input[8][L" s p a c e d "][0]);
+      Assert::AreEqual<Json>(2, input[8][L" s p a c e d "][1]);
+      Assert::AreEqual<Json>(3, input[8][L" s p a c e d "][2]);
+      Assert::AreEqual<Json>(4, input[8][L" s p a c e d "][3]);
+      Assert::AreEqual<Json>(5, input[8][L" s p a c e d "][4]);
+      Assert::AreEqual<Json>(6, input[8][L" s p a c e d "][5]);
+      Assert::AreEqual<Json>(7, input[8][L" s p a c e d "][6]);
+      Assert::AreEqual<Json>({ 1, 2, 3, 4, 5, 6, 7 }, input[8][L" s p a c e d "]);
+      Assert::IsTrue(input[8][L"compact"].Is(JsonType::Array));
+      Assert::AreEqual(7i64, input[8][L"compact"].Size());
+      Assert::AreEqual<Json>(1, input[8][L"compact"][0]);
+      Assert::AreEqual<Json>(2, input[8][L"compact"][1]);
+      Assert::AreEqual<Json>(3, input[8][L"compact"][2]);
+      Assert::AreEqual<Json>(4, input[8][L"compact"][3]);
+      Assert::AreEqual<Json>(5, input[8][L"compact"][4]);
+      Assert::AreEqual<Json>(6, input[8][L"compact"][5]);
+      Assert::AreEqual<Json>(7, input[8][L"compact"][6]);
+      Assert::AreEqual<Json>({ 1, 2, 3, 4, 5, 6, 7 }, input[8][L"compact"]);
+      Assert::AreEqual<Json>(L"{\"object with 1 member\":[\"array with 1 element\"]}", input[8][L"jsontext"]);
+      Assert::AreEqual<Json>(L"&#34; \u0022 %22 0x22 034 &#x22;", input[8][L"quotes"]);
+      Assert::AreEqual<Json>(L"A key can be any string", input[8][L"/\\\"\uCAFE\uBABE\uAB98\uFCDE\ubcda\uef4A\b\f\n\r\t`1~!@#$%^&*()_+-=[]{}|;:',./<>?"]);
+
+      Assert::AreEqual<Json>(0.5, input[9]);
+
+      Assert::AreEqual<Json>(98.6, input[10]);
+
+      Assert::AreEqual<Json>(99.44, input[11]);
+
+      Assert::AreEqual<Json>(1066, input[12]);
+
+      Assert::AreEqual<Json>(1e1, input[13]);
+
+      Assert::AreEqual<Json>(0.1e1, input[14]);
+
+      Assert::AreEqual<Json>(1e-1, input[15]);
+
+      Assert::AreEqual<Json>(1e00, input[16]);
+
+      Assert::AreEqual<Json>(2e+00, input[17]);
+
+      Assert::AreEqual<Json>(2e-00, input[18]);
+
+      Assert::AreEqual<Json>(L"rosebud", input[19]);
+
+
+      input = Json::Read(L"pass02.json");
+      Assert::IsTrue(        input.Is(JsonType::Array));
+      Assert::AreEqual(1i64, input.Size());
+      Assert::IsTrue(        input[0].Is(JsonType::Array));
+      Assert::AreEqual(1i64, input[0].Size());
+      Assert::IsTrue(        input[0][0].Is(JsonType::Array));
+      Assert::AreEqual(1i64, input[0][0].Size());
+      Assert::IsTrue(        input[0][0][0].Is(JsonType::Array));
+      Assert::AreEqual(1i64, input[0][0][0].Size());
+      Assert::IsTrue(        input[0][0][0][0].Is(JsonType::Array));
+      Assert::AreEqual(1i64, input[0][0][0][0].Size());
+      Assert::IsTrue(        input[0][0][0][0][0].Is(JsonType::Array));
+      Assert::AreEqual(1i64, input[0][0][0][0][0].Size());
+      Assert::IsTrue(        input[0][0][0][0][0][0].Is(JsonType::Array));
+      Assert::AreEqual(1i64, input[0][0][0][0][0][0].Size());
+      Assert::IsTrue(        input[0][0][0][0][0][0][0].Is(JsonType::Array));
+      Assert::AreEqual(1i64, input[0][0][0][0][0][0][0].Size());
+      Assert::IsTrue(        input[0][0][0][0][0][0][0][0].Is(JsonType::Array));
+      Assert::AreEqual(1i64, input[0][0][0][0][0][0][0][0].Size());
+      Assert::IsTrue(        input[0][0][0][0][0][0][0][0][0].Is(JsonType::Array));
+      Assert::AreEqual(1i64, input[0][0][0][0][0][0][0][0][0].Size());
+      Assert::IsTrue(        input[0][0][0][0][0][0][0][0][0][0].Is(JsonType::Array));
+      Assert::AreEqual(1i64, input[0][0][0][0][0][0][0][0][0][0].Size());
+      Assert::IsTrue(        input[0][0][0][0][0][0][0][0][0][0][0].Is(JsonType::Array));
+      Assert::AreEqual(1i64, input[0][0][0][0][0][0][0][0][0][0][0].Size());
+      Assert::IsTrue(        input[0][0][0][0][0][0][0][0][0][0][0][0].Is(JsonType::Array));
+      Assert::AreEqual(1i64, input[0][0][0][0][0][0][0][0][0][0][0][0].Size());
+      Assert::IsTrue(        input[0][0][0][0][0][0][0][0][0][0][0][0][0].Is(JsonType::Array));
+      Assert::AreEqual(1i64, input[0][0][0][0][0][0][0][0][0][0][0][0][0].Size());
+      Assert::IsTrue(        input[0][0][0][0][0][0][0][0][0][0][0][0][0][0].Is(JsonType::Array));
+      Assert::AreEqual(1i64, input[0][0][0][0][0][0][0][0][0][0][0][0][0][0].Size());
+      Assert::IsTrue(        input[0][0][0][0][0][0][0][0][0][0][0][0][0][0][0].Is(JsonType::Array));
+      Assert::AreEqual(1i64, input[0][0][0][0][0][0][0][0][0][0][0][0][0][0][0].Size());
+      Assert::IsTrue(        input[0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0].Is(JsonType::Array));
+      Assert::AreEqual(1i64, input[0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0].Size());
+      Assert::IsTrue(        input[0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0].Is(JsonType::Array));
+      Assert::AreEqual(1i64, input[0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0].Size());
+      Assert::IsTrue(        input[0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0].Is(JsonType::Array));
+      Assert::AreEqual(1i64, input[0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0].Size());
+      Assert::IsTrue(                          input[0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0].Is(JsonType::String));
+      Assert::AreEqual<Json>(L"Not too deep"s, input[0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0]);
+
+      input = Json::Read(L"pass03.json");
+      Assert::IsTrue(input.Is(JsonType::Object));
+      Assert::AreEqual(1i64, input.Size());
+      Assert::AreEqual<size_t>(1i64, input.Keys().size());
+      Assert::AreEqual(L"JSON Test Pattern pass3"s, input.Keys()[0]);
+      Assert::IsTrue(input[L"JSON Test Pattern pass3"s].Is(JsonType::Object));
+      Assert::AreEqual(2i64, input[L"JSON Test Pattern pass3"s].Size());
+      Assert::AreEqual<size_t>(2i64, input[L"JSON Test Pattern pass3"s].Keys().size());
+      Assert::AreEqual(L"The outermost value"s, input[L"JSON Test Pattern pass3"s].Keys()[0]);
+      Assert::AreEqual(L"In this test"s, input[L"JSON Test Pattern pass3"s].Keys()[1]);
+      Assert::AreEqual<Json>(L"must be an object or array."s, input[L"JSON Test Pattern pass3"s][L"The outermost value"s]);
+      Assert::AreEqual<Json>(L"It is an object."s, input[L"JSON Test Pattern pass3"s][L"In this test"s]);
+    }
+
+    //http://json.org/JSON_checker/
     TEST_METHOD(TestRoundtrip)
     {
       auto indentation = JsonDefault::Indentation;

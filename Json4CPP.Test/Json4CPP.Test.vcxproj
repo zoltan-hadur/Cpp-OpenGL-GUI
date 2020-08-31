@@ -119,6 +119,12 @@
     <CopyFileToFolders Include="pass01.json">
       <DeploymentContent>true</DeploymentContent>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="pass02.json">
+      <DeploymentContent>true</DeploymentContent>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="pass03.json">
+      <DeploymentContent>true</DeploymentContent>
+    </CopyFileToFolders>
     <CopyFileToFolders Include="roundtrip01.json">
       <DeploymentContent>true</DeploymentContent>
     </CopyFileToFolders>
