@@ -1641,6 +1641,51 @@ namespace Json4CPP::Test
     }
 
     //http://json.org/JSON_checker/
+    TEST_METHOD(TestFail)
+    {
+      auto pairs = vector<pair<string, string>>
+      {
+        { "fail01.json"s, "Invalid token: String, with invalid data: \"A JSON payload should be an object or array, not a string.\"!"s },
+        { "fail02.json"s, "Expected ',' or ']' at position Line: 1 Column: 18!"s },
+        { "fail03.json"s, "Expected '\"' at position Line: 1 Column: 2!"s },
+        { "fail04.json"s, "Expected one of the following characters: 'n', '\"', 't', 'f', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '{' or '[' at position Line: 1 Column: 16!"s },
+        { "fail05.json"s, "Expected one of the following characters: 'n', '\"', 't', 'f', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '{' or '[' at position Line: 1 Column: 23!"s },
+        { "fail06.json"s, "Unexpected ',' at position Line: 1 Column: 5!"s },
+        { "fail07.json"s, "Unexpected ',' at position Line: 1 Column: 26!"s },
+        { "fail08.json"s, "Unexpected ']' at position Line: 1 Column: 16!"s },
+        { "fail09.json"s, "Expected '\"' at position Line: 1 Column: 22!"s },
+        { "fail10.json"s, "Unexpected '\"' at position Line: 1 Column: 35!"s },
+        { "fail11.json"s, "Expected ',' or '}' at position Line: 1 Column: 25!"s },
+        { "fail12.json"s, "Expected one of the following characters: 'n', '\"', 't', 'f', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '{' or '[' at position Line: 1 Column: 24!"s },
+        { "fail13.json"s, "Unexpected '0' at position Line: 1 Column: 40!"s },
+        { "fail14.json"s, "Unexpected '0' at position Line: 1 Column: 27!"s },
+        { "fail15.json"s, "Expected one of the following characters: '\"', '\\', '/', 'b', 'f', 'n', 'r', 't' or 'u' at position Line: 1 Column: 30!"s },
+        { "fail16.json"s, "Expected one of the following characters: 'n', '\"', 't', 'f', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '{' or '[' at position Line: 1 Column: 2!"s },
+        { "fail17.json"s, "Expected one of the following characters: '\"', '\\', '/', 'b', 'f', 'n', 'r', 't' or 'u' at position Line: 1 Column: 30!"s },
+        { "fail18.json"s, "Depth is greater or equal to the maximum 20!"s },
+        { "fail19.json"s, "Expected ':' at position Line: 1 Column: 18!"s },
+        { "fail20.json"s, "Expected one of the following characters: 'n', '\"', 't', 'f', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '{' or '[' at position Line: 1 Column: 17!"s },
+        { "fail21.json"s, "Expected ':' at position Line: 1 Column: 26!"s },
+        { "fail22.json"s, "Expected ',' or ']' at position Line: 1 Column: 26!"s },
+        { "fail23.json"s, "Expected 'true' at position Line: 1 Column: 15!"s },
+        { "fail24.json"s, "Expected one of the following characters: 'n', '\"', 't', 'f', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '{' or '[' at position Line: 1 Column: 2!"s },
+        { "fail25.json"s, "Invalid character found at position Line: 1 Column: 3!"s },
+        { "fail26.json"s, "Expected one of the following characters: '\"', '\\', '/', 'b', 'f', 'n', 'r', 't' or 'u' at position Line: 1 Column: 7!"s },
+        { "fail27.json"s, "Invalid character found at position Line: 1 Column: 7!"s },
+        { "fail28.json"s, "Expected one of the following characters: '\"', '\\', '/', 'b', 'f', 'n', 'r', 't' or 'u' at position Line: 1 Column: 8!"s },
+        { "fail29.json"s, "Expected digit at position Line: 1 Column: 4!"s },
+        { "fail30.json"s, "Expected digit at position Line: 1 Column: 5!"s },
+        { "fail31.json"s, "Expected digit at position Line: 1 Column: 5!"s },
+        { "fail32.json"s, "Expected '\"' at position Line: 1 Column: 41!"s },
+        { "fail33.json"s, "Expected ',' or ']' at position Line: 1 Column: 12!"s }
+      };
+      for (auto& [input, expected] : pairs)
+      {
+        ExceptException<exception>([&, input = input]() { Json::Read(input); }, expected);
+      }
+    }
+
+    //http://json.org/JSON_checker/
     TEST_METHOD(TestPass)
     {
       auto input = Json::Read(L"pass01.json");
