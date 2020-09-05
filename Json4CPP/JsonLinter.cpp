@@ -18,7 +18,7 @@ namespace Json4CPP::Detail
       if (i == 0) pos = is.tellg();
       if (c != expected[i])
       {
-        auto message = "Expected \"null\" at position "s + GetFormattedStreamPositionA(is, pos) + "!"s;
+        auto message = "Expected 'null' at position "s + GetFormattedStreamPositionA(is, pos) + "!"s;
         throw exception(message.c_str());
       }
     }
@@ -79,7 +79,6 @@ namespace Json4CPP::Detail
             }
             default:
             {
-              is.get();
               auto message = "Expected one of the following characters: '\"', '\\', '/', 'b', 'f', 'n', 'r', 't' or 'u' at position "s + GetFormattedStreamPositionA(is, is.tellg()) + "!"s;
               throw exception(message.c_str());
               break;
@@ -129,13 +128,13 @@ namespace Json4CPP::Detail
         if (i == 0) pos = is.tellg();
         if (c != expected[i])
         {
-          auto message = "Expected \""s + WString2String(expected) + "\" at position "s + GetFormattedStreamPositionA(is, pos) + "!"s;
+          auto message = "Expected '"s + WString2String(expected) + "' at position "s + GetFormattedStreamPositionA(is, pos) + "!"s;
           throw exception(message.c_str());
         }
       }
       return expected == L"true"s;
     }
-    auto message = "Expected \"true\" or \"false\" at position "s + GetFormattedStreamPositionA(is, is.tellg()) + "!"s;
+    auto message = "Expected 'true' or 'false' at position "s + GetFormattedStreamPositionA(is, is.tellg()) + "!"s;
     throw exception(message.c_str());
   }
 
@@ -154,6 +153,11 @@ namespace Json4CPP::Detail
     if (is.peek() == L'0')
     {
       text.push_back(is.get());
+      if (L'0' <= is.peek() && is.peek() <= L'9' || is.peek() == L'x')
+      {
+        auto message = "Unexpected '0' at position "s + GetFormattedStreamPositionA(is, is.tellg()) + "!"s;
+        throw exception(message.c_str());
+      }
     }
     // Or with a digit between '1' and '9'
     else if (L'1' <= is.peek() && is.peek() <= L'9')
@@ -281,7 +285,7 @@ namespace Json4CPP::Detail
         }
         else
         {
-          auto message = "Expected '}' at position "s + GetFormattedStreamPositionA(is, is.tellg()) + "!"s;
+          auto message = "Expected ',' or '}' at position "s + GetFormattedStreamPositionA(is, is.tellg()) + "!"s;
           throw exception(message.c_str());
         }
       }
@@ -332,7 +336,7 @@ namespace Json4CPP::Detail
         else
         {
           is.get();
-          auto message = "Expected ']' at position "s + GetFormattedStreamPositionA(is, is.tellg()) + "!"s;
+          auto message = "Expected ',' or ']' at position "s + GetFormattedStreamPositionA(is, is.tellg()) + "!"s;
           throw exception(message.c_str());
         }
       }

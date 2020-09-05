@@ -16,14 +16,14 @@ namespace Json4CPP::Test
       {
         { L""s       , true , "Expected one of the following characters: 'n', '\"', 't', 'f', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '{' or '[' at position Line: 1 Column: 1!"s },
         { L" "s      , true , "Expected one of the following characters: 'n', '\"', 't', 'f', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '{' or '[' at position Line: 1 Column: 2!"s },
-        { L" n"s     , true , "Expected \"null\" at position Line: 1 Column: 2!"s },
-        { L" nu"s    , true , "Expected \"null\" at position Line: 1 Column: 2!"s },
-        { L" nul"s   , true , "Expected \"null\" at position Line: 1 Column: 2!"s },
-        { L" null"s  , false, ""s                                                 },
-        { L" null "s , false, ""s                                                 },
-        { L" null 0"s, true , "Unexpected '0' at position Line: 1 Column: 7!"s    },
-        { L" nu11 "s , true , "Expected \"null\" at position Line: 1 Column: 2!"s },
-        { L" nill "s , true , "Expected \"null\" at position Line: 1 Column: 2!"s },
+        { L" n"s     , true , "Expected 'null' at position Line: 1 Column: 2!"s },
+        { L" nu"s    , true , "Expected 'null' at position Line: 1 Column: 2!"s },
+        { L" nul"s   , true , "Expected 'null' at position Line: 1 Column: 2!"s },
+        { L" null"s  , false, ""s                                               },
+        { L" null "s , false, ""s                                               },
+        { L" null 0"s, true , "Unexpected '0' at position Line: 1 Column: 7!"s  },
+        { L" nu11 "s , true , "Expected 'null' at position Line: 1 Column: 2!"s },
+        { L" nill "s , true , "Expected 'null' at position Line: 1 Column: 2!"s },
         { L" mull "s , true , "Expected one of the following characters: 'n', '\"', 't', 'f', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '{' or '[' at position Line: 1 Column: 2!"s    },
       };
       for (auto& [input, expectException, exceptionMessage] : pairs)
@@ -90,7 +90,7 @@ namespace Json4CPP::Test
       {
         { L"\"asd"s      , "Expected '\"' at position Line: 1 Column: 5!"s },
         { L"\"asd\\u123"s, "Expected a hexadecimal digit at position Line: 1 Column: 10!"s },
-        { L"\"asd\\a"s   , "Expected one of the following characters: '\"', '\\', '/', 'b', 'f', 'n', 'r', 't' or 'u' at position Line: 1 Column: 7!"s },
+        { L"\"asd\\a"s   , "Expected one of the following characters: '\"', '\\', '/', 'b', 'f', 'n', 'r', 't' or 'u' at position Line: 1 Column: 6!"s },
         { L"\"asd\t"s    , "Invalid character found at position Line: 1 Column: 5!"s },
       };
 
@@ -107,13 +107,13 @@ namespace Json4CPP::Test
       {
         { L""       , true , "Expected one of the following characters: 'n', '\"', 't', 'f', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '{' or '[' at position Line: 1 Column: 1!"s },
         { L" "      , true , "Expected one of the following characters: 'n', '\"', 't', 'f', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '{' or '[' at position Line: 1 Column: 2!"s },
-        { L" t"     , true , "Expected \"true\" at position Line: 1 Column: 2!"s },
-        { L" tr"    , true , "Expected \"true\" at position Line: 1 Column: 2!"s },
-        { L" tru"   , true , "Expected \"true\" at position Line: 1 Column: 2!"s },
+        { L" t"     , true , "Expected 'true' at position Line: 1 Column: 2!"s },
+        { L" tr"    , true , "Expected 'true' at position Line: 1 Column: 2!"s },
+        { L" tru"   , true , "Expected 'true' at position Line: 1 Column: 2!"s },
         { L" true"  , false, ""s                                                 },
         { L" true " , false, ""s                                                 },
         { L" true 0", true , "Unexpected '0' at position Line: 1 Column: 7!"s    },
-        { L" trie " , true , "Expected \"true\" at position Line: 1 Column: 2!"s },
+        { L" trie " , true , "Expected 'true' at position Line: 1 Column: 2!"s },
       };
       for (auto& [input, expectException, exceptionMessage] : pairs)
       {
@@ -142,14 +142,14 @@ namespace Json4CPP::Test
       {
         { L""        , true , "Expected one of the following characters: 'n', '\"', 't', 'f', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '{' or '[' at position Line: 1 Column: 1!"s },
         { L" "       , true , "Expected one of the following characters: 'n', '\"', 't', 'f', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '{' or '[' at position Line: 1 Column: 2!"s },
-        { L" f"      , true , "Expected \"false\" at position Line: 1 Column: 2!"s },
-        { L" fa"     , true , "Expected \"false\" at position Line: 1 Column: 2!"s },
-        { L" fal"    , true , "Expected \"false\" at position Line: 1 Column: 2!"s },
-        { L" fals"   , true , "Expected \"false\" at position Line: 1 Column: 2!"s },
+        { L" f"      , true , "Expected 'false' at position Line: 1 Column: 2!"s },
+        { L" fa"     , true , "Expected 'false' at position Line: 1 Column: 2!"s },
+        { L" fal"    , true , "Expected 'false' at position Line: 1 Column: 2!"s },
+        { L" fals"   , true , "Expected 'false' at position Line: 1 Column: 2!"s },
         { L" false"  , false, ""s                                                  },
         { L" false " , false, ""s                                                  },
         { L" false 0", true , "Unexpected '0' at position Line: 1 Column: 8!"s     },
-        { L" fakse " , true , "Expected \"false\" at position Line: 1 Column: 2!"s },
+        { L" fakse " , true , "Expected 'false' at position Line: 1 Column: 2!"s },
       };
       for (auto& [input, expectException, exceptionMessage] : pairs)
       {
@@ -580,7 +580,7 @@ namespace Json4CPP::Test
         { L"{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{}}}}}}}}}}}}}}}}}}}}"s, "Depth is greater or equal to the maximum 20!"s },
         { L"{  \r\n  \"key\"  \r\n  ,}"s, "Expected ':' at position Line: 3 Column: 3!"s },
         { L"{  \r\n  \"key\"  \r\n  :  \r\n  \"value\", \"key2\" \r\n }"s, "Expected ':' at position Line: 5 Column: 2!"s },
-        { L"{  \r\n  \"key\"  \r\n  :  \r\n  \"value\", \"key2\" \r\n : 1337"s, "Expected '}' at position Line: 5 Column: 8!"s },
+        { L"{  \r\n  \"key\"  \r\n  :  \r\n  \"value\", \"key2\" \r\n : 1337"s, "Expected ',' or '}' at position Line: 5 Column: 8!"s },
         { L"{\"key\":1337} 0"s, "Unexpected '0' at position Line: 1 Column: 14!"s },
       };
 
@@ -647,7 +647,7 @@ namespace Json4CPP::Test
       {
         { L"[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]"s, "Depth is greater or equal to the maximum 20!"s },
         { L"[  \r\n  ,]"s, "Unexpected ',' at position Line: 2 Column: 3!"s },
-        { L"[  \r\n  1  \r\n  "s, "Expected ']' at position Line: 3 Column: 3!"s },
+        { L"[  \r\n  1  \r\n  "s, "Expected ',' or ']' at position Line: 3 Column: 3!"s },
         { L"[1337] 0"s, "Unexpected '0' at position Line: 1 Column: 8!"s },
       };
 
