@@ -1,7 +1,11 @@
-#include <GL\freeglut.h>
+﻿#include <GL\freeglut.h>
 #include <algorithm>
 #include <iostream>
+#include <fcntl.h>
+#include <io.h>
 #include "GLUI\GLUI.h"
+
+using namespace std;
 
 GLUI::Stopwatch watch;						// Stopper for controlling fps
 const int screen_width = 192 * 5;			// Width of the window
@@ -290,6 +294,9 @@ void on_idle() {
 }
 
 int main(int argc, char **argv) {
+  _setmode(_fileno(stdin), _O_U16TEXT);
+  _setmode(_fileno(stdout), _O_U16TEXT);
+
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE);
 	glEnable(GLUT_MULTISAMPLE);
@@ -309,6 +316,10 @@ int main(int argc, char **argv) {
 
 	glutKeyboardFunc(on_keyboard_down);
 	glutKeyboardUpFunc(on_keyboard_up);
+  glutKeyboardWFunc([](int key, int x, int y) -> void
+  {
+    wcout << (wchar_t)key << endl;
+  });
 	glutSpecialFunc(on_special_down);
 	glutSpecialUpFunc(on_special_up);
 	glutMouseFunc(on_mouse);
@@ -316,6 +327,12 @@ int main(int argc, char **argv) {
 	glutPassiveMotionFunc(on_mouse_motion_passive);
 	glutDisplayFunc(on_display);
 	glutIdleFunc(on_idle);
+
+  char* versionGL = "\0";
+  GLint versionFreeGlutInt = 0;
+
+  versionGL = (char*)(glGetString(GL_VERSION));
+  versionFreeGlutInt = (glutGet(GLUT_VERSION));
 
 	glutMainLoop();
 

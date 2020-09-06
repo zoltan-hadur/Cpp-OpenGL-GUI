@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+  <Type Name="std::variant&lt;std::nullptr_t,std::basic_string&lt;wchar_t,std::char_traits&lt;wchar_t&gt;,std::allocator&lt;wchar_t&gt;&gt;,bool,double,int64_t&gt;">
+    <DisplayString Condition="_Which == 0">null</DisplayString>
+    <DisplayString Condition="_Which == 1">{_Tail._Head}</DisplayString>
+    <DisplayString Condition="_Which == 2">{_Tail._Tail._Head}</DisplayString>
+    <DisplayString Condition="_Which == 3">{_Tail._Tail._Tail._Head}</DisplayString>
+    <DisplayString Condition="_Which == 4">{_Tail._Tail._Tail._Tail._Head}</DisplayString>
+    <Expand HideRawView="true">
+      <ExpandedItem Condition="_Which == 1">
+        _Tail._Head
+      </ExpandedItem>
+      <ExpandedItem Condition="_Which == 2">
+        _Tail._Tail._Head
+      </ExpandedItem>
+      <ExpandedItem Condition="_Which == 3">
+        _Tail._Tail._Tail._Head
+      </ExpandedItem>
+      <ExpandedItem Condition="_Which == 4">
+        _Tail._Tail._Tail._Tail._Head
+      </ExpandedItem>
+    </Expand>
+  </Type>
+</AutoVisualizer>
