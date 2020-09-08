@@ -422,7 +422,7 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestOperatorInsertion)
     {
-      JsonDefault::Indentation = 2;
+      JsonDefault::IndentSize = 2;
       JsonArray array = { nullptr, L"Test"s, true, 1337, {{ L"key1", 1 }, { L"key2", 2 }}, { 1, 2, 3 } };
       wstringstream is;
       is << array;
@@ -446,7 +446,7 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestOperatorExtraction)
     {
-      JsonDefault::Indentation = 2;
+      JsonDefault::IndentSize = 2;
       auto input = L"["                      "\r\n"
                     "  null,"                "\r\n"
                     "  \"Test\","            "\r\n"

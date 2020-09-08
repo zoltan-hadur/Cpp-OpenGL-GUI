@@ -1856,8 +1856,8 @@ namespace Json4CPP::Test
     //http://json.org/JSON_checker/
     TEST_METHOD(TestRoundtrip)
     {
-      auto indentation = JsonDefault::Indentation;
-      JsonDefault::Indentation = 0;
+      auto indentSize = JsonDefault::IndentSize;
+      JsonDefault::IndentSize = 0;
       for (int i = 1; i <= 27; ++i)
       {
         wstringstream ss;
@@ -1869,7 +1869,7 @@ namespace Json4CPP::Test
         Json::Read(origPath).Write(newPath);
         Assert::AreEqual(Json::Read(origPath), Json::Read(newPath));
       }
-      JsonDefault::Indentation = indentation;
+      JsonDefault::IndentSize = indentSize;
     }
 
     TEST_METHOD(TestOperatorEqual)

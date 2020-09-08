@@ -514,7 +514,7 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestOperatorInsertion)
     {
-      JsonDefault::Indentation = 2;
+      JsonDefault::IndentSize = 2;
       JsonObject object = {
         { L"Null", nullptr },
         { L"String", L"Test" },
@@ -548,7 +548,7 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestOperatorExtraction)
     {
-      JsonDefault::Indentation = 2;
+      JsonDefault::IndentSize = 2;
       auto input = L"{"                            "\r\n"
                     "  \"Null\": null,"            "\r\n"
                     "  \"String\": \"Test\","      "\r\n"

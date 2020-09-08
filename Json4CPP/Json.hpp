@@ -10,4 +10,6 @@
 #include "JsonType.h"
 #include "JsonTokenType.h"
 #include "JsonLinter.h"
+#include "JsonIndentSize.h"
+#include "JsonIndentChar.h"
 #include "Value.h"

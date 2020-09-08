@@ -5,6 +5,8 @@
 #include "JsonBuilder.h"
 #include "Value.h"
 #include "Helper.h"
+#include "JsonIndentSize.h"
+#include "JsonIndentChar.h"
 
 #include <sstream>
 #include <iostream>
@@ -124,10 +126,10 @@ namespace Json4CPP
     return Type() == type;
   }
 
-  wstring Json::Dump(uint8_t indentation) const
+  wstring Json::Dump(uint8_t indentSize, wchar_t indentChar) const
   {
     wstringstream os;
-    JsonLinter::Write(os, Json::Write(*this, deque<TOKEN>()), indentation);
+    JsonLinter::Write(os, Json::Write(*this, deque<TOKEN>()), indentSize, indentChar);
     return os.str();
   }
 
@@ -138,7 +140,22 @@ namespace Json4CPP
 
   void Json::Write(path filePath) const
   {
-    WriteAllText(filePath, Dump(JsonDefault::Indentation));
+    WriteAllText(filePath, Dump(JsonDefault::IndentSize, JsonDefault::IndentChar));
+  }
+
+  void Json::Write(path filePath, uint8_t indentSize) const
+  {
+    WriteAllText(filePath, Dump(indentSize, JsonDefault::IndentChar));
+  }
+
+  void Json::Write(path filePath, wchar_t indentChar) const
+  {
+    WriteAllText(filePath, Dump(JsonDefault::IndentSize, indentChar));
+  }
+
+  void Json::Write(path filePath, uint8_t indentSize, wchar_t indentChar) const
+  {
+    WriteAllText(filePath, Dump(indentSize, indentChar));
   }
 
   int64_t Json::Size() const
@@ -468,7 +485,13 @@ namespace Json4CPP
 
   wostream& operator<<(wostream& os, Json const& json)
   {
-    return JsonLinter::Write(os, Json::Write(json, deque<TOKEN>()), JsonDefault::Indentation);
+    auto indentSizeActive = JsonIndentSize::IsActive(os);
+    auto indentCharActive = JsonIndentChar::IsActive(os);
+    JsonLinter::Write(os, Json::Write(json, deque<TOKEN>()), indentSizeActive ? JsonIndentSize::GetSize(os) : JsonDefault::IndentSize,
+                                                             indentCharActive ? JsonIndentChar::GetChar(os) : JsonDefault::IndentChar);
+    if (indentSizeActive) JsonIndentSize::ResetState(os);
+    if (indentCharActive) JsonIndentChar::ResetState(os);
+    return os;
   }
 
   wistream& operator>>(wistream&is, Json& json)

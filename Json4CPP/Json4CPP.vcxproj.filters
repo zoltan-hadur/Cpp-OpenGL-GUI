@@ -60,6 +60,12 @@
     <ClInclude Include="JsonTokenType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="JsonIndentSize.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="JsonIndentChar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -80,9 +86,6 @@
     <ClCompile Include="JsonBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="JsonDefault.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="JsonObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -99,6 +102,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="JsonTokenType.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="JsonIndentSize.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="JsonIndentChar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

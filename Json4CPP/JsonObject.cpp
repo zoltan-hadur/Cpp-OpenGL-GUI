@@ -6,6 +6,8 @@
 #include "Value.h"
 #include "Helper.h"
 #include "JsonLinter.h"
+#include "JsonIndentSize.h"
+#include "JsonIndentChar.h"
 
 using namespace std;
 using namespace Json4CPP::Detail;
@@ -124,10 +126,10 @@ namespace Json4CPP
     _indexes = object._indexes;
   }
 
-  wstring JsonObject::Dump(uint8_t indentation) const
+  wstring JsonObject::Dump(uint8_t indentSize, wchar_t indentChar) const
   {
     wstringstream os;
-    JsonLinter::Write(os, JsonObject::Write(*this, deque<TOKEN>()), indentation);
+    JsonLinter::Write(os, JsonObject::Write(*this, deque<TOKEN>()), indentSize, indentChar);
     return os.str();
   }
 
@@ -206,7 +208,13 @@ namespace Json4CPP
 
   wostream& operator<<(wostream& os, JsonObject const& object)
   {
-    return JsonLinter::Write(os, JsonObject::Write(object, deque<TOKEN>()), JsonDefault::Indentation);
+    auto indentSizeActive = JsonIndentSize::IsActive(os);
+    auto indentCharActive = JsonIndentChar::IsActive(os);
+    JsonLinter::Write(os, JsonObject::Write(object, deque<TOKEN>()), indentSizeActive ? JsonIndentSize::GetSize(os) : JsonDefault::IndentSize,
+                                                                     indentCharActive ? JsonIndentChar::GetChar(os) : JsonDefault::IndentChar);
+    if (indentSizeActive) JsonIndentSize::ResetState(os);
+    if (indentCharActive) JsonIndentChar::ResetState(os);
+    return os;
   }
 
   wistream& operator>>(wistream& is, JsonObject& object)

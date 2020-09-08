@@ -76,10 +76,13 @@ namespace Json4CPP
     JsonType Type() const;
     bool Is(JsonType type) const;
 
-    std::wstring Dump(uint8_t indentation = 0) const;
+    std::wstring Dump(uint8_t indentSize = 0, wchar_t indentChar = L' ') const;
 
     static Json Read(std::filesystem::path filePath);
     void Write(std::filesystem::path filePath) const;
+    void Write(std::filesystem::path filePath, uint8_t indentSize) const;
+    void Write(std::filesystem::path filePath, wchar_t indentChar) const;
+    void Write(std::filesystem::path filePath, uint8_t indentSize, wchar_t indentChar) const;
 
     template<typename T>
     auto const& Get() const

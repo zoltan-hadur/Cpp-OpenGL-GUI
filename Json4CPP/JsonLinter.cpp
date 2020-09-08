@@ -429,7 +429,7 @@ namespace Json4CPP::Detail
     return os;
   }
 
-  wostream& JsonLinter::WriteObject(wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation, uint8_t depth)
+  wostream& JsonLinter::WriteObject(wostream& os, std::deque<TOKEN>& tokens, uint8_t indentSize, wchar_t indentChar, uint8_t depth)
   {
     if (tokens.empty())
     {
@@ -437,10 +437,10 @@ namespace Json4CPP::Detail
       throw exception(message.c_str());
     }
 
-    auto indent = wstring((size_t)indentation * depth, L' ');
-    auto single = wstring(indentation, L' ');
-    auto newLine = indentation == 0 ? L""s : L"\r\n"s;
-    auto space = indentation == 0 ? L""s : L" "s;
+    auto indent = wstring((size_t)indentSize * depth, indentChar);
+    auto single = wstring(indentSize, indentChar);
+    auto newLine = indentSize == 0 ? L""s : L"\r\n"s;
+    auto space = indentSize == 0 ? L""s : L" "s;
 
     // Write StartObject and a new line if needed
     auto& [token, value] = tokens.front();
@@ -493,10 +493,10 @@ namespace Json4CPP::Detail
         switch (token)
         {
         case JsonTokenType::StartObject:
-          WriteObject(os, tokens, indentation, depth + 1);
+          WriteObject(os, tokens, indentSize, indentChar, depth + 1);
           break;
         case JsonTokenType::StartArray:
-          WriteArray(os, tokens, indentation, depth + 1);
+          WriteArray(os, tokens, indentSize, indentChar, depth + 1);
           break;
         case JsonTokenType::Null:
         case JsonTokenType::String:
@@ -546,7 +546,7 @@ namespace Json4CPP::Detail
     throw exception(message.c_str());
   }
 
-  wostream& JsonLinter::WriteArray(wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation, uint8_t depth)
+  wostream& JsonLinter::WriteArray(wostream& os, std::deque<TOKEN>& tokens, uint8_t indentSize, wchar_t indentChar, uint8_t depth)
   {
     if (tokens.empty())
     {
@@ -554,9 +554,9 @@ namespace Json4CPP::Detail
       throw exception(message.c_str());
     }
 
-    auto indent = wstring((size_t)indentation * depth, L' ');
-    auto single = wstring(indentation, L' ');
-    auto newLine = indentation == 0 ? L""s : L"\r\n"s;
+    auto indent = wstring((size_t)indentSize * depth, indentChar);
+    auto single = wstring(indentSize, indentChar);
+    auto newLine = indentSize == 0 ? L""s : L"\r\n"s;
 
     // Write StartArray and a new line if needed
     auto& [token, value] = tokens.front();
@@ -593,10 +593,10 @@ namespace Json4CPP::Detail
       switch (token)
       {
       case JsonTokenType::StartObject:
-        WriteObject(os, tokens, indentation, depth + 1);
+        WriteObject(os, tokens, indentSize, indentChar, depth + 1);
         break;
       case JsonTokenType::StartArray:
-        WriteArray(os, tokens, indentation, depth + 1);
+        WriteArray(os, tokens, indentSize, indentChar, depth + 1);
         break;
       case JsonTokenType::Null:
       case JsonTokenType::String:
@@ -708,7 +708,7 @@ namespace Json4CPP::Detail
     return Read(wstringstream(value));
   }
 
-  wostream& JsonLinter::Write(wostream& os, std::deque<TOKEN>& tokens, uint8_t indentation)
+  wostream& JsonLinter::Write(wostream& os, std::deque<TOKEN>& tokens, uint8_t indentSize, wchar_t indentChar)
   {
     if (tokens.empty())
     {
@@ -718,9 +718,9 @@ namespace Json4CPP::Detail
     auto& [token, value] = tokens.front();
     switch (token)
     {
-    case JsonTokenType::StartObject: WriteObject(os, tokens, indentation, 0);            break;
-    case JsonTokenType::StartArray : WriteArray (os, tokens, indentation, 0);            break;
-    default:                         Write      (os, token , value); tokens.pop_front(); break;
+    case JsonTokenType::StartObject: WriteObject(os, tokens, indentSize, indentChar, 0);                     break;
+    case JsonTokenType::StartArray : WriteArray (os, tokens, indentSize, indentChar, 0);                     break;
+    default:                         Write      (os, token , value                    ); tokens.pop_front(); break;
     }
     return os;
   }

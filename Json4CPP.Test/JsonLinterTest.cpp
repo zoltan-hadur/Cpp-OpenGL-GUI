@@ -733,7 +733,7 @@ namespace Json4CPP::Test
       for (auto [input, expected] : pairs)
       {
         auto os = wstringstream();
-        JsonLinter::Write(os, input, 0);
+        JsonLinter::Write(os, input, 0, L' ');
         Assert::AreEqual<size_t>(0, input.size());
         Assert::AreEqual(expected, os.str());
       }
@@ -767,10 +767,10 @@ namespace Json4CPP::Test
         { 1, { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::PropertyName, L"Key2"s }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n \"Key1\": true,\r\n \"Key2\": false\r\n}"s },
       };
 
-      for (auto [indentation, input, expected] : pairs)
+      for (auto [indentSize, input, expected] : pairs)
       {
         auto os = wstringstream();
-        JsonLinter::Write(os, input, indentation);
+        JsonLinter::Write(os, input, indentSize, L' ');
         Assert::AreEqual<size_t>(0, input.size());
         Assert::AreEqual(expected, os.str());
       }
@@ -788,7 +788,7 @@ namespace Json4CPP::Test
       {
         auto os = wstringstream();
         auto inputRef = input;
-        ExceptException<exception>([&]() { JsonLinter::Write(os, inputRef, 0ui8); }, exceptionMessage);
+        ExceptException<exception>([&]() { JsonLinter::Write(os, inputRef, 0ui8, L' '); }, exceptionMessage);
       }
     }
 
@@ -820,10 +820,10 @@ namespace Json4CPP::Test
         { 1, { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, true }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n true,\r\n false\r\n]"s },
       };
 
-      for (auto [indentation, input, expected] : pairs)
+      for (auto [indentSize, input, expected] : pairs)
       {
         auto os = wstringstream();
-        JsonLinter::Write(os, input, indentation);
+        JsonLinter::Write(os, input, indentSize, L' ');
         Assert::AreEqual<size_t>(0, input.size());
         Assert::AreEqual(expected, os.str());
       }
@@ -840,7 +840,7 @@ namespace Json4CPP::Test
       {
         auto os = wstringstream();
         auto inputRef = input;
-        ExceptException<exception>([&]() { JsonLinter::Write(os, inputRef, 0ui8); }, exceptionMessage);
+        ExceptException<exception>([&]() { JsonLinter::Write(os, inputRef, 0ui8, L' '); }, exceptionMessage);
       }
     }
 
@@ -866,7 +866,7 @@ namespace Json4CPP::Test
       for (auto [input, expected] : pairs)
       {
         auto os = wstringstream();
-        JsonLinter::Write(os, input, JsonDefault::Indentation);
+        JsonLinter::Write(os, input, JsonDefault::IndentSize, JsonDefault::IndentChar);
         Assert::AreEqual<size_t>(0, input.size());
         Assert::AreEqual(expected, os.str());
       }
