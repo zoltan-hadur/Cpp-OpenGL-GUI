@@ -35,8 +35,6 @@ namespace Json4CPP
   class JSON_API JsonObject;
   class JSON_API JsonArray;
 
-  JSON_API Json operator""_json(const wchar_t* value, std::size_t size);
-
   class JSON_API Json
   {
   private:
@@ -177,7 +175,7 @@ namespace Json4CPP
       Detail::TypeDebug<T>(); // Type T is not supported. See output error C2027 for the exact type.
     }
 
-    JSON_API friend Json operator""_json(const wchar_t* value, std::size_t size);
+    JSON_API friend Json operator""_Json(const wchar_t* value, std::size_t size);
 
     JSON_API friend std::wostream& operator<<(std::wostream& os, Json const& json);
     JSON_API friend std::wistream& operator>>(std::wistream& is, Json      & json);

@@ -19,11 +19,6 @@ using namespace Json4CPP::Detail;
 
 namespace Json4CPP
 {
-  Json operator""_json(const wchar_t* value, size_t size)
-  {
-    return Json::Read(JsonLinter::Read(value));
-  }
-
   Json Json::Read(deque<TOKEN>& tokens)
   {
     auto& [token, value] = tokens.front();
@@ -482,6 +477,11 @@ namespace Json4CPP
   Json& Json::operator=(JsonArray                     value ) { _value =         value;          return *this; }
   Json& Json::operator=(JsonBuilder                   value ) { _value = Json   (value )._value; return *this; }
   Json& Json::operator=(initializer_list<JsonBuilder> values) { _value = Json   (values)._value; return *this; }
+
+  Json operator""_Json(const wchar_t* value, size_t size)
+  {
+    return Json::Read(JsonLinter::Read(value));
+  }
 
   wostream& operator<<(wostream& os, Json const& json)
   {

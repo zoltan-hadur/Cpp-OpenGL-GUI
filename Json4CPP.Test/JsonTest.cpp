@@ -1588,12 +1588,12 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestLiteral)
     {
-      Assert::AreEqual<Json>({ nullptr }, L"[null]"_json);
-      Assert::AreEqual<Json>({ L"TestString" }, L"[\"TestString\"]"_json);
-      Assert::AreEqual<Json>({ true }, L"[true]"_json);
-      Assert::AreEqual<Json>({ 13.37 }, L"[13.37]"_json);
-      Assert::AreEqual<Json>({ { L"Key1", 1 }, { L"Key2", 2 } }, L"{ \"Key1\": 1, \"Key2\": 2 }"_json);
-      Assert::AreEqual<Json>({ 1, 2, 3 }, L"[ 1, 2, 3 ]"_json);
+      Assert::AreEqual<Json>({ nullptr }, L"[null]"_Json);
+      Assert::AreEqual<Json>({ L"TestString" }, L"[\"TestString\"]"_Json);
+      Assert::AreEqual<Json>({ true }, L"[true]"_Json);
+      Assert::AreEqual<Json>({ 13.37 }, L"[13.37]"_Json);
+      Assert::AreEqual<Json>({ { L"Key1", 1 }, { L"Key2", 2 } }, L"{ \"Key1\": 1, \"Key2\": 2 }"_Json);
+      Assert::AreEqual<Json>({ 1, 2, 3 }, L"[ 1, 2, 3 ]"_Json);
     }
 
     TEST_METHOD(TestOperatorInsertion)
