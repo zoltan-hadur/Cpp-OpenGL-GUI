@@ -167,6 +167,8 @@ namespace Json4CPP::Test
 
       Assert::AreEqual(L"[null,\"Test\",true,1337,{\"key1\":1,\"key2\":2},[1,2,3]]"s, array.Dump());
       Assert::AreEqual(L"[null,\"Test\",true,1337,{\"key1\":1,\"key2\":2},[1,2,3]]"s, array.Dump(0));
+      Assert::AreEqual(L"[null,\"Test\",true,1337,{\"key1\":1,\"key2\":2},[1,2,3]]"s, array.Dump(0, L' '));
+      Assert::AreEqual(L"[null,\"Test\",true,1337,{\"key1\":1,\"key2\":2},[1,2,3]]"s, array.Dump(0, L'\t'));
 
       Assert::AreEqual(
         L"["                      "\r\n"
@@ -187,6 +189,40 @@ namespace Json4CPP::Test
 
       Assert::AreEqual(
         L"["                      "\r\n"
+         " null,"                 "\r\n"
+         " \"Test\","             "\r\n"
+         " true,"                 "\r\n"
+         " 1337,"                 "\r\n"
+         " {"                     "\r\n"
+         "  \"key1\": 1,"         "\r\n"
+         "  \"key2\": 2"          "\r\n"
+         " },"                    "\r\n"
+         " ["                     "\r\n"
+         "  1,"                   "\r\n"
+         "  2,"                   "\r\n"
+         "  3"                    "\r\n"
+         " ]"                     "\r\n"
+         "]"s, array.Dump(1, L' '));
+
+      Assert::AreEqual(
+        L"["                      "\r\n"
+         "\tnull,"                "\r\n"
+         "\t\"Test\","            "\r\n"
+         "\ttrue,"                "\r\n"
+         "\t1337,"                "\r\n"
+         "\t{"                    "\r\n"
+         "\t\t\"key1\": 1,"       "\r\n"
+         "\t\t\"key2\": 2"        "\r\n"
+         "\t},"                   "\r\n"
+         "\t["                    "\r\n"
+         "\t\t1,"                 "\r\n"
+         "\t\t2,"                 "\r\n"
+         "\t\t3"                  "\r\n"
+         "\t]"                    "\r\n"
+         "]"s, array.Dump(1, L'\t'));
+
+      Assert::AreEqual(
+        L"["                      "\r\n"
          "  null,"                "\r\n"
          "  \"Test\","            "\r\n"
          "  true,"                "\r\n"
@@ -204,37 +240,37 @@ namespace Json4CPP::Test
 
       Assert::AreEqual(
         L"["                      "\r\n"
-         "   null,"               "\r\n"
-         "   \"Test\","           "\r\n"
-         "   true,"               "\r\n"
-         "   1337,"               "\r\n"
-         "   {"                   "\r\n"
-         "      \"key1\": 1,"     "\r\n"
-         "      \"key2\": 2"      "\r\n"
-         "   },"                  "\r\n"
-         "   ["                   "\r\n"
-         "      1,"               "\r\n"
-         "      2,"               "\r\n"
-         "      3"                "\r\n"
-         "   ]"                   "\r\n"
-         "]"s, array.Dump(3));
+         "  null,"                "\r\n"
+         "  \"Test\","            "\r\n"
+         "  true,"                "\r\n"
+         "  1337,"                "\r\n"
+         "  {"                    "\r\n"
+         "    \"key1\": 1,"       "\r\n"
+         "    \"key2\": 2"        "\r\n"
+         "  },"                   "\r\n"
+         "  ["                    "\r\n"
+         "    1,"                 "\r\n"
+         "    2,"                 "\r\n"
+         "    3"                  "\r\n"
+         "  ]"                    "\r\n"
+         "]"s, array.Dump(2, L' '));
 
       Assert::AreEqual(
         L"["                      "\r\n"
-         "    null,"              "\r\n"
-         "    \"Test\","          "\r\n"
-         "    true,"              "\r\n"
-         "    1337,"              "\r\n"
-         "    {"                  "\r\n"
-         "        \"key1\": 1,"   "\r\n"
-         "        \"key2\": 2"    "\r\n"
-         "    },"                 "\r\n"
-         "    ["                  "\r\n"
-         "        1,"             "\r\n"
-         "        2,"             "\r\n"
-         "        3"              "\r\n"
-         "    ]"                  "\r\n"
-         "]"s, array.Dump(4));
+         "\t\tnull,"              "\r\n"
+         "\t\t\"Test\","          "\r\n"
+         "\t\ttrue,"              "\r\n"
+         "\t\t1337,"              "\r\n"
+         "\t\t{"                  "\r\n"
+         "\t\t\t\t\"key1\": 1,"   "\r\n"
+         "\t\t\t\t\"key2\": 2"    "\r\n"
+         "\t\t},"                 "\r\n"
+         "\t\t["                  "\r\n"
+         "\t\t\t\t1,"             "\r\n"
+         "\t\t\t\t2,"             "\r\n"
+         "\t\t\t\t3"              "\r\n"
+         "\t\t]"                  "\r\n"
+         "]"s, array.Dump(2, L'\t'));
     }
 
     TEST_METHOD(TestSize)
@@ -422,8 +458,7 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestOperatorInsertion)
     {
-      JsonDefault::IndentSize = 2;
-      JsonArray array = { nullptr, L"Test"s, true, 1337, {{ L"key1", 1 }, { L"key2", 2 }}, { 1, 2, 3 } };
+      JsonArray array = { nullptr, L"Test"s, true, 1337, { { L"key1", 1 }, { L"key2", 2 } }, { 1, 2, 3 } };
       wstringstream is;
       is << array;
       Assert::AreEqual(
@@ -442,11 +477,37 @@ namespace Json4CPP::Test
          "    3"                  "\r\n"
          "  ]"                    "\r\n"
          "]"s, is.str());
+
+      auto pairs = vector<pair<vector<variant<JsonArray, JsonIndentSize, JsonIndentChar>>, wstring>>
+      {
+        { { JsonArray{ 1, 3, 3, 7 } },
+          L"[\r\n  1,\r\n  3,\r\n  3,\r\n  7\r\n]"s },
+        { { JsonArray{ 1, 3, 3, 7 }, JsonArray{ 1, 3, 3, 7 }, JsonArray{ 1, 3, 3, 7 } },
+          L"[\r\n  1,\r\n  3,\r\n  3,\r\n  7\r\n][\r\n  1,\r\n  3,\r\n  3,\r\n  7\r\n][\r\n  1,\r\n  3,\r\n  3,\r\n  7\r\n]" },
+        { { JsonArray{ 1, 3, 3, 7 }, JsonIndentSize(1), JsonArray{ 1, 3, 3, 7 }, JsonArray{ 1, 3, 3, 7 } },
+          L"[\r\n  1,\r\n  3,\r\n  3,\r\n  7\r\n][\r\n 1,\r\n 3,\r\n 3,\r\n 7\r\n][\r\n  1,\r\n  3,\r\n  3,\r\n  7\r\n]" },
+        { { JsonArray{ 1, 3, 3, 7 }, JsonIndentChar(L'\t'), JsonArray{ 1, 3, 3, 7 }, JsonArray{ 1, 3, 3, 7 } },
+          L"[\r\n  1,\r\n  3,\r\n  3,\r\n  7\r\n][\r\n\t\t1,\r\n\t\t3,\r\n\t\t3,\r\n\t\t7\r\n][\r\n  1,\r\n  3,\r\n  3,\r\n  7\r\n]" },
+        { { JsonArray{ 1, 3, 3, 7 }, JsonIndentSize(1), JsonIndentChar(L'\t'), JsonArray{ 1, 3, 3, 7 }, JsonArray{ 1, 3, 3, 7 } },
+          L"[\r\n  1,\r\n  3,\r\n  3,\r\n  7\r\n][\r\n\t1,\r\n\t3,\r\n\t3,\r\n\t7\r\n][\r\n  1,\r\n  3,\r\n  3,\r\n  7\r\n]" },
+        { { JsonArray{ 1, 3, 3, 7 }, JsonIndentChar(L'\t'), JsonIndentSize(1), JsonArray{ 1, 3, 3, 7 }, JsonArray{ 1, 3, 3, 7 } },
+          L"[\r\n  1,\r\n  3,\r\n  3,\r\n  7\r\n][\r\n\t1,\r\n\t3,\r\n\t3,\r\n\t7\r\n][\r\n  1,\r\n  3,\r\n  3,\r\n  7\r\n]" }
+      };
+      for (auto& [inputs, expected] : pairs)
+      {
+        wstringstream is;
+        for (auto& input : inputs)
+        {
+          visit(Overload{
+            [&](auto const& v) { is << v; }
+          }, input);
+        }
+        Assert::AreEqual(expected, is.str());
+      }
     }
 
     TEST_METHOD(TestOperatorExtraction)
     {
-      JsonDefault::IndentSize = 2;
       auto input = L"["                      "\r\n"
                     "  null,"                "\r\n"
                     "  \"Test\","            "\r\n"

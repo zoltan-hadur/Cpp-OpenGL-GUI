@@ -169,6 +169,8 @@ namespace Json4CPP::Test
 
       Assert::AreEqual(L"{\"Null\":null,\"String\":\"Test\",\"Boolean\":true,\"Number\":1337,\"Object\":{\"Key1\":1,\"Key2\":2},\"Array\":[1,2,3]}"s, object.Dump());
       Assert::AreEqual(L"{\"Null\":null,\"String\":\"Test\",\"Boolean\":true,\"Number\":1337,\"Object\":{\"Key1\":1,\"Key2\":2},\"Array\":[1,2,3]}"s, object.Dump(0));
+      Assert::AreEqual(L"{\"Null\":null,\"String\":\"Test\",\"Boolean\":true,\"Number\":1337,\"Object\":{\"Key1\":1,\"Key2\":2},\"Array\":[1,2,3]}"s, object.Dump(0, L' '));
+      Assert::AreEqual(L"{\"Null\":null,\"String\":\"Test\",\"Boolean\":true,\"Number\":1337,\"Object\":{\"Key1\":1,\"Key2\":2},\"Array\":[1,2,3]}"s, object.Dump(0, L'\t'));
 
       Assert::AreEqual(
         L"{"                            "\r\n"
@@ -189,6 +191,40 @@ namespace Json4CPP::Test
 
       Assert::AreEqual(
         L"{"                            "\r\n"
+         " \"Null\": null,"             "\r\n"
+         " \"String\": \"Test\","       "\r\n"
+         " \"Boolean\": true,"          "\r\n"
+         " \"Number\": 1337,"           "\r\n"
+         " \"Object\": {"               "\r\n"
+         "  \"Key1\": 1,"               "\r\n"
+         "  \"Key2\": 2"                "\r\n"
+         " },"                          "\r\n"
+         " \"Array\": ["                "\r\n"
+         "  1,"                         "\r\n"
+         "  2,"                         "\r\n"
+         "  3"                          "\r\n"
+         " ]"                           "\r\n"
+         "}"s, object.Dump(1, L' '));
+
+      Assert::AreEqual(
+        L"{"                            "\r\n"
+         "\t\"Null\": null,"            "\r\n"
+         "\t\"String\": \"Test\","      "\r\n"
+         "\t\"Boolean\": true,"         "\r\n"
+         "\t\"Number\": 1337,"          "\r\n"
+         "\t\"Object\": {"              "\r\n"
+         "\t\t\"Key1\": 1,"             "\r\n"
+         "\t\t\"Key2\": 2"              "\r\n"
+         "\t},"                         "\r\n"
+         "\t\"Array\": ["               "\r\n"
+         "\t\t1,"                       "\r\n"
+         "\t\t2,"                       "\r\n"
+         "\t\t3"                        "\r\n"
+         "\t]"                          "\r\n"
+         "}"s, object.Dump(1, L'\t'));
+
+      Assert::AreEqual(
+        L"{"                            "\r\n"
          "  \"Null\": null,"            "\r\n"
          "  \"String\": \"Test\","      "\r\n"
          "  \"Boolean\": true,"         "\r\n"
@@ -206,37 +242,37 @@ namespace Json4CPP::Test
 
       Assert::AreEqual(
         L"{"                            "\r\n"
-         "   \"Null\": null,"           "\r\n"
-         "   \"String\": \"Test\","     "\r\n"
-         "   \"Boolean\": true,"        "\r\n"
-         "   \"Number\": 1337,"         "\r\n"
-         "   \"Object\": {"             "\r\n"
-         "      \"Key1\": 1,"           "\r\n"
-         "      \"Key2\": 2"            "\r\n"
-         "   },"                        "\r\n"
-         "   \"Array\": ["              "\r\n"
-         "      1,"                     "\r\n"
-         "      2,"                     "\r\n"
-         "      3"                      "\r\n"
-         "   ]"                         "\r\n"
-         "}"s, object.Dump(3));
+         "  \"Null\": null,"            "\r\n"
+         "  \"String\": \"Test\","      "\r\n"
+         "  \"Boolean\": true,"         "\r\n"
+         "  \"Number\": 1337,"          "\r\n"
+         "  \"Object\": {"              "\r\n"
+         "    \"Key1\": 1,"             "\r\n"
+         "    \"Key2\": 2"              "\r\n"
+         "  },"                         "\r\n"
+         "  \"Array\": ["               "\r\n"
+         "    1,"                       "\r\n"
+         "    2,"                       "\r\n"
+         "    3"                        "\r\n"
+         "  ]"                          "\r\n"
+         "}"s, object.Dump(2, L' '));
 
       Assert::AreEqual(
         L"{"                            "\r\n"
-         "    \"Null\": null,"          "\r\n"
-         "    \"String\": \"Test\","    "\r\n"
-         "    \"Boolean\": true,"       "\r\n"
-         "    \"Number\": 1337,"        "\r\n"
-         "    \"Object\": {"            "\r\n"
-         "        \"Key1\": 1,"         "\r\n"
-         "        \"Key2\": 2"          "\r\n"
-         "    },"                       "\r\n"
-         "    \"Array\": ["             "\r\n"
-         "        1,"                   "\r\n"
-         "        2,"                   "\r\n"
-         "        3"                    "\r\n"
-         "    ]"                        "\r\n"
-         "}"s, object.Dump(4));
+         "\t\t\"Null\": null,"          "\r\n"
+         "\t\t\"String\": \"Test\","    "\r\n"
+         "\t\t\"Boolean\": true,"       "\r\n"
+         "\t\t\"Number\": 1337,"        "\r\n"
+         "\t\t\"Object\": {"            "\r\n"
+         "\t\t\t\t\"Key1\": 1,"         "\r\n"
+         "\t\t\t\t\"Key2\": 2"          "\r\n"
+         "\t\t},"                       "\r\n"
+         "\t\t\"Array\": ["             "\r\n"
+         "\t\t\t\t1,"                   "\r\n"
+         "\t\t\t\t2,"                   "\r\n"
+         "\t\t\t\t3"                    "\r\n"
+         "\t\t]"                        "\r\n"
+         "}"s, object.Dump(2, L'\t'));
     }
 
     TEST_METHOD(TestSize)
@@ -514,7 +550,6 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestOperatorInsertion)
     {
-      JsonDefault::IndentSize = 2;
       JsonObject object = {
         { L"Null", nullptr },
         { L"String", L"Test" },
@@ -544,11 +579,37 @@ namespace Json4CPP::Test
          "    3"                        "\r\n"
          "  ]"                          "\r\n"
          "}"s, is.str());
+
+      auto pairs = vector<pair<vector<variant<JsonObject, JsonIndentSize, JsonIndentChar>>, wstring>>
+      {
+        { { JsonObject{ { L"Key1", 1 }, { L"Key2", 2 } } },
+          L"{\r\n  \"Key1\": 1,\r\n  \"Key2\": 2\r\n}"s },
+        { { JsonObject{ { L"Key1", 1 }, { L"Key2", 2 } }, JsonObject{ { L"Key1", 1 }, { L"Key2", 2 } }, JsonObject{ { L"Key1", 1 }, { L"Key2", 2 } } },
+          L"{\r\n  \"Key1\": 1,\r\n  \"Key2\": 2\r\n}{\r\n  \"Key1\": 1,\r\n  \"Key2\": 2\r\n}{\r\n  \"Key1\": 1,\r\n  \"Key2\": 2\r\n}" },
+        { { JsonObject{ { L"Key1", 1 }, { L"Key2", 2 } }, JsonIndentSize(1), JsonObject{ { L"Key1", 1 }, { L"Key2", 2 } }, JsonObject{ { L"Key1", 1 }, { L"Key2", 2 } } },
+          L"{\r\n  \"Key1\": 1,\r\n  \"Key2\": 2\r\n}{\r\n \"Key1\": 1,\r\n \"Key2\": 2\r\n}{\r\n  \"Key1\": 1,\r\n  \"Key2\": 2\r\n}" },
+        { { JsonObject{ { L"Key1", 1 }, { L"Key2", 2 } }, JsonIndentChar(L'\t'), JsonObject{ { L"Key1", 1 }, { L"Key2", 2 } }, JsonObject{ { L"Key1", 1 }, { L"Key2", 2 } } },
+          L"{\r\n  \"Key1\": 1,\r\n  \"Key2\": 2\r\n}{\r\n\t\t\"Key1\": 1,\r\n\t\t\"Key2\": 2\r\n}{\r\n  \"Key1\": 1,\r\n  \"Key2\": 2\r\n}" },
+        { { JsonObject{ { L"Key1", 1 }, { L"Key2", 2 } }, JsonIndentSize(1), JsonIndentChar(L'\t'), JsonObject{ { L"Key1", 1 }, { L"Key2", 2 } }, JsonObject{ { L"Key1", 1 }, { L"Key2", 2 } } },
+          L"{\r\n  \"Key1\": 1,\r\n  \"Key2\": 2\r\n}{\r\n\t\"Key1\": 1,\r\n\t\"Key2\": 2\r\n}{\r\n  \"Key1\": 1,\r\n  \"Key2\": 2\r\n}" },
+        { { JsonObject{ { L"Key1", 1 }, { L"Key2", 2 } }, JsonIndentChar(L'\t'), JsonIndentSize(1), JsonObject{ { L"Key1", 1 }, { L"Key2", 2 } }, JsonObject{ { L"Key1", 1 }, { L"Key2", 2 } } },
+          L"{\r\n  \"Key1\": 1,\r\n  \"Key2\": 2\r\n}{\r\n\t\"Key1\": 1,\r\n\t\"Key2\": 2\r\n}{\r\n  \"Key1\": 1,\r\n  \"Key2\": 2\r\n}" }
+      };
+      for (auto& [inputs, expected] : pairs)
+      {
+        wstringstream is;
+        for (auto& input : inputs)
+        {
+          visit(Overload{
+            [&](auto const& v) { is << v; }
+          }, input);
+        }
+        Assert::AreEqual(expected, is.str());
+      }
     }
 
     TEST_METHOD(TestOperatorExtraction)
     {
-      JsonDefault::IndentSize = 2;
       auto input = L"{"                            "\r\n"
                     "  \"Null\": null,"            "\r\n"
                     "  \"String\": \"Test\","      "\r\n"

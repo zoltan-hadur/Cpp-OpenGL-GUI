@@ -741,36 +741,58 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestWriteObject)
     {
-      auto pairs = vector<tuple<uint8_t, deque<TOKEN>, wstring>>
+      auto pairs = vector<tuple<uint8_t, wchar_t, deque<TOKEN>, wstring>>
       {
-        { 0, { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::EndObject, L"}"s } }, L"{}"s },
-        { 0, { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Null, nullptr }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":null}"s },
-        { 0, { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::String, L"\"💰\", A, Á, B, C"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":\"\\\"💰\\\", A, Á, B, C\"}"s },
-        { 0, { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":true}"s },
-        { 0, { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":false}"s },
-        { 0, { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Real, 13.37 }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":13.37}"s },
-        { 0, { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":{}}"s },
-        { 0, { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartArray, L"["s }, { JsonTokenType::EndArray, L"]"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":[]}"s },
-        { 0, { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key2"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":{\"Key2\":true}}"s },
-        { 0, { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndArray, L"]"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":[true]}"s },
-        { 0, { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::PropertyName, L"Key2"s }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":true,\"Key2\":false}"s },
-        { 1, { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::EndObject, L"}"s } }, L"{}"s },
-        { 1, { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Null, nullptr }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n \"Key1\": null\r\n}"s },
-        { 1, { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::String, L"\"💰\", A, Á, B, C"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n \"Key1\": \"\\\"💰\\\", A, Á, B, C\"\r\n}"s },
-        { 1, { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n \"Key1\": true\r\n}"s },
-        { 1, { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n \"Key1\": false\r\n}"s },
-        { 1, { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Real, 13.37 }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n \"Key1\": 13.37\r\n}"s },
-        { 1, { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n \"Key1\": {}\r\n}"s },
-        { 1, { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartArray, L"["s }, { JsonTokenType::EndArray, L"]"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n \"Key1\": []\r\n}"s },
-        { 1, { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key2"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n \"Key1\": {\r\n  \"Key2\": true\r\n }\r\n}"s },
-        { 1, { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndArray, L"]"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n \"Key1\": [\r\n  true\r\n ]\r\n}"s },
-        { 1, { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::PropertyName, L"Key2"s }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n \"Key1\": true,\r\n \"Key2\": false\r\n}"s },
+        { 0, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::EndObject, L"}"s } }, L"{}"s },
+        { 0, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Null, nullptr }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":null}"s },
+        { 0, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::String, L"\"💰\", A, Á, B, C"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":\"\\\"💰\\\", A, Á, B, C\"}"s },
+        { 0, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":true}"s },
+        { 0, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":false}"s },
+        { 0, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Real, 13.37 }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":13.37}"s },
+        { 0, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":{}}"s },
+        { 0, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartArray, L"["s }, { JsonTokenType::EndArray, L"]"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":[]}"s },
+        { 0, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key2"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":{\"Key2\":true}}"s },
+        { 0, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndArray, L"]"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":[true]}"s },
+        { 0, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::PropertyName, L"Key2"s }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":true,\"Key2\":false}"s },
+        { 0, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::EndObject, L"}"s } }, L"{}"s },
+        { 0, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Null, nullptr }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":null}"s },
+        { 0, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::String, L"\"💰\", A, Á, B, C"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":\"\\\"💰\\\", A, Á, B, C\"}"s },
+        { 0, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":true}"s },
+        { 0, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":false}"s },
+        { 0, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Real, 13.37 }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":13.37}"s },
+        { 0, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":{}}"s },
+        { 0, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartArray, L"["s }, { JsonTokenType::EndArray, L"]"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":[]}"s },
+        { 0, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key2"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":{\"Key2\":true}}"s },
+        { 0, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndArray, L"]"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":[true]}"s },
+        { 0, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::PropertyName, L"Key2"s }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":true,\"Key2\":false}"s },
+        { 1, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::EndObject, L"}"s } }, L"{}"s },
+        { 1, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Null, nullptr }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n \"Key1\": null\r\n}"s },
+        { 1, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::String, L"\"💰\", A, Á, B, C"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n \"Key1\": \"\\\"💰\\\", A, Á, B, C\"\r\n}"s },
+        { 1, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n \"Key1\": true\r\n}"s },
+        { 1, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n \"Key1\": false\r\n}"s },
+        { 1, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Real, 13.37 }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n \"Key1\": 13.37\r\n}"s },
+        { 1, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n \"Key1\": {}\r\n}"s },
+        { 1, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartArray, L"["s }, { JsonTokenType::EndArray, L"]"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n \"Key1\": []\r\n}"s },
+        { 1, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key2"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n \"Key1\": {\r\n  \"Key2\": true\r\n }\r\n}"s },
+        { 1, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndArray, L"]"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n \"Key1\": [\r\n  true\r\n ]\r\n}"s },
+        { 1, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::PropertyName, L"Key2"s }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n \"Key1\": true,\r\n \"Key2\": false\r\n}"s },
+        { 1, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::EndObject, L"}"s } }, L"{}"s },
+        { 1, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Null, nullptr }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n\t\"Key1\": null\r\n}"s },
+        { 1, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::String, L"\"💰\", A, Á, B, C"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n\t\"Key1\": \"\\\"💰\\\", A, Á, B, C\"\r\n}"s },
+        { 1, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n\t\"Key1\": true\r\n}"s },
+        { 1, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n\t\"Key1\": false\r\n}"s },
+        { 1, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Real, 13.37 }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n\t\"Key1\": 13.37\r\n}"s },
+        { 1, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n\t\"Key1\": {}\r\n}"s },
+        { 1, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartArray, L"["s }, { JsonTokenType::EndArray, L"]"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n\t\"Key1\": []\r\n}"s },
+        { 1, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key2"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n\t\"Key1\": {\r\n\t\t\"Key2\": true\r\n\t}\r\n}"s },
+        { 1, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndArray, L"]"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n\t\"Key1\": [\r\n\t\ttrue\r\n\t]\r\n}"s },
+        { 1, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::PropertyName, L"Key2"s }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n\t\"Key1\": true,\r\n\t\"Key2\": false\r\n}"s }
       };
 
-      for (auto [indentSize, input, expected] : pairs)
+      for (auto [indentSize, indentChar, input, expected] : pairs)
       {
         auto os = wstringstream();
-        JsonLinter::Write(os, input, indentSize, L' ');
+        JsonLinter::Write(os, input, indentSize, indentChar);
         Assert::AreEqual<size_t>(0, input.size());
         Assert::AreEqual(expected, os.str());
       }
@@ -794,36 +816,58 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestWriteArray)
     {
-      auto pairs = vector<tuple<uint8_t, deque<TOKEN>, wstring>>
+      auto pairs = vector<tuple<uint8_t, wchar_t, deque<TOKEN>, wstring>>
       {
-        { 0, { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::EndArray, L"]"s } }, L"[]"s },
-        { 0, { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Null, nullptr }, { JsonTokenType::EndArray, L"]"s } }, L"[null]"s },
-        { 0, { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::String, L"\"💰\", A, Á, B, C"s }, { JsonTokenType::EndArray, L"]"s } }, L"[\"\\\"💰\\\", A, Á, B, C\"]"s },
-        { 0, { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndArray, L"]"s } }, L"[true]"s },
-        { 0, { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndArray, L"]"s } }, L"[false]"s },
-        { 0, { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Real, 13.37 }, { JsonTokenType::EndArray, L"]"s } }, L"[13.37]"s },
-        { 0, { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndArray, L"]"s } }, L"[{}]"s },
-        { 0, { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartArray, L"["s }, { JsonTokenType::EndArray, L"]"s }, { JsonTokenType::EndArray, L"]"s } }, L"[[]]"s },
-        { 0, { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key2"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndArray, L"]"s } }, L"[{\"Key2\":true}]"s },
-        { 0, { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndArray, L"]"s }, { JsonTokenType::EndArray, L"]"s } }, L"[[true]]"s },
-        { 0, { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, true }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndArray, L"]"s } }, L"[true,false]"s },
-        { 1, { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::EndArray, L"]"s } }, L"[]"s },
-        { 1, { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Null, nullptr }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n null\r\n]"s },
-        { 1, { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::String, L"\"💰\", A, Á, B, C"s }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n \"\\\"💰\\\", A, Á, B, C\"\r\n]"s },
-        { 1, { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n true\r\n]"s },
-        { 1, { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n false\r\n]"s },
-        { 1, { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Real, 13.37 }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n 13.37\r\n]"s },
-        { 1, { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n {}\r\n]"s },
-        { 1, { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartArray, L"["s }, { JsonTokenType::EndArray, L"]"s }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n []\r\n]"s },
-        { 1, { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key2"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n {\r\n  \"Key2\": true\r\n }\r\n]"s },
-        { 1, { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndArray, L"]"s }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n [\r\n  true\r\n ]\r\n]"s },
-        { 1, { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, true }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n true,\r\n false\r\n]"s },
+        { 0, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::EndArray, L"]"s } }, L"[]"s },
+        { 0, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Null, nullptr }, { JsonTokenType::EndArray, L"]"s } }, L"[null]"s },
+        { 0, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::String, L"\"💰\", A, Á, B, C"s }, { JsonTokenType::EndArray, L"]"s } }, L"[\"\\\"💰\\\", A, Á, B, C\"]"s },
+        { 0, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndArray, L"]"s } }, L"[true]"s },
+        { 0, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndArray, L"]"s } }, L"[false]"s },
+        { 0, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Real, 13.37 }, { JsonTokenType::EndArray, L"]"s } }, L"[13.37]"s },
+        { 0, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndArray, L"]"s } }, L"[{}]"s },
+        { 0, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartArray, L"["s }, { JsonTokenType::EndArray, L"]"s }, { JsonTokenType::EndArray, L"]"s } }, L"[[]]"s },
+        { 0, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key2"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndArray, L"]"s } }, L"[{\"Key2\":true}]"s },
+        { 0, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndArray, L"]"s }, { JsonTokenType::EndArray, L"]"s } }, L"[[true]]"s },
+        { 0, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, true }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndArray, L"]"s } }, L"[true,false]"s },
+        { 0, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::EndArray, L"]"s } }, L"[]"s },
+        { 0, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Null, nullptr }, { JsonTokenType::EndArray, L"]"s } }, L"[null]"s },
+        { 0, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::String, L"\"💰\", A, Á, B, C"s }, { JsonTokenType::EndArray, L"]"s } }, L"[\"\\\"💰\\\", A, Á, B, C\"]"s },
+        { 0, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndArray, L"]"s } }, L"[true]"s },
+        { 0, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndArray, L"]"s } }, L"[false]"s },
+        { 0, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Real, 13.37 }, { JsonTokenType::EndArray, L"]"s } }, L"[13.37]"s },
+        { 0, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndArray, L"]"s } }, L"[{}]"s },
+        { 0, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartArray, L"["s }, { JsonTokenType::EndArray, L"]"s }, { JsonTokenType::EndArray, L"]"s } }, L"[[]]"s },
+        { 0, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key2"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndArray, L"]"s } }, L"[{\"Key2\":true}]"s },
+        { 0, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndArray, L"]"s }, { JsonTokenType::EndArray, L"]"s } }, L"[[true]]"s },
+        { 0, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, true }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndArray, L"]"s } }, L"[true,false]"s },
+        { 1, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::EndArray, L"]"s } }, L"[]"s },
+        { 1, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Null, nullptr }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n null\r\n]"s },
+        { 1, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::String, L"\"💰\", A, Á, B, C"s }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n \"\\\"💰\\\", A, Á, B, C\"\r\n]"s },
+        { 1, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n true\r\n]"s },
+        { 1, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n false\r\n]"s },
+        { 1, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Real, 13.37 }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n 13.37\r\n]"s },
+        { 1, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n {}\r\n]"s },
+        { 1, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartArray, L"["s }, { JsonTokenType::EndArray, L"]"s }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n []\r\n]"s },
+        { 1, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key2"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n {\r\n  \"Key2\": true\r\n }\r\n]"s },
+        { 1, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndArray, L"]"s }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n [\r\n  true\r\n ]\r\n]"s },
+        { 1, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, true }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n true,\r\n false\r\n]"s },
+        { 1, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::EndArray, L"]"s } }, L"[]"s },
+        { 1, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Null, nullptr }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n\tnull\r\n]"s },
+        { 1, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::String, L"\"💰\", A, Á, B, C"s }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n\t\"\\\"💰\\\", A, Á, B, C\"\r\n]"s },
+        { 1, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n\ttrue\r\n]"s },
+        { 1, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n\tfalse\r\n]"s },
+        { 1, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Real, 13.37 }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n\t13.37\r\n]"s },
+        { 1, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n\t{}\r\n]"s },
+        { 1, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartArray, L"["s }, { JsonTokenType::EndArray, L"]"s }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n\t[]\r\n]"s },
+        { 1, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key2"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n\t{\r\n\t\t\"Key2\": true\r\n\t}\r\n]"s },
+        { 1, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndArray, L"]"s }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n\t[\r\n\t\ttrue\r\n\t]\r\n]"s },
+        { 1, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, true }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n\ttrue,\r\n\tfalse\r\n]"s }
       };
 
-      for (auto [indentSize, input, expected] : pairs)
+      for (auto [indentSize, indentChar, input, expected] : pairs)
       {
         auto os = wstringstream();
-        JsonLinter::Write(os, input, indentSize, L' ');
+        JsonLinter::Write(os, input, indentSize, indentChar);
         Assert::AreEqual<size_t>(0, input.size());
         Assert::AreEqual(expected, os.str());
       }
