@@ -30,6 +30,7 @@
 #define new new
 #endif
 #include "..\Json4CPP\Json.hpp"
+#include "..\Foundation\Enumerable.h"
 
 namespace Microsoft::VisualStudio::CppUnitTestFramework
 {
@@ -44,6 +45,8 @@ namespace Microsoft::VisualStudio::CppUnitTestFramework
 
   template<> static std::wstring ToString<std::nullptr_t>(std::nullptr_t const& value) { return Json4CPP::Json::Stringify(value); }
   template<> static std::wstring ToString<uint16_t>(uint16_t const& value) { return Json4CPP::Json::Stringify(value); }
+
+  template<> static std::wstring ToString<std::u32string>(std::u32string const& value) { return Json4CPP::Detail::U32String2WString(value); }
 
   template<typename T, typename F>
   static void ExceptException(F func, std::string const& msg)

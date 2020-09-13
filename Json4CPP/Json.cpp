@@ -128,6 +128,21 @@ namespace Json4CPP
     return os.str();
   }
 
+  Json Json::Parse(std::string const& string)
+  {
+    return Json::Read(JsonLinter::Read(String2WString(string)));
+  }
+
+  Json Json::Parse(std::wstring const& wstring)
+  {
+    return Json::Read(JsonLinter::Read(wstring));
+  }
+
+  Json Json::Parse(std::u32string const& u32string)
+  {
+    return Json::Read(JsonLinter::Read(U32String2WString(u32string)));
+  }
+
   Json Json::Read(path filePath)
   {
     return Json::Read(JsonLinter::Read(ReadAllText(filePath)));

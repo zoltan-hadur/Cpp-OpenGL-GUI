@@ -1,9 +1,10 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using namespace Json4CPP;
 using namespace Json4CPP::Detail;
+using namespace OpenGLUI::Foundation;
 
 namespace Json4CPP::Test
 {
@@ -819,6 +820,68 @@ namespace Json4CPP::Test
          "\t\t\t\t7"                          "\r\n"
          "\t\t]"                              "\r\n"
          "]"s, array.Dump(2, L'\t'));
+    }
+
+    TEST_METHOD(TestParse)
+    {
+      auto str = u8"𤭢"s;
+      auto wstr = L"𤭢"s;
+      auto ustr = U"𤭢"s;
+      auto expected = JsonArray{ L"𤭢"s };
+
+      auto i8list = initializer_list<int8_t>{ (int8_t)'[', (int8_t)'"', (int8_t)str[0], (int8_t)str[1], (int8_t)str[2], (int8_t)str[3], (int8_t)'"', (int8_t)']' };
+      Assert::AreEqual<Json>(expected, Json::Parse(initializer_list<int8_t>{ (int8_t)'[', (int8_t)'"', (int8_t)str[0], (int8_t)str[1], (int8_t)str[2], (int8_t)str[3], (int8_t)'"', (int8_t)']' }));
+      Assert::AreEqual<Json>(expected, Json::Parse(i8list));
+      Assert::AreEqual<Json>(expected, Json::Parse(i8list.begin(), i8list.end()));
+      auto i8enumerable = From(i8list);
+      Assert::AreEqual<Json>(expected, Json::Parse(From(i8list)));
+      Assert::AreEqual<Json>(expected, Json::Parse(i8enumerable));
+      Assert::AreEqual<Json>(expected, Json::Parse(i8enumerable.begin(), i8enumerable.end()));
+
+      auto ui8list = initializer_list<uint8_t>{ (uint8_t)'[', (uint8_t)'"', (uint8_t)str[0], (uint8_t)str[1], (uint8_t)str[2], (uint8_t)str[3], (uint8_t)'"', (uint8_t)']' };
+      Assert::AreEqual<Json>(expected, Json::Parse(initializer_list<uint8_t>{ (uint8_t)'[', (uint8_t)'"', (uint8_t)str[0], (uint8_t)str[1], (uint8_t)str[2], (uint8_t)str[3], (uint8_t)'"', (uint8_t)']' }));
+      Assert::AreEqual<Json>(expected, Json::Parse(ui8list));
+      Assert::AreEqual<Json>(expected, Json::Parse(ui8list.begin(), ui8list.end()));
+      auto ui8enumerable = From(ui8list);
+      Assert::AreEqual<Json>(expected, Json::Parse(From(ui8list)));
+      Assert::AreEqual<Json>(expected, Json::Parse(ui8enumerable));
+      Assert::AreEqual<Json>(expected, Json::Parse(ui8enumerable.begin(), ui8enumerable.end()));
+
+      auto i16list = initializer_list<int16_t>{ (int16_t)L'[', (int16_t)L'"', (int16_t)wstr[0], (int16_t)wstr[1], (int16_t)L'"', (int16_t)L']' };
+      Assert::AreEqual<Json>(expected, Json::Parse(initializer_list<int16_t>{ (int16_t)L'[', (int16_t)L'"', (int16_t)wstr[0], (int16_t)wstr[1], (int16_t)L'"', (int16_t)L']' }));
+      Assert::AreEqual<Json>(expected, Json::Parse(i16list));
+      Assert::AreEqual<Json>(expected, Json::Parse(i16list.begin(), i16list.end()));
+      auto i16enumerable = From(i16list);
+      Assert::AreEqual<Json>(expected, Json::Parse(From(i16list)));
+      Assert::AreEqual<Json>(expected, Json::Parse(i16enumerable));
+      Assert::AreEqual<Json>(expected, Json::Parse(i16enumerable.begin(), i16enumerable.end()));
+
+      auto ui16list = initializer_list<uint16_t>{ (uint16_t)L'[', (uint16_t)L'"', (uint16_t)wstr[0], (uint16_t)wstr[1], (uint16_t)L'"', (uint16_t)L']' };
+      Assert::AreEqual<Json>(expected, Json::Parse(initializer_list<uint16_t>{ (uint16_t)L'[', (uint16_t)L'"', (uint16_t)wstr[0], (uint16_t)wstr[1], (uint16_t)L'"', (uint16_t)L']' }));
+      Assert::AreEqual<Json>(expected, Json::Parse(ui16list));
+      Assert::AreEqual<Json>(expected, Json::Parse(ui16list.begin(), ui16list.end()));
+      auto ui16enumerable = From(ui16list);
+      Assert::AreEqual<Json>(expected, Json::Parse(From(ui16list)));
+      Assert::AreEqual<Json>(expected, Json::Parse(ui16enumerable));
+      Assert::AreEqual<Json>(expected, Json::Parse(ui16enumerable.begin(), ui16enumerable.end()));
+
+      auto i32list = initializer_list<int32_t>{ (int32_t)L'[', (int32_t)L'"', (int32_t)ustr[0], (int32_t)L'"', (int32_t)L']' };
+      Assert::AreEqual<Json>(expected, Json::Parse(initializer_list<int32_t>{ (int32_t)L'[', (int32_t)L'"', (int32_t)ustr[0], (int32_t)L'"', (int32_t)L']' }));
+      Assert::AreEqual<Json>(expected, Json::Parse(i32list));
+      Assert::AreEqual<Json>(expected, Json::Parse(i32list.begin(), i32list.end()));
+      auto i32enumerable = From(i32list);
+      Assert::AreEqual<Json>(expected, Json::Parse(From(i32list)));
+      Assert::AreEqual<Json>(expected, Json::Parse(i32enumerable));
+      Assert::AreEqual<Json>(expected, Json::Parse(i32enumerable.begin(), i32enumerable.end()));
+
+      auto ui32list = initializer_list<uint32_t>{ (uint32_t)L'[', (uint32_t)L'"', (uint32_t)ustr[0], (uint32_t)L'"', (uint32_t)L']' };
+      Assert::AreEqual<Json>(expected, Json::Parse(initializer_list<uint32_t>{ (uint32_t)L'[', (uint32_t)L'"', (uint32_t)ustr[0], (uint32_t)L'"', (uint32_t)L']' }));
+      Assert::AreEqual<Json>(expected, Json::Parse(ui32list));
+      Assert::AreEqual<Json>(expected, Json::Parse(ui32list.begin(), ui32list.end()));
+      auto ui32enumerable = From(ui32list);
+      Assert::AreEqual<Json>(expected, Json::Parse(From(ui32list)));
+      Assert::AreEqual<Json>(expected, Json::Parse(ui32enumerable));
+      Assert::AreEqual<Json>(expected, Json::Parse(ui32enumerable.begin(), ui32enumerable.end()));
     }
 
     TEST_METHOD(TestRead)

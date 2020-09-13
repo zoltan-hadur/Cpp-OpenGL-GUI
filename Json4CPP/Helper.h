@@ -44,6 +44,9 @@ namespace Json4CPP::Detail
   // Converts UTF-16 encoded wstring into UTF-8 encoded string.
   JSON_API std::string  WString2String(std::wstring const& string);
 
+  // Converts UTF-32 encoded u32string into UTF-16 encoded wstring.
+  JSON_API std::wstring U32String2WString(std::u32string const& string);
+
   // Returns the { line, column } pair of the specified position in the stream.
   // Line endings are handled as \r\n.
   JSON_API std::pair<uint64_t, uint64_t> GetStreamPosition(std::wistream& is, std::wistream::pos_type pos);

@@ -21,6 +21,7 @@
 #include <iostream>
 #include <sstream>
 #include <filesystem>
+#include <iterator>
 
 namespace Json4CPP
 {
@@ -75,6 +76,45 @@ namespace Json4CPP
     bool Is(JsonType type) const;
 
     std::wstring Dump(uint8_t indentSize = 0, wchar_t indentChar = L' ') const;
+
+    static Json Parse(std::string const& string);
+    static Json Parse(std::wstring const& wstring);
+    static Json Parse(std::u32string const& u32string);
+
+    template<typename It,
+      std::enable_if_t<std::is_integral_v<typename std::iterator_traits<It>::value_type> &&
+                       ((sizeof(typename std::iterator_traits<It>::value_type)) == 1 ||
+                        (sizeof(typename std::iterator_traits<It>::value_type)) == 2 ||
+                        (sizeof(typename std::iterator_traits<It>::value_type)) == 4)>* = nullptr>
+    static Json Parse(It begin, It end)
+    {
+      if constexpr (sizeof(typename std::iterator_traits<It>::value_type) == 1)
+      {
+        return Json::Parse(std::string(begin, end));
+      }
+      else if constexpr (sizeof(typename std::iterator_traits<It>::value_type) == 2)
+      {
+        return Json::Parse(std::wstring(begin, end));
+      }
+      else if constexpr (sizeof(typename std::iterator_traits<It>::value_type) == 4)
+      {
+        return Json::Parse(std::u32string(begin, end));
+      }
+    }
+
+    template<typename Iterable,
+      std::enable_if_t<std::is_integral_v<typename std::iterator_traits<decltype(std::declval<Iterable>().begin())>::value_type> &&         // Has begin() and it is integral type
+                       std::is_integral_v<typename std::iterator_traits<decltype(std::declval<Iterable>().end  ())>::value_type> &&         // Has end() and it is integral type
+                       ((sizeof(typename std::iterator_traits<decltype(std::declval<Iterable>().begin())>::value_type)) == 1 &&             // The integral type's size is 1 byte
+                        (sizeof(typename std::iterator_traits<decltype(std::declval<Iterable>().end  ())>::value_type)) == 1 ||             // Or
+                        (sizeof(typename std::iterator_traits<decltype(std::declval<Iterable>().begin())>::value_type)) == 2 &&             // The integral type's size is 2 byte
+                        (sizeof(typename std::iterator_traits<decltype(std::declval<Iterable>().end  ())>::value_type)) == 2 ||             // Or
+                        (sizeof(typename std::iterator_traits<decltype(std::declval<Iterable>().begin())>::value_type)) == 4 &&             // The integral type's size is 4 byte
+                        (sizeof(typename std::iterator_traits<decltype(std::declval<Iterable>().end  ())>::value_type)) == 4)>* = nullptr>
+    static Json Parse(Iterable values)
+    {
+      return Parse(values.begin(), values.end());
+    }
 
     static Json Read(std::filesystem::path filePath);
     void Write(std::filesystem::path filePath) const;
