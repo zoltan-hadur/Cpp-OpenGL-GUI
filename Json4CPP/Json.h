@@ -164,12 +164,14 @@ namespace Json4CPP
     void Erase(KEY key);
     void Erase(int64_t index);
     std::vector<KEY> Keys() const;
-    Json& operator[](KEY const& key);
-    Json& operator[](int64_t const& index);
-    Json  At(KEY     const& key  ) const;
-    Json& At(KEY     const& key  );
-    Json  At(int64_t const& index) const;
-    Json& At(int64_t const& index);
+    Json      & operator[](KEY const& key);
+    Json const& operator[](KEY const& key) const;
+    Json      & operator[](int64_t const& index);
+    Json const& operator[](int64_t const& index) const;
+    Json      & At(KEY     const& key);
+    Json const& At(KEY     const& key) const;
+    Json      & At(int64_t const& index);
+    Json const& At(int64_t const& index) const;
 
     explicit operator std::nullptr_t () const;
     explicit operator std::wstring   () const;

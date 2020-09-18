@@ -377,7 +377,6 @@ namespace Json4CPP::Test
     TEST_METHOD(TestAtConst)
     {
       auto const array = JsonArray{ nullptr, L"Test"s, true, 1337, {{ L"key1", 1 }, { L"key2", 2 }}, { 1, 2, 3 } };
-      auto vec = vector<Json>{ nullptr, L"Test"s, true, 1337, {{ L"key1", 1 }, { L"key2", 2 }}, { 1, 2, 3 } };
       Assert::AreEqual<Json>(nullptr, array.At(0));
       Assert::AreEqual<Json>(L"Test"s, array.At(1));
       Assert::AreEqual<Json>(true, array.At(2));
@@ -385,12 +384,7 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>({ { L"key1", 1 }, { L"key2", 2 } }, array.At(4));
       Assert::AreEqual<Json>({ 1, 2, 3 }, array.At(5));
 
-      for (int i = 0; i < 6; ++i)
-      {
-        array.At(i) = 9999;
-        Assert::AreNotEqual<Json>(9999, array.At(i));
-        Assert::AreEqual<Json>(vec[i], array.At(i));
-      }
+      static_assert(is_const<remove_reference<decltype(array.At(0))>::type>::value, "JsonArray::At(index) return type must be Json const&");
     }
 
     TEST_METHOD(TestAt)

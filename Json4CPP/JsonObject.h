@@ -53,9 +53,10 @@ namespace Json4CPP
     bool Insert(std::pair<KEY, Json> pair);
     void Erase(KEY key);
     std::vector<KEY> Keys() const;
-    Json& operator[](KEY const& key);
-    Json  At        (KEY const& key) const;
-    Json& At        (KEY const& key);
+    Json      & operator[](KEY const& key);
+    Json const& operator[](KEY const& key) const;
+    Json      & At(KEY const& key);
+    Json const& At(KEY const& key) const;
 
     std::vector<std::pair<KEY, Json>>::      iterator begin();
     std::vector<std::pair<KEY, Json>>::      iterator end  ();

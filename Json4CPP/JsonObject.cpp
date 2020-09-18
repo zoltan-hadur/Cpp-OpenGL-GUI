@@ -176,12 +176,17 @@ namespace Json4CPP
     return _pairs[_indexes.at(key)].second;
   }
 
-  Json JsonObject::At(KEY const& key) const
+  Json const& JsonObject::operator[](KEY const& key) const
   {
     return _pairs[_indexes.at(key)].second;
   }
 
   Json& JsonObject::At(KEY const& key)
+  {
+    return _pairs[_indexes.at(key)].second;
+  }
+
+  Json const& JsonObject::At(KEY const& key) const
   {
     return _pairs[_indexes.at(key)].second;
   }

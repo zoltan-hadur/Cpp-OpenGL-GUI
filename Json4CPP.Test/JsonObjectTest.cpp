@@ -403,7 +403,6 @@ namespace Json4CPP::Test
         },
         { L"Array", { 1, 2, 3 } },
       };
-      auto map = std::map<wstring, Json>{ { L"Null", nullptr }, { L"String", L"Test" }, { L"Boolean", true }, { L"Number", 1337 }, { L"Object", { { L"Key1", 1 }, { L"Key2", 2 } } }, { L"Array", { 1, 2, 3 } } };
       Assert::AreEqual(6i64, object.Size());
       Assert::AreEqual<Json>(nullptr, object.At(L"Null"));
       Assert::AreEqual<Json>(L"Test"s, object.At(L"String"));
@@ -417,12 +416,7 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>(2, object.At(L"Array")[1]);
       Assert::AreEqual<Json>(3, object.At(L"Array")[2]);
 
-      for (auto key : object.Keys())
-      {
-        object.At(key) = 9999;
-        Assert::AreNotEqual<Json>(9999, object.At(key));
-        Assert::AreEqual<Json>(map[key], object.At(key));
-      }
+      static_assert(is_const<remove_reference<decltype(object.At(L"Null"))>::type>::value, "JsonObject::At(KEY) return type must be Json const&");
     }
 
     TEST_METHOD(TestAt)

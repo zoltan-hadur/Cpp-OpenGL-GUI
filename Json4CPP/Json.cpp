@@ -264,6 +264,15 @@ namespace Json4CPP
     }
   }
 
+  Json const& Json::operator[](KEY const& key) const
+  {
+    switch (Type())
+    {
+    case JsonType::Object: return get<JsonObject>(_value)[key];
+    default: throw exception("Operator[KEY] is only defined for JsonObject!");
+    }
+  }
+
   Json& Json::operator[](int64_t const& index)
   {
     switch (Type())
@@ -273,12 +282,12 @@ namespace Json4CPP
     }
   }
 
-  Json Json::At(KEY const& key) const
+  Json const& Json::operator[](int64_t const& index) const
   {
     switch (Type())
     {
-    case JsonType::Object: return get<JsonObject>(_value).At(key);
-    default: throw exception("At(KEY key) is only defined for JsonObject!");
+    case JsonType::Array: return get<JsonArray>(_value)[index];
+    default: throw exception("Operator[int] is only defined for JsonArray!");
     }
   }
 
@@ -291,7 +300,16 @@ namespace Json4CPP
     }
   }
 
-  Json Json::At(int64_t const& index) const
+  Json const& Json::At(KEY const& key) const
+  {
+    switch (Type())
+    {
+    case JsonType::Object: return get<JsonObject>(_value).At(key);
+    default: throw exception("At(KEY key) is only defined for JsonObject!");
+    }
+  }
+
+  Json& Json::At(int64_t const& index)
   {
     switch (Type())
     {
@@ -300,7 +318,7 @@ namespace Json4CPP
     }
   }
 
-  Json& Json::At(int64_t const& index)
+  Json const& Json::At(int64_t const& index) const
   {
     switch (Type())
     {

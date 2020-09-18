@@ -1380,10 +1380,9 @@ namespace Json4CPP::Test
       };
       Assert::AreEqual<Json>(1, json.At(L"Key1"s));
       Assert::AreEqual<Json>(2, json.At(L"Key2"s));
-      json.At(L"Key1"s) = 1337;
-      json.At(L"Key2"s) = 31337;
       Assert::AreEqual<Json>(1, json.At(L"Key1"s));
       Assert::AreEqual<Json>(2, json.At(L"Key2"s));
+      static_assert(is_const<remove_reference<decltype(json.At(L"Key1"))>::type>::value, "JsonObject::At(KEY) return type must be Json const&");
     }
 
     TEST_METHOD(TestAt2)
@@ -1419,14 +1418,11 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>(3, json.At(1));
       Assert::AreEqual<Json>(3, json.At(2));
       Assert::AreEqual<Json>(7, json.At(3));
-      json.At(0) = 1337;
-      json.At(1) = 1338;
-      json.At(2) = 1339;
-      json.At(3) = 1340;
       Assert::AreEqual<Json>(1, json.At(0));
       Assert::AreEqual<Json>(3, json.At(1));
       Assert::AreEqual<Json>(3, json.At(2));
       Assert::AreEqual<Json>(7, json.At(3));
+      static_assert(is_const<remove_reference<decltype(json.At(0))>::type>::value, "JsonArray::At(index) return type must be Json const&");
     }
 
     TEST_METHOD(TestAt4)
