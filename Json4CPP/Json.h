@@ -137,13 +137,7 @@ namespace Json4CPP
     template<typename T>
     static std::wstring Stringify(T const& value)
     {
-      if constexpr (std::is_same_v<typename std::decay_t<decltype(value)>, std::nullptr_t> ||
-                    std::is_same_v<typename std::decay_t<decltype(value)>, std::wstring>   ||
-                    std::is_same_v<typename std::decay_t<decltype(value)>, bool>           ||
-                    std::is_same_v<typename std::decay_t<decltype(value)>, double>         ||
-                    std::is_same_v<typename std::decay_t<decltype(value)>, int64_t>        ||
-                    std::is_same_v<typename std::decay_t<decltype(value)>, JsonObject>     ||
-                    std::is_same_v<typename std::decay_t<decltype(value)>, JsonArray>)
+      if constexpr (std::is_constructible_v<T, Json&>)
       {
         return Json(value).Dump();
       }

@@ -544,11 +544,12 @@ namespace Json4CPP::Test
         { L"{\"key1\":1337,\"key2\":\"value2\"}"s,
         { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"key1"s }, { JsonTokenType::Integer, 1337i64 },
           { JsonTokenType::PropertyName, L"key2"s }, { JsonTokenType::String, L"value2"s }, { JsonTokenType::EndObject, L"}"s } } },
-        // Complex object with all types of values (string, number, object, array, bool, null)
-        { L"{ \"string\": \"string\", \"number\": 1337, \"object\": { \"key1\": \"value1\", \"key2\": \"value2\" }, \"array\": [ 1, 3, 3, 7 ], \"true\": true, \"false\": false, \"null\": null }"s,
+        // Complex object with all types of values (string, real, integer, object, array, bool, null)
+        { L"{ \"string\": \"string\", \"real\": 13.37, \"integer\": 1337, \"object\": { \"key1\": \"value1\", \"key2\": \"value2\" }, \"array\": [ 1, 3, 3, 7 ], \"true\": true, \"false\": false, \"null\": null }"s,
         { { JsonTokenType::StartObject, L"{"s },
           { JsonTokenType::PropertyName, L"string"s }, { JsonTokenType::String, L"string"s },
-          { JsonTokenType::PropertyName, L"number"s }, { JsonTokenType::Integer, 1337i64 },
+          { JsonTokenType::PropertyName, L"real"s }, { JsonTokenType::Real, 13.37 },
+          { JsonTokenType::PropertyName, L"integer"s }, { JsonTokenType::Integer, 1337i64 },
           { JsonTokenType::PropertyName, L"object"s }, { JsonTokenType::StartObject, L"{"s },
           { JsonTokenType::PropertyName, L"key1"s }, { JsonTokenType::String, L"value1"s },
           { JsonTokenType::PropertyName, L"key2"s }, { JsonTokenType::String, L"value2"s }, { JsonTokenType::EndObject, L"}"s },
@@ -615,10 +616,11 @@ namespace Json4CPP::Test
         { L"[1  ,  2  ]"s,    { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Integer, 1i64 }, { JsonTokenType::Integer, 2i64 }, { JsonTokenType::EndArray, L"]"s } } },
         { L"[  1  ,  2  ]"s,  { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Integer, 1i64 }, { JsonTokenType::Integer, 2i64 }, { JsonTokenType::EndArray, L"]"s } } },
         { L"[  1  ,  2  ] "s, { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Integer, 1i64 }, { JsonTokenType::Integer, 2i64 }, { JsonTokenType::EndArray, L"]"s } } },
-        // Complex array with all types of values (string, number, object, array, bool, null)
-        { L"[ \"string\",1337, {   \"key1\":\"value1\" ,   \"key2\":\"value2\"  }, [ 1, 3, 3, 7 ], true, false, null    ]"s,
+        // Complex array with all types of values (string, real, integer, object, array, bool, null)
+        { L"[ \"string\",13.37,1337, {   \"key1\":\"value1\" ,   \"key2\":\"value2\"  }, [ 1, 3, 3, 7 ], true, false, null    ]"s,
         { { JsonTokenType::StartArray, L"["s },
           { JsonTokenType::String, L"string"s },
+          { JsonTokenType::Real, 13.37 },
           { JsonTokenType::Integer, 1337i64 },
           { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"key1"s }, { JsonTokenType::String, L"value1"s }, { JsonTokenType::PropertyName, L"key2"s }, { JsonTokenType::String, L"value2"s }, { JsonTokenType::EndObject, L"}"s },
           { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Integer, 1i64 }, { JsonTokenType::Integer, 3i64 }, { JsonTokenType::Integer, 3i64 }, { JsonTokenType::Integer, 7i64 }, { JsonTokenType::EndArray, L"]"s },
@@ -728,6 +730,7 @@ namespace Json4CPP::Test
         { { { JsonTokenType::Real, 1000000000000000000000000000000000000000000000000.0   } }, L"1e+48"s               },
         { { { JsonTokenType::Real, 10000000000000000000000000000000000000000000000000.0  } }, L"1e+49"s               },
         { { { JsonTokenType::Real, 100000000000000000000000000000000000000000000000000.0 } }, L"1e+50"s               },
+        { { { JsonTokenType::Integer, 9223372036854775807i64 } }, L"9223372036854775807"s },
       };
 
       for (auto [input, expected] : pairs)
@@ -749,6 +752,7 @@ namespace Json4CPP::Test
         { 0, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":true}"s },
         { 0, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":false}"s },
         { 0, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Real, 13.37 }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":13.37}"s },
+        { 0, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Integer, 1337i64 }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":1337}"s },
         { 0, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":{}}"s },
         { 0, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartArray, L"["s }, { JsonTokenType::EndArray, L"]"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":[]}"s },
         { 0, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key2"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":{\"Key2\":true}}"s },
@@ -760,6 +764,7 @@ namespace Json4CPP::Test
         { 0, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":true}"s },
         { 0, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":false}"s },
         { 0, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Real, 13.37 }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":13.37}"s },
+        { 0, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Integer, 1337i64 }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":1337}"s },
         { 0, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":{}}"s },
         { 0, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartArray, L"["s }, { JsonTokenType::EndArray, L"]"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":[]}"s },
         { 0, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key2"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\"Key1\":{\"Key2\":true}}"s },
@@ -771,6 +776,7 @@ namespace Json4CPP::Test
         { 1, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n \"Key1\": true\r\n}"s },
         { 1, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n \"Key1\": false\r\n}"s },
         { 1, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Real, 13.37 }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n \"Key1\": 13.37\r\n}"s },
+        { 1, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Integer, 1337i64 }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n \"Key1\": 1337\r\n}"s },
         { 1, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n \"Key1\": {}\r\n}"s },
         { 1, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartArray, L"["s }, { JsonTokenType::EndArray, L"]"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n \"Key1\": []\r\n}"s },
         { 1, L' ' , { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key2"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n \"Key1\": {\r\n  \"Key2\": true\r\n }\r\n}"s },
@@ -782,6 +788,7 @@ namespace Json4CPP::Test
         { 1, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n\t\"Key1\": true\r\n}"s },
         { 1, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n\t\"Key1\": false\r\n}"s },
         { 1, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Real, 13.37 }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n\t\"Key1\": 13.37\r\n}"s },
+        { 1, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::Integer, 1337i64 }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n\t\"Key1\": 1337\r\n}"s },
         { 1, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n\t\"Key1\": {}\r\n}"s },
         { 1, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartArray, L"["s }, { JsonTokenType::EndArray, L"]"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n\t\"Key1\": []\r\n}"s },
         { 1, L'\t', { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key1"s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key2"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndObject, L"}"s } }, L"{\r\n\t\"Key1\": {\r\n\t\t\"Key2\": true\r\n\t}\r\n}"s },
@@ -824,6 +831,7 @@ namespace Json4CPP::Test
         { 0, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndArray, L"]"s } }, L"[true]"s },
         { 0, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndArray, L"]"s } }, L"[false]"s },
         { 0, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Real, 13.37 }, { JsonTokenType::EndArray, L"]"s } }, L"[13.37]"s },
+        { 0, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Integer, 1337i64 }, { JsonTokenType::EndArray, L"]"s } }, L"[1337]"s },
         { 0, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndArray, L"]"s } }, L"[{}]"s },
         { 0, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartArray, L"["s }, { JsonTokenType::EndArray, L"]"s }, { JsonTokenType::EndArray, L"]"s } }, L"[[]]"s },
         { 0, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key2"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndArray, L"]"s } }, L"[{\"Key2\":true}]"s },
@@ -835,6 +843,7 @@ namespace Json4CPP::Test
         { 0, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndArray, L"]"s } }, L"[true]"s },
         { 0, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndArray, L"]"s } }, L"[false]"s },
         { 0, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Real, 13.37 }, { JsonTokenType::EndArray, L"]"s } }, L"[13.37]"s },
+        { 0, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Integer, 1337i64 }, { JsonTokenType::EndArray, L"]"s } }, L"[1337]"s },
         { 0, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndArray, L"]"s } }, L"[{}]"s },
         { 0, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartArray, L"["s }, { JsonTokenType::EndArray, L"]"s }, { JsonTokenType::EndArray, L"]"s } }, L"[[]]"s },
         { 0, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key2"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndArray, L"]"s } }, L"[{\"Key2\":true}]"s },
@@ -846,6 +855,7 @@ namespace Json4CPP::Test
         { 1, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n true\r\n]"s },
         { 1, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n false\r\n]"s },
         { 1, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Real, 13.37 }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n 13.37\r\n]"s },
+        { 1, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Integer, 1337i64 }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n 1337\r\n]"s },
         { 1, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n {}\r\n]"s },
         { 1, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartArray, L"["s }, { JsonTokenType::EndArray, L"]"s }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n []\r\n]"s },
         { 1, L' ' , { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key2"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n {\r\n  \"Key2\": true\r\n }\r\n]"s },
@@ -857,6 +867,7 @@ namespace Json4CPP::Test
         { 1, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n\ttrue\r\n]"s },
         { 1, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Boolean, false }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n\tfalse\r\n]"s },
         { 1, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Real, 13.37 }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n\t13.37\r\n]"s },
+        { 1, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::Integer, 1337i64 }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n\t1337\r\n]"s },
         { 1, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n\t{}\r\n]"s },
         { 1, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartArray, L"["s }, { JsonTokenType::EndArray, L"]"s }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n\t[]\r\n]"s },
         { 1, L'\t', { { JsonTokenType::StartArray, L"["s }, { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::PropertyName, L"Key2"s }, { JsonTokenType::Boolean, true }, { JsonTokenType::EndObject, L"}"s }, { JsonTokenType::EndArray, L"]"s } }, L"[\r\n\t{\r\n\t\t\"Key2\": true\r\n\t}\r\n]"s },
@@ -897,7 +908,8 @@ namespace Json4CPP::Test
         { { { JsonTokenType::PropertyName, L"\"💰\", A, Á, B, C"s } }, L"\"\\\"💰\\\", A, Á, B, C\""s },
         { { { JsonTokenType::Boolean, true      } }, L"true"s  },
         { { { JsonTokenType::Boolean, false     } }, L"false"s },
-        { { { JsonTokenType::Real, 13.37      } }, L"13.37"s },
+        { { { JsonTokenType::Real, 13.37        } }, L"13.37"s },
+        { { { JsonTokenType::Integer, 1337i64   } }, L"1337"s  },
         { { { JsonTokenType::StartObject, L"{"s }, { JsonTokenType::EndObject, L"}"s } }, L"{}"s },
         { { { JsonTokenType::StartArray , L"["s }, { JsonTokenType::EndArray , L"]"s } }, L"[]"s },
         { { { JsonTokenType::Undefined, nullptr } }, L"null"s  },
@@ -905,6 +917,7 @@ namespace Json4CPP::Test
         { { { JsonTokenType::Undefined, true    } }, L"true"s  },
         { { { JsonTokenType::Undefined, false   } }, L"false"s },
         { { { JsonTokenType::Undefined, 13.37   } }, L"13.37"s },
+        { { { JsonTokenType::Undefined, 1337i64 } }, L"1337"s  },
       };
 
       for (auto [input, expected] : pairs)
@@ -924,7 +937,8 @@ namespace Json4CPP::Test
         { L"\"💰\", A, Á, B, C"s, L"\"\\\"💰\\\", A, Á, B, C\""s },
         { true, L"true"s },
         { false, L"false"s },
-        { 13.37, L"13.37"s }
+        { 13.37, L"13.37"s },
+        { 1337i64, L"1337"s }
       };
 
       for (auto [input, expected] : pairs)

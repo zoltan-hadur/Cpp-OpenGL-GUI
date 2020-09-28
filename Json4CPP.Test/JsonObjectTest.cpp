@@ -27,6 +27,7 @@ namespace Json4CPP::Test
       Assert::ExpectException<exception>([&]() { object = JsonBuilder(VALUE(wstring())); });
       Assert::ExpectException<exception>([&]() { object = JsonBuilder(VALUE(bool())); });
       Assert::ExpectException<exception>([&]() { object = JsonBuilder(VALUE(double())); });
+      Assert::ExpectException<exception>([&]() { object = JsonBuilder(VALUE(int64_t())); });
       object = JsonBuilder(VALUE(JsonObject({ { L"Key1", 1 }, { L"Key2", 2 } })));
       Assert::AreEqual(2i64, object.Size());
       Assert::AreEqual(L"Key1"s, object.Keys()[0]);
@@ -111,24 +112,27 @@ namespace Json4CPP::Test
         { L"Null", nullptr },
         { L"String", L"Test" },
         { L"Boolean", true },
-        { L"Number", 1337 },
+        { L"Real", 13.37 },
+        { L"Integer", 1337 },
         { L"Object", {
           { L"Key1", 1 },
           { L"Key2", 2 } }
         },
         { L"Array", { 1, 2, 3 } },
       };
-      Assert::AreEqual(6i64, object.Size());
+      Assert::AreEqual(7i64, object.Size());
       Assert::AreEqual(L"Null"s, object.Keys()[0]);
       Assert::AreEqual(L"String"s, object.Keys()[1]);
       Assert::AreEqual(L"Boolean"s, object.Keys()[2]);
-      Assert::AreEqual(L"Number"s, object.Keys()[3]);
-      Assert::AreEqual(L"Object"s, object.Keys()[4]);
-      Assert::AreEqual(L"Array"s, object.Keys()[5]);
+      Assert::AreEqual(L"Real"s, object.Keys()[3]);
+      Assert::AreEqual(L"Integer"s, object.Keys()[4]);
+      Assert::AreEqual(L"Object"s, object.Keys()[5]);
+      Assert::AreEqual(L"Array"s, object.Keys()[6]);
       Assert::AreEqual<Json>(nullptr, object[L"Null"]);
       Assert::AreEqual<Json>(L"Test", object[L"String"]);
       Assert::AreEqual<Json>(true, object[L"Boolean"]);
-      Assert::AreEqual<Json>(1337, object[L"Number"]);
+      Assert::AreEqual<Json>(13.37, object[L"Real"]);
+      Assert::AreEqual<Json>(1337, object[L"Integer"]);
       Assert::AreEqual<Json>({ { L"Key1", 1 }, { L"Key2", 2 } }, object[L"Object"]);
       Assert::AreEqual<Json>({ 1, 2, 3 }, object[L"Array"]);
       Assert::AreEqual(L"Key1"s, object[L"Object"].Keys()[0]);
@@ -159,7 +163,8 @@ namespace Json4CPP::Test
         { L"Null", nullptr },
         { L"String", L"Test" },
         { L"Boolean", true },
-        { L"Number", 1337 },
+        { L"Real", 13.37 },
+        { L"Integer", 1337 },
         { L"Object", {
           { L"Key1", 1 },
           { L"Key2", 2 } }
@@ -167,17 +172,18 @@ namespace Json4CPP::Test
         { L"Array", { 1, 2, 3 } },
       };
 
-      Assert::AreEqual(L"{\"Null\":null,\"String\":\"Test\",\"Boolean\":true,\"Number\":1337,\"Object\":{\"Key1\":1,\"Key2\":2},\"Array\":[1,2,3]}"s, object.Dump());
-      Assert::AreEqual(L"{\"Null\":null,\"String\":\"Test\",\"Boolean\":true,\"Number\":1337,\"Object\":{\"Key1\":1,\"Key2\":2},\"Array\":[1,2,3]}"s, object.Dump(0));
-      Assert::AreEqual(L"{\"Null\":null,\"String\":\"Test\",\"Boolean\":true,\"Number\":1337,\"Object\":{\"Key1\":1,\"Key2\":2},\"Array\":[1,2,3]}"s, object.Dump(0, L' '));
-      Assert::AreEqual(L"{\"Null\":null,\"String\":\"Test\",\"Boolean\":true,\"Number\":1337,\"Object\":{\"Key1\":1,\"Key2\":2},\"Array\":[1,2,3]}"s, object.Dump(0, L'\t'));
+      Assert::AreEqual(L"{\"Null\":null,\"String\":\"Test\",\"Boolean\":true,\"Real\":13.37,\"Integer\":1337,\"Object\":{\"Key1\":1,\"Key2\":2},\"Array\":[1,2,3]}"s, object.Dump());
+      Assert::AreEqual(L"{\"Null\":null,\"String\":\"Test\",\"Boolean\":true,\"Real\":13.37,\"Integer\":1337,\"Object\":{\"Key1\":1,\"Key2\":2},\"Array\":[1,2,3]}"s, object.Dump(0));
+      Assert::AreEqual(L"{\"Null\":null,\"String\":\"Test\",\"Boolean\":true,\"Real\":13.37,\"Integer\":1337,\"Object\":{\"Key1\":1,\"Key2\":2},\"Array\":[1,2,3]}"s, object.Dump(0, L' '));
+      Assert::AreEqual(L"{\"Null\":null,\"String\":\"Test\",\"Boolean\":true,\"Real\":13.37,\"Integer\":1337,\"Object\":{\"Key1\":1,\"Key2\":2},\"Array\":[1,2,3]}"s, object.Dump(0, L'\t'));
 
       Assert::AreEqual(
         L"{"                            "\r\n"
          " \"Null\": null,"             "\r\n"
          " \"String\": \"Test\","       "\r\n"
          " \"Boolean\": true,"          "\r\n"
-         " \"Number\": 1337,"           "\r\n"
+         " \"Real\": 13.37,"            "\r\n"
+         " \"Integer\": 1337,"          "\r\n"
          " \"Object\": {"               "\r\n"
          "  \"Key1\": 1,"               "\r\n"
          "  \"Key2\": 2"                "\r\n"
@@ -194,7 +200,8 @@ namespace Json4CPP::Test
          " \"Null\": null,"             "\r\n"
          " \"String\": \"Test\","       "\r\n"
          " \"Boolean\": true,"          "\r\n"
-         " \"Number\": 1337,"           "\r\n"
+         " \"Real\": 13.37,"            "\r\n"
+         " \"Integer\": 1337,"          "\r\n"
          " \"Object\": {"               "\r\n"
          "  \"Key1\": 1,"               "\r\n"
          "  \"Key2\": 2"                "\r\n"
@@ -211,7 +218,8 @@ namespace Json4CPP::Test
          "\t\"Null\": null,"            "\r\n"
          "\t\"String\": \"Test\","      "\r\n"
          "\t\"Boolean\": true,"         "\r\n"
-         "\t\"Number\": 1337,"          "\r\n"
+         "\t\"Real\": 13.37,"           "\r\n"
+         "\t\"Integer\": 1337,"         "\r\n"
          "\t\"Object\": {"              "\r\n"
          "\t\t\"Key1\": 1,"             "\r\n"
          "\t\t\"Key2\": 2"              "\r\n"
@@ -228,7 +236,8 @@ namespace Json4CPP::Test
          "  \"Null\": null,"            "\r\n"
          "  \"String\": \"Test\","      "\r\n"
          "  \"Boolean\": true,"         "\r\n"
-         "  \"Number\": 1337,"          "\r\n"
+         "  \"Real\": 13.37,"           "\r\n"
+         "  \"Integer\": 1337,"         "\r\n"
          "  \"Object\": {"              "\r\n"
          "    \"Key1\": 1,"             "\r\n"
          "    \"Key2\": 2"              "\r\n"
@@ -245,7 +254,8 @@ namespace Json4CPP::Test
          "  \"Null\": null,"            "\r\n"
          "  \"String\": \"Test\","      "\r\n"
          "  \"Boolean\": true,"         "\r\n"
-         "  \"Number\": 1337,"          "\r\n"
+         "  \"Real\": 13.37,"           "\r\n"
+         "  \"Integer\": 1337,"         "\r\n"
          "  \"Object\": {"              "\r\n"
          "    \"Key1\": 1,"             "\r\n"
          "    \"Key2\": 2"              "\r\n"
@@ -262,7 +272,8 @@ namespace Json4CPP::Test
          "\t\t\"Null\": null,"          "\r\n"
          "\t\t\"String\": \"Test\","    "\r\n"
          "\t\t\"Boolean\": true,"       "\r\n"
-         "\t\t\"Number\": 1337,"        "\r\n"
+         "\t\t\"Real\": 13.37,"         "\r\n"
+         "\t\t\"Integer\": 1337,"       "\r\n"
          "\t\t\"Object\": {"            "\r\n"
          "\t\t\t\t\"Key1\": 1,"         "\r\n"
          "\t\t\t\t\"Key2\": 2"          "\r\n"
@@ -282,9 +293,10 @@ namespace Json4CPP::Test
       Assert::AreEqual(1i64, JsonObject{ { L"Null", nullptr } }.Size());
       Assert::AreEqual(2i64, JsonObject{ { L"Null", nullptr }, { L"String", L"Test" } }.Size());
       Assert::AreEqual(3i64, JsonObject{ { L"Null", nullptr }, { L"String", L"Test" }, { L"Boolean", true } }.Size());
-      Assert::AreEqual(4i64, JsonObject{ { L"Null", nullptr }, { L"String", L"Test" }, { L"Boolean", true }, { L"Number", 1337 } }.Size());
-      Assert::AreEqual(5i64, JsonObject{ { L"Null", nullptr }, { L"String", L"Test" }, { L"Boolean", true }, { L"Number", 1337 }, { L"Object", {{ L"Key1", 1 }, { L"Key2", 2 } } } }.Size());
-      Assert::AreEqual(6i64, JsonObject{ { L"Null", nullptr }, { L"String", L"Test" }, { L"Boolean", true }, { L"Number", 1337 }, { L"Object", {{ L"Key1", 1 }, { L"Key2", 2 } } }, { L"Array", { 1, 2, 3 } } }.Size());
+      Assert::AreEqual(4i64, JsonObject{ { L"Null", nullptr }, { L"String", L"Test" }, { L"Boolean", true }, { L"Real", 13.37 } }.Size());
+      Assert::AreEqual(5i64, JsonObject{ { L"Null", nullptr }, { L"String", L"Test" }, { L"Boolean", true }, { L"Real", 13.37 }, { L"Integer", 1337 } }.Size());
+      Assert::AreEqual(6i64, JsonObject{ { L"Null", nullptr }, { L"String", L"Test" }, { L"Boolean", true }, { L"Real", 13.37 }, { L"Integer", 1337 }, { L"Object", {{ L"Key1", 1 }, { L"Key2", 2 } } } }.Size());
+      Assert::AreEqual(7i64, JsonObject{ { L"Null", nullptr }, { L"String", L"Test" }, { L"Boolean", true }, { L"Real", 13.37 }, { L"Integer", 1337 }, { L"Object", {{ L"Key1", 1 }, { L"Key2", 2 } } }, { L"Array", { 1, 2, 3 } } }.Size());
     }
 
     TEST_METHOD(TestClear)
@@ -300,14 +312,16 @@ namespace Json4CPP::Test
       object.Insert({ L"Null", nullptr });
       object.Insert({ L"String", L"Test" });
       object.Insert({ L"Boolean", true });
-      object.Insert({ L"Number", 1337 });
+      object.Insert({ L"Real", 13.37 });
+      object.Insert({ L"Integer", 1337 });
       object.Insert({ L"Object", { { L"Key1", 1 }, { L"Key2", 2 } } });
       object.Insert({ L"Array", { 1, 2, 3 } });
-      Assert::AreEqual(6i64, object.Size());
+      Assert::AreEqual(7i64, object.Size());
       Assert::AreEqual<Json>(nullptr, object[L"Null"]);
       Assert::AreEqual<Json>(L"Test"s, object[L"String"]);
       Assert::AreEqual<Json>(true, object[L"Boolean"]);
-      Assert::AreEqual<Json>(1337, object[L"Number"]);
+      Assert::AreEqual<Json>(13.37, object[L"Real"]);
+      Assert::AreEqual<Json>(1337, object[L"Integer"]);
       Assert::AreEqual<Json>({ { L"Key1", 1 }, { L"Key2", 2 } }, object[L"Object"]);
       Assert::AreEqual<Json>({ 1, 2, 3 }, object[L"Array"]);
     }
@@ -318,7 +332,8 @@ namespace Json4CPP::Test
         { L"Null", nullptr },
         { L"String", L"Test" },
         { L"Boolean", true },
-        { L"Number", 1337 },
+        { L"Real", 13.37 },
+        { L"Integer", 1337 },
         { L"Object", {
           { L"Key1", 1 },
           { L"Key2", 2 } }
@@ -326,10 +341,11 @@ namespace Json4CPP::Test
         { L"Array", { 1, 2, 3 } },
       };
       object.Erase(L"String");
-      object.Erase(L"Number");
-      Assert::AreEqual(4i64, object.Size());
+      object.Erase(L"Real");
+      Assert::AreEqual(5i64, object.Size());
       Assert::AreEqual<Json>(nullptr, object[L"Null"]);
       Assert::AreEqual<Json>(true, object[L"Boolean"]);
+      Assert::AreEqual<Json>(1337, object[L"Integer"]);
       Assert::AreEqual<Json>({ { L"Key1", 1 }, { L"Key2", 2 } }, object[L"Object"]);
       Assert::AreEqual<Json>({ 1, 2, 3 }, object[L"Array"]);
     }
@@ -340,21 +356,23 @@ namespace Json4CPP::Test
         { L"Null", nullptr },
         { L"String", L"Test" },
         { L"Boolean", true },
-        { L"Number", 1337 },
+        { L"Real", 13.37 },
+        { L"Integer", 1337 },
         { L"Object", {
           { L"Key1", 1 },
           { L"Key2", 2 } }
         },
         { L"Array", { 1, 2, 3 } },
       };
-      Assert::AreEqual(6i64, object.Size());
-      Assert::AreEqual(6ui64, object.Keys().size());
+      Assert::AreEqual(7i64, object.Size());
+      Assert::AreEqual(7ui64, object.Keys().size());
       Assert::AreEqual(L"Null"s, object.Keys()[0]);
       Assert::AreEqual(L"String"s, object.Keys()[1]);
       Assert::AreEqual(L"Boolean"s, object.Keys()[2]);
-      Assert::AreEqual(L"Number"s, object.Keys()[3]);
-      Assert::AreEqual(L"Object"s, object.Keys()[4]);
-      Assert::AreEqual(L"Array"s, object.Keys()[5]);
+      Assert::AreEqual(L"Real"s, object.Keys()[3]);
+      Assert::AreEqual(L"Integer"s, object.Keys()[4]);
+      Assert::AreEqual(L"Object"s, object.Keys()[5]);
+      Assert::AreEqual(L"Array"s, object.Keys()[6]);
     }
 
     TEST_METHOD(TestOperatorIndex)
@@ -363,18 +381,20 @@ namespace Json4CPP::Test
         { L"Null", nullptr },
         { L"String", L"Test" },
         { L"Boolean", true },
-        { L"Number", 1337 },
+        { L"Real", 13.37 },
+        { L"Integer", 1337 },
         { L"Object", {
           { L"Key1", 1 },
           { L"Key2", 2 } }
         },
         { L"Array", { 1, 2, 3 } },
       };
-      Assert::AreEqual(6i64, object.Size());
+      Assert::AreEqual(7i64, object.Size());
       Assert::AreEqual<Json>(nullptr, object[L"Null"]);
       Assert::AreEqual<Json>(L"Test"s, object[L"String"]);
       Assert::AreEqual<Json>(true, object[L"Boolean"]);
-      Assert::AreEqual<Json>(1337, object[L"Number"]);
+      Assert::AreEqual<Json>(13.37, object[L"Real"]);
+      Assert::AreEqual<Json>(1337, object[L"Integer"]);
       Assert::AreEqual<Json>({ { L"Key1", 1 }, { L"Key2", 2 } }, object[L"Object"]);
       Assert::AreEqual<Json>({ 1, 2, 3 }, object[L"Array"]);
       Assert::AreEqual<Json>(1, object[L"Object"][L"Key1"]);
@@ -396,18 +416,20 @@ namespace Json4CPP::Test
         { L"Null", nullptr },
         { L"String", L"Test" },
         { L"Boolean", true },
-        { L"Number", 1337 },
+        { L"Real", 13.37 },
+        { L"Integer", 1337 },
         { L"Object", {
           { L"Key1", 1 },
           { L"Key2", 2 } }
         },
         { L"Array", { 1, 2, 3 } },
       };
-      Assert::AreEqual(6i64, object.Size());
+      Assert::AreEqual(7i64, object.Size());
       Assert::AreEqual<Json>(nullptr, object.At(L"Null"));
       Assert::AreEqual<Json>(L"Test"s, object.At(L"String"));
       Assert::AreEqual<Json>(true, object.At(L"Boolean"));
-      Assert::AreEqual<Json>(1337, object.At(L"Number"));
+      Assert::AreEqual<Json>(13.37, object.At(L"Real"));
+      Assert::AreEqual<Json>(1337, object.At(L"Integer"));
       Assert::AreEqual<Json>({ { L"Key1", 1 }, { L"Key2", 2 } }, object.At(L"Object"));
       Assert::AreEqual<Json>({ 1, 2, 3 }, object.At(L"Array"));
       Assert::AreEqual<Json>(1, object.At(L"Object")[L"Key1"]);
@@ -425,18 +447,20 @@ namespace Json4CPP::Test
         { L"Null", nullptr },
         { L"String", L"Test" },
         { L"Boolean", true },
-        { L"Number", 1337 },
+        { L"Real", 13.37 },
+        { L"Integer", 1337 },
         { L"Object", {
           { L"Key1", 1 },
           { L"Key2", 2 } }
         },
         { L"Array", { 1, 2, 3 } },
       };
-      Assert::AreEqual(6i64, object.Size());
+      Assert::AreEqual(7i64, object.Size());
       Assert::AreEqual<Json>(nullptr, object.At(L"Null"));
       Assert::AreEqual<Json>(L"Test"s, object.At(L"String"));
       Assert::AreEqual<Json>(true, object.At(L"Boolean"));
-      Assert::AreEqual<Json>(1337, object.At(L"Number"));
+      Assert::AreEqual<Json>(13.37, object.At(L"Real"));
+      Assert::AreEqual<Json>(1337, object.At(L"Integer"));
       Assert::AreEqual<Json>({ { L"Key1", 1 }, { L"Key2", 2 } }, object.At(L"Object"));
       Assert::AreEqual<Json>({ 1, 2, 3 }, object.At(L"Array"));
       Assert::AreEqual<Json>(1, object.At(L"Object")[L"Key1"]);
@@ -458,14 +482,15 @@ namespace Json4CPP::Test
         { L"Null", nullptr },
         { L"String", L"Test" },
         { L"Boolean", true },
-        { L"Number", 1337 },
+        { L"Real", 13.37 },
+        { L"Integer", 1337 },
         { L"Object", {
           { L"Key1", 1 },
           { L"Key2", 2 } }
         },
         { L"Array", { 1, 2, 3 } },
       };
-      auto map = std::map<wstring, Json>{ { L"Null", nullptr }, { L"String", L"Test" }, { L"Boolean", true }, { L"Number", 1337 }, { L"Object", { { L"Key1", 1 }, { L"Key2", 2 } } }, { L"Array", { 1, 2, 3 } } };
+      auto map = std::map<wstring, Json>{ { L"Null", nullptr }, { L"String", L"Test" }, { L"Boolean", true }, { L"Real", 13.37 }, { L"Integer", 1337 }, { L"Object", { { L"Key1", 1 }, { L"Key2", 2 } } }, { L"Array", { 1, 2, 3 } } };
       for (auto& [key, value] : object)
       {
         value = 1337;
@@ -479,14 +504,15 @@ namespace Json4CPP::Test
         { L"Null", nullptr },
         { L"String", L"Test" },
         { L"Boolean", true },
-        { L"Number", 1337 },
+        { L"Real", 13.37 },
+        { L"Integer", 1337 },
         { L"Object", {
           { L"Key1", 1 },
           { L"Key2", 2 } }
         },
         { L"Array", { 1, 2, 3 } },
       };
-      map = std::map<wstring, Json>{ { L"Null", nullptr }, { L"String", L"Test" }, { L"Boolean", true }, { L"Number", 1337 }, { L"Object", { { L"Key1", 1 }, { L"Key2", 2 } } }, { L"Array", { 1, 2, 3 } } };
+      map = std::map<wstring, Json>{ { L"Null", nullptr }, { L"String", L"Test" }, { L"Boolean", true }, { L"Real", 13.37 }, { L"Integer", 1337 }, { L"Object", { { L"Key1", 1 }, { L"Key2", 2 } } }, { L"Array", { 1, 2, 3 } } };
       for (auto [key, value] : object)
       {
         value = 1337;
@@ -503,14 +529,15 @@ namespace Json4CPP::Test
         { L"Null", nullptr },
         { L"String", L"Test" },
         { L"Boolean", true },
-        { L"Number", 1337 },
+        { L"Real", 13.37 },
+        { L"Integer", 1337 },
         { L"Object", {
           { L"Key1", 1 },
           { L"Key2", 2 } }
         },
         { L"Array", { 1, 2, 3 } },
       };
-      auto const map = std::map<wstring, Json>{ { L"Null", nullptr }, { L"String", L"Test" }, { L"Boolean", true }, { L"Number", 1337 }, { L"Object", { { L"Key1", 1 }, { L"Key2", 2 } } }, { L"Array", { 1, 2, 3 } } };
+      auto const map = std::map<wstring, Json>{ { L"Null", nullptr }, { L"String", L"Test" }, { L"Boolean", true }, { L"Real", 13.37 }, { L"Integer", 1337 }, { L"Object", { { L"Key1", 1 }, { L"Key2", 2 } } }, { L"Array", { 1, 2, 3 } } };
       for (auto [key, value] : object)
       {
         value = 1337;
@@ -524,14 +551,15 @@ namespace Json4CPP::Test
         { L"Null", nullptr },
         { L"String", L"Test" },
         { L"Boolean", true },
-        { L"Number", 1337 },
+        { L"Real", 13.37 },
+        { L"Integer", 1337 },
         { L"Object", {
           { L"Key1", 1 },
           { L"Key2", 2 } }
         },
         { L"Array", { 1, 2, 3 } },
       };
-      auto const& map2 = std::map<wstring, Json>{ { L"Null", nullptr }, { L"String", L"Test" }, { L"Boolean", true }, { L"Number", 1337 }, { L"Object", { { L"Key1", 1 }, { L"Key2", 2 } } }, { L"Array", { 1, 2, 3 } } };
+      auto const& map2 = std::map<wstring, Json>{ { L"Null", nullptr }, { L"String", L"Test" }, { L"Boolean", true }, { L"Real", 13.37 }, { L"Integer", 1337 }, { L"Object", { { L"Key1", 1 }, { L"Key2", 2 } } }, { L"Array", { 1, 2, 3 } } };
       for (auto [key, value] : object2)
       {
         value = 1337;
@@ -548,7 +576,8 @@ namespace Json4CPP::Test
         { L"Null", nullptr },
         { L"String", L"Test" },
         { L"Boolean", true },
-        { L"Number", 1337 },
+        { L"Real", 13.37 },
+        { L"Integer", 1337 },
         { L"Object", {
           { L"Key1", 1 },
           { L"Key2", 2 } }
@@ -562,7 +591,8 @@ namespace Json4CPP::Test
          "  \"Null\": null,"            "\r\n"
          "  \"String\": \"Test\","      "\r\n"
          "  \"Boolean\": true,"         "\r\n"
-         "  \"Number\": 1337,"          "\r\n"
+         "  \"Real\": 13.37,"           "\r\n"
+         "  \"Integer\": 1337,"         "\r\n"
          "  \"Object\": {"              "\r\n"
          "    \"Key1\": 1,"             "\r\n"
          "    \"Key2\": 2"              "\r\n"
@@ -608,7 +638,8 @@ namespace Json4CPP::Test
                     "  \"Null\": null,"            "\r\n"
                     "  \"String\": \"Test\","      "\r\n"
                     "  \"Boolean\": true,"         "\r\n"
-                    "  \"Number\": 1337,"          "\r\n"
+                    "  \"Real\": 13.37,"           "\r\n"
+                    "  \"Integer\": 1337,"         "\r\n"
                     "  \"Object\": {"              "\r\n"
                     "    \"Key1\": 1,"             "\r\n"
                     "    \"Key2\": 2"              "\r\n"
@@ -623,7 +654,8 @@ namespace Json4CPP::Test
         { L"Null", nullptr },
         { L"String", L"Test" },
         { L"Boolean", true },
-        { L"Number", 1337 },
+        { L"Real", 13.37 },
+        { L"Integer", 1337 },
         { L"Object", {
           { L"Key1", 1 },
           { L"Key2", 2 } }
@@ -649,6 +681,8 @@ namespace Json4CPP::Test
       JsonObject boolean2 = { { L"Key", true } };
       JsonObject number1 = { { L"Key", 0.0 } };
       JsonObject number2 = { { L"Key", 1.0 } };
+      JsonObject numberi1 = { { L"Key", 0 } };
+      JsonObject numberi2 = { { L"Key", 1 } };
       JsonObject object1 = { { L"Key", JsonObject{
         { L"key1", 1337 },
         { L"key2", 1338 }
@@ -667,6 +701,8 @@ namespace Json4CPP::Test
       Assert::IsFalse(array1   == null    );
       Assert::IsFalse(array1   == number1 );
       Assert::IsFalse(array1   == number2 );
+      Assert::IsFalse(array1   == numberi1);
+      Assert::IsFalse(array1   == numberi2);
       Assert::IsFalse(array1   == object1 );
       Assert::IsFalse(array1   == object2 );
       Assert::IsFalse(array1   == string1 );
@@ -678,6 +714,8 @@ namespace Json4CPP::Test
       Assert::IsFalse(array2   == null    );
       Assert::IsFalse(array2   == number1 );
       Assert::IsFalse(array2   == number2 );
+      Assert::IsFalse(array2   == numberi1);
+      Assert::IsFalse(array2   == numberi2);
       Assert::IsFalse(array2   == object1 );
       Assert::IsFalse(array2   == object2 );
       Assert::IsFalse(array2   == string1 );
@@ -689,6 +727,8 @@ namespace Json4CPP::Test
       Assert::IsFalse(boolean1 == null    );
       Assert::IsTrue (boolean1 == number1 );
       Assert::IsFalse(boolean1 == number2 );
+      Assert::IsTrue (boolean1 == numberi1);
+      Assert::IsFalse(boolean1 == numberi2);
       Assert::IsFalse(boolean1 == object1 );
       Assert::IsFalse(boolean1 == object2 );
       Assert::IsFalse(boolean1 == string1 );
@@ -700,6 +740,8 @@ namespace Json4CPP::Test
       Assert::IsFalse(boolean2 == null    );
       Assert::IsFalse(boolean2 == number1 );
       Assert::IsTrue (boolean2 == number2 );
+      Assert::IsFalse(boolean2 == numberi1);
+      Assert::IsTrue (boolean2 == numberi2);
       Assert::IsFalse(boolean2 == object1 );
       Assert::IsFalse(boolean2 == object2 );
       Assert::IsFalse(boolean2 == string1 );
@@ -711,6 +753,8 @@ namespace Json4CPP::Test
       Assert::IsTrue (null     == null    );
       Assert::IsFalse(null     == number1 );
       Assert::IsFalse(null     == number2 );
+      Assert::IsFalse(null     == numberi1);
+      Assert::IsFalse(null     == numberi2);
       Assert::IsFalse(null     == object1 );
       Assert::IsFalse(null     == object2 );
       Assert::IsFalse(null     == string1 );
@@ -722,6 +766,8 @@ namespace Json4CPP::Test
       Assert::IsFalse(number1  == null    );
       Assert::IsTrue (number1  == number1 );
       Assert::IsFalse(number1  == number2 );
+      Assert::IsTrue (number1  == numberi1);
+      Assert::IsFalse(number1  == numberi2);
       Assert::IsFalse(number1  == object1 );
       Assert::IsFalse(number1  == object2 );
       Assert::IsFalse(number1  == string1 );
@@ -733,10 +779,38 @@ namespace Json4CPP::Test
       Assert::IsFalse(number2  == null    );
       Assert::IsFalse(number2  == number1 );
       Assert::IsTrue (number2  == number2 );
+      Assert::IsFalse(number2  == numberi1);
+      Assert::IsTrue (number2  == numberi2);
       Assert::IsFalse(number2  == object1 );
       Assert::IsFalse(number2  == object2 );
       Assert::IsFalse(number2  == string1 );
       Assert::IsFalse(number2  == string2 );
+      Assert::IsFalse(numberi1 == array1  );
+      Assert::IsFalse(numberi1 == array2  );
+      Assert::IsTrue (numberi1 == boolean1);
+      Assert::IsFalse(numberi1 == boolean2);
+      Assert::IsFalse(numberi1 == null    );
+      Assert::IsTrue (numberi1 == number1 );
+      Assert::IsFalse(numberi1 == number2 );
+      Assert::IsTrue (numberi1 == numberi1);
+      Assert::IsFalse(numberi1 == numberi2);
+      Assert::IsFalse(numberi1 == object1 );
+      Assert::IsFalse(numberi1 == object2 );
+      Assert::IsFalse(numberi1 == string1 );
+      Assert::IsFalse(numberi1 == string2 );
+      Assert::IsFalse(numberi2 == array1  );
+      Assert::IsFalse(numberi2 == array2  );
+      Assert::IsFalse(numberi2 == boolean1);
+      Assert::IsTrue (numberi2 == boolean2);
+      Assert::IsFalse(numberi2 == null    );
+      Assert::IsFalse(numberi2 == number1 );
+      Assert::IsTrue (numberi2 == number2 );
+      Assert::IsFalse(numberi2 == numberi1);
+      Assert::IsTrue (numberi2 == numberi2);
+      Assert::IsFalse(numberi2 == object1 );
+      Assert::IsFalse(numberi2 == object2 );
+      Assert::IsFalse(numberi2 == string1 );
+      Assert::IsFalse(numberi2 == string2 );
       Assert::IsFalse(object1  == array1  );
       Assert::IsFalse(object1  == array2  );
       Assert::IsFalse(object1  == boolean1);
@@ -744,6 +818,8 @@ namespace Json4CPP::Test
       Assert::IsFalse(object1  == null    );
       Assert::IsFalse(object1  == number1 );
       Assert::IsFalse(object1  == number2 );
+      Assert::IsFalse(object1  == numberi1);
+      Assert::IsFalse(object1  == numberi2);
       Assert::IsTrue (object1  == object1 );
       Assert::IsFalse(object1  == object2 );
       Assert::IsFalse(object1  == string1 );
@@ -755,6 +831,8 @@ namespace Json4CPP::Test
       Assert::IsFalse(object2  == null    );
       Assert::IsFalse(object2  == number1 );
       Assert::IsFalse(object2  == number2 );
+      Assert::IsFalse(object2  == numberi1);
+      Assert::IsFalse(object2  == numberi2);
       Assert::IsFalse(object2  == object1 );
       Assert::IsTrue (object2  == object2 );
       Assert::IsFalse(object2  == string1 );
@@ -766,6 +844,8 @@ namespace Json4CPP::Test
       Assert::IsFalse(string1  == null    );
       Assert::IsFalse(string1  == number1 );
       Assert::IsFalse(string1  == number2 );
+      Assert::IsFalse(string1  == numberi1);
+      Assert::IsFalse(string1  == numberi2);
       Assert::IsFalse(string1  == object1 );
       Assert::IsFalse(string1  == object2 );
       Assert::IsTrue (string1  == string1 );
@@ -777,6 +857,8 @@ namespace Json4CPP::Test
       Assert::IsFalse(string2  == null    );
       Assert::IsFalse(string2  == number1 );
       Assert::IsFalse(string2  == number2 );
+      Assert::IsFalse(string2  == numberi1);
+      Assert::IsFalse(string2  == numberi2);
       Assert::IsFalse(string2  == object1 );
       Assert::IsFalse(string2  == object2 );
       Assert::IsFalse(string2  == string1 );
@@ -796,6 +878,8 @@ namespace Json4CPP::Test
       JsonObject boolean2 = { { L"Key", true } };
       JsonObject number1 = { { L"Key", 0.0 } };
       JsonObject number2 = { { L"Key", 1.0 } };
+      JsonObject numberi1 = { { L"Key", 0 } };
+      JsonObject numberi2 = { { L"Key", 1 } };
       JsonObject object1 = { { L"Key", JsonObject{
         { L"key1", 1337 },
         { L"key2", 1338 }
@@ -814,6 +898,8 @@ namespace Json4CPP::Test
       Assert::IsTrue (array1   != null    );
       Assert::IsTrue (array1   != number1 );
       Assert::IsTrue (array1   != number2 );
+      Assert::IsTrue (array1   != numberi1);
+      Assert::IsTrue (array1   != numberi2);
       Assert::IsTrue (array1   != object1 );
       Assert::IsTrue (array1   != object2 );
       Assert::IsTrue (array1   != string1 );
@@ -825,6 +911,8 @@ namespace Json4CPP::Test
       Assert::IsTrue (array2   != null    );
       Assert::IsTrue (array2   != number1 );
       Assert::IsTrue (array2   != number2 );
+      Assert::IsTrue (array2   != numberi1);
+      Assert::IsTrue (array2   != numberi2);
       Assert::IsTrue (array2   != object1 );
       Assert::IsTrue (array2   != object2 );
       Assert::IsTrue (array2   != string1 );
@@ -836,6 +924,8 @@ namespace Json4CPP::Test
       Assert::IsTrue (boolean1 != null    );
       Assert::IsFalse(boolean1 != number1 );
       Assert::IsTrue (boolean1 != number2 );
+      Assert::IsFalse(boolean1 != numberi1);
+      Assert::IsTrue (boolean1 != numberi2);
       Assert::IsTrue (boolean1 != object1 );
       Assert::IsTrue (boolean1 != object2 );
       Assert::IsTrue (boolean1 != string1 );
@@ -847,6 +937,8 @@ namespace Json4CPP::Test
       Assert::IsTrue (boolean2 != null    );
       Assert::IsTrue (boolean2 != number1 );
       Assert::IsFalse(boolean2 != number2 );
+      Assert::IsTrue (boolean2 != numberi1);
+      Assert::IsFalse(boolean2 != numberi2);
       Assert::IsTrue (boolean2 != object1 );
       Assert::IsTrue (boolean2 != object2 );
       Assert::IsTrue (boolean2 != string1 );
@@ -858,6 +950,8 @@ namespace Json4CPP::Test
       Assert::IsFalse(null     != null    );
       Assert::IsTrue (null     != number1 );
       Assert::IsTrue (null     != number2 );
+      Assert::IsTrue (null     != numberi1);
+      Assert::IsTrue (null     != numberi2);
       Assert::IsTrue (null     != object1 );
       Assert::IsTrue (null     != object2 );
       Assert::IsTrue (null     != string1 );
@@ -869,6 +963,8 @@ namespace Json4CPP::Test
       Assert::IsTrue (number1  != null    );
       Assert::IsFalse(number1  != number1 );
       Assert::IsTrue (number1  != number2 );
+      Assert::IsFalse(number1  != numberi1);
+      Assert::IsTrue (number1  != numberi2);
       Assert::IsTrue (number1  != object1 );
       Assert::IsTrue (number1  != object2 );
       Assert::IsTrue (number1  != string1 );
@@ -880,10 +976,38 @@ namespace Json4CPP::Test
       Assert::IsTrue (number2  != null    );
       Assert::IsTrue (number2  != number1 );
       Assert::IsFalse(number2  != number2 );
+      Assert::IsTrue (number2  != numberi1);
+      Assert::IsFalse(number2  != numberi2);
       Assert::IsTrue (number2  != object1 );
       Assert::IsTrue (number2  != object2 );
       Assert::IsTrue (number2  != string1 );
       Assert::IsTrue (number2  != string2 );
+      Assert::IsTrue (numberi1 != array1  );
+      Assert::IsTrue (numberi1 != array2  );
+      Assert::IsFalse(numberi1 != boolean1);
+      Assert::IsTrue (numberi1 != boolean2);
+      Assert::IsTrue (numberi1 != null    );
+      Assert::IsFalse(numberi1 != number1 );
+      Assert::IsTrue (numberi1 != number2 );
+      Assert::IsFalse(numberi1 != numberi1);
+      Assert::IsTrue (numberi1 != numberi2);
+      Assert::IsTrue (numberi1 != object1 );
+      Assert::IsTrue (numberi1 != object2 );
+      Assert::IsTrue (numberi1 != string1 );
+      Assert::IsTrue (numberi1 != string2 );
+      Assert::IsTrue (numberi2 != array1  );
+      Assert::IsTrue (numberi2 != array2  );
+      Assert::IsTrue (numberi2 != boolean1);
+      Assert::IsFalse(numberi2 != boolean2);
+      Assert::IsTrue (numberi2 != null    );
+      Assert::IsTrue (numberi2 != number1 );
+      Assert::IsFalse(numberi2 != number2 );
+      Assert::IsTrue (numberi2 != numberi1);
+      Assert::IsFalse(numberi2 != numberi2);
+      Assert::IsTrue (numberi2 != object1 );
+      Assert::IsTrue (numberi2 != object2 );
+      Assert::IsTrue (numberi2 != string1 );
+      Assert::IsTrue (numberi2 != string2 );
       Assert::IsTrue (object1  != array1  );
       Assert::IsTrue (object1  != array2  );
       Assert::IsTrue (object1  != boolean1);
@@ -891,6 +1015,8 @@ namespace Json4CPP::Test
       Assert::IsTrue (object1  != null    );
       Assert::IsTrue (object1  != number1 );
       Assert::IsTrue (object1  != number2 );
+      Assert::IsTrue (object1  != numberi1);
+      Assert::IsTrue (object1  != numberi2);
       Assert::IsFalse(object1  != object1 );
       Assert::IsTrue (object1  != object2 );
       Assert::IsTrue (object1  != string1 );
@@ -902,6 +1028,8 @@ namespace Json4CPP::Test
       Assert::IsTrue (object2  != null    );
       Assert::IsTrue (object2  != number1 );
       Assert::IsTrue (object2  != number2 );
+      Assert::IsTrue (object2  != numberi1);
+      Assert::IsTrue (object2  != numberi2);
       Assert::IsTrue (object2  != object1 );
       Assert::IsFalse(object2  != object2 );
       Assert::IsTrue (object2  != string1 );
@@ -913,6 +1041,8 @@ namespace Json4CPP::Test
       Assert::IsTrue (string1  != null    );
       Assert::IsTrue (string1  != number1 );
       Assert::IsTrue (string1  != number2 );
+      Assert::IsTrue (string1  != numberi1);
+      Assert::IsTrue (string1  != numberi2);
       Assert::IsTrue (string1  != object1 );
       Assert::IsTrue (string1  != object2 );
       Assert::IsFalse(string1  != string1 );
@@ -924,6 +1054,8 @@ namespace Json4CPP::Test
       Assert::IsTrue (string2  != null    );
       Assert::IsTrue (string2  != number1 );
       Assert::IsTrue (string2  != number2 );
+      Assert::IsTrue (string2  != numberi1);
+      Assert::IsTrue (string2  != numberi2);
       Assert::IsTrue (string2  != object1 );
       Assert::IsTrue (string2  != object2 );
       Assert::IsTrue (string2  != string1 );

@@ -142,6 +142,7 @@ namespace Json4CPP::Test
       Assert::IsTrue(JsonBuilder({ { wstring()                        } }).Is(JsonBuilderType::Array ));
       Assert::IsTrue(JsonBuilder({ { bool()                           } }).Is(JsonBuilderType::Array ));
       Assert::IsTrue(JsonBuilder({ { double()                         } }).Is(JsonBuilderType::Array ));
+      Assert::IsTrue(JsonBuilder({ { int64_t()                        } }).Is(JsonBuilderType::Array));
       Assert::IsTrue(JsonBuilder({ { L"Key1"s, 1.0 }, { L"Key2"s, 2.0 } }).Is(JsonBuilderType::Object));
       Assert::IsTrue(JsonBuilder({ 1, 2                                 }).Is(JsonBuilderType::Array ));
       Assert::IsTrue(JsonBuilder({ wstring(), 2                         }).Is(JsonBuilderType::Pair  ));
@@ -154,6 +155,7 @@ namespace Json4CPP::Test
       Assert::IsTrue(JsonBuilder(vector<JsonBuilder>{ wstring()                            }).Is(JsonBuilderType::Array ));
       Assert::IsTrue(JsonBuilder(vector<JsonBuilder>{ bool()                               }).Is(JsonBuilderType::Array ));
       Assert::IsTrue(JsonBuilder(vector<JsonBuilder>{ double()                             }).Is(JsonBuilderType::Array ));
+      Assert::IsTrue(JsonBuilder(vector<JsonBuilder>{ int64_t()                            }).Is(JsonBuilderType::Array));
       Assert::IsTrue(JsonBuilder(vector<JsonBuilder>{ { L"Key1"s, 1.0 }, { L"Key2"s, 2.0 } }).Is(JsonBuilderType::Object));
       Assert::IsTrue(JsonBuilder(vector<JsonBuilder>{ 1, 2                                 }).Is(JsonBuilderType::Array ));
       Assert::IsTrue(JsonBuilder(vector<JsonBuilder>{ wstring(), 2                         }).Is(JsonBuilderType::Pair  ));
