@@ -327,6 +327,26 @@ namespace Json4CPP
     }
   }
 
+  JsonIterator Json::begin()
+  {
+    return JsonIterator(this, 0);
+  }
+
+  JsonIterator Json::end()
+  {
+    return JsonIterator(this, Size());
+  }
+
+  JsonConstIterator Json::begin() const
+  {
+    return JsonConstIterator(this, 0);
+  }
+
+  JsonConstIterator Json::end() const
+  {
+    return JsonConstIterator(this, Size());
+  }
+
 #pragma region Conversion operators
 #pragma warning(push)
 #pragma warning(disable : 4244)

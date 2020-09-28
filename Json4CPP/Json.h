@@ -12,6 +12,8 @@
 #include "JsonObject.h"
 #include "JsonLinter.h"
 #include "JsonTokenType.h"
+#include "JsonIterator.h"
+#include "JsonConstIterator.h"
 
 #include <variant>
 #include <string>
@@ -35,6 +37,8 @@ namespace Json4CPP
   }
   class JSON_API JsonObject;
   class JSON_API JsonArray;
+  class JSON_API JsonIterator;
+  class JSON_API JsonConstIterator;
 
   class JSON_API Json
   {
@@ -42,6 +46,8 @@ namespace Json4CPP
     friend class ::Json4CPP::Test::JsonTest;
     friend class JsonObject;
     friend class JsonArray;
+    friend class JsonIterator;
+    friend class JsonConstIterator;
     friend class Detail::JsonBuilder;
 #pragma warning(suppress: 4251)
     Detail::VALUE _value;
@@ -166,6 +172,11 @@ namespace Json4CPP
     Json const& At(KEY     const& key) const;
     Json      & At(int64_t const& index);
     Json const& At(int64_t const& index) const;
+
+    JsonIterator begin();
+    JsonIterator end  ();
+    JsonConstIterator begin() const;
+    JsonConstIterator end  () const;
 
     explicit operator std::nullptr_t () const;
     explicit operator std::wstring   () const;

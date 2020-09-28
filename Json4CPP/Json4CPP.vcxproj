@@ -91,9 +91,11 @@
     <ClInclude Include="JsonArray.h" />
     <ClInclude Include="JsonBuilder.h" />
     <ClInclude Include="JsonBuilderType.h" />
+    <ClInclude Include="JsonConstIterator.h" />
     <ClInclude Include="JsonDefault.h" />
     <ClInclude Include="JsonIndentChar.h" />
     <ClInclude Include="JsonIndentSize.h" />
+    <ClInclude Include="JsonIterator.h" />
     <ClInclude Include="JsonLinter.h" />
     <ClInclude Include="JsonObject.h" />
     <ClInclude Include="JsonTokenType.h" />
@@ -109,8 +111,10 @@
     <ClCompile Include="JsonArray.cpp" />
     <ClCompile Include="JsonBuilder.cpp" />
     <ClCompile Include="JsonBuilderType.cpp" />
+    <ClCompile Include="JsonConstIterator.cpp" />
     <ClCompile Include="JsonIndentChar.cpp" />
     <ClCompile Include="JsonIndentSize.cpp" />
+    <ClCompile Include="JsonIterator.cpp" />
     <ClCompile Include="JsonLinter.cpp" />
     <ClCompile Include="JsonObject.cpp" />
     <ClCompile Include="JsonTokenType.cpp" />

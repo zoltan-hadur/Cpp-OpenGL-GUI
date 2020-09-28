@@ -24,12 +24,16 @@ namespace Json4CPP
   }
   class JSON_API JsonObject;
   class JSON_API Json;
+  class JSON_API JsonIterator;
+  class JSON_API JsonConstIterator;
 
   class JSON_API JsonArray
   {
   private:
     friend class JsonObject;
     friend class Json;
+    friend class JsonIterator;
+    friend class JsonConstIterator;
     friend class Detail::JsonBuilder;
 #pragma warning(suppress: 4251)
     std::vector<Json> _values;
