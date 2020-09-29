@@ -110,9 +110,14 @@ namespace Json4CPP
     return _values.size();
   }
 
-  void JsonArray::Resize(int64_t size)
+  void JsonArray::Resize(int64_t const& size)
   {
     _values.resize(size);
+  }
+
+  void JsonArray::Resize(int64_t const& size, Json const& json)
+  {
+    _values.resize(size, json);
   }
 
   void JsonArray::Clear()

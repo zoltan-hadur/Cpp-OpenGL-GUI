@@ -1203,18 +1203,29 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestResize)
     {
-      ExceptException<exception>([]() { Json(nullptr_t ()).Resize(1); }, "Resize(int64_t size) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(wstring   ()).Resize(1); }, "Resize(int64_t size) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(bool      ()).Resize(1); }, "Resize(int64_t size) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(double    ()).Resize(1); }, "Resize(int64_t size) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(int64_t   ()).Resize(1); }, "Resize(int64_t size) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(JsonObject()).Resize(1); }, "Resize(int64_t size) is only defined for JsonArray!");
+      ExceptException<exception>([]() { Json(nullptr_t ()).Resize(1); }, "Resize(int64_t const& size) is only defined for JsonArray!");
+      ExceptException<exception>([]() { Json(wstring   ()).Resize(1); }, "Resize(int64_t const& size) is only defined for JsonArray!");
+      ExceptException<exception>([]() { Json(bool      ()).Resize(1); }, "Resize(int64_t const& size) is only defined for JsonArray!");
+      ExceptException<exception>([]() { Json(double    ()).Resize(1); }, "Resize(int64_t const& size) is only defined for JsonArray!");
+      ExceptException<exception>([]() { Json(int64_t   ()).Resize(1); }, "Resize(int64_t const& size) is only defined for JsonArray!");
+      ExceptException<exception>([]() { Json(JsonObject()).Resize(1); }, "Resize(int64_t const& size) is only defined for JsonArray!");
+
+      ExceptException<exception>([]() { Json(nullptr_t ()).Resize(1, Json()); }, "Resize(int64_t const& size, Json const& json) is only defined for JsonArray!");
+      ExceptException<exception>([]() { Json(wstring   ()).Resize(1, Json()); }, "Resize(int64_t const& size, Json const& json) is only defined for JsonArray!");
+      ExceptException<exception>([]() { Json(bool      ()).Resize(1, Json()); }, "Resize(int64_t const& size, Json const& json) is only defined for JsonArray!");
+      ExceptException<exception>([]() { Json(double    ()).Resize(1, Json()); }, "Resize(int64_t const& size, Json const& json) is only defined for JsonArray!");
+      ExceptException<exception>([]() { Json(int64_t   ()).Resize(1, Json()); }, "Resize(int64_t const& size, Json const& json) is only defined for JsonArray!");
+      ExceptException<exception>([]() { Json(JsonObject()).Resize(1, Json()); }, "Resize(int64_t const& size, Json const& json) is only defined for JsonArray!");
 
       auto array = Json(JsonArray());
       Assert::AreEqual(0i64, array.Size());
       array.Resize(1);
       Assert::AreEqual(1i64, array.Size());
       Assert::AreEqual<Json>(nullptr, array[0]);
+      array.Resize(2, L"Test"s);
+      Assert::AreEqual(2i64, array.Size());
+      Assert::AreEqual<Json>(nullptr, array[0]);
+      Assert::AreEqual<Json>(L"Test"s, array[1]);
     }
 
     TEST_METHOD(TestClear)

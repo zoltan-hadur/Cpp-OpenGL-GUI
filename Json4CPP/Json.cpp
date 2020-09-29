@@ -178,12 +178,21 @@ namespace Json4CPP
     }
   }
 
-  void Json::Resize(int64_t size)
+  void Json::Resize(int64_t const& size)
   {
     switch (Type())
     {
     case JsonType::Array: get<JsonArray>(_value).Resize(size); break;
-    default: throw exception("Resize(int64_t size) is only defined for JsonArray!");
+    default: throw exception("Resize(int64_t const& size) is only defined for JsonArray!");
+    }
+  }
+
+  void Json::Resize(int64_t const& size, Json const& json)
+  {
+    switch (Type())
+    {
+    case JsonType::Array: get<JsonArray>(_value).Resize(size, json); break;
+    default: throw exception("Resize(int64_t const& size, Json const& json) is only defined for JsonArray!");
     }
   }
 

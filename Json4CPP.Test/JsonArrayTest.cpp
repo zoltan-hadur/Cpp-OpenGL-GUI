@@ -305,6 +305,15 @@ namespace Json4CPP::Test
       {
         Assert::AreEqual<Json>(nullptr, array[i]);
       }
+      array.Resize(1500, L"Test"s);
+      for (int i = 0; i < 1337; ++i)
+      {
+        Assert::AreEqual<Json>(nullptr, array[i]);
+      }
+      for (int i = 1337; i < 1500; ++i)
+      {
+        Assert::AreEqual<Json>(L"Test"s, array[i]);
+      }
     }
 
     TEST_METHOD(TestClear)
