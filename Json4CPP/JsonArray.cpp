@@ -125,7 +125,12 @@ namespace Json4CPP
     _values.clear();
   }
 
-  void JsonArray::PushBack(Json value)
+  void JsonArray::PushBack(Json const& value)
+  {
+    _values.push_back(value);
+  }
+
+  void JsonArray::PushBack(Json && value)
   {
     _values.push_back(value);
   }

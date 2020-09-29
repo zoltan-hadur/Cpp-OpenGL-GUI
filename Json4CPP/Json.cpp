@@ -206,13 +206,23 @@ namespace Json4CPP
     }
   }
 
-  void Json::PushBack(Json value)
+  void Json::PushBack(Json const& value)
   {
     switch (Type())
     {
     case JsonType::Null: _value = JsonArray(); [[fallthrough]];
     case JsonType::Array: get<JsonArray>(_value).PushBack(value); break;
-    default: throw exception("PushBack(Json value) is only defined for JsonArray!");
+    default: throw exception("PushBack(Json const& value) is only defined for JsonArray!");
+    }
+  }
+
+  void Json::PushBack(Json && value)
+  {
+    switch (Type())
+    {
+    case JsonType::Null: _value = JsonArray(); [[fallthrough]];
+    case JsonType::Array: get<JsonArray>(_value).PushBack(value); break;
+    default: throw exception("PushBack(Json && value) is only defined for JsonArray!");
     }
   }
 

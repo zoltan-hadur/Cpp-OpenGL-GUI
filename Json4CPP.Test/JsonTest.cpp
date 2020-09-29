@@ -1249,11 +1249,17 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestPushBack)
     {
-      ExceptException<exception>([]() { Json(wstring   ()).PushBack(Json()); }, "PushBack(Json value) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(bool      ()).PushBack(Json()); }, "PushBack(Json value) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(double    ()).PushBack(Json()); }, "PushBack(Json value) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(int64_t   ()).PushBack(Json()); }, "PushBack(Json value) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(JsonObject()).PushBack(Json()); }, "PushBack(Json value) is only defined for JsonArray!");
+      auto defaultJson = Json();
+      ExceptException<exception>([&]() { Json(wstring   ()).PushBack(defaultJson); }, "PushBack(Json const& value) is only defined for JsonArray!");
+      ExceptException<exception>([&]() { Json(bool      ()).PushBack(defaultJson); }, "PushBack(Json const& value) is only defined for JsonArray!");
+      ExceptException<exception>([&]() { Json(double    ()).PushBack(defaultJson); }, "PushBack(Json const& value) is only defined for JsonArray!");
+      ExceptException<exception>([&]() { Json(int64_t   ()).PushBack(defaultJson); }, "PushBack(Json const& value) is only defined for JsonArray!");
+      ExceptException<exception>([&]() { Json(JsonObject()).PushBack(defaultJson); }, "PushBack(Json const& value) is only defined for JsonArray!");
+      ExceptException<exception>([&]() { Json(wstring   ()).PushBack(Json()); }, "PushBack(Json && value) is only defined for JsonArray!");
+      ExceptException<exception>([&]() { Json(bool      ()).PushBack(Json()); }, "PushBack(Json && value) is only defined for JsonArray!");
+      ExceptException<exception>([&]() { Json(double    ()).PushBack(Json()); }, "PushBack(Json && value) is only defined for JsonArray!");
+      ExceptException<exception>([&]() { Json(int64_t   ()).PushBack(Json()); }, "PushBack(Json && value) is only defined for JsonArray!");
+      ExceptException<exception>([&]() { Json(JsonObject()).PushBack(Json()); }, "PushBack(Json && value) is only defined for JsonArray!");
 
       auto json = Json(nullptr_t());
       Assert::IsTrue(json.Is(JsonType::Null));
@@ -1261,7 +1267,8 @@ namespace Json4CPP::Test
       Assert::IsTrue(json.Is(JsonType::Array));
       Assert::AreEqual(1i64, json.Size());
       Assert::AreEqual<Json>(1337, json[0]);
-      json.PushBack(31337);
+      Json integer = 31337;
+      json.PushBack(integer);
       Assert::IsTrue(json.Is(JsonType::Array));
       Assert::AreEqual(2i64, json.Size());
       Assert::AreEqual<Json>(31337, json[1]);

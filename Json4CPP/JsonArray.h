@@ -52,7 +52,8 @@ namespace Json4CPP
     void Resize(int64_t const& size);
     void Resize(int64_t const& size, Json const& json);
     void Clear();
-    void PushBack(               Json value);
+    void PushBack(Json const& value);
+    void PushBack(Json && value);
     void Insert  (int64_t index, Json value);
     void Erase   (int64_t index            );
     Json      & operator[](int64_t const& index);
