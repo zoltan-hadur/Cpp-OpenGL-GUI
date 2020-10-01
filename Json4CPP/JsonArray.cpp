@@ -132,7 +132,7 @@ namespace Json4CPP
 
   void JsonArray::PushBack(Json && value)
   {
-    _values.push_back(value);
+    _values.push_back(move(value));
   }
 
   void JsonArray::Insert(int64_t index, Json value)

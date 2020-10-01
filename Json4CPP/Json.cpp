@@ -221,7 +221,7 @@ namespace Json4CPP
     switch (Type())
     {
     case JsonType::Null: _value = JsonArray(); [[fallthrough]];
-    case JsonType::Array: get<JsonArray>(_value).PushBack(value); break;
+    case JsonType::Array: get<JsonArray>(_value).PushBack(move(value)); break;
     default: throw exception("PushBack(Json && value) is only defined for JsonArray!");
     }
   }
