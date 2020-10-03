@@ -48,7 +48,6 @@ namespace Json4CPP
     JsonObject() = default;
     JsonObject(Detail::JsonBuilder builder);
     JsonObject(std::initializer_list<Detail::JsonBuilder> builders);
-    JsonObject(JsonObject const& object);
 
     std::wstring Dump(uint8_t indentSize = 0, wchar_t indentChar = L' ') const;
 

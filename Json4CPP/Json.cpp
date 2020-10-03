@@ -93,6 +93,11 @@ namespace Json4CPP
     _value = json._value;
   }
 
+  Json::Json(Json && json)
+  {
+    _value = move(json._value);
+  }
+
   Json::Json(nullptr_t      value) { _value =         value;  }
   Json::Json(const wchar_t* value) { _value = wstring(value); }
   Json::Json(wstring        value) { _value =         value;  }
@@ -509,7 +514,7 @@ namespace Json4CPP
     }
   }
 
-  Json::operator JsonObject() const
+  Json::operator JsonObject const&() const
   {
     switch (Type())
     {
@@ -518,11 +523,29 @@ namespace Json4CPP
     }
   }
 
-  Json::operator JsonArray() const
+  Json::operator JsonObject &&()
+  {
+    switch (Type())
+    {
+    case JsonType::Object: return move(*GetIf<JsonObject>());
+    default: throw exception("Invalid conversion!");
+    }
+  }
+
+  Json::operator JsonArray const&() const
   {
     switch (Type())
     {
     case JsonType::Array: return Get<JsonArray>();
+    default: throw exception("Invalid conversion!");
+    }
+  }
+
+  Json::operator JsonArray &&()
+  {
+    switch (Type())
+    {
+    case JsonType::Array: return move(*GetIf<JsonArray>());
     default: throw exception("Invalid conversion!");
     }
   }

@@ -59,6 +59,7 @@ namespace Json4CPP
     Json(Detail::JsonBuilder value);
     Json(std::initializer_list<Detail::JsonBuilder> values);
     Json(Json const& json);
+    Json(Json && json);
 
     Json(std::nullptr_t value);
     Json(const wchar_t* value);
@@ -194,8 +195,10 @@ namespace Json4CPP
     explicit operator uint64_t       () const;
     explicit operator float          () const;
     explicit operator double         () const;
-    explicit operator JsonObject     () const;
-    explicit operator JsonArray      () const;
+    explicit operator JsonObject const&    () const;
+    explicit operator JsonObject &&     ();
+    explicit operator JsonArray const&     () const;
+    explicit operator JsonArray &&     ();
 
     Json& operator= (std::nullptr_t      value);
     Json& operator= (const wchar_t*      value);

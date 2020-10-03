@@ -120,12 +120,6 @@ namespace Json4CPP
 
   }
 
-  JsonObject::JsonObject(JsonObject const& object)
-  {
-    _pairs = object._pairs;
-    _indexes = object._indexes;
-  }
-
   wstring JsonObject::Dump(uint8_t indentSize, wchar_t indentChar) const
   {
     wstringstream os;

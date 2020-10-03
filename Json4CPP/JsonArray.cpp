@@ -93,11 +93,6 @@ namespace Json4CPP
 
   }
 
-  JsonArray::JsonArray(JsonArray const& array)
-  {
-    _values = array._values;
-  }
-
   wstring JsonArray::Dump(uint8_t indentSize, wchar_t indentChar) const
   {
     wstringstream os;

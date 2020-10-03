@@ -44,7 +44,6 @@ namespace Json4CPP
     JsonArray() = default;
     JsonArray(Detail::JsonBuilder builder);
     JsonArray(std::initializer_list<Detail::JsonBuilder> builders);
-    JsonArray(JsonArray const& array);
 
     std::wstring Dump(uint8_t indentSize = 0, wchar_t indentChar = L' ') const;
 
