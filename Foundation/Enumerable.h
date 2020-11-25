@@ -1027,7 +1027,7 @@ namespace OpenGLUI::Foundation
     // Returns the element at a specified index in a sequence.
     Source ElementAt(int64_t index) const
     {
-      if (0 > index || index >= Size()) throw std::out_of_range("Index " + to_string(index) + " is out of range [0, " + to_string(Size()) + ")!");
+      if (0 > index || index >= Size()) throw std::out_of_range("Index " + std::to_string(index) + " is out of range [0, " + std::to_string(Size()) + ")!");
       return *_values[index];
     }
 
@@ -1267,12 +1267,12 @@ namespace OpenGLUI::Foundation
   };
 
   template<typename Iterable>
-  Enumerable(Iterable values, bool isReference = true) -> Enumerable<typename std::iterator_traits<decltype(values.begin())>::value_type>;
+  Enumerable(Iterable values, bool isReference = true) -> Enumerable<typename std::iterator_traits<typename decltype(values.begin())>::value_type>;
 
   template<typename Iterable>
   auto From(Iterable && values)
   {
-    return Enumerable(values, is_lvalue_reference_v<decltype(values)>);
+    return Enumerable(values, std::is_lvalue_reference_v<decltype(values)>);
   }
 
   template<typename Source>
@@ -1292,25 +1292,25 @@ namespace OpenGLUI::Foundation
 
     std::vector<std::pair<int64_t, int64_t>> _ranges;
 
-    OrderedEnumerable(bool isReference = true) : Enumerable(isReference) {}
-    OrderedEnumerable(Enumerable const& enumerable) : Enumerable(enumerable) {}
+    OrderedEnumerable(bool isReference = true) : Enumerable<Source>(isReference) {}
+    OrderedEnumerable(Enumerable<Source> const& enumerable) : Enumerable<Source>(enumerable) {}
 
     template<typename Key>
     void DetermineRanges(Delegate<Key(Source const&)> keySelector)
     {
-      if (Size() <= 1) return;
+      if (this->Size() <= 1) return;
       _ranges.clear();
       int64_t from = 0;
-      auto size = Size();
+      auto size = this->Size();
       for (int64_t to = 0; to < size - 1; ++to)
       {
-        if (keySelector(*_values[to]) != keySelector(*_values[to + 1]))
+        if (keySelector(*this->_values[to]) != keySelector(*this->_values[to + 1]))
         {
           _ranges.push_back({ from, to });
           from = to + 1;
         }
       }
-      _ranges.push_back({ from, Size() - 1 });
+      _ranges.push_back({ from, this->Size() - 1 });
     }
   public:
     // Inverts the order of the elements in a sequence.
@@ -1318,7 +1318,7 @@ namespace OpenGLUI::Foundation
     {
       OrderedEnumerable<Source> result = *this;
       std::reverse(result._values.begin(), result._values.end());
-      auto size = Size();
+      auto size = this->Size();
       for (auto& range : _ranges)
       {
         range.first = size - 1 - range.first;
@@ -1390,9 +1390,9 @@ namespace OpenGLUI::Foundation
 
     Key _key;
 
-    Grouping() : Enumerable(false) { _key = Key(); }
-    Grouping(Key key, bool isReference = true) : Enumerable(isReference) { _key = key; }
-    Grouping(Key key, Enumerable const& enumerable) : Enumerable(enumerable) { _key = key; }
+    Grouping() : Enumerable<Source>(false) { _key = Key(); }
+    Grouping(Key key, bool isReference = true) : Enumerable<Source>(isReference) { _key = key; }
+    Grouping(Key key, Enumerable<Source> const& enumerable) : Enumerable<Source>(enumerable) { _key = key; }
   public:
     
     Key Key() const
