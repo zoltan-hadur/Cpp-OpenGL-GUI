@@ -6,7 +6,7 @@ using namespace std;
 
 namespace Json4CPP::Detail
 {
-  wostream& operator<<(wostream& os, JsonBuilderType const& type)
+  wostream& operator<<(wostream& os, JsonBuilderType type)
   {
     switch (type)
     {

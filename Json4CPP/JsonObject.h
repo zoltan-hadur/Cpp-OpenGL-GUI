@@ -42,22 +42,28 @@ namespace Json4CPP
 #pragma warning(suppress: 4251)
     std::unordered_map<KEY, int64_t> _indexes;
 
-    static JsonObject                 Read (                          std::deque<Detail::TOKEN>& tokens);
-    static std::deque<Detail::TOKEN>& Write(JsonObject const& object, std::deque<Detail::TOKEN>& tokens);
+    static JsonObject                   Read (                          std::deque<Detail::TOKEN>  & tokens);
+    static JsonObject                   Read (                          std::deque<Detail::TOKEN> && tokens);
+    static std::deque<Detail::TOKEN>  & Write(JsonObject const& object, std::deque<Detail::TOKEN>  & tokens);
+    static std::deque<Detail::TOKEN> && Write(JsonObject const& object, std::deque<Detail::TOKEN> && tokens);
   public:
     JsonObject() = default;
-    JsonObject(Detail::JsonBuilder builder);
+    JsonObject(Json const& json);
+    JsonObject(Json     && json);
+    JsonObject(Detail::JsonBuilder const& builder);
+    JsonObject(Detail::JsonBuilder     && builder);
     JsonObject(std::initializer_list<Detail::JsonBuilder> builders);
 
     std::wstring Dump(uint8_t indentSize = 0, wchar_t indentChar = L' ') const;
 
     int64_t Size() const;
     void Clear();
-    bool Insert(std::pair<KEY, Json> pair);
-    void Erase(KEY key);
+    bool Insert(std::pair<KEY, Json> const& pair);
+    bool Insert(std::pair<KEY, Json>     && pair);
+    void Erase(KEY const& key);
     std::vector<KEY> Keys() const;
+    std::vector<std::reference_wrapper<const KEY>> KeysView() const;
     Json      & operator[](KEY const& key);
-    Json const& operator[](KEY const& key) const;
     Json      & At(KEY const& key);
     Json const& At(KEY const& key) const;
 

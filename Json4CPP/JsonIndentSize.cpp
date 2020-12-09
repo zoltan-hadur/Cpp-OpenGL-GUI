@@ -11,12 +11,12 @@ namespace Json4CPP
     _size = size;
   }
 
-  bool JsonIndentSize::IsActive(std::wostream& os)
+  bool JsonIndentSize::IsActive(wostream& os)
   {
     return os.iword(_valueIndex) & 0b100000000;
   }
 
-  uint8_t JsonIndentSize::GetSize(std::wostream& os)
+  uint8_t JsonIndentSize::GetSize(wostream& os)
   {
     return os.iword(_valueIndex) & 0b011111111;
   }

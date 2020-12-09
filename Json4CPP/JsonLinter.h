@@ -34,13 +34,15 @@ namespace Json4CPP::Detail
     static std::wostream& WriteNumber (std::wostream& os, NUMBER number);
     static std::wostream& WriteObject (std::wostream& os, std::deque<TOKEN>& tokens, uint8_t indentSize, wchar_t indentChar, uint8_t depth);
     static std::wostream& WriteArray  (std::wostream& os, std::deque<TOKEN>& tokens, uint8_t indentSize, wchar_t indentChar, uint8_t depth);
-    static std::wostream& Write(std::wostream& os, JsonTokenType const& token, VALUE_TOKEN const& value);
+    static std::wostream& Write(std::wostream& os, JsonTokenType token, VALUE_TOKEN const& value);
   public:
     static std::deque<TOKEN> Read(std::wistream     & is   );
+    static std::deque<TOKEN> Read(std::wistream    && is   );
     static std::deque<TOKEN> Read(std::wstring const& value);
 
-    static std::wostream& Write(std::wostream& os, std::deque<TOKEN>& tokens, uint8_t indentSize, wchar_t indentChar);
+    static std::wostream& Write(std::wostream& os, std::deque<TOKEN>  & tokens, uint8_t indentSize, wchar_t indentChar);
+    static std::wostream& Write(std::wostream& os, std::deque<TOKEN> && tokens, uint8_t indentSize, wchar_t indentChar);
 
-    static std::wstring Dump(VALUE_TOKEN value);
+    static std::wstring Dump(VALUE_TOKEN const& value);
   };
 }

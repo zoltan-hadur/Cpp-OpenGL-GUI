@@ -19,7 +19,7 @@ namespace Json4CPP
   using value_type = Json;
   using pointer = Json*;
   using reference = Json&;
-  using iterator_category = std::random_access_iterator_tag;
+  using iterator_category = random_access_iterator_tag;
 
   JsonIterator::JsonIterator(Json* json, int64_t position) : _json(json), _position(position) {}
 
@@ -57,7 +57,7 @@ namespace Json4CPP
 
   JsonIterator& JsonIterator::operator++()
   {
-    if (++_position > Size()) throw std::out_of_range("Iterator out of range!");
+    if (++_position > Size()) throw out_of_range("Iterator out of range!");
     return *this;
   }
 
@@ -70,7 +70,7 @@ namespace Json4CPP
 
   JsonIterator& JsonIterator::operator--()
   {
-    if (--_position < 0) throw std::out_of_range("Iterator out of range!");
+    if (--_position < 0) throw out_of_range("Iterator out of range!");
     return *this;
   }
 
@@ -84,7 +84,7 @@ namespace Json4CPP
   JsonIterator& JsonIterator::operator+=(difference_type n)
   {
     _position += n;
-    if (_position < 0 || _position > Size()) throw std::out_of_range("Iterator out of range!");
+    if (_position < 0 || _position > Size()) throw out_of_range("Iterator out of range!");
     return *this;
   }
 
@@ -101,7 +101,7 @@ namespace Json4CPP
   JsonIterator& JsonIterator::operator-=(difference_type n)
   {
     _position -= n;
-    if (_position < 0 || _position > Size()) throw std::out_of_range("Iterator out of range!");
+    if (_position < 0 || _position > Size()) throw out_of_range("Iterator out of range!");
     return *this;
   }
 

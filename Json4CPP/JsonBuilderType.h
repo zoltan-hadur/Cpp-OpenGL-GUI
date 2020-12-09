@@ -25,7 +25,7 @@ namespace Json4CPP::Detail
     Invalid = 1 << 31
   };
 
-  JSON_API std::wostream& operator<<(std::wostream& os, JsonBuilderType const& type);
+  JSON_API std::wostream& operator<<(std::wostream& os, JsonBuilderType type);
 
   JSON_API bool operator==(JsonBuilderType left, JsonBuilderType right);
   JSON_API bool operator!=(JsonBuilderType left, JsonBuilderType right);

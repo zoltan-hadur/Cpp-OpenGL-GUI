@@ -23,7 +23,7 @@ namespace Json4CPP
     Invalid = 1 << 31
   };
 
-  JSON_API std::wostream& operator<<(std::wostream& os, JsonType const& type);
+  JSON_API std::wostream& operator<<(std::wostream& os, JsonType type);
 
   JSON_API bool operator==(JsonType left, JsonType right);
   JSON_API bool operator!=(JsonType left, JsonType right);

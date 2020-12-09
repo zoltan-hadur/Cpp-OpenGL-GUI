@@ -30,6 +30,7 @@ namespace Json4CPP::Test
         wostringstream os;
         os << input;
         Assert::AreEqual(expected, os.str());
+        Assert::AreEqual(expected, (wostringstream() << input).str());
       }
     }
 

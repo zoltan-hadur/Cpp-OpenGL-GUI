@@ -2,6 +2,7 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
+using namespace std::filesystem;
 using namespace Json4CPP;
 using namespace Json4CPP::Detail;
 
@@ -3556,8 +3557,8 @@ namespace Json4CPP::Test
       Assert::ExpectException<exception>([&] { Value::Divide(string1 , numberi2); });
       Assert::ExpectException<exception>([&] { Value::Divide(string1 , object1 ); });
       Assert::ExpectException<exception>([&] { Value::Divide(string1 , object2 ); });
-      Assert::AreEqual<VALUE>(wstring(L"TestString0"s / L"TestString0"s), Value::Divide(string1 , string1 ));
-      Assert::AreEqual<VALUE>(wstring(L"TestString0"s / L"TestString1"s), Value::Divide(string1 , string2 ));
+      Assert::AreEqual<VALUE>(wstring(path(L"TestString0"s) / path(L"TestString0"s)), Value::Divide(string1 , string1 ));
+      Assert::AreEqual<VALUE>(wstring(path(L"TestString0"s) / path(L"TestString1"s)), Value::Divide(string1 , string2 ));
       Assert::ExpectException<exception>([&] { Value::Divide(string2 , array1  ); });
       Assert::ExpectException<exception>([&] { Value::Divide(string2 , array2  ); });
       Assert::ExpectException<exception>([&] { Value::Divide(string2 , boolean1); });
@@ -3569,8 +3570,8 @@ namespace Json4CPP::Test
       Assert::ExpectException<exception>([&] { Value::Divide(string2 , numberi2); });
       Assert::ExpectException<exception>([&] { Value::Divide(string2 , object1 ); });
       Assert::ExpectException<exception>([&] { Value::Divide(string2 , object2 ); });
-      Assert::AreEqual<VALUE>(wstring(L"TestString1"s / L"TestString0"s), Value::Divide(string2 , string1 ));
-      Assert::AreEqual<VALUE>(wstring(L"TestString1"s / L"TestString1"s), Value::Divide(string2 , string2 ));
+      Assert::AreEqual<VALUE>(wstring(path(L"TestString1"s) / path(L"TestString0"s)), Value::Divide(string2 , string1 ));
+      Assert::AreEqual<VALUE>(wstring(path(L"TestString1"s) / path(L"TestString1"s)), Value::Divide(string2 , string2 ));
     }
 
     TEST_METHOD(TestValueDivideAssign)
@@ -4040,11 +4041,11 @@ namespace Json4CPP::Test
       Assert::ExpectException<exception>([&] { Value::DivideAssign(value, object2); });
       Assert::AreEqual<VALUE>(string1, value);
       value = string1;
-      Assert::AreEqual<VALUE>(wstring(L"TestString0"s / L"TestString0"s), Value::DivideAssign(value, string1));
-      Assert::AreEqual<VALUE>(wstring(L"TestString0"s / L"TestString0"s), value);
+      Assert::AreEqual<VALUE>(wstring(path(L"TestString0"s) / path(L"TestString0"s)), Value::DivideAssign(value, string1));
+      Assert::AreEqual<VALUE>(wstring(path(L"TestString0"s) / path(L"TestString0"s)), value);
       value = string1;
-      Assert::AreEqual<VALUE>(wstring(L"TestString0"s / L"TestString1"s), Value::DivideAssign(value, string2));
-      Assert::AreEqual<VALUE>(wstring(L"TestString0"s / L"TestString1"s), value);
+      Assert::AreEqual<VALUE>(wstring(path(L"TestString0"s) / path(L"TestString1"s)), Value::DivideAssign(value, string2));
+      Assert::AreEqual<VALUE>(wstring(path(L"TestString0"s) / path(L"TestString1"s)), value);
       value = string2;
       Assert::ExpectException<exception>([&] { Value::DivideAssign(value, array1); });
       Assert::AreEqual<VALUE>(string2, value);
@@ -4073,11 +4074,11 @@ namespace Json4CPP::Test
       Assert::ExpectException<exception>([&] { Value::DivideAssign(value, object2); });
       Assert::AreEqual<VALUE>(string2, value);
       value = string2;
-      Assert::AreEqual<VALUE>(wstring(L"TestString1"s / L"TestString0"s), Value::DivideAssign(value, string1));
-      Assert::AreEqual<VALUE>(wstring(L"TestString1"s / L"TestString0"s), value);
+      Assert::AreEqual<VALUE>(wstring(path(L"TestString1"s) / path(L"TestString0"s)), Value::DivideAssign(value, string1));
+      Assert::AreEqual<VALUE>(wstring(path(L"TestString1"s) / path(L"TestString0"s)), value);
       value = string2;
-      Assert::AreEqual<VALUE>(wstring(L"TestString1"s / L"TestString1"s), Value::DivideAssign(value, string2));
-      Assert::AreEqual<VALUE>(wstring(L"TestString1"s / L"TestString1"s), value);
+      Assert::AreEqual<VALUE>(wstring(path(L"TestString1"s) / path(L"TestString1"s)), Value::DivideAssign(value, string2));
+      Assert::AreEqual<VALUE>(wstring(path(L"TestString1"s) / path(L"TestString1"s)), value);
     }
 
     TEST_METHOD(TestValueModulo)

@@ -26,6 +26,6 @@ namespace Json4CPP::Detail
     EndArray,
   };
 
-  JSON_API std::wostream& operator<<(std::wostream& os, JsonTokenType const& token);
-  JSON_API std::wstring Dump(JsonTokenType const& token);
+  JSON_API std::wostream& operator<<(std::wostream& os, JsonTokenType token);
+  JSON_API std::wstring Dump(JsonTokenType token);
 }

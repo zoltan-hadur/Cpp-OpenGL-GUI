@@ -19,7 +19,7 @@ namespace Json4CPP
   using value_type = Json const;
   using pointer = Json const*;
   using reference = Json const&;
-  using iterator_category = std::random_access_iterator_tag;
+  using iterator_category = random_access_iterator_tag;
 
   JsonConstIterator::JsonConstIterator(Json const* json, int64_t position) : _json(json), _position(position) {}
 
@@ -47,17 +47,17 @@ namespace Json4CPP
 
   reference JsonConstIterator::operator*() const
   {
-    return (*_json)[_position];
+    return (*_json).At(_position);
   }
 
   pointer JsonConstIterator::operator->() const
   {
-    return &(*_json)[_position];
+    return &(*_json).At(_position);
   }
 
   JsonConstIterator& JsonConstIterator::operator++()
   {
-    if (++_position > Size()) throw std::out_of_range("Iterator out of range!");
+    if (++_position > Size()) throw out_of_range("Iterator out of range!");
     return *this;
   }
 
@@ -70,7 +70,7 @@ namespace Json4CPP
 
   JsonConstIterator& JsonConstIterator::operator--()
   {
-    if (--_position < 0) throw std::out_of_range("Iterator out of range!");
+    if (--_position < 0) throw out_of_range("Iterator out of range!");
     return *this;
   }
 
@@ -84,7 +84,7 @@ namespace Json4CPP
   JsonConstIterator& JsonConstIterator::operator+=(difference_type n)
   {
     _position += n;
-    if (_position < 0 || _position > Size()) throw std::out_of_range("Iterator out of range!");
+    if (_position < 0 || _position > Size()) throw out_of_range("Iterator out of range!");
     return *this;
   }
 
@@ -101,7 +101,7 @@ namespace Json4CPP
   JsonConstIterator& JsonConstIterator::operator-=(difference_type n)
   {
     _position -= n;
-    if (_position < 0 || _position > Size()) throw std::out_of_range("Iterator out of range!");
+    if (_position < 0 || _position > Size()) throw out_of_range("Iterator out of range!");
     return *this;
   }
 
@@ -117,7 +117,7 @@ namespace Json4CPP
 
   reference JsonConstIterator::operator[](difference_type n)
   {
-    return (*_json)[_position + n];
+    return (*_json).At(_position + n);
   }
 
   bool JsonConstIterator::operator<(JsonConstIterator const& it) const

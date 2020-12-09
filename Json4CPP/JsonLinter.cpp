@@ -235,7 +235,7 @@ namespace Json4CPP::Detail
     }
   }
 
-  void JsonLinter::ParseObject(wistream& is, std::deque<TOKEN>& tokens, uint8_t depth)
+  void JsonLinter::ParseObject(wistream& is, deque<TOKEN>& tokens, uint8_t depth)
   {
     if (depth >= JsonDefault::MaxDepth)
     {
@@ -301,7 +301,7 @@ namespace Json4CPP::Detail
     }
   }
 
-  void JsonLinter::ParseArray(wistream& is, std::deque<TOKEN>& tokens, uint8_t depth)
+  void JsonLinter::ParseArray(wistream& is, deque<TOKEN>& tokens, uint8_t depth)
   {
     if (depth >= JsonDefault::MaxDepth)
     {
@@ -352,7 +352,7 @@ namespace Json4CPP::Detail
     }
   }
 
-  void JsonLinter::Read(wistream& is, std::deque<TOKEN>& tokens, uint8_t depth)
+  void JsonLinter::Read(wistream& is, deque<TOKEN>& tokens, uint8_t depth)
   {
     is >> ws;
     switch (is.peek())
@@ -392,7 +392,7 @@ namespace Json4CPP::Detail
       break;
 
     case L'[':
-      ParseArray(is, tokens, depth + 1);
+      ParseArray (is, tokens, depth + 1);
       break;
 
     default:
@@ -429,7 +429,7 @@ namespace Json4CPP::Detail
     return os;
   }
 
-  wostream& JsonLinter::WriteObject(wostream& os, std::deque<TOKEN>& tokens, uint8_t indentSize, wchar_t indentChar, uint8_t depth)
+  wostream& JsonLinter::WriteObject(wostream& os, deque<TOKEN>& tokens, uint8_t indentSize, wchar_t indentChar, uint8_t depth)
   {
     if (tokens.empty())
     {
@@ -458,7 +458,8 @@ namespace Json4CPP::Detail
       }
       else
       {
-        Write(os, token, value) << newLine;
+        Write(os, token, value);
+        os << newLine;
         tokens.pop_front();
       }
     }
@@ -522,7 +523,8 @@ namespace Json4CPP::Detail
           tie(token, value) = tokens.front();
           if (token == JsonTokenType::EndObject)
           {
-            Write(os << newLine << indent, token, value);
+            os << newLine << indent;
+            Write(os, token, value);
             tokens.pop_front();
             return os;
           }
@@ -546,7 +548,7 @@ namespace Json4CPP::Detail
     throw exception(message.c_str());
   }
 
-  wostream& JsonLinter::WriteArray(wostream& os, std::deque<TOKEN>& tokens, uint8_t indentSize, wchar_t indentChar, uint8_t depth)
+  wostream& JsonLinter::WriteArray(wostream& os, deque<TOKEN>& tokens, uint8_t indentSize, wchar_t indentChar, uint8_t depth)
   {
     if (tokens.empty())
     {
@@ -574,7 +576,8 @@ namespace Json4CPP::Detail
       }
       else
       {
-        Write(os, token, value) << newLine;
+        Write(os, token, value);
+        os << newLine;
         tokens.pop_front();
       }
     }
@@ -622,7 +625,8 @@ namespace Json4CPP::Detail
         tie(token, value) = tokens.front();
         if (token == JsonTokenType::EndArray)
         {
-          Write(os << newLine << indent, token, value);
+          os << newLine << indent;
+          Write(os, token, value);
           tokens.pop_front();
           return os;
         }
@@ -636,7 +640,7 @@ namespace Json4CPP::Detail
     throw exception(message.c_str());
   }
 
-  wostream& JsonLinter::Write(wostream& os, JsonTokenType const& token, VALUE_TOKEN const& value)
+  wostream& JsonLinter::Write(wostream& os, JsonTokenType token, VALUE_TOKEN const& value)
   {
     switch (token)
     {
@@ -671,12 +675,12 @@ namespace Json4CPP::Detail
     case JsonTokenType::Undefined:
     default:
       visit(Overload{
-        [&](nullptr_t  const& v) { os << L"null"s; },
-        [&](wstring    const& v) { os << L"\""s << EscapeString(v) << L"\""s; },
-        [&](bool       const& v) { os << (v ? L"true"s : L"false"s); },
-        [&](double     const& v) { WriteNumber(os, v); },
-        [&](int64_t    const& v) { WriteNumber(os, v); },
-        [&](auto       const& v)
+        [&](nullptr_t const& v) { os << L"null"s; },
+        [&](wstring   const& v) { os << L"\""s << EscapeString(v) << L"\""s; },
+        [&](bool      const& v) { os << (v ? L"true"s : L"false"s); },
+        [&](double    const& v) { WriteNumber(os, v); },
+        [&](int64_t   const& v) { WriteNumber(os, v); },
+        [&](auto      const& v)
         {
           auto message = WString2String(L"Got type "s + wstring(typeid(v)) + L"!"s L"Expected one of the following types: "s +
             wstring(typeid(nullptr_t())) + L", "s   + wstring(typeid(wstring())) + L", "s +
@@ -689,9 +693,9 @@ namespace Json4CPP::Detail
     return os;
   }
 
-  std::deque<TOKEN> JsonLinter::Read(wistream     & is   )
+  deque<TOKEN> JsonLinter::Read(wistream& is)
   {
-    auto tokens = std::deque<TOKEN>();
+    auto tokens = deque<TOKEN>();
     Read(is, tokens, 0);
     is >> ws;
     if (is.peek(), is.eof())
@@ -703,12 +707,17 @@ namespace Json4CPP::Detail
     throw exception(message.c_str());
   }
 
-  std::deque<TOKEN> JsonLinter::Read(wstring const& value)
+  deque<TOKEN> JsonLinter::Read(wistream&& is)
+  {
+    return Read(is);
+  }
+
+  deque<TOKEN> JsonLinter::Read(wstring const& value)
   {
     return Read(wstringstream(value));
   }
 
-  wostream& JsonLinter::Write(wostream& os, std::deque<TOKEN>& tokens, uint8_t indentSize, wchar_t indentChar)
+  wostream& JsonLinter::Write(wostream& os, deque<TOKEN>& tokens, uint8_t indentSize, wchar_t indentChar)
   {
     if (tokens.empty())
     {
@@ -725,7 +734,12 @@ namespace Json4CPP::Detail
     return os;
   }
 
-  wstring JsonLinter::Dump(VALUE_TOKEN value)
+  wostream& JsonLinter::Write(wostream& os, deque<TOKEN> && tokens, uint8_t indentSize, wchar_t indentChar)
+  {
+    return Write(os, tokens, indentSize, indentChar);
+  }
+
+  wstring JsonLinter::Dump(VALUE_TOKEN const& value)
   {
     wostringstream os;
     Write(os, JsonTokenType::Undefined, value);

@@ -17,20 +17,27 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestConstructorVALUE)
     {
-      auto inputs = vector<pair<VALUE, JsonBuilderType>>
+      auto inputs = vector<tuple<VALUE, VALUE, JsonBuilderType>>
       {
-        { nullptr_t (), JsonBuilderType::Null    },
-        { wstring   (), JsonBuilderType::String  },
-        { bool      (), JsonBuilderType::Boolean },
-        { double    (), JsonBuilderType::Real    },
-        { int64_t   (), JsonBuilderType::Integer },
-        { JsonObject(), JsonBuilderType::Object  },
-        { JsonArray (), JsonBuilderType::Array   },
+        { nullptr     , nullptr , JsonBuilderType::Null    },
+        { wstring   (), L"Test"s, JsonBuilderType::String  },
+        { true        , true    , JsonBuilderType::Boolean },
+        { 13.37       , 13.37   , JsonBuilderType::Real    },
+        { 1337i64     , 1337i64 , JsonBuilderType::Integer },
+        { JsonObject(), JsonObject{ { L"Key1"s, L"Value1"s }, { L"Key2"s, L"Value2"s } }, JsonBuilderType::Object },
+        { JsonArray (), JsonArray{ 1, 3, 3, 7 }, JsonBuilderType::Array }
       };
-      for (auto& [input, expected] : inputs)
+      for (auto& [moved, input, expected] : inputs)
       {
-        Assert::IsTrue(JsonBuilder(     input ).Is(expected));
-        Assert::IsTrue(JsonBuilder(move(input)).Is(expected));
+        auto copy = input;
+        auto output = JsonBuilder(input);
+        Assert::IsTrue(output.Is(expected));
+        Assert::AreEqual<Json>(Json(copy), output);
+        Assert::AreEqual<VALUE>(copy, input);
+        output = JsonBuilder(move(input));
+        Assert::IsTrue(output.Is(expected));
+        Assert::AreEqual<Json>(Json(copy), output);
+        Assert::AreEqual<VALUE>(moved, input);
       }
     }
 
@@ -49,9 +56,13 @@ namespace Json4CPP::Test
     TEST_METHOD(TestConstructorWstring)
     {
       auto str = L"Test"s;
-      Assert::IsTrue(JsonBuilder(     str ).Is(JsonBuilderType::String));
+      auto output = JsonBuilder(str);
+      Assert::IsTrue(output.Is(JsonBuilderType::String));
+      Assert::AreEqual<Json>(Json(L"Test"s), output);
       Assert::AreEqual(L"Test"s, str);
-      Assert::IsTrue(JsonBuilder(move(str)).Is(JsonBuilderType::String));
+      output = JsonBuilder(move(str));
+      Assert::IsTrue(output.Is(JsonBuilderType::String));
+      Assert::AreEqual<Json>(Json(L"Test"s), output);
       Assert::AreEqual(L""s, str);
     }
 
@@ -147,7 +158,7 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestConstructorFloat)
     {
-      float real = 13.37;
+      float real = 13.37f;
       Assert::IsTrue(JsonBuilder(     real ).Is(JsonBuilderType::Real));
       Assert::AreEqual((float)13.37, real);
       Assert::IsTrue(JsonBuilder(move(real)).Is(JsonBuilderType::Real));
@@ -166,39 +177,55 @@ namespace Json4CPP::Test
     TEST_METHOD(TestConstructorJsonObject)
     {
       auto object = JsonObject{
-        { L"Key1", L"Value1" }
+        { L"Key1", L"Value1" },
+        { L"Key2", L"Value2" }
       };
-      Assert::IsTrue(JsonBuilder(     object ).Is(JsonBuilderType::Object));
-      Assert::AreEqual<JsonObject>(JsonObject{ { L"Key1", L"Value1" } }, object);
-      Assert::IsTrue(JsonBuilder(move(object)).Is(JsonBuilderType::Object));
+      auto output = JsonBuilder(object);
+      Assert::IsTrue(output.Is(JsonBuilderType::Object));
+      Assert::AreEqual<JsonObject>(JsonObject{ { L"Key1", L"Value1" }, { L"Key2", L"Value2" } }, output);
+      Assert::AreEqual<JsonObject>(JsonObject{ { L"Key1", L"Value1" }, { L"Key2", L"Value2" } }, object);
+      output = JsonBuilder(move(object));
+      Assert::IsTrue(output.Is(JsonBuilderType::Object));
+      Assert::AreEqual<JsonObject>(JsonObject{ { L"Key1", L"Value1" }, { L"Key2", L"Value2" } }, output);
       Assert::AreEqual<JsonObject>(JsonObject{ }, object);
     }
 
     TEST_METHOD(TestConstructorJsonArray)
     {
       auto array = JsonArray{ 1, 3, 3, 7 };
-      Assert::IsTrue(JsonBuilder(     array ).Is(JsonBuilderType::Array));
+      auto output = JsonBuilder(array);
+      Assert::IsTrue(output.Is(JsonBuilderType::Array));
+      Assert::AreEqual<JsonArray>(JsonArray{ 1, 3, 3, 7 }, output);
       Assert::AreEqual<JsonArray>(JsonArray{ 1, 3, 3, 7 }, array);
-      Assert::IsTrue(JsonBuilder(move(array)).Is(JsonBuilderType::Array));
+      output = JsonBuilder(move(array));
+      Assert::IsTrue(output.Is(JsonBuilderType::Array));
+      Assert::AreEqual<JsonArray>(JsonArray{ 1, 3, 3, 7 }, output);
       Assert::AreEqual<JsonArray>(JsonArray{ }, array);
     }
 
     TEST_METHOD(TestConstructorJson)
     {
-      auto inputs = vector<pair<Json, JsonBuilderType>>
+      auto inputs = vector<tuple<Json, Json, JsonBuilderType>>
       {
-        { Json(nullptr_t ()), JsonBuilderType::Null    },
-        { Json(wstring   ()), JsonBuilderType::String  },
-        { Json(bool      ()), JsonBuilderType::Boolean },
-        { Json(double    ()), JsonBuilderType::Real    },
-        { Json(int64_t   ()), JsonBuilderType::Integer },
-        { Json(JsonObject()), JsonBuilderType::Object  },
-        { Json(JsonArray ()), JsonBuilderType::Array   },
+        { Json(nullptr     ), Json(nullptr ), JsonBuilderType::Null    },
+        { Json(wstring   ()), Json(L"Test"s), JsonBuilderType::String  },
+        { Json(true        ), Json(true    ), JsonBuilderType::Boolean },
+        { Json(13.37       ), Json(13.37   ), JsonBuilderType::Real    },
+        { Json(1337i64     ), Json(1337i64 ), JsonBuilderType::Integer },
+        { Json(JsonObject()), Json(JsonObject{ { L"Key1"s, L"Value1"s }, { L"Key2"s, L"Value2"s } }), JsonBuilderType::Object },
+        { Json(JsonArray ()), Json(JsonArray{ 1, 3, 3, 7 }), JsonBuilderType::Array }
       };
-      for (auto& [input, expected] : inputs)
+      for (auto& [moved, input, expected] : inputs)
       {
-        Assert::IsTrue(JsonBuilder(     input ).Is(expected));
-        Assert::IsTrue(JsonBuilder(move(input)).Is(expected));
+        auto copy = input;
+        auto output = JsonBuilder(input);
+        Assert::IsTrue(output.Is(expected));
+        Assert::AreEqual<Json>(copy, output);
+        Assert::AreEqual<Json>(copy, input);
+        output = JsonBuilder(move(input));
+        Assert::IsTrue(output.Is(expected));
+        Assert::AreEqual<Json>(copy, output);
+        Assert::AreEqual<Json>(moved, input);
       }
     }
 
@@ -232,8 +259,15 @@ namespace Json4CPP::Test
 
       for (auto& [input, expected] : pairs)
       {
-        Assert::IsTrue(JsonBuilder(     input ).Is(expected));
-        Assert::IsTrue(JsonBuilder(move(input)).Is(expected));
+        auto copy = input;
+        auto output = JsonBuilder(input);
+        Assert::IsTrue(output.Is(expected));
+        Assert::AreEqual<Json>(Json(copy), output);
+        Assert::AreEqual(Json(copy), Json(input));
+        output = JsonBuilder(move(input));
+        Assert::IsTrue(output.Is(expected));
+        Assert::AreEqual<Json>(Json(copy), output);
+        Assert::AreEqual(Json(vector<JsonBuilder>()), Json(input));
       }
     }
   };

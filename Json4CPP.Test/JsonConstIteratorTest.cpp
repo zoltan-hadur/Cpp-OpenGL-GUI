@@ -296,8 +296,8 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>(1, it.Value());
       it++;
       Assert::AreEqual<Json>(2, it.Value());
-      Assert::AreEqual<Json>(1, json[L"Key1"]);
-      Assert::AreEqual<Json>(2, json[L"Key2"]);
+      Assert::AreEqual<Json>(1, json.At(L"Key1"));
+      Assert::AreEqual<Json>(2, json.At(L"Key2"));
     }
 
     TEST_METHOD(TestRangeBasedFor)
@@ -309,10 +309,10 @@ namespace Json4CPP::Test
         value = value + 1;
         values.push_back(value);
       }
-      Assert::AreEqual<Json>(1, json[0]);
-      Assert::AreEqual<Json>(2, json[1]);
-      Assert::AreEqual<Json>(3, json[2]);
-      Assert::AreEqual<Json>(4, json[3]);
+      Assert::AreEqual<Json>(1, json.At(0));
+      Assert::AreEqual<Json>(2, json.At(1));
+      Assert::AreEqual<Json>(3, json.At(2));
+      Assert::AreEqual<Json>(4, json.At(3));
       Assert::AreEqual<Json>(2, values[0]);
       Assert::AreEqual<Json>(3, values[1]);
       Assert::AreEqual<Json>(4, values[2]);
@@ -323,10 +323,10 @@ namespace Json4CPP::Test
         static_assert(is_const_v<remove_reference_t<decltype(value)>>, "Type of value must be const!");
         values.push_back(value);
       }
-      Assert::AreEqual<Json>(1, json[0]);
-      Assert::AreEqual<Json>(2, json[1]);
-      Assert::AreEqual<Json>(3, json[2]);
-      Assert::AreEqual<Json>(4, json[3]);
+      Assert::AreEqual<Json>(1, json.At(0));
+      Assert::AreEqual<Json>(2, json.At(1));
+      Assert::AreEqual<Json>(3, json.At(2));
+      Assert::AreEqual<Json>(4, json.At(3));
       Assert::AreEqual<Json>(1, values[0]);
       Assert::AreEqual<Json>(2, values[1]);
       Assert::AreEqual<Json>(3, values[2]);
@@ -342,10 +342,10 @@ namespace Json4CPP::Test
         static_assert(is_const_v<remove_reference_t<decltype(*it)>>, "Type of value must be const!");
         values.push_back(*it);
       }
-      Assert::AreEqual<Json>(1, json[0]);
-      Assert::AreEqual<Json>(2, json[1]);
-      Assert::AreEqual<Json>(3, json[2]);
-      Assert::AreEqual<Json>(4, json[3]);
+      Assert::AreEqual<Json>(1, json.At(0));
+      Assert::AreEqual<Json>(2, json.At(1));
+      Assert::AreEqual<Json>(3, json.At(2));
+      Assert::AreEqual<Json>(4, json.At(3));
       Assert::AreEqual<Json>(1, values[0]);
       Assert::AreEqual<Json>(2, values[1]);
       Assert::AreEqual<Json>(3, values[2]);

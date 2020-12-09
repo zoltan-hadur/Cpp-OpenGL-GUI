@@ -16,82 +16,343 @@ namespace Json4CPP::Test
       Assert::AreEqual(0i64, object.Size());
     }
 
+    TEST_METHOD(TestConstructorJson)
+    {
+      JsonObject object;
+
+      auto json = Json();
+      Assert::ExpectException<exception>([&]() { object = json; });
+      Assert::AreEqual<Json>(nullptr, json);
+      json = nullptr;
+      Assert::ExpectException<exception>([&]() { object = json; });
+      Assert::AreEqual<Json>(nullptr, json);
+      json = L"Test"s;
+      Assert::ExpectException<exception>([&]() { object = json; });
+      Assert::AreEqual<Json>(L"Test"s, json);
+      json = true;
+      Assert::ExpectException<exception>([&]() { object = json; });
+      Assert::AreEqual<Json>(true, json);
+      json = 1337;
+      Assert::ExpectException<exception>([&]() { object = json; });
+      Assert::AreEqual<Json>(1337, json);
+      json = 13.37;
+      Assert::ExpectException<exception>([&]() { object = json; });
+      Assert::AreEqual<Json>(13.37, json);
+      json = { { L"Key1"s, L"Value1"s, }, { L"Key2"s, L"Value2"s } };
+      object = json;
+      Assert::AreEqual<Json>({ { L"Key1"s, L"Value1"s, }, { L"Key2"s, L"Value2"s } }, json);
+      json = { 1, 3, 3, 7 };
+      Assert::ExpectException<exception>([&]() { object = json; });
+      Assert::AreEqual<Json>({ 1, 3, 3, 7 }, json);
+
+      json = Json();
+      Assert::ExpectException<exception>([&]() { object = move(json); });
+      Assert::AreEqual<Json>(nullptr, json);
+      json = nullptr;
+      Assert::ExpectException<exception>([&]() { object = move(json); });
+      Assert::AreEqual<Json>(nullptr, json);
+      json = L"Test"s;
+      Assert::ExpectException<exception>([&]() { object = move(json); });
+      Assert::AreEqual<Json>(L"Test"s, json);
+      json = true;
+      Assert::ExpectException<exception>([&]() { object = move(json); });
+      Assert::AreEqual<Json>(true, json);
+      json = 1337;
+      Assert::ExpectException<exception>([&]() { object = move(json); });
+      Assert::AreEqual<Json>(1337, json);
+      json = 13.37;
+      Assert::ExpectException<exception>([&]() { object = move(json); });
+      Assert::AreEqual<Json>(13.37, json);
+      json = { { L"Key1"s, L"Value1"s, }, { L"Key2"s, L"Value2"s } };
+      object = move(json);
+      Assert::AreEqual(0i64, json.Size());
+      json = { 1, 3, 3, 7 };
+      Assert::ExpectException<exception>([&]() { object = move(json); });
+      Assert::AreEqual<Json>({ 1, 3, 3, 7 }, json);
+    }
+
     TEST_METHOD(TestConstructorJsonBuilder)
     {
       JsonObject object;
 
-      Assert::ExpectException<exception>([&]() { object = JsonBuilder(); });
+      auto builder = JsonBuilder();
+      Assert::ExpectException<exception>([&]() { object = builder; });
+      Assert::AreEqual<JsonBuilder>(nullptr, builder);
 
       // JsonBuilder from VALUE
-      Assert::ExpectException<exception>([&]() { object = JsonBuilder(VALUE(nullptr_t())); });
-      Assert::ExpectException<exception>([&]() { object = JsonBuilder(VALUE(wstring())); });
-      Assert::ExpectException<exception>([&]() { object = JsonBuilder(VALUE(bool())); });
-      Assert::ExpectException<exception>([&]() { object = JsonBuilder(VALUE(double())); });
-      Assert::ExpectException<exception>([&]() { object = JsonBuilder(VALUE(int64_t())); });
-      object = JsonBuilder(VALUE(JsonObject({ { L"Key1", 1 }, { L"Key2", 2 } })));
+      builder = JsonBuilder(VALUE(nullptr));
+      Assert::ExpectException<exception>([&]() { object = builder; });
+      Assert::AreEqual<JsonBuilder>(nullptr, builder);
+      builder = JsonBuilder(VALUE(L"Test"s));
+      Assert::ExpectException<exception>([&]() { object = builder; });
+      Assert::AreEqual<JsonBuilder>(L"Test"s, builder);
+      builder = JsonBuilder(VALUE(true));
+      Assert::ExpectException<exception>([&]() { object = builder; });
+      Assert::AreEqual<JsonBuilder>(true, builder);
+      builder = JsonBuilder(VALUE(13.37));
+      Assert::ExpectException<exception>([&]() { object = builder; });
+      Assert::AreEqual<JsonBuilder>(13.37, builder);
+      builder = JsonBuilder(VALUE(1337i64));
+      Assert::ExpectException<exception>([&]() { object = builder; });
+      Assert::AreEqual<JsonBuilder>(1337, builder);
+      builder = JsonBuilder(VALUE(JsonObject{ { L"Key1", L"Value1" }, { L"Key2", L"Value2" } }));
+      object = builder;
       Assert::AreEqual(2i64, object.Size());
       Assert::AreEqual(L"Key1"s, object.Keys()[0]);
       Assert::AreEqual(L"Key2"s, object.Keys()[1]);
-      Assert::AreEqual<Json>(1, object[L"Key1"]);
-      Assert::AreEqual<Json>(2, object[L"Key2"]);
-      Assert::ExpectException<exception>([&]() { object = JsonBuilder(VALUE(JsonArray())); });
+      Assert::AreEqual<Json>(L"Value1", object[L"Key1"]);
+      Assert::AreEqual<Json>(L"Value2", object[L"Key2"]);
+      Assert::AreEqual<JsonBuilder>(JsonObject{ { L"Key1", L"Value1" }, { L"Key2", L"Value2" } }, builder);
+      builder = JsonBuilder(VALUE(JsonArray{ 1, 3, 3, 7 }));
+      Assert::ExpectException<exception>([&]() { object = builder; });
+      Assert::AreEqual<JsonBuilder>(JsonArray{ 1, 3, 3, 7 }, builder);
 
       // JsonBuilder constructors
-      Assert::ExpectException<exception>([&]() { object = JsonBuilder(nullptr_t()); });
-      Assert::ExpectException<exception>([&]() { object = JsonBuilder(L""); });
-      Assert::ExpectException<exception>([&]() { object = JsonBuilder(wstring()); });
-      Assert::ExpectException<exception>([&]() { object = JsonBuilder(bool()); });
-      Assert::ExpectException<exception>([&]() { object = JsonBuilder(char()); });
-      Assert::ExpectException<exception>([&]() { object = JsonBuilder(int8_t()); });
-      Assert::ExpectException<exception>([&]() { object = JsonBuilder(uint8_t()); });
-      Assert::ExpectException<exception>([&]() { object = JsonBuilder(int16_t()); });
-      Assert::ExpectException<exception>([&]() { object = JsonBuilder(uint16_t()); });
-      Assert::ExpectException<exception>([&]() { object = JsonBuilder(int32_t()); });
-      Assert::ExpectException<exception>([&]() { object = JsonBuilder(uint32_t()); });
-      Assert::ExpectException<exception>([&]() { object = JsonBuilder(int64_t()); });
-      Assert::ExpectException<exception>([&]() { object = JsonBuilder(uint64_t()); });
-      Assert::ExpectException<exception>([&]() { object = JsonBuilder(float()); });
-      Assert::ExpectException<exception>([&]() { object = JsonBuilder(double()); });
-      object = JsonBuilder(JsonObject({ { L"Key1", 1 }, { L"Key2", 2 } }));
+      builder = JsonBuilder(nullptr);
+      Assert::ExpectException<exception>([&]() { object = builder; });
+      Assert::AreEqual<JsonBuilder>(nullptr, builder);
+      builder = JsonBuilder(L"Test");
+      Assert::ExpectException<exception>([&]() { object = builder; });
+      Assert::AreEqual<JsonBuilder>(L"Test", builder);
+      builder = JsonBuilder(L"Test"s);
+      Assert::ExpectException<exception>([&]() { object = builder; });
+      Assert::AreEqual<JsonBuilder>(L"Test"s, builder);
+      builder = JsonBuilder(true);
+      Assert::ExpectException<exception>([&]() { object = builder; });
+      Assert::AreEqual<JsonBuilder>(true, builder);
+      builder = JsonBuilder('A');
+      Assert::ExpectException<exception>([&]() { object = builder; });
+      Assert::AreEqual<JsonBuilder>('A', builder);
+      builder = JsonBuilder(1i8);
+      Assert::ExpectException<exception>([&]() { object = builder; });
+      Assert::AreEqual<JsonBuilder>(1i8, builder);
+      builder = JsonBuilder(2ui8);
+      Assert::ExpectException<exception>([&]() { object = builder; });
+      Assert::AreEqual<JsonBuilder>(2ui8, builder);
+      builder = JsonBuilder(3i16);
+      Assert::ExpectException<exception>([&]() { object = builder; });
+      Assert::AreEqual<JsonBuilder>(3i16, builder);
+      builder = JsonBuilder(4ui16);
+      Assert::ExpectException<exception>([&]() { object = builder; });
+      Assert::AreEqual<JsonBuilder>(4ui16, builder);
+      builder = JsonBuilder(5i32);
+      Assert::ExpectException<exception>([&]() { object = builder; });
+      Assert::AreEqual<JsonBuilder>(5i32, builder);
+      builder = JsonBuilder(6ui32);
+      Assert::ExpectException<exception>([&]() { object = builder; });
+      Assert::AreEqual<JsonBuilder>(6ui32, builder);
+      builder = JsonBuilder(7i64);
+      Assert::ExpectException<exception>([&]() { object = builder; });
+      Assert::AreEqual<JsonBuilder>(7i64, builder);
+      builder = JsonBuilder(8ui64);
+      Assert::ExpectException<exception>([&]() { object = builder; });
+      Assert::AreEqual<JsonBuilder>(8ui64, builder);
+      builder = JsonBuilder(13.37f);
+      Assert::ExpectException<exception>([&]() { object = builder; });
+      Assert::AreEqual<JsonBuilder>(13.37f, builder);
+      builder = JsonBuilder(13.37);
+      Assert::ExpectException<exception>([&]() { object = builder; });
+      Assert::AreEqual<JsonBuilder>(13.37, builder);
+      builder = JsonBuilder(JsonObject{ { L"Key1", L"Value1" }, { L"Key2", L"Value2" } });
+      object = builder;
       Assert::AreEqual(2i64, object.Size());
       Assert::AreEqual(L"Key1"s, object.Keys()[0]);
       Assert::AreEqual(L"Key2"s, object.Keys()[1]);
-      Assert::AreEqual<Json>(1, object[L"Key1"]);
-      Assert::AreEqual<Json>(2, object[L"Key2"]);
-      Assert::ExpectException<exception>([&]() { object = JsonBuilder(JsonArray()); });
-      Assert::ExpectException<exception>([&]() { object = JsonBuilder(Json()); });
-      object = JsonBuilder(Json(JsonObject({ { L"Key1", 1 }, { L"Key2", 2 } })));
+      Assert::AreEqual<Json>(L"Value1", object[L"Key1"]);
+      Assert::AreEqual<Json>(L"Value2", object[L"Key2"]);
+      Assert::AreEqual<JsonBuilder>(JsonObject{ { L"Key1", L"Value1" }, { L"Key2", L"Value2" } }, builder);
+      builder = JsonBuilder(JsonArray{ 1, 3, 3, 7 });
+      Assert::ExpectException<exception>([&]() { object = builder; });
+      Assert::AreEqual<JsonBuilder>(JsonArray{ 1, 3, 3, 7 }, builder);
+      builder = JsonBuilder(Json());
+      Assert::ExpectException<exception>([&]() { object = builder; });
+      Assert::AreEqual<JsonBuilder>(Json(), builder);
+      builder = JsonBuilder(Json(JsonObject{ { L"Key1", L"Value1" }, { L"Key2", L"Value2" } }));
+      object = builder;
       Assert::AreEqual(2i64, object.Size());
       Assert::AreEqual(L"Key1"s, object.Keys()[0]);
       Assert::AreEqual(L"Key2"s, object.Keys()[1]);
-      Assert::AreEqual<Json>(1, object[L"Key1"]);
-      Assert::AreEqual<Json>(2, object[L"Key2"]);
+      Assert::AreEqual<Json>(L"Value1", object[L"Key1"]);
+      Assert::AreEqual<Json>(L"Value2", object[L"Key2"]);
+      Assert::AreEqual<JsonBuilder>(Json(JsonObject{ { L"Key1", L"Value1" }, { L"Key2", L"Value2" } }), builder);
 
       // JsonBuilder from initializer_list
-      Assert::ExpectException<exception>([&]() { object = JsonBuilder({ L"Key1", 1 }); });
-      object = JsonBuilder({ { L"Key1", 1 } });
+      builder = JsonBuilder({ L"Key1", L"Value1" });
+      Assert::ExpectException<exception>([&]() { object = builder; });
+      Assert::AreEqual<JsonBuilder>({ L"Key1", L"Value1" }, builder);
+      builder = JsonBuilder({ { L"Key1", L"Value1" } });
+      object = builder;
       Assert::AreEqual(1i64, object.Size());
       Assert::AreEqual(L"Key1"s, object.Keys()[0]);
-      Assert::AreEqual<Json>(1, object[L"Key1"]);
-      object = JsonBuilder({ { L"Key1", 1 }, { L"Key2", 2 } });
+      Assert::AreEqual<Json>(L"Value1", object[L"Key1"]);
+      Assert::AreEqual<JsonBuilder>({ { L"Key1", L"Value1" } }, builder);
+      builder = JsonBuilder({ { L"Key1", L"Value1" }, { L"Key2", L"Value2" } });
+      object = builder;
       Assert::AreEqual(2i64, object.Size());
       Assert::AreEqual(L"Key1"s, object.Keys()[0]);
       Assert::AreEqual(L"Key2"s, object.Keys()[1]);
-      Assert::AreEqual<Json>(1, object[L"Key1"]);
-      Assert::AreEqual<Json>(2, object[L"Key2"]);
+      Assert::AreEqual<Json>(L"Value1", object[L"Key1"]);
+      Assert::AreEqual<Json>(L"Value2", object[L"Key2"]);
+      Assert::AreEqual<JsonBuilder>({ { L"Key1", L"Value1" }, { L"Key2", L"Value2" } }, builder);
 
       // JsonBuilder from vector
-      Assert::ExpectException<exception>([&]() { object = JsonBuilder(vector<JsonBuilder>{ L"Key1", 1 }); });
-      object = JsonBuilder(vector<JsonBuilder>{ { L"Key1", 1 } });
+      builder = JsonBuilder(vector<JsonBuilder>{ L"Key1", L"Value1" });
+      Assert::ExpectException<exception>([&]() { object = builder; });
+      Assert::AreEqual<JsonBuilder>(vector<JsonBuilder>{ L"Key1", L"Value1" }, builder);
+      builder = JsonBuilder(vector<JsonBuilder>{ { L"Key1", L"Value1" } });
+      object = builder;
       Assert::AreEqual(1i64, object.Size());
       Assert::AreEqual(L"Key1"s, object.Keys()[0]);
-      Assert::AreEqual<Json>(1, object[L"Key1"]);
-      object = JsonBuilder(vector<JsonBuilder>{ { L"Key1", 1 }, { L"Key2", 2 } });
+      Assert::AreEqual<Json>(L"Value1", object[L"Key1"]);
+      Assert::AreEqual<JsonBuilder>(vector<JsonBuilder>{ { L"Key1", L"Value1" } }, builder);
+      builder = JsonBuilder(vector<JsonBuilder>{ { L"Key1", L"Value1" }, { L"Key2", L"Value2" } });
+      object = builder;
       Assert::AreEqual(2i64, object.Size());
       Assert::AreEqual(L"Key1"s, object.Keys()[0]);
       Assert::AreEqual(L"Key2"s, object.Keys()[1]);
-      Assert::AreEqual<Json>(1, object[L"Key1"]);
-      Assert::AreEqual<Json>(2, object[L"Key2"]);
+      Assert::AreEqual<Json>(L"Value1", object[L"Key1"]);
+      Assert::AreEqual<Json>(L"Value2", object[L"Key2"]);
+      Assert::AreEqual<JsonBuilder>(vector<JsonBuilder>{ { L"Key1", L"Value1" }, { L"Key2", L"Value2" } }, builder);
+
+      // Move
+      builder = JsonBuilder();
+      Assert::ExpectException<exception>([&]() { object = move(builder); });
+      Assert::AreEqual<JsonBuilder>(nullptr, builder);
+
+      // JsonBuilder from VALUE
+      builder = JsonBuilder(VALUE(nullptr));
+      Assert::ExpectException<exception>([&]() { object = move(builder); });
+      Assert::AreEqual<JsonBuilder>(nullptr, builder);
+      builder = JsonBuilder(VALUE(L"Test"s));
+      Assert::ExpectException<exception>([&]() { object = move(builder); });
+      Assert::AreEqual<JsonBuilder>(L"Test"s, builder);
+      builder = JsonBuilder(VALUE(true));
+      Assert::ExpectException<exception>([&]() { object = move(builder); });
+      Assert::AreEqual<JsonBuilder>(true, builder);
+      builder = JsonBuilder(VALUE(13.37));
+      Assert::ExpectException<exception>([&]() { object = move(builder); });
+      Assert::AreEqual<JsonBuilder>(13.37, builder);
+      builder = JsonBuilder(VALUE(1337i64));
+      Assert::ExpectException<exception>([&]() { object = move(builder); });
+      Assert::AreEqual<JsonBuilder>(1337, builder);
+      builder = JsonBuilder(VALUE(JsonObject{ { L"Key1", L"Value1" }, { L"Key2", L"Value2" } }));
+      object = move(builder);
+      Assert::AreEqual(2i64, object.Size());
+      Assert::AreEqual(L"Key1"s, object.Keys()[0]);
+      Assert::AreEqual(L"Key2"s, object.Keys()[1]);
+      Assert::AreEqual<Json>(L"Value1", object[L"Key1"]);
+      Assert::AreEqual<Json>(L"Value2", object[L"Key2"]);
+      Assert::AreEqual<JsonBuilder>(JsonObject{ }, builder);
+      builder = JsonBuilder(VALUE(JsonArray{ 1, 3, 3, 7 }));
+      Assert::ExpectException<exception>([&]() { object = move(builder); });
+      Assert::AreEqual<JsonBuilder>(JsonArray{ 1, 3, 3, 7 }, builder);
+
+      // JsonBuilder constructors
+      builder = JsonBuilder(nullptr);
+      Assert::ExpectException<exception>([&]() { object = move(builder); });
+      Assert::AreEqual<JsonBuilder>(nullptr, builder);
+      builder = JsonBuilder(L"Test");
+      Assert::ExpectException<exception>([&]() { object = move(builder); });
+      Assert::AreEqual<JsonBuilder>(L"Test", builder);
+      builder = JsonBuilder(L"Test"s);
+      Assert::ExpectException<exception>([&]() { object = move(builder); });
+      Assert::AreEqual<JsonBuilder>(L"Test"s, builder);
+      builder = JsonBuilder(true);
+      Assert::ExpectException<exception>([&]() { object = move(builder); });
+      Assert::AreEqual<JsonBuilder>(true, builder);
+      builder = JsonBuilder('A');
+      Assert::ExpectException<exception>([&]() { object = move(builder); });
+      Assert::AreEqual<JsonBuilder>('A', builder);
+      builder = JsonBuilder(1i8);
+      Assert::ExpectException<exception>([&]() { object = move(builder); });
+      Assert::AreEqual<JsonBuilder>(1i8, builder);
+      builder = JsonBuilder(2ui8);
+      Assert::ExpectException<exception>([&]() { object = move(builder); });
+      Assert::AreEqual<JsonBuilder>(2ui8, builder);
+      builder = JsonBuilder(3i16);
+      Assert::ExpectException<exception>([&]() { object = move(builder); });
+      Assert::AreEqual<JsonBuilder>(3i16, builder);
+      builder = JsonBuilder(4ui16);
+      Assert::ExpectException<exception>([&]() { object = move(builder); });
+      Assert::AreEqual<JsonBuilder>(4ui16, builder);
+      builder = JsonBuilder(5i32);
+      Assert::ExpectException<exception>([&]() { object = move(builder); });
+      Assert::AreEqual<JsonBuilder>(5i32, builder);
+      builder = JsonBuilder(6ui32);
+      Assert::ExpectException<exception>([&]() { object = move(builder); });
+      Assert::AreEqual<JsonBuilder>(6ui32, builder);
+      builder = JsonBuilder(7i64);
+      Assert::ExpectException<exception>([&]() { object = move(builder); });
+      Assert::AreEqual<JsonBuilder>(7i64, builder);
+      builder = JsonBuilder(8ui64);
+      Assert::ExpectException<exception>([&]() { object = move(builder); });
+      Assert::AreEqual<JsonBuilder>(8ui64, builder);
+      builder = JsonBuilder(13.37f);
+      Assert::ExpectException<exception>([&]() { object = move(builder); });
+      Assert::AreEqual<JsonBuilder>(13.37f, builder);
+      builder = JsonBuilder(13.37);
+      Assert::ExpectException<exception>([&]() { object = move(builder); });
+      Assert::AreEqual<JsonBuilder>(13.37, builder);
+      builder = JsonBuilder(JsonObject{ { L"Key1", L"Value1" }, { L"Key2", L"Value2" } });
+      object = move(builder);
+      Assert::AreEqual(2i64, object.Size());
+      Assert::AreEqual(L"Key1"s, object.Keys()[0]);
+      Assert::AreEqual(L"Key2"s, object.Keys()[1]);
+      Assert::AreEqual<Json>(L"Value1", object[L"Key1"]);
+      Assert::AreEqual<Json>(L"Value2", object[L"Key2"]);
+      Assert::AreEqual<JsonBuilder>(JsonObject{ }, builder);
+      builder = JsonBuilder(JsonArray{ 1, 3, 3, 7 });
+      Assert::ExpectException<exception>([&]() { object = move(builder); });
+      Assert::AreEqual<JsonBuilder>(JsonArray{ 1, 3, 3, 7 }, builder);
+      builder = JsonBuilder(Json());
+      Assert::ExpectException<exception>([&]() { object = move(builder); });
+      Assert::AreEqual<JsonBuilder>(Json(), builder);
+      builder = JsonBuilder(Json(JsonObject{ { L"Key1", L"Value1" }, { L"Key2", L"Value2" } }));
+      object = move(builder);
+      Assert::AreEqual(2i64, object.Size());
+      Assert::AreEqual(L"Key1"s, object.Keys()[0]);
+      Assert::AreEqual(L"Key2"s, object.Keys()[1]);
+      Assert::AreEqual<Json>(L"Value1", object[L"Key1"]);
+      Assert::AreEqual<Json>(L"Value2", object[L"Key2"]);
+      Assert::AreEqual<JsonBuilder>(Json(JsonObject{ }), builder);
+
+      // JsonBuilder from initializer_list
+      builder = JsonBuilder({ L"Key1", L"Value1" });
+      Assert::ExpectException<exception>([&]() { object = move(builder); });
+      Assert::AreEqual<JsonBuilder>({ L"Key1", L"Value1" }, builder);
+      builder = JsonBuilder({ { L"Key1", L"Value1" } });
+      object = move(builder);
+      Assert::AreEqual(1i64, object.Size());
+      Assert::AreEqual(L"Key1"s, object.Keys()[0]);
+      Assert::AreEqual<Json>(L"Value1", object[L"Key1"]);
+      Assert::AreEqual<JsonBuilder>({ { L"", L"" } }, builder);
+      builder = JsonBuilder({ { L"Key1", L"Value1" }, { L"Key2", L"Value2" } });
+      object = move(builder);
+      Assert::AreEqual(2i64, object.Size());
+      Assert::AreEqual(L"Key1"s, object.Keys()[0]);
+      Assert::AreEqual(L"Key2"s, object.Keys()[1]);
+      Assert::AreEqual<Json>(L"Value1", object[L"Key1"]);
+      Assert::AreEqual<Json>(L"Value2", object[L"Key2"]);
+      Assert::AreEqual<JsonBuilder>({ { L"", L"" }, { L"", L"" } }, builder);
+
+      // JsonBuilder from vector
+      builder = JsonBuilder(vector<JsonBuilder>{ L"Key1", L"Value1" });
+      Assert::ExpectException<exception>([&]() { object = move(builder); });
+      Assert::AreEqual<JsonBuilder>(vector<JsonBuilder>{ L"Key1", L"Value1" }, builder);
+      builder = JsonBuilder(vector<JsonBuilder>{ { L"Key1", L"Value1" } });
+      object = move(builder);
+      Assert::AreEqual(1i64, object.Size());
+      Assert::AreEqual(L"Key1"s, object.Keys()[0]);
+      Assert::AreEqual<Json>(L"Value1", object[L"Key1"]);
+      Assert::AreEqual<JsonBuilder>(vector<JsonBuilder>{ { L"", L"" } }, builder);
+      builder = JsonBuilder(vector<JsonBuilder>{ { L"Key1", L"Value1" }, { L"Key2", L"Value2" } });
+      object = move(builder);
+      Assert::AreEqual(2i64, object.Size());
+      Assert::AreEqual(L"Key1"s, object.Keys()[0]);
+      Assert::AreEqual(L"Key2"s, object.Keys()[1]);
+      Assert::AreEqual<Json>(L"Value1", object[L"Key1"]);
+      Assert::AreEqual<Json>(L"Value2", object[L"Key2"]);
+      Assert::AreEqual<JsonBuilder>(vector<JsonBuilder>{ { L"", L"" }, { L"", L"" } }, builder);
     }
 
     TEST_METHOD(TestConstructorInitializerList)
@@ -143,18 +404,6 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>(1, object[L"Array"][0]);
       Assert::AreEqual<Json>(2, object[L"Array"][1]);
       Assert::AreEqual<Json>(3, object[L"Array"][2]);
-    }
-
-    TEST_METHOD(TestConstructorJsonObject)
-    {
-      JsonObject object = { { L"Key1", 1 }, { L"Key2", 2 } };
-
-      auto object2 = object;
-      Assert::AreEqual(2i64, object2.Size());
-      Assert::AreEqual(L"Key1"s, object2.Keys()[0]);
-      Assert::AreEqual(L"Key2"s, object2.Keys()[1]);
-      Assert::AreEqual<Json>(1, object2[L"Key1"]);
-      Assert::AreEqual<Json>(2, object2[L"Key2"]);
     }
 
     TEST_METHOD(TestDump)
@@ -309,13 +558,21 @@ namespace Json4CPP::Test
     TEST_METHOD(TestInsert)
     {
       JsonObject object;
-      object.Insert({ L"Null", nullptr });
-      object.Insert({ L"String", L"Test" });
-      object.Insert({ L"Boolean", true });
-      object.Insert({ L"Real", 13.37 });
-      object.Insert({ L"Integer", 1337 });
-      object.Insert({ L"Object", { { L"Key1", 1 }, { L"Key2", 2 } } });
-      object.Insert({ L"Array", { 1, 2, 3 } });
+      pair<wstring, Json> null = { L"Null"s, nullptr };
+      pair<wstring, Json> str = { L"String"s, L"Test"s };
+      pair<wstring, Json> boolean = { L"Boolean"s, true };
+      pair<wstring, Json> real = { L"Real"s, 13.37 };
+      pair<wstring, Json> integer = { L"Integer"s, 1337 };
+      pair<wstring, Json> obj = { L"Object"s, { { L"Key1", 1 }, { L"Key2", 2 } } };
+      pair<wstring, Json> arr = { L"Array"s, { 1, 2, 3 } };
+
+      object.Insert(null);
+      object.Insert(str);
+      object.Insert(boolean);
+      object.Insert(real);
+      object.Insert(integer);
+      object.Insert(obj);
+      object.Insert(arr);
       Assert::AreEqual(7i64, object.Size());
       Assert::AreEqual<Json>(nullptr, object[L"Null"]);
       Assert::AreEqual<Json>(L"Test"s, object[L"String"]);
@@ -324,6 +581,37 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>(1337, object[L"Integer"]);
       Assert::AreEqual<Json>({ { L"Key1", 1 }, { L"Key2", 2 } }, object[L"Object"]);
       Assert::AreEqual<Json>({ 1, 2, 3 }, object[L"Array"]);
+      Assert::AreEqual<pair<wstring, Json>>({ L"Null"s, nullptr }, null);
+      Assert::AreEqual<pair<wstring, Json>>({ L"String"s, L"Test"s }, str);
+      Assert::AreEqual<pair<wstring, Json>>({ L"Boolean"s, true }, boolean);
+      Assert::AreEqual<pair<wstring, Json>>({ L"Real"s, 13.37 }, real);
+      Assert::AreEqual<pair<wstring, Json>>({ L"Integer"s, 1337 }, integer);
+      Assert::AreEqual<pair<wstring, Json>>({ L"Object"s, { { L"Key1", 1 }, { L"Key2", 2 } } }, obj);
+      Assert::AreEqual<pair<wstring, Json>>({ L"Array"s, { 1, 2, 3 } }, arr);
+
+      object.Clear();
+      object.Insert(move(null));
+      object.Insert(move(str));
+      object.Insert(move(boolean));
+      object.Insert(move(real));
+      object.Insert(move(integer));
+      object.Insert(move(obj));
+      object.Insert(move(arr));
+      Assert::AreEqual(7i64, object.Size());
+      Assert::AreEqual<Json>(nullptr, object[L"Null"]);
+      Assert::AreEqual<Json>(L"Test"s, object[L"String"]);
+      Assert::AreEqual<Json>(true, object[L"Boolean"]);
+      Assert::AreEqual<Json>(13.37, object[L"Real"]);
+      Assert::AreEqual<Json>(1337, object[L"Integer"]);
+      Assert::AreEqual<Json>({ { L"Key1", 1 }, { L"Key2", 2 } }, object[L"Object"]);
+      Assert::AreEqual<Json>({ 1, 2, 3 }, object[L"Array"]);
+      Assert::AreEqual<pair<wstring, Json>>({ L""s, nullptr }, null);
+      Assert::AreEqual<pair<wstring, Json>>({ L""s, L""s }, str);
+      Assert::AreEqual<pair<wstring, Json>>({ L""s, true }, boolean);
+      Assert::AreEqual<pair<wstring, Json>>({ L""s, 13.37 }, real);
+      Assert::AreEqual<pair<wstring, Json>>({ L""s, 1337 }, integer);
+      Assert::AreEqual<pair<wstring, Json>>({ L""s, JsonObject{ } }, obj);
+      Assert::AreEqual<pair<wstring, Json>>({ L""s, JsonArray{ } }, arr);
     }
 
     TEST_METHOD(TestErase)
@@ -432,11 +720,11 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>(1337, object.At(L"Integer"));
       Assert::AreEqual<Json>({ { L"Key1", 1 }, { L"Key2", 2 } }, object.At(L"Object"));
       Assert::AreEqual<Json>({ 1, 2, 3 }, object.At(L"Array"));
-      Assert::AreEqual<Json>(1, object.At(L"Object")[L"Key1"]);
-      Assert::AreEqual<Json>(2, object.At(L"Object")[L"Key2"]);
-      Assert::AreEqual<Json>(1, object.At(L"Array")[0]);
-      Assert::AreEqual<Json>(2, object.At(L"Array")[1]);
-      Assert::AreEqual<Json>(3, object.At(L"Array")[2]);
+      Assert::AreEqual<Json>(1, object.At(L"Object").At(L"Key1"));
+      Assert::AreEqual<Json>(2, object.At(L"Object").At(L"Key2"));
+      Assert::AreEqual<Json>(1, object.At(L"Array").At(0));
+      Assert::AreEqual<Json>(2, object.At(L"Array").At(1));
+      Assert::AreEqual<Json>(3, object.At(L"Array").At(2));
 
       static_assert(is_const<remove_reference<decltype(object.At(L"Null"))>::type>::value, "JsonObject::At(KEY) return type must be Json const&");
     }
@@ -463,11 +751,11 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>(1337, object.At(L"Integer"));
       Assert::AreEqual<Json>({ { L"Key1", 1 }, { L"Key2", 2 } }, object.At(L"Object"));
       Assert::AreEqual<Json>({ 1, 2, 3 }, object.At(L"Array"));
-      Assert::AreEqual<Json>(1, object.At(L"Object")[L"Key1"]);
-      Assert::AreEqual<Json>(2, object.At(L"Object")[L"Key2"]);
-      Assert::AreEqual<Json>(1, object.At(L"Array")[0]);
-      Assert::AreEqual<Json>(2, object.At(L"Array")[1]);
-      Assert::AreEqual<Json>(3, object.At(L"Array")[2]);
+      Assert::AreEqual<Json>(1, object.At(L"Object").At(L"Key1"));
+      Assert::AreEqual<Json>(2, object.At(L"Object").At(L"Key2"));
+      Assert::AreEqual<Json>(1, object.At(L"Array").At(0));
+      Assert::AreEqual<Json>(2, object.At(L"Array").At(1));
+      Assert::AreEqual<Json>(3, object.At(L"Array").At(2));
 
       for (auto key : object.Keys())
       {

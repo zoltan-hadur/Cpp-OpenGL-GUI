@@ -40,6 +40,8 @@ namespace Json4CPP
   class JSON_API JsonIterator;
   class JSON_API JsonConstIterator;
 
+  JSON_API Json operator""_Json(wchar_t const* value, std::size_t size);
+
   class JSON_API Json
   {
   private:
@@ -52,40 +54,46 @@ namespace Json4CPP
 #pragma warning(suppress: 4251)
     Detail::VALUE _value;
 
-    static Json                       Read (                  std::deque<Detail::TOKEN>& tokens);
-    static std::deque<Detail::TOKEN>& Write(Json const& json, std::deque<Detail::TOKEN>& tokens);
+    static Json                         Read (                  std::deque<Detail::TOKEN>  & tokens);
+    static Json                         Read (                  std::deque<Detail::TOKEN> && tokens);
+    static std::deque<Detail::TOKEN>  & Write(Json const& json, std::deque<Detail::TOKEN>  & tokens);
+    static std::deque<Detail::TOKEN> && Write(Json const& json, std::deque<Detail::TOKEN> && tokens);
   public:
     Json();
-    Json(Detail::JsonBuilder value);
-    Json(std::initializer_list<Detail::JsonBuilder> values);
     Json(Json const& json);
-    Json(Json && json);
+    Json(Json     && json);
+    Json(Detail::JsonBuilder const& value);
+    Json(Detail::JsonBuilder     && value);
+    Json(std::initializer_list<Detail::JsonBuilder> values);
 
-    Json(std::nullptr_t value);
-    Json(const wchar_t* value);
-    Json(std::wstring   value);
-    Json(bool           value);
-    Json(char           value);
-    Json(int8_t         value);
-    Json(uint8_t        value);
-    Json(int16_t        value);
-    Json(uint16_t       value);
-    Json(int32_t        value);
-    Json(uint32_t       value);
-    Json(int64_t        value);
-    Json(uint64_t       value);
-    Json(float          value);
-    Json(double         value);
-    Json(JsonObject     value);
-    Json(JsonArray      value);
+    Json(std::nullptr_t      value);
+    Json(wchar_t      const* value);
+    Json(std::wstring const& value);
+    Json(std::wstring     && value);
+    Json(bool                value);
+    Json(char                value);
+    Json(int8_t              value);
+    Json(uint8_t             value);
+    Json(int16_t             value);
+    Json(uint16_t            value);
+    Json(int32_t             value);
+    Json(uint32_t            value);
+    Json(int64_t             value);
+    Json(uint64_t            value);
+    Json(float               value);
+    Json(double              value);
+    Json(JsonObject   const& value);
+    Json(JsonObject       && value);
+    Json(JsonArray    const& value);
+    Json(JsonArray        && value);
 
     JsonType Type() const;
     bool Is(JsonType type) const;
 
     std::wstring Dump(uint8_t indentSize = 0, wchar_t indentChar = L' ') const;
 
-    static Json Parse(std::string const& string);
-    static Json Parse(std::wstring const& wstring);
+    static Json Parse(std::string    const&    string);
+    static Json Parse(std::wstring   const&   wstring);
     static Json Parse(std::u32string const& u32string);
 
     template<typename It,
@@ -157,77 +165,75 @@ namespace Json4CPP
     }
 
     int64_t Size() const;
-    void Resize(int64_t const& size);
-    void Resize(int64_t const& size, Json const& json);
+    void Resize(int64_t size);
+    void Resize(int64_t size, Json const& json);
     void Clear();
     void PushBack(Json const& value);
-    void PushBack(Json && value);
-    bool Insert(std::pair<KEY, Json> pair);
-    void Insert(int64_t index, Json value);
-    void Erase(KEY key);
+    void PushBack(Json     && value);
+    bool Insert(std::pair<KEY, Json> const& pair);
+    bool Insert(std::pair<KEY, Json>     && pair);
+    void Insert(int64_t index, Json const& value);
+    void Insert(int64_t index, Json     && value);
+    void Erase(KEY const& key);
     void Erase(int64_t index);
     std::vector<KEY> Keys() const;
     Json      & operator[](KEY const& key);
-    Json const& operator[](KEY const& key) const;
-    Json      & operator[](int64_t const& index);
-    Json const& operator[](int64_t const& index) const;
-    Json      & At(KEY     const& key);
-    Json const& At(KEY     const& key) const;
-    Json      & At(int64_t const& index);
-    Json const& At(int64_t const& index) const;
+    Json      & operator[](int64_t index);
+    Json      & At(KEY const& key);
+    Json const& At(KEY const& key) const;
+    Json      & At(int64_t index);
+    Json const& At(int64_t index) const;
 
     JsonIterator begin();
     JsonIterator end  ();
     JsonConstIterator begin() const;
     JsonConstIterator end  () const;
 
-    explicit operator std::nullptr_t () const;
-    explicit operator std::wstring   () const;
-    explicit operator bool           () const;
-    explicit operator char           () const;
-    explicit operator int8_t         () const;
-    explicit operator uint8_t        () const;
-    explicit operator int16_t        () const;
-    explicit operator uint16_t       () const;
-    explicit operator int32_t        () const;
-    explicit operator uint32_t       () const;
-    explicit operator int64_t        () const;
-    explicit operator uint64_t       () const;
-    explicit operator float          () const;
-    explicit operator double         () const;
-    explicit operator JsonObject const&    () const;
-    explicit operator JsonObject &&     ();
-    explicit operator JsonArray const&     () const;
-    explicit operator JsonArray &&     ();
+    explicit operator std::nullptr_t      () const;
+    explicit operator std::wstring const& () const;
+    explicit operator std::wstring     && ();
+    explicit operator bool                () const;
+    explicit operator char                () const;
+    explicit operator int8_t              () const;
+    explicit operator uint8_t             () const;
+    explicit operator int16_t             () const;
+    explicit operator uint16_t            () const;
+    explicit operator int32_t             () const;
+    explicit operator uint32_t            () const;
+    explicit operator int64_t             () const;
+    explicit operator uint64_t            () const;
+    explicit operator float               () const;
+    explicit operator double              () const;
+    explicit operator JsonObject   const& () const;
+    explicit operator JsonObject       && ();
+    explicit operator JsonArray    const& () const;
+    explicit operator JsonArray        && ();
 
-    Json& operator= (std::nullptr_t      value);
-    Json& operator= (const wchar_t*      value);
-    Json& operator= (std::wstring        value);
-    Json& operator= (bool                value);
-    Json& operator= (char                value);
-    Json& operator= (int8_t              value);
-    Json& operator= (uint8_t             value);
-    Json& operator= (int16_t             value);
-    Json& operator= (uint16_t            value);
-    Json& operator= (int32_t             value);
-    Json& operator= (uint32_t            value);
-    Json& operator= (int64_t             value);
-    Json& operator= (uint64_t            value);
-    Json& operator= (float               value);
-    Json& operator= (double              value);
-    Json& operator= (Json                value);
-    Json& operator= (JsonObject          value);
-    Json& operator= (JsonArray           value);
-    Json& operator= (Detail::JsonBuilder value);
+    Json& operator= (std::nullptr_t             value);
+    Json& operator= (wchar_t const*             value);
+    Json& operator= (std::wstring        const& value);
+    Json& operator= (std::wstring            && value);
+    Json& operator= (bool                       value);
+    Json& operator= (char                       value);
+    Json& operator= (int8_t                     value);
+    Json& operator= (uint8_t                    value);
+    Json& operator= (int16_t                    value);
+    Json& operator= (uint16_t                   value);
+    Json& operator= (int32_t                    value);
+    Json& operator= (uint32_t                   value);
+    Json& operator= (int64_t                    value);
+    Json& operator= (uint64_t                   value);
+    Json& operator= (float                      value);
+    Json& operator= (double                     value);
+    Json& operator= (Json                const& value);
+    Json& operator= (Json                    && value);
+    Json& operator= (JsonObject          const& value);
+    Json& operator= (JsonObject              && value);
+    Json& operator= (JsonArray           const& value);
+    Json& operator= (JsonArray               && value);
+    Json& operator= (Detail::JsonBuilder const& value);
+    Json& operator= (Detail::JsonBuilder     && value);
     Json& operator= (std::initializer_list<Detail::JsonBuilder> values);
-
-    template<typename T>
-    Json& operator=(T const& value)
-    {
-      Detail::TypeDebug<T>(); // Type T is not supported. See output error C2027 for the exact type.
-    }
-
-    JSON_API friend Json operator""_Json(const wchar_t* value, std::size_t size);
 
     JSON_API friend std::wostream& operator<<(std::wostream& os, Json const& json);
     JSON_API friend std::wistream& operator>>(std::wistream& is, Json      & json);

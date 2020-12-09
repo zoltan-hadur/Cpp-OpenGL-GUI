@@ -11,12 +11,12 @@ namespace Json4CPP
     _char = c;
   }
 
-  bool JsonIndentChar::IsActive(std::wostream& os)
+  bool JsonIndentChar::IsActive(wostream& os)
   {
     return os.iword(_valueIndex) & 0b100000000;
   }
 
-  wchar_t JsonIndentChar::GetChar(std::wostream& os)
+  wchar_t JsonIndentChar::GetChar(wostream& os)
   {
     return os.iword(_valueIndex) & 0b011111111;
   }
