@@ -10,6 +10,7 @@
 
 namespace Json4CPP
 {
+  // Non-sticky output manipulator for setting the indentation char before outputting a Json.
   class JSON_API JsonIndentChar
   {
   private:

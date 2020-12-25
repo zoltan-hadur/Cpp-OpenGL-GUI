@@ -27,10 +27,13 @@ namespace Json4CPP
   {
     class JSON_API JsonBuilder;
 
+    // Holds one of the following types: std::nullptr_t, std::wstring, bool, double, int64_t, JsonObject, JsonArray, or any other types specified in Args.
     template<typename ...Args>
     using VALUE_EXT = std::variant<std::nullptr_t, std::wstring, bool, double, int64_t, JsonObject, JsonArray, Args...>;
 
+    // Holds one of the following types: std::nullptr_t, std::wstring, bool, double, int64_t, JsonObject, JsonArray.
     using VALUE = VALUE_EXT<>;
+    // Holds one of the following types: std::nullptr_t, std::wstring, bool, double, int64_t, JsonObject, JsonArray, std::vector<JsonBuilder>.
     using VALUE_BUILDER = VALUE_EXT<std::vector<JsonBuilder>>;
 
     namespace Value

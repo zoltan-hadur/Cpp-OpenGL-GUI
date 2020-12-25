@@ -8,6 +8,7 @@
 
 namespace Json4CPP::Detail
 {
+  // Available values: Null, String, Boolean, Real, Integer, Number, Object, Array, Pair, Empty, Simple, Complex, Invalid.
   enum class JSON_API JsonBuilderType
   {
     Null    = 1 << 0,                             // Value is std::nullptr.

@@ -11,6 +11,7 @@
 
 namespace Json4CPP::Detail
 {
+  // Available values: Undefined, Null, String, Boolean, Real, Integer, PropertyName, StartObject, EndObject, StartArray, EndArray.
   enum class JSON_API JsonTokenType
   {
     Undefined,
