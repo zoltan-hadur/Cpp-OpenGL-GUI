@@ -551,6 +551,7 @@ namespace Json4CPP::Test
     TEST_METHOD(TestClear)
     {
       auto object = JsonObject{ { L"Key1", 1 }, { L"Key2", 2 } };
+      Assert::AreEqual(2i64, object.Size());
       object.Clear();
       Assert::AreEqual(0i64, object.Size());
     }
@@ -661,6 +662,15 @@ namespace Json4CPP::Test
       Assert::AreEqual(L"Integer"s, object.Keys()[4]);
       Assert::AreEqual(L"Object"s, object.Keys()[5]);
       Assert::AreEqual(L"Array"s, object.Keys()[6]);
+
+      Assert::AreEqual(7ui64, object.KeysView().size());
+      Assert::AreEqual(L"Null"s, object.KeysView()[0].get());
+      Assert::AreEqual(L"String"s, object.KeysView()[1].get());
+      Assert::AreEqual(L"Boolean"s, object.KeysView()[2].get());
+      Assert::AreEqual(L"Real"s, object.KeysView()[3].get());
+      Assert::AreEqual(L"Integer"s, object.KeysView()[4].get());
+      Assert::AreEqual(L"Object"s, object.KeysView()[5].get());
+      Assert::AreEqual(L"Array"s, object.KeysView()[6].get());
     }
 
     TEST_METHOD(TestOperatorIndex)
@@ -698,37 +708,6 @@ namespace Json4CPP::Test
       }
     }
 
-    TEST_METHOD(TestAtConst)
-    {
-      auto const object = JsonObject{
-        { L"Null", nullptr },
-        { L"String", L"Test" },
-        { L"Boolean", true },
-        { L"Real", 13.37 },
-        { L"Integer", 1337 },
-        { L"Object", {
-          { L"Key1", 1 },
-          { L"Key2", 2 } }
-        },
-        { L"Array", { 1, 2, 3 } },
-      };
-      Assert::AreEqual(7i64, object.Size());
-      Assert::AreEqual<Json>(nullptr, object.At(L"Null"));
-      Assert::AreEqual<Json>(L"Test"s, object.At(L"String"));
-      Assert::AreEqual<Json>(true, object.At(L"Boolean"));
-      Assert::AreEqual<Json>(13.37, object.At(L"Real"));
-      Assert::AreEqual<Json>(1337, object.At(L"Integer"));
-      Assert::AreEqual<Json>({ { L"Key1", 1 }, { L"Key2", 2 } }, object.At(L"Object"));
-      Assert::AreEqual<Json>({ 1, 2, 3 }, object.At(L"Array"));
-      Assert::AreEqual<Json>(1, object.At(L"Object").At(L"Key1"));
-      Assert::AreEqual<Json>(2, object.At(L"Object").At(L"Key2"));
-      Assert::AreEqual<Json>(1, object.At(L"Array").At(0));
-      Assert::AreEqual<Json>(2, object.At(L"Array").At(1));
-      Assert::AreEqual<Json>(3, object.At(L"Array").At(2));
-
-      static_assert(is_const<remove_reference<decltype(object.At(L"Null"))>::type>::value, "JsonObject::At(KEY) return type must be Json const&");
-    }
-
     TEST_METHOD(TestAt)
     {
       auto object = JsonObject{
@@ -762,6 +741,37 @@ namespace Json4CPP::Test
         object.At(key) = 9999;
         Assert::AreEqual<Json>(9999, object.At(key));
       }
+    }
+
+    TEST_METHOD(TestAtConst)
+    {
+      auto const object = JsonObject{
+        { L"Null", nullptr },
+        { L"String", L"Test" },
+        { L"Boolean", true },
+        { L"Real", 13.37 },
+        { L"Integer", 1337 },
+        { L"Object", {
+          { L"Key1", 1 },
+          { L"Key2", 2 } }
+        },
+        { L"Array", { 1, 2, 3 } },
+      };
+      Assert::AreEqual(7i64, object.Size());
+      Assert::AreEqual<Json>(nullptr, object.At(L"Null"));
+      Assert::AreEqual<Json>(L"Test"s, object.At(L"String"));
+      Assert::AreEqual<Json>(true, object.At(L"Boolean"));
+      Assert::AreEqual<Json>(13.37, object.At(L"Real"));
+      Assert::AreEqual<Json>(1337, object.At(L"Integer"));
+      Assert::AreEqual<Json>({ { L"Key1", 1 }, { L"Key2", 2 } }, object.At(L"Object"));
+      Assert::AreEqual<Json>({ 1, 2, 3 }, object.At(L"Array"));
+      Assert::AreEqual<Json>(1, object.At(L"Object").At(L"Key1"));
+      Assert::AreEqual<Json>(2, object.At(L"Object").At(L"Key2"));
+      Assert::AreEqual<Json>(1, object.At(L"Array").At(0));
+      Assert::AreEqual<Json>(2, object.At(L"Array").At(1));
+      Assert::AreEqual<Json>(3, object.At(L"Array").At(2));
+
+      static_assert(is_const<remove_reference<decltype(object.At(L"Null"))>::type>::value, "JsonObject::At(KEY) return type must be Json const&");
     }
 
     TEST_METHOD(TestIterator)

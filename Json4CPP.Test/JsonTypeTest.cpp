@@ -25,6 +25,7 @@ namespace Json4CPP::Test
         { JsonType::Simple , L"Simple"s  },
         { JsonType::Complex, L"Complex"s },
         { JsonType::Invalid, L"Invalid"s },
+        { JsonType(-1)     , L"Invalid"s },
       };
       for (auto& [input, expected] : pairs)
       {
