@@ -40,6 +40,7 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>(13.37, json);
       json = { { L"Key1"s, L"Value1"s, }, { L"Key2"s, L"Value2"s } };
       object = json;
+      Assert::AreEqual<Json>({ { L"Key1"s, L"Value1"s, }, { L"Key2"s, L"Value2"s } }, object);
       Assert::AreEqual<Json>({ { L"Key1"s, L"Value1"s, }, { L"Key2"s, L"Value2"s } }, json);
       json = { 1, 3, 3, 7 };
       Assert::ExpectException<exception>([&]() { object = json; });
@@ -65,6 +66,7 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>(13.37, json);
       json = { { L"Key1"s, L"Value1"s, }, { L"Key2"s, L"Value2"s } };
       object = move(json);
+      Assert::AreEqual<Json>({ { L"Key1"s, L"Value1"s, }, { L"Key2"s, L"Value2"s } }, object);
       Assert::AreEqual(0i64, json.Size());
       json = { 1, 3, 3, 7 };
       Assert::ExpectException<exception>([&]() { object = move(json); });
@@ -673,7 +675,7 @@ namespace Json4CPP::Test
       Assert::AreEqual(L"Array"s, object.KeysView()[6].get());
     }
 
-    TEST_METHOD(TestOperatorIndex)
+    TEST_METHOD(TestOperatorSubscript)
     {
       JsonObject object = {
         { L"Null", nullptr },

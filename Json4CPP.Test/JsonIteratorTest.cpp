@@ -284,6 +284,10 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>(L"Key1", it.Key());
       it++;
       Assert::AreEqual<Json>(L"Key2", it.Key());
+
+      json = Json{ 1, 3, 3, 7 };
+      it = json.begin();
+      ExceptException<exception>([&]() { it.Key(); }, "Key() is only defined for JsonObject!");
     }
 
     TEST_METHOD(TestValue)
@@ -294,14 +298,23 @@ namespace Json4CPP::Test
       };
       auto it = json.begin();
       Assert::AreEqual<Json>(1, it.Value());
-      it.Value(1337);
+      Json value = 1337;
+      it.Value(value);
       Assert::AreEqual<Json>(1337, it.Value());
       it++;
       Assert::AreEqual<Json>(2, it.Value());
-      it.Value(1338);
-      Assert::AreEqual<Json>(1338, it.Value());
+      value = L"Test"s;
+      it.Value(move(value));
+      Assert::AreEqual<Json>(L""s, value);
+      Assert::AreEqual<Json>(L"Test"s, it.Value());
       Assert::AreEqual<Json>(1337, json[L"Key1"]);
-      Assert::AreEqual<Json>(1338, json[L"Key2"]);
+      Assert::AreEqual<Json>(L"Test"s, json[L"Key2"]);
+
+      json = Json{ 1, 3, 3, 7 };
+      it = json.begin();
+      ExceptException<exception>([&]() { it.Value(); }, "Value() is only defined for JsonObject!");
+      ExceptException<exception>([&]() { it.Value(json); }, "Value(Json const& json) is only defined for JsonObject!");
+      ExceptException<exception>([&]() { it.Value(nullptr); }, "Value(Json && json) is only defined for JsonObject!");
     }
 
     TEST_METHOD(TestRangeBasedFor)

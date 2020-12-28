@@ -735,8 +735,13 @@ namespace Json4CPP::Test
 
       for (auto [input, expected] : pairs)
       {
+        auto inputCopy = input;
         auto os = wstringstream();
         JsonLinter::Write(os, input, 0, L' ');
+        Assert::AreEqual<size_t>(0, input.size());
+        Assert::AreEqual(expected, os.str());
+        os = wstringstream();
+        JsonLinter::Write(os, deque(inputCopy), 0, L' ');
         Assert::AreEqual<size_t>(0, input.size());
         Assert::AreEqual(expected, os.str());
       }
@@ -798,8 +803,13 @@ namespace Json4CPP::Test
 
       for (auto [indentSize, indentChar, input, expected] : pairs)
       {
+        auto inputCopy = input;
         auto os = wstringstream();
         JsonLinter::Write(os, input, indentSize, indentChar);
+        Assert::AreEqual<size_t>(0, input.size());
+        Assert::AreEqual(expected, os.str());
+        os = wstringstream();
+        JsonLinter::Write(os, deque(inputCopy), indentSize, indentChar);
         Assert::AreEqual<size_t>(0, input.size());
         Assert::AreEqual(expected, os.str());
       }
@@ -816,8 +826,11 @@ namespace Json4CPP::Test
       for (auto[input, exceptionMessage] : pairs2)
       {
         auto os = wstringstream();
-        auto inputRef = input;
-        ExceptException<exception>([&]() { JsonLinter::Write(os, inputRef, 0ui8, L' '); }, exceptionMessage);
+        auto inputCopy = input;
+        ExceptException<exception>([&]() { JsonLinter::Write(os, inputCopy, 0ui8, L' '); }, exceptionMessage);
+        os = wstringstream();
+        inputCopy = input;
+        ExceptException<exception>([&]() { JsonLinter::Write(os, deque(inputCopy), 0ui8, L' '); }, exceptionMessage);
       }
     }
 
@@ -877,8 +890,13 @@ namespace Json4CPP::Test
 
       for (auto [indentSize, indentChar, input, expected] : pairs)
       {
+        auto inputCopy = input;
         auto os = wstringstream();
         JsonLinter::Write(os, input, indentSize, indentChar);
+        Assert::AreEqual<size_t>(0, input.size());
+        Assert::AreEqual(expected, os.str());
+        os = wstringstream();
+        JsonLinter::Write(os, deque(inputCopy), indentSize, indentChar);
         Assert::AreEqual<size_t>(0, input.size());
         Assert::AreEqual(expected, os.str());
       }
@@ -894,8 +912,11 @@ namespace Json4CPP::Test
       for (auto[input, exceptionMessage] : pairs2)
       {
         auto os = wstringstream();
-        auto inputRef = input;
-        ExceptException<exception>([&]() { JsonLinter::Write(os, inputRef, 0ui8, L' '); }, exceptionMessage);
+        auto inputCopy = input;
+        ExceptException<exception>([&]() { JsonLinter::Write(os, inputCopy, 0ui8, L' '); }, exceptionMessage);
+        os = wstringstream();
+        inputCopy = input;
+        ExceptException<exception>([&]() { JsonLinter::Write(os, deque(inputCopy), 0ui8, L' '); }, exceptionMessage);
       }
     }
 
@@ -922,8 +943,13 @@ namespace Json4CPP::Test
 
       for (auto [input, expected] : pairs)
       {
+        auto inputCopy = input;
         auto os = wstringstream();
         JsonLinter::Write(os, input, JsonDefault::IndentSize, JsonDefault::IndentChar);
+        Assert::AreEqual<size_t>(0, input.size());
+        Assert::AreEqual(expected, os.str());
+        os = wstringstream();
+        JsonLinter::Write(os, deque(inputCopy), JsonDefault::IndentSize, JsonDefault::IndentChar);
         Assert::AreEqual<size_t>(0, input.size());
         Assert::AreEqual(expected, os.str());
       }

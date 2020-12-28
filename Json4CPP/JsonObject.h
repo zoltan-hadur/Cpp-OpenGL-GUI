@@ -20,10 +20,6 @@
 
 namespace Json4CPP
 {
-  namespace Detail
-  {
-    class JSON_API JsonBuilder;
-  }
   class JSON_API JsonArray;
   class JSON_API Json;
   class JSON_API JsonIterator;
@@ -36,7 +32,6 @@ namespace Json4CPP
     friend class Json;
     friend class JsonIterator;
     friend class JsonConstIterator;
-    friend class Detail::JsonBuilder;
 #pragma warning(suppress: 4251)
     std::vector<std::pair<KEY, Json>> _pairs;
 #pragma warning(suppress: 4251)

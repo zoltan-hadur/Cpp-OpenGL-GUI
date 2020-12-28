@@ -234,7 +234,7 @@ namespace Json4CPP
     switch (Type())
     {
     case JsonType::Array: get<JsonArray>(_value).Resize(size); break;
-    default: throw exception("Resize(int64_t const& size) is only defined for JsonArray!");
+    default: throw exception("Resize(int64_t size) is only defined for JsonArray!");
     }
   }
 
@@ -243,7 +243,7 @@ namespace Json4CPP
     switch (Type())
     {
     case JsonType::Array: get<JsonArray>(_value).Resize(size, json); break;
-    default: throw exception("Resize(int64_t const& size, Json const& json) is only defined for JsonArray!");
+    default: throw exception("Resize(int64_t size, Json const& json) is only defined for JsonArray!");
     }
   }
 
@@ -322,7 +322,7 @@ namespace Json4CPP
     switch (Type())
     {
     case JsonType::Object: get<JsonObject>(_value).Erase(key); break;
-    default: throw exception("Erase(KEY key) is only defined for JsonObject!");
+    default: throw exception("Erase(KEY const& key) is only defined for JsonObject!");
     }
   }
 
@@ -350,7 +350,7 @@ namespace Json4CPP
     {
     case JsonType::Null  : _value = JsonObject(); [[fallthrough]];
     case JsonType::Object: return get<JsonObject>(_value)[key];
-    default: throw exception("Operator[KEY] is only defined for JsonObject!");
+    default: throw exception("Operator[](KEY const& key) is only defined for JsonObject!");
     }
   }
 
@@ -359,7 +359,7 @@ namespace Json4CPP
     switch (Type())
     {
     case JsonType::Array: return get<JsonArray>(_value)[index];
-    default: throw exception("Operator[int] is only defined for JsonArray!");
+    default: throw exception("Operator[](int64_t index) is only defined for JsonArray!");
     }
   }
 
@@ -368,7 +368,7 @@ namespace Json4CPP
     switch (Type())
     {
     case JsonType::Object: return get<JsonObject>(_value).At(key);
-    default: throw exception("At(KEY key) is only defined for JsonObject!");
+    default: throw exception("At(KEY const& key) is only defined for JsonObject!");
     }
   }
 
@@ -377,7 +377,7 @@ namespace Json4CPP
     switch (Type())
     {
     case JsonType::Object: return get<JsonObject>(_value).At(key);
-    default: throw exception("At(KEY key) is only defined for JsonObject!");
+    default: throw exception("At(KEY const& key) is only defined for JsonObject!");
     }
   }
 
@@ -386,7 +386,7 @@ namespace Json4CPP
     switch (Type())
     {
     case JsonType::Array: return get<JsonArray>(_value).At(index);
-    default: throw exception("At(int index) is only defined for JsonArray!");
+    default: throw exception("At(int64_t index) is only defined for JsonArray!");
     }
   }
 
@@ -395,7 +395,7 @@ namespace Json4CPP
     switch (Type())
     {
     case JsonType::Array: return get<JsonArray>(_value).At(index);
-    default: throw exception("At(int index) is only defined for JsonArray!");
+    default: throw exception("At(int64_t index) is only defined for JsonArray!");
     }
   }
 

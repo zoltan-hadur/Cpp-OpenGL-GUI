@@ -17,16 +17,12 @@ namespace Json4CPP
   }
 
   class JSON_API Json;
-  class JSON_API JsonObject;
-  class JSON_API JsonArray;
 
   class JSON_API JsonConstIterator
   {
   private:
     friend class ::Json4CPP::Test::JsonConstIteratorTest;
     friend class Json;
-    friend class JsonObject;
-    friend class JsonArray;
     Json const* _json;
     int64_t _position;
 

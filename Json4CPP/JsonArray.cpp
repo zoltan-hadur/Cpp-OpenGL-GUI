@@ -116,7 +116,7 @@ namespace Json4CPP
     }
     else if (auto builders = get_if<vector<JsonBuilder>>(&builder._value))
     {
-      for (auto && builder : *builders)
+      for (auto& builder : *builders)
       {
         _values.push_back(Json(move(builder)));
       }

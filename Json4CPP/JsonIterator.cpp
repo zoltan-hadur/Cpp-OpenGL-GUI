@@ -163,7 +163,16 @@ namespace Json4CPP
     switch (_json->Type())
     {
     case JsonType::Object: get<JsonObject>(_json->_value)._pairs[_position].second = json; break;
-    default: throw exception("Value() is only defined for JsonObject!");
+    default: throw exception("Value(Json const& json) is only defined for JsonObject!");
+    }
+  }
+
+  void JsonIterator::Value(Json && json)
+  {
+    switch (_json->Type())
+    {
+    case JsonType::Object: get<JsonObject>(_json->_value)._pairs[_position].second = move(json); break;
+    default: throw exception("Value(Json && json) is only defined for JsonObject!");
     }
   }
 }
