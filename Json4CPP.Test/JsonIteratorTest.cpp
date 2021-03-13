@@ -287,7 +287,7 @@ namespace Json4CPP::Test
 
       json = Json{ 1, 3, 3, 7 };
       it = json.begin();
-      ExceptException<exception>([&]() { it.Key(); }, "Key() is only defined for JsonObject!");
+      ExpectException<exception>([&]() { it.Key(); }, "Key() is only defined for JsonObject!");
     }
 
     TEST_METHOD(TestValue)
@@ -312,9 +312,9 @@ namespace Json4CPP::Test
 
       json = Json{ 1, 3, 3, 7 };
       it = json.begin();
-      ExceptException<exception>([&]() { it.Value(); }, "Value() is only defined for JsonObject!");
-      ExceptException<exception>([&]() { it.Value(json); }, "Value(Json const& json) is only defined for JsonObject!");
-      ExceptException<exception>([&]() { it.Value(nullptr); }, "Value(Json && json) is only defined for JsonObject!");
+      ExpectException<exception>([&]() { it.Value(); }, "Value() is only defined for JsonObject!");
+      ExpectException<exception>([&]() { it.Value(json); }, "Value(Json const& json) is only defined for JsonObject!");
+      ExpectException<exception>([&]() { it.Value(nullptr); }, "Value(Json && json) is only defined for JsonObject!");
     }
 
     TEST_METHOD(TestRangeBasedFor)

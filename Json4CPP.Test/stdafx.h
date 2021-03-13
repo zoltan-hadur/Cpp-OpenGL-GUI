@@ -51,7 +51,7 @@ namespace Microsoft::VisualStudio::CppUnitTestFramework
   template<> static std::wstring ToString<std::pair<std::wstring, Json4CPP::Json>>(std::pair<std::wstring, Json4CPP::Json> const& pair) { return Json4CPP::Json::Stringify(Json4CPP::JsonObject{ { pair.first, pair.second } }); }
 
   template<typename T, typename F>
-  static void ExceptException(F func, std::string const& msg)
+  static void ExpectException(F func, std::string const& msg)
   {
     auto found = false;
     try

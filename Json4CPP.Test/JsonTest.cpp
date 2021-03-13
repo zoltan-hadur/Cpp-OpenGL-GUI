@@ -1200,11 +1200,11 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestSize)
     {
-      ExceptException<exception>([]() { Json(nullptr_t()).Size(); }, "Size() is only defined for JsonObject and JsonArray!");
-      ExceptException<exception>([]() { Json(wstring  ()).Size(); }, "Size() is only defined for JsonObject and JsonArray!");
-      ExceptException<exception>([]() { Json(bool     ()).Size(); }, "Size() is only defined for JsonObject and JsonArray!");
-      ExceptException<exception>([]() { Json(double   ()).Size(); }, "Size() is only defined for JsonObject and JsonArray!");
-      ExceptException<exception>([]() { Json(int64_t  ()).Size(); }, "Size() is only defined for JsonObject and JsonArray!");
+      ExpectException<exception>([]() { Json(nullptr_t()).Size(); }, "Size() is only defined for JsonObject and JsonArray!");
+      ExpectException<exception>([]() { Json(wstring  ()).Size(); }, "Size() is only defined for JsonObject and JsonArray!");
+      ExpectException<exception>([]() { Json(bool     ()).Size(); }, "Size() is only defined for JsonObject and JsonArray!");
+      ExpectException<exception>([]() { Json(double   ()).Size(); }, "Size() is only defined for JsonObject and JsonArray!");
+      ExpectException<exception>([]() { Json(int64_t  ()).Size(); }, "Size() is only defined for JsonObject and JsonArray!");
 
       Assert::AreEqual(0i64, Json(JsonObject()).Size());
       Assert::AreEqual(0i64, Json(JsonArray ()).Size());
@@ -1215,19 +1215,19 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestResize)
     {
-      ExceptException<exception>([]() { Json(nullptr_t ()).Resize(1); }, "Resize(int64_t size) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(wstring   ()).Resize(1); }, "Resize(int64_t size) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(bool      ()).Resize(1); }, "Resize(int64_t size) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(double    ()).Resize(1); }, "Resize(int64_t size) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(int64_t   ()).Resize(1); }, "Resize(int64_t size) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(JsonObject()).Resize(1); }, "Resize(int64_t size) is only defined for JsonArray!");
+      ExpectException<exception>([]() { Json(nullptr_t ()).Resize(1); }, "Resize(int64_t size) is only defined for JsonArray!");
+      ExpectException<exception>([]() { Json(wstring   ()).Resize(1); }, "Resize(int64_t size) is only defined for JsonArray!");
+      ExpectException<exception>([]() { Json(bool      ()).Resize(1); }, "Resize(int64_t size) is only defined for JsonArray!");
+      ExpectException<exception>([]() { Json(double    ()).Resize(1); }, "Resize(int64_t size) is only defined for JsonArray!");
+      ExpectException<exception>([]() { Json(int64_t   ()).Resize(1); }, "Resize(int64_t size) is only defined for JsonArray!");
+      ExpectException<exception>([]() { Json(JsonObject()).Resize(1); }, "Resize(int64_t size) is only defined for JsonArray!");
 
-      ExceptException<exception>([]() { Json(nullptr_t ()).Resize(1, Json()); }, "Resize(int64_t size, Json const& json) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(wstring   ()).Resize(1, Json()); }, "Resize(int64_t size, Json const& json) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(bool      ()).Resize(1, Json()); }, "Resize(int64_t size, Json const& json) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(double    ()).Resize(1, Json()); }, "Resize(int64_t size, Json const& json) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(int64_t   ()).Resize(1, Json()); }, "Resize(int64_t size, Json const& json) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(JsonObject()).Resize(1, Json()); }, "Resize(int64_t size, Json const& json) is only defined for JsonArray!");
+      ExpectException<exception>([]() { Json(nullptr_t ()).Resize(1, Json()); }, "Resize(int64_t size, Json const& json) is only defined for JsonArray!");
+      ExpectException<exception>([]() { Json(wstring   ()).Resize(1, Json()); }, "Resize(int64_t size, Json const& json) is only defined for JsonArray!");
+      ExpectException<exception>([]() { Json(bool      ()).Resize(1, Json()); }, "Resize(int64_t size, Json const& json) is only defined for JsonArray!");
+      ExpectException<exception>([]() { Json(double    ()).Resize(1, Json()); }, "Resize(int64_t size, Json const& json) is only defined for JsonArray!");
+      ExpectException<exception>([]() { Json(int64_t   ()).Resize(1, Json()); }, "Resize(int64_t size, Json const& json) is only defined for JsonArray!");
+      ExpectException<exception>([]() { Json(JsonObject()).Resize(1, Json()); }, "Resize(int64_t size, Json const& json) is only defined for JsonArray!");
 
       auto array = Json(JsonArray());
       Assert::AreEqual(0i64, array.Size());
@@ -1242,11 +1242,11 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestClear)
     {
-      ExceptException<exception>([]() { Json(nullptr_t()).Clear(); }, "Clear() is only defined for JsonObject and JsonArray!");
-      ExceptException<exception>([]() { Json(wstring  ()).Clear(); }, "Clear() is only defined for JsonObject and JsonArray!");
-      ExceptException<exception>([]() { Json(bool     ()).Clear(); }, "Clear() is only defined for JsonObject and JsonArray!");
-      ExceptException<exception>([]() { Json(double   ()).Clear(); }, "Clear() is only defined for JsonObject and JsonArray!");
-      ExceptException<exception>([]() { Json(int64_t  ()).Clear(); }, "Clear() is only defined for JsonObject and JsonArray!");
+      ExpectException<exception>([]() { Json(nullptr_t()).Clear(); }, "Clear() is only defined for JsonObject and JsonArray!");
+      ExpectException<exception>([]() { Json(wstring  ()).Clear(); }, "Clear() is only defined for JsonObject and JsonArray!");
+      ExpectException<exception>([]() { Json(bool     ()).Clear(); }, "Clear() is only defined for JsonObject and JsonArray!");
+      ExpectException<exception>([]() { Json(double   ()).Clear(); }, "Clear() is only defined for JsonObject and JsonArray!");
+      ExpectException<exception>([]() { Json(int64_t  ()).Clear(); }, "Clear() is only defined for JsonObject and JsonArray!");
 
       auto object = Json(JsonObject{ { L"Key1"s, 1 }, { L"Key2"s, 2 } });
       Assert::AreEqual(2i64, object.Size());
@@ -1262,16 +1262,16 @@ namespace Json4CPP::Test
     TEST_METHOD(TestPushBack)
     {
       auto defaultJson = Json();
-      ExceptException<exception>([&]() { Json(wstring   ()).PushBack(defaultJson); }, "PushBack(Json const& value) is only defined for JsonArray!");
-      ExceptException<exception>([&]() { Json(bool      ()).PushBack(defaultJson); }, "PushBack(Json const& value) is only defined for JsonArray!");
-      ExceptException<exception>([&]() { Json(double    ()).PushBack(defaultJson); }, "PushBack(Json const& value) is only defined for JsonArray!");
-      ExceptException<exception>([&]() { Json(int64_t   ()).PushBack(defaultJson); }, "PushBack(Json const& value) is only defined for JsonArray!");
-      ExceptException<exception>([&]() { Json(JsonObject()).PushBack(defaultJson); }, "PushBack(Json const& value) is only defined for JsonArray!");
-      ExceptException<exception>([&]() { Json(wstring   ()).PushBack(Json()); }, "PushBack(Json && value) is only defined for JsonArray!");
-      ExceptException<exception>([&]() { Json(bool      ()).PushBack(Json()); }, "PushBack(Json && value) is only defined for JsonArray!");
-      ExceptException<exception>([&]() { Json(double    ()).PushBack(Json()); }, "PushBack(Json && value) is only defined for JsonArray!");
-      ExceptException<exception>([&]() { Json(int64_t   ()).PushBack(Json()); }, "PushBack(Json && value) is only defined for JsonArray!");
-      ExceptException<exception>([&]() { Json(JsonObject()).PushBack(Json()); }, "PushBack(Json && value) is only defined for JsonArray!");
+      ExpectException<exception>([&]() { Json(wstring   ()).PushBack(defaultJson); }, "PushBack(Json const& value) is only defined for JsonArray!");
+      ExpectException<exception>([&]() { Json(bool      ()).PushBack(defaultJson); }, "PushBack(Json const& value) is only defined for JsonArray!");
+      ExpectException<exception>([&]() { Json(double    ()).PushBack(defaultJson); }, "PushBack(Json const& value) is only defined for JsonArray!");
+      ExpectException<exception>([&]() { Json(int64_t   ()).PushBack(defaultJson); }, "PushBack(Json const& value) is only defined for JsonArray!");
+      ExpectException<exception>([&]() { Json(JsonObject()).PushBack(defaultJson); }, "PushBack(Json const& value) is only defined for JsonArray!");
+      ExpectException<exception>([&]() { Json(wstring   ()).PushBack(Json()); }, "PushBack(Json && value) is only defined for JsonArray!");
+      ExpectException<exception>([&]() { Json(bool      ()).PushBack(Json()); }, "PushBack(Json && value) is only defined for JsonArray!");
+      ExpectException<exception>([&]() { Json(double    ()).PushBack(Json()); }, "PushBack(Json && value) is only defined for JsonArray!");
+      ExpectException<exception>([&]() { Json(int64_t   ()).PushBack(Json()); }, "PushBack(Json && value) is only defined for JsonArray!");
+      ExpectException<exception>([&]() { Json(JsonObject()).PushBack(Json()); }, "PushBack(Json && value) is only defined for JsonArray!");
 
       auto json = Json(nullptr_t());
       Assert::IsTrue(json.Is(JsonType::Null));
@@ -1289,16 +1289,16 @@ namespace Json4CPP::Test
     TEST_METHOD(TestInsert1)
     {
       auto defaultPair = pair<wstring, Json>{ wstring(), Json() };
-      ExceptException<exception>([&]() { Json(wstring  ()).Insert(defaultPair); }, "Insert(pair<KEY, Json> const& pair) is only defined for JsonObject!");
-      ExceptException<exception>([&]() { Json(bool     ()).Insert(defaultPair); }, "Insert(pair<KEY, Json> const& pair) is only defined for JsonObject!");
-      ExceptException<exception>([&]() { Json(double   ()).Insert(defaultPair); }, "Insert(pair<KEY, Json> const& pair) is only defined for JsonObject!");
-      ExceptException<exception>([&]() { Json(int64_t  ()).Insert(defaultPair); }, "Insert(pair<KEY, Json> const& pair) is only defined for JsonObject!");
-      ExceptException<exception>([&]() { Json(JsonArray()).Insert(defaultPair); }, "Insert(pair<KEY, Json> const& pair) is only defined for JsonObject!");
-      ExceptException<exception>([&]() { Json(wstring  ()).Insert({ wstring(), Json() }); }, "Insert(pair<KEY, Json> && pair) is only defined for JsonObject!");
-      ExceptException<exception>([&]() { Json(bool     ()).Insert({ wstring(), Json() }); }, "Insert(pair<KEY, Json> && pair) is only defined for JsonObject!");
-      ExceptException<exception>([&]() { Json(double   ()).Insert({ wstring(), Json() }); }, "Insert(pair<KEY, Json> && pair) is only defined for JsonObject!");
-      ExceptException<exception>([&]() { Json(int64_t  ()).Insert({ wstring(), Json() }); }, "Insert(pair<KEY, Json> && pair) is only defined for JsonObject!");
-      ExceptException<exception>([&]() { Json(JsonArray()).Insert({ wstring(), Json() }); }, "Insert(pair<KEY, Json> && pair) is only defined for JsonObject!");
+      ExpectException<exception>([&]() { Json(wstring  ()).Insert(defaultPair); }, "Insert(pair<KEY, Json> const& pair) is only defined for JsonObject!");
+      ExpectException<exception>([&]() { Json(bool     ()).Insert(defaultPair); }, "Insert(pair<KEY, Json> const& pair) is only defined for JsonObject!");
+      ExpectException<exception>([&]() { Json(double   ()).Insert(defaultPair); }, "Insert(pair<KEY, Json> const& pair) is only defined for JsonObject!");
+      ExpectException<exception>([&]() { Json(int64_t  ()).Insert(defaultPair); }, "Insert(pair<KEY, Json> const& pair) is only defined for JsonObject!");
+      ExpectException<exception>([&]() { Json(JsonArray()).Insert(defaultPair); }, "Insert(pair<KEY, Json> const& pair) is only defined for JsonObject!");
+      ExpectException<exception>([&]() { Json(wstring  ()).Insert({ wstring(), Json() }); }, "Insert(pair<KEY, Json> && pair) is only defined for JsonObject!");
+      ExpectException<exception>([&]() { Json(bool     ()).Insert({ wstring(), Json() }); }, "Insert(pair<KEY, Json> && pair) is only defined for JsonObject!");
+      ExpectException<exception>([&]() { Json(double   ()).Insert({ wstring(), Json() }); }, "Insert(pair<KEY, Json> && pair) is only defined for JsonObject!");
+      ExpectException<exception>([&]() { Json(int64_t  ()).Insert({ wstring(), Json() }); }, "Insert(pair<KEY, Json> && pair) is only defined for JsonObject!");
+      ExpectException<exception>([&]() { Json(JsonArray()).Insert({ wstring(), Json() }); }, "Insert(pair<KEY, Json> && pair) is only defined for JsonObject!");
 
       auto json = Json(nullptr_t());
       Assert::IsTrue(json.Is(JsonType::Null));
@@ -1324,11 +1324,11 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestInsert2)
     {
-      ExceptException<exception>([]() { Json(wstring   ()).Insert(int64_t(), Json()); }, "Insert(int64_t index, Json && value) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(bool      ()).Insert(int64_t(), Json()); }, "Insert(int64_t index, Json && value) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(double    ()).Insert(int64_t(), Json()); }, "Insert(int64_t index, Json && value) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(int64_t   ()).Insert(int64_t(), Json()); }, "Insert(int64_t index, Json && value) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(JsonObject()).Insert(int64_t(), Json()); }, "Insert(int64_t index, Json && value) is only defined for JsonArray!");
+      ExpectException<exception>([]() { Json(wstring   ()).Insert(int64_t(), Json()); }, "Insert(int64_t index, Json && value) is only defined for JsonArray!");
+      ExpectException<exception>([]() { Json(bool      ()).Insert(int64_t(), Json()); }, "Insert(int64_t index, Json && value) is only defined for JsonArray!");
+      ExpectException<exception>([]() { Json(double    ()).Insert(int64_t(), Json()); }, "Insert(int64_t index, Json && value) is only defined for JsonArray!");
+      ExpectException<exception>([]() { Json(int64_t   ()).Insert(int64_t(), Json()); }, "Insert(int64_t index, Json && value) is only defined for JsonArray!");
+      ExpectException<exception>([]() { Json(JsonObject()).Insert(int64_t(), Json()); }, "Insert(int64_t index, Json && value) is only defined for JsonArray!");
 
       auto json = Json(nullptr_t());
       Assert::IsTrue(json.Is(JsonType::Null));
@@ -1345,12 +1345,12 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestErase1)
     {
-      ExceptException<exception>([]() { Json(nullptr_t()).Erase(wstring()); }, "Erase(KEY const& key) is only defined for JsonObject!");
-      ExceptException<exception>([]() { Json(wstring  ()).Erase(wstring()); }, "Erase(KEY const& key) is only defined for JsonObject!");
-      ExceptException<exception>([]() { Json(bool     ()).Erase(wstring()); }, "Erase(KEY const& key) is only defined for JsonObject!");
-      ExceptException<exception>([]() { Json(double   ()).Erase(wstring()); }, "Erase(KEY const& key) is only defined for JsonObject!");
-      ExceptException<exception>([]() { Json(int64_t  ()).Erase(wstring()); }, "Erase(KEY const& key) is only defined for JsonObject!");
-      ExceptException<exception>([]() { Json(JsonArray()).Erase(wstring()); }, "Erase(KEY const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(nullptr_t()).Erase(wstring()); }, "Erase(KEY const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(wstring  ()).Erase(wstring()); }, "Erase(KEY const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(bool     ()).Erase(wstring()); }, "Erase(KEY const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(double   ()).Erase(wstring()); }, "Erase(KEY const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(int64_t  ()).Erase(wstring()); }, "Erase(KEY const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(JsonArray()).Erase(wstring()); }, "Erase(KEY const& key) is only defined for JsonObject!");
 
       auto json = Json(JsonObject{ { L"Key1"s, 1 }, { L"Key2"s, 2 } });
       Assert::IsTrue(json.Is(JsonType::Object));
@@ -1363,12 +1363,12 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestErase2)
     {
-      ExceptException<exception>([]() { Json(nullptr_t ()).Erase(int64_t()); }, "Erase(int64_t index) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(wstring   ()).Erase(int64_t()); }, "Erase(int64_t index) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(bool      ()).Erase(int64_t()); }, "Erase(int64_t index) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(double    ()).Erase(int64_t()); }, "Erase(int64_t index) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(int64_t   ()).Erase(int64_t()); }, "Erase(int64_t index) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(JsonObject()).Erase(int64_t()); }, "Erase(int64_t index) is only defined for JsonArray!");
+      ExpectException<exception>([]() { Json(nullptr_t ()).Erase(int64_t()); }, "Erase(int64_t index) is only defined for JsonArray!");
+      ExpectException<exception>([]() { Json(wstring   ()).Erase(int64_t()); }, "Erase(int64_t index) is only defined for JsonArray!");
+      ExpectException<exception>([]() { Json(bool      ()).Erase(int64_t()); }, "Erase(int64_t index) is only defined for JsonArray!");
+      ExpectException<exception>([]() { Json(double    ()).Erase(int64_t()); }, "Erase(int64_t index) is only defined for JsonArray!");
+      ExpectException<exception>([]() { Json(int64_t   ()).Erase(int64_t()); }, "Erase(int64_t index) is only defined for JsonArray!");
+      ExpectException<exception>([]() { Json(JsonObject()).Erase(int64_t()); }, "Erase(int64_t index) is only defined for JsonArray!");
 
       auto json = Json(JsonArray{ 1, 3, 3, 7 });
       Assert::IsTrue(json.Is(JsonType::Array));
@@ -1383,12 +1383,12 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestKeys)
     {
-      ExceptException<exception>([]() { Json(nullptr_t()).Keys(); }, "Keys() is only defined for JsonObject!");
-      ExceptException<exception>([]() { Json(wstring  ()).Keys(); }, "Keys() is only defined for JsonObject!");
-      ExceptException<exception>([]() { Json(bool     ()).Keys(); }, "Keys() is only defined for JsonObject!");
-      ExceptException<exception>([]() { Json(double   ()).Keys(); }, "Keys() is only defined for JsonObject!");
-      ExceptException<exception>([]() { Json(int64_t  ()).Keys(); }, "Keys() is only defined for JsonObject!");
-      ExceptException<exception>([]() { Json(JsonArray()).Keys(); }, "Keys() is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(nullptr_t()).Keys(); }, "Keys() is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(wstring  ()).Keys(); }, "Keys() is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(bool     ()).Keys(); }, "Keys() is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(double   ()).Keys(); }, "Keys() is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(int64_t  ()).Keys(); }, "Keys() is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(JsonArray()).Keys(); }, "Keys() is only defined for JsonObject!");
 
       auto json = Json(JsonObject{ { L"Key1"s, 1 }, { L"Key2"s, 2 } });
       Assert::IsTrue(json.Is(JsonType::Object));
@@ -1401,11 +1401,11 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestOperatorSubscript1)
     {
-      ExceptException<exception>([]() { auto temp = Json(wstring  ())[wstring()]; }, "Operator[](KEY const& key) is only defined for JsonObject!");
-      ExceptException<exception>([]() { auto temp = Json(bool     ())[wstring()]; }, "Operator[](KEY const& key) is only defined for JsonObject!");
-      ExceptException<exception>([]() { auto temp = Json(double   ())[wstring()]; }, "Operator[](KEY const& key) is only defined for JsonObject!");
-      ExceptException<exception>([]() { auto temp = Json(int64_t  ())[wstring()]; }, "Operator[](KEY const& key) is only defined for JsonObject!");
-      ExceptException<exception>([]() { auto temp = Json(JsonArray())[wstring()]; }, "Operator[](KEY const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { auto temp = Json(wstring  ())[wstring()]; }, "Operator[](KEY const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { auto temp = Json(bool     ())[wstring()]; }, "Operator[](KEY const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { auto temp = Json(double   ())[wstring()]; }, "Operator[](KEY const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { auto temp = Json(int64_t  ())[wstring()]; }, "Operator[](KEY const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { auto temp = Json(JsonArray())[wstring()]; }, "Operator[](KEY const& key) is only defined for JsonObject!");
 
       auto json = Json(nullptr_t());
       Assert::IsTrue(json.Is(JsonType::Null));
@@ -1425,12 +1425,12 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestOperatorSubscript2)
     {
-      ExceptException<exception>([]() { auto temp = Json(nullptr_t ())[int64_t()]; }, "Operator[](int64_t index) is only defined for JsonArray!");
-      ExceptException<exception>([]() { auto temp = Json(wstring   ())[int64_t()]; }, "Operator[](int64_t index) is only defined for JsonArray!");
-      ExceptException<exception>([]() { auto temp = Json(bool      ())[int64_t()]; }, "Operator[](int64_t index) is only defined for JsonArray!");
-      ExceptException<exception>([]() { auto temp = Json(double    ())[int64_t()]; }, "Operator[](int64_t index) is only defined for JsonArray!");
-      ExceptException<exception>([]() { auto temp = Json(int64_t   ())[int64_t()]; }, "Operator[](int64_t index) is only defined for JsonArray!");
-      ExceptException<exception>([]() { auto temp = Json(JsonObject())[int64_t()]; }, "Operator[](int64_t index) is only defined for JsonArray!");
+      ExpectException<exception>([]() { auto temp = Json(nullptr_t ())[int64_t()]; }, "Operator[](int64_t index) is only defined for JsonArray!");
+      ExpectException<exception>([]() { auto temp = Json(wstring   ())[int64_t()]; }, "Operator[](int64_t index) is only defined for JsonArray!");
+      ExpectException<exception>([]() { auto temp = Json(bool      ())[int64_t()]; }, "Operator[](int64_t index) is only defined for JsonArray!");
+      ExpectException<exception>([]() { auto temp = Json(double    ())[int64_t()]; }, "Operator[](int64_t index) is only defined for JsonArray!");
+      ExpectException<exception>([]() { auto temp = Json(int64_t   ())[int64_t()]; }, "Operator[](int64_t index) is only defined for JsonArray!");
+      ExpectException<exception>([]() { auto temp = Json(JsonObject())[int64_t()]; }, "Operator[](int64_t index) is only defined for JsonArray!");
 
       auto json = Json(JsonArray());
       json.Resize(4);
@@ -1447,12 +1447,12 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestAt1)
     {
-      ExceptException<exception>([]() { Json(nullptr_t()).At(wstring()); }, "At(KEY const& key) is only defined for JsonObject!");
-      ExceptException<exception>([]() { Json(wstring  ()).At(wstring()); }, "At(KEY const& key) is only defined for JsonObject!");
-      ExceptException<exception>([]() { Json(bool     ()).At(wstring()); }, "At(KEY const& key) is only defined for JsonObject!");
-      ExceptException<exception>([]() { Json(double   ()).At(wstring()); }, "At(KEY const& key) is only defined for JsonObject!");
-      ExceptException<exception>([]() { Json(int64_t  ()).At(wstring()); }, "At(KEY const& key) is only defined for JsonObject!");
-      ExceptException<exception>([]() { Json(JsonArray()).At(wstring()); }, "At(KEY const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(nullptr_t()).At(wstring()); }, "At(KEY const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(wstring  ()).At(wstring()); }, "At(KEY const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(bool     ()).At(wstring()); }, "At(KEY const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(double   ()).At(wstring()); }, "At(KEY const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(int64_t  ()).At(wstring()); }, "At(KEY const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(JsonArray()).At(wstring()); }, "At(KEY const& key) is only defined for JsonObject!");
 
       auto json = Json{
         { L"Key1"s, 1 },
@@ -1468,12 +1468,12 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestAt2)
     {
-      ExceptException<exception>([]() { auto const temp = Json(nullptr_t()); auto tmp = temp.At(wstring()); }, "At(KEY const& key) is only defined for JsonObject!");
-      ExceptException<exception>([]() { auto const temp = Json(wstring  ()); auto tmp = temp.At(wstring()); }, "At(KEY const& key) is only defined for JsonObject!");
-      ExceptException<exception>([]() { auto const temp = Json(bool     ()); auto tmp = temp.At(wstring()); }, "At(KEY const& key) is only defined for JsonObject!");
-      ExceptException<exception>([]() { auto const temp = Json(double   ()); auto tmp = temp.At(wstring()); }, "At(KEY const& key) is only defined for JsonObject!");
-      ExceptException<exception>([]() { auto const temp = Json(int64_t  ()); auto tmp = temp.At(wstring()); }, "At(KEY const& key) is only defined for JsonObject!");
-      ExceptException<exception>([]() { auto const temp = Json(JsonArray()); auto tmp = temp.At(wstring()); }, "At(KEY const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { auto const temp = Json(nullptr_t()); auto tmp = temp.At(wstring()); }, "At(KEY const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { auto const temp = Json(wstring  ()); auto tmp = temp.At(wstring()); }, "At(KEY const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { auto const temp = Json(bool     ()); auto tmp = temp.At(wstring()); }, "At(KEY const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { auto const temp = Json(double   ()); auto tmp = temp.At(wstring()); }, "At(KEY const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { auto const temp = Json(int64_t  ()); auto tmp = temp.At(wstring()); }, "At(KEY const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { auto const temp = Json(JsonArray()); auto tmp = temp.At(wstring()); }, "At(KEY const& key) is only defined for JsonObject!");
 
       auto const json = Json{
         { L"Key1"s, 1 },
@@ -1486,12 +1486,12 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestAt3)
     {
-      ExceptException<exception>([]() { Json(nullptr_t ()).At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(wstring   ()).At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(bool      ()).At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(double    ()).At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(int64_t   ()).At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
-      ExceptException<exception>([]() { Json(JsonObject()).At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
+      ExpectException<exception>([]() { Json(nullptr_t ()).At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
+      ExpectException<exception>([]() { Json(wstring   ()).At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
+      ExpectException<exception>([]() { Json(bool      ()).At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
+      ExpectException<exception>([]() { Json(double    ()).At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
+      ExpectException<exception>([]() { Json(int64_t   ()).At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
+      ExpectException<exception>([]() { Json(JsonObject()).At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
 
       auto json = Json{ 1, 3, 3, 7 };
       Assert::AreEqual<Json>(1, json.At(0));
@@ -1510,12 +1510,12 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestAt4)
     {
-      ExceptException<exception>([]() { auto const temp = Json(nullptr_t ()); auto tmp = temp.At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
-      ExceptException<exception>([]() { auto const temp = Json(wstring   ()); auto tmp = temp.At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
-      ExceptException<exception>([]() { auto const temp = Json(bool      ()); auto tmp = temp.At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
-      ExceptException<exception>([]() { auto const temp = Json(double    ()); auto tmp = temp.At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
-      ExceptException<exception>([]() { auto const temp = Json(int64_t   ()); auto tmp = temp.At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
-      ExceptException<exception>([]() { auto const temp = Json(JsonObject()); auto tmp = temp.At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
+      ExpectException<exception>([]() { auto const temp = Json(nullptr_t ()); auto tmp = temp.At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
+      ExpectException<exception>([]() { auto const temp = Json(wstring   ()); auto tmp = temp.At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
+      ExpectException<exception>([]() { auto const temp = Json(bool      ()); auto tmp = temp.At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
+      ExpectException<exception>([]() { auto const temp = Json(double    ()); auto tmp = temp.At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
+      ExpectException<exception>([]() { auto const temp = Json(int64_t   ()); auto tmp = temp.At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
+      ExpectException<exception>([]() { auto const temp = Json(JsonObject()); auto tmp = temp.At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
 
       auto const json = Json{ 1, 3, 3, 7 };
       Assert::AreEqual<Json>(1, json.At(0));
@@ -1527,23 +1527,23 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestOperatorConversionNullptr)
     {
-      ExceptException<exception>([]() { auto temp = (nullptr_t)Json(wstring   ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (nullptr_t)Json(bool      ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (nullptr_t)Json(double    ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (nullptr_t)Json(int64_t   ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (nullptr_t)Json(JsonObject()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (nullptr_t)Json(JsonArray ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (nullptr_t)Json(wstring   ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (nullptr_t)Json(bool      ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (nullptr_t)Json(double    ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (nullptr_t)Json(int64_t   ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (nullptr_t)Json(JsonObject()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (nullptr_t)Json(JsonArray ()); }, "Invalid conversion!");
       Assert::AreEqual(nullptr, (nullptr_t)Json(nullptr_t()));
     }
 
     TEST_METHOD(TestOperatorConversionWstring)
     {
-      ExceptException<exception>([]() { auto temp = (wstring)Json(nullptr_t ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (wstring)Json(bool      ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (wstring)Json(double    ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (wstring)Json(int64_t   ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (wstring)Json(JsonObject()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (wstring)Json(JsonArray ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (wstring)Json(nullptr_t ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (wstring)Json(bool      ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (wstring)Json(double    ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (wstring)Json(int64_t   ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (wstring)Json(JsonObject()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (wstring)Json(JsonArray ()); }, "Invalid conversion!");
       Assert::AreEqual<wstring>(L"Test"s, (wstring)Json(L"Test"s));
     }
 
@@ -1563,110 +1563,110 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestOperatorConversionChar)
     {
-      ExceptException<exception>([]() { auto temp = (char)Json(nullptr_t ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (char)Json(wstring   ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (char)Json(bool      ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (char)Json(JsonObject()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (char)Json(JsonArray ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (char)Json(nullptr_t ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (char)Json(wstring   ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (char)Json(bool      ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (char)Json(JsonObject()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (char)Json(JsonArray ()); }, "Invalid conversion!");
       Assert::AreEqual<char>('A', (char)Json(65.0));
       Assert::AreEqual<char>('A', (char)Json('A'));
     }
 
     TEST_METHOD(TestOperatorConversionInt8)
     {
-      ExceptException<exception>([]() { auto temp = (int8_t)Json(nullptr_t ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (int8_t)Json(wstring   ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (int8_t)Json(bool      ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (int8_t)Json(JsonObject()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (int8_t)Json(JsonArray ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (int8_t)Json(nullptr_t ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (int8_t)Json(wstring   ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (int8_t)Json(bool      ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (int8_t)Json(JsonObject()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (int8_t)Json(JsonArray ()); }, "Invalid conversion!");
       Assert::AreEqual<int8_t>(-100, (int8_t)Json(-100.0));
       Assert::AreEqual<int8_t>(-100, (int8_t)Json(-100));
     }
 
     TEST_METHOD(TestOperatorConversionUInt8)
     {
-      ExceptException<exception>([]() { auto temp = (uint8_t)Json(nullptr_t ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (uint8_t)Json(wstring   ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (uint8_t)Json(bool      ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (uint8_t)Json(JsonObject()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (uint8_t)Json(JsonArray ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (uint8_t)Json(nullptr_t ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (uint8_t)Json(wstring   ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (uint8_t)Json(bool      ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (uint8_t)Json(JsonObject()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (uint8_t)Json(JsonArray ()); }, "Invalid conversion!");
       Assert::AreEqual<uint8_t>(200, (uint8_t)Json(200.0));
       Assert::AreEqual<uint8_t>(200, (uint8_t)Json(200));
     }
 
     TEST_METHOD(TestOperatorConversionInt16)
     {
-      ExceptException<exception>([]() { auto temp = (int16_t)Json(nullptr_t ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (int16_t)Json(wstring   ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (int16_t)Json(bool      ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (int16_t)Json(JsonObject()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (int16_t)Json(JsonArray ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (int16_t)Json(nullptr_t ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (int16_t)Json(wstring   ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (int16_t)Json(bool      ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (int16_t)Json(JsonObject()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (int16_t)Json(JsonArray ()); }, "Invalid conversion!");
       Assert::AreEqual<int16_t>(-30'000, (int16_t)Json(-30'000.0));
       Assert::AreEqual<int16_t>(-30'000, (int16_t)Json(-30'000));
     }
 
     TEST_METHOD(TestOperatorConversionUInt16)
     {
-      ExceptException<exception>([]() { auto temp = (uint16_t)Json(nullptr_t ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (uint16_t)Json(wstring   ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (uint16_t)Json(bool      ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (uint16_t)Json(JsonObject()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (uint16_t)Json(JsonArray ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (uint16_t)Json(nullptr_t ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (uint16_t)Json(wstring   ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (uint16_t)Json(bool      ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (uint16_t)Json(JsonObject()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (uint16_t)Json(JsonArray ()); }, "Invalid conversion!");
       Assert::AreEqual<uint16_t>(60'000, (uint16_t)Json(60'000.0));
       Assert::AreEqual<uint16_t>(60'000, (uint16_t)Json(60'000));
     }
 
     TEST_METHOD(TestOperatorConversionInt32)
     {
-      ExceptException<exception>([]() { auto temp = (int32_t)Json(nullptr_t ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (int32_t)Json(wstring   ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (int32_t)Json(bool      ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (int32_t)Json(JsonObject()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (int32_t)Json(JsonArray ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (int32_t)Json(nullptr_t ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (int32_t)Json(wstring   ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (int32_t)Json(bool      ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (int32_t)Json(JsonObject()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (int32_t)Json(JsonArray ()); }, "Invalid conversion!");
       Assert::AreEqual<int32_t>(-2'000'000'000, (int32_t)Json(-2'000'000'000.0));
       Assert::AreEqual<int32_t>(-2'000'000'000, (int32_t)Json(-2'000'000'000));
     }
 
     TEST_METHOD(TestOperatorConversionUInt32)
     {
-      ExceptException<exception>([]() { auto temp = (uint32_t)Json(nullptr_t ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (uint32_t)Json(wstring   ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (uint32_t)Json(bool      ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (uint32_t)Json(JsonObject()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (uint32_t)Json(JsonArray ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (uint32_t)Json(nullptr_t ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (uint32_t)Json(wstring   ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (uint32_t)Json(bool      ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (uint32_t)Json(JsonObject()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (uint32_t)Json(JsonArray ()); }, "Invalid conversion!");
       Assert::AreEqual<uint32_t>(4'000'000'000, (uint32_t)Json(4'000'000'000.0));
       Assert::AreEqual<uint32_t>(4'000'000'000, (uint32_t)Json(4'000'000'000ui32));
     }
 
     TEST_METHOD(TestOperatorConversionInt64)
     {
-      ExceptException<exception>([]() { auto temp = (int64_t)Json(nullptr_t ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (int64_t)Json(wstring   ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (int64_t)Json(bool      ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (int64_t)Json(JsonObject()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (int64_t)Json(JsonArray ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (int64_t)Json(nullptr_t ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (int64_t)Json(wstring   ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (int64_t)Json(bool      ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (int64_t)Json(JsonObject()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (int64_t)Json(JsonArray ()); }, "Invalid conversion!");
       Assert::AreEqual<int64_t>(-16'000'000'000, (int64_t)Json(-16'000'000'000.0));
       Assert::AreEqual<int64_t>(-16'000'000'000, (int64_t)Json(-16'000'000'000i64));
     }
 
     TEST_METHOD(TestOperatorConversionUInt64)
     {
-      ExceptException<exception>([]() { auto temp = (uint64_t)Json(nullptr_t ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (uint64_t)Json(wstring   ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (uint64_t)Json(bool      ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (uint64_t)Json(JsonObject()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (uint64_t)Json(JsonArray ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (uint64_t)Json(nullptr_t ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (uint64_t)Json(wstring   ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (uint64_t)Json(bool      ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (uint64_t)Json(JsonObject()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (uint64_t)Json(JsonArray ()); }, "Invalid conversion!");
       Assert::AreEqual<uint64_t>(32'000'000'000, (uint64_t)Json(32'000'000'000.0));
       Assert::AreEqual<uint64_t>(32'000'000'000, (uint64_t)Json(32'000'000'000ui64));
     }
 
     TEST_METHOD(TestOperatorConversionFloat)
     {
-      ExceptException<exception>([]() { auto temp = (float)Json(nullptr_t ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (float)Json(wstring   ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (float)Json(bool      ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (float)Json(JsonObject()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (float)Json(JsonArray ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (float)Json(nullptr_t ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (float)Json(wstring   ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (float)Json(bool      ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (float)Json(JsonObject()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (float)Json(JsonArray ()); }, "Invalid conversion!");
       Assert::AreEqual<float>(13.37f, (float)Json(13.37));
       Assert::AreEqual<float>(13.37f, (float)Json(13.37f));
       Assert::AreEqual<float>(1337.0, (float)Json(1337));
@@ -1674,11 +1674,11 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestOperatorConversionDouble)
     {
-      ExceptException<exception>([]() { auto temp = (double)Json(nullptr_t ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (double)Json(wstring   ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (double)Json(bool      ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (double)Json(JsonObject()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (double)Json(JsonArray ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (double)Json(nullptr_t ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (double)Json(wstring   ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (double)Json(bool      ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (double)Json(JsonObject()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (double)Json(JsonArray ()); }, "Invalid conversion!");
       Assert::AreEqual<double>(13.37, (double)Json(13.37));
       Assert::AreEqual<double>(13.37f, (double)Json(13.37f));
       Assert::AreEqual<double>(1337.0, (double)Json(1337));
@@ -1686,23 +1686,23 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestOperatorConversionJsonObject)
     {
-      ExceptException<exception>([]() { auto temp = (JsonObject)Json(nullptr_t ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (JsonObject)Json(wstring   ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (JsonObject)Json(bool      ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (JsonObject)Json(double    ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (JsonObject)Json(int64_t   ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (JsonObject)Json(JsonArray ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (JsonObject)Json(nullptr_t ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (JsonObject)Json(wstring   ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (JsonObject)Json(bool      ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (JsonObject)Json(double    ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (JsonObject)Json(int64_t   ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (JsonObject)Json(JsonArray ()); }, "Invalid conversion!");
       Assert::AreEqual<JsonObject>(JsonObject{ { L"Key1"s, 1 }, { L"Key2"s, 2 } }, (JsonObject)Json(JsonObject{ { L"Key1"s, 1 }, { L"Key2"s, 2 } }));
     }
 
     TEST_METHOD(TestOperatorConversionJsonArray)
     {
-      ExceptException<exception>([]() { auto temp = (JsonArray)Json(nullptr_t ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (JsonArray)Json(wstring   ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (JsonArray)Json(bool      ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (JsonArray)Json(double    ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (JsonArray)Json(int64_t   ()); }, "Invalid conversion!");
-      ExceptException<exception>([]() { auto temp = (JsonArray)Json(JsonObject()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (JsonArray)Json(nullptr_t ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (JsonArray)Json(wstring   ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (JsonArray)Json(bool      ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (JsonArray)Json(double    ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (JsonArray)Json(int64_t   ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (JsonArray)Json(JsonObject()); }, "Invalid conversion!");
       Assert::AreEqual<JsonArray>(JsonArray{ 1, 3, 3, 7 }, (JsonArray)Json(JsonArray{ 1, 3, 3, 7 }));
     }
 
@@ -2084,7 +2084,7 @@ namespace Json4CPP::Test
       };
       for (auto& [input, expected] : pairs)
       {
-        ExceptException<exception>([&, input = input]() { Json::Read(input); }, expected);
+        ExpectException<exception>([&, input = input]() { Json::Read(input); }, expected);
       }
     }
 

@@ -41,8 +41,8 @@ namespace Json4CPP::Test
         }
         else
         {
-          ExceptException<exception>([input = input]() { JsonLinter::Read(              input ); }, exceptionMessage);
-          ExceptException<exception>([input = input]() { JsonLinter::Read(wstringstream(input)); }, exceptionMessage);
+          ExpectException<exception>([input = input]() { JsonLinter::Read(              input ); }, exceptionMessage);
+          ExpectException<exception>([input = input]() { JsonLinter::Read(wstringstream(input)); }, exceptionMessage);
         }
       }
     }
@@ -96,8 +96,8 @@ namespace Json4CPP::Test
 
       for (auto& [input, exceptionMessage] : pairs2)
       {
-        ExceptException<exception>([input = input]() { JsonLinter::Read(              input ); }, exceptionMessage);
-        ExceptException<exception>([input = input]() { JsonLinter::Read(wstringstream(input)); }, exceptionMessage);
+        ExpectException<exception>([input = input]() { JsonLinter::Read(              input ); }, exceptionMessage);
+        ExpectException<exception>([input = input]() { JsonLinter::Read(wstringstream(input)); }, exceptionMessage);
       }
     }
 
@@ -130,8 +130,8 @@ namespace Json4CPP::Test
         }
         else
         {
-          ExceptException<exception>([input = input]() { JsonLinter::Read(              input ); }, exceptionMessage);
-          ExceptException<exception>([input = input]() { JsonLinter::Read(wstringstream(input)); }, exceptionMessage);
+          ExpectException<exception>([input = input]() { JsonLinter::Read(              input ); }, exceptionMessage);
+          ExpectException<exception>([input = input]() { JsonLinter::Read(wstringstream(input)); }, exceptionMessage);
         }
       }
     }
@@ -166,8 +166,8 @@ namespace Json4CPP::Test
         }
         else
         {
-          ExceptException<exception>([input = input]() { JsonLinter::Read(              input ); }, exceptionMessage);
-          ExceptException<exception>([input = input]() { JsonLinter::Read(wstringstream(input)); }, exceptionMessage);
+          ExpectException<exception>([input = input]() { JsonLinter::Read(              input ); }, exceptionMessage);
+          ExpectException<exception>([input = input]() { JsonLinter::Read(wstringstream(input)); }, exceptionMessage);
         }
       }
     }
@@ -511,8 +511,8 @@ namespace Json4CPP::Test
 
       for (auto& [input, exceptionMessage] : pairs2)
       {
-        ExceptException<exception>([input = input]() { JsonLinter::Read(              input ); }, exceptionMessage);
-        ExceptException<exception>([input = input]() { JsonLinter::Read(wstringstream(input)); }, exceptionMessage);
+        ExpectException<exception>([input = input]() { JsonLinter::Read(              input ); }, exceptionMessage);
+        ExpectException<exception>([input = input]() { JsonLinter::Read(wstringstream(input)); }, exceptionMessage);
       }
     }
 
@@ -587,8 +587,8 @@ namespace Json4CPP::Test
 
       for (auto& [input, exceptionMessage] : pairs2)
       {
-        ExceptException<exception>([input = input]() { JsonLinter::Read(              input ); }, exceptionMessage);
-        ExceptException<exception>([input = input]() { JsonLinter::Read(wstringstream(input)); }, exceptionMessage);
+        ExpectException<exception>([input = input]() { JsonLinter::Read(              input ); }, exceptionMessage);
+        ExpectException<exception>([input = input]() { JsonLinter::Read(wstringstream(input)); }, exceptionMessage);
       }
     }
 
@@ -655,8 +655,8 @@ namespace Json4CPP::Test
 
       for (auto& [input, exceptionMessage] : pairs2)
       {
-        ExceptException<exception>([input = input]() { JsonLinter::Read(              input ); }, exceptionMessage);
-        ExceptException<exception>([input = input]() { JsonLinter::Read(wstringstream(input)); }, exceptionMessage);
+        ExpectException<exception>([input = input]() { JsonLinter::Read(              input ); }, exceptionMessage);
+        ExpectException<exception>([input = input]() { JsonLinter::Read(wstringstream(input)); }, exceptionMessage);
       }
     }
 
@@ -827,10 +827,10 @@ namespace Json4CPP::Test
       {
         auto os = wstringstream();
         auto inputCopy = input;
-        ExceptException<exception>([&]() { JsonLinter::Write(os, inputCopy, 0ui8, L' '); }, exceptionMessage);
+        ExpectException<exception>([&]() { JsonLinter::Write(os, inputCopy, 0ui8, L' '); }, exceptionMessage);
         os = wstringstream();
         inputCopy = input;
-        ExceptException<exception>([&]() { JsonLinter::Write(os, deque(inputCopy), 0ui8, L' '); }, exceptionMessage);
+        ExpectException<exception>([&]() { JsonLinter::Write(os, deque(inputCopy), 0ui8, L' '); }, exceptionMessage);
       }
     }
 
@@ -913,10 +913,10 @@ namespace Json4CPP::Test
       {
         auto os = wstringstream();
         auto inputCopy = input;
-        ExceptException<exception>([&]() { JsonLinter::Write(os, inputCopy, 0ui8, L' '); }, exceptionMessage);
+        ExpectException<exception>([&]() { JsonLinter::Write(os, inputCopy, 0ui8, L' '); }, exceptionMessage);
         os = wstringstream();
         inputCopy = input;
-        ExceptException<exception>([&]() { JsonLinter::Write(os, deque(inputCopy), 0ui8, L' '); }, exceptionMessage);
+        ExpectException<exception>([&]() { JsonLinter::Write(os, deque(inputCopy), 0ui8, L' '); }, exceptionMessage);
       }
     }
 
