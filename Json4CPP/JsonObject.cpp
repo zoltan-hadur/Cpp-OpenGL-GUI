@@ -113,6 +113,11 @@ namespace Json4CPP
       {
         if (auto pair = get_if<vector<JsonBuilder>>(&builder._value))
         {
+          if (pair->size() != 2)
+          {
+            auto message = WString2String(L"JsonObject(JsonBuilder && builder) must be a list of key-value pairs! This \"pair\" contains "s + Json::Stringify(pair->size()) + L" elements instead of 2!"s);
+            throw exception(message.c_str());
+          }
           auto key = get<KEY>((*pair)[0]._value);
           auto value = Json((*pair)[1]);
           Insert({ move(key), move(value) });
@@ -149,6 +154,11 @@ namespace Json4CPP
       {
         if (auto pair = get_if<vector<JsonBuilder>>(&builder._value))
         {
+          if (pair->size() != 2)
+          {
+            auto message = WString2String(L"JsonObject(JsonBuilder && builder) must be a list of key-value pairs! This \"pair\" contains "s + Json::Stringify(pair->size()) + L" elements instead of 2!"s);
+            throw exception(message.c_str());
+          }
           auto key = get<KEY>(move((*pair)[0]._value));
           auto value = Json(move((*pair)[1]));
           Insert({ move(key), move(value) });

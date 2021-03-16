@@ -188,6 +188,9 @@ namespace Json4CPP::Test
       Assert::AreEqual(L"Key1"s, object.Keys()[0]);
       Assert::AreEqual<Json>(L"Value1", object[L"Key1"]);
       Assert::AreEqual<JsonBuilder>({ { L"Key1", L"Value1" } }, builder);
+      builder = JsonBuilder({ { L"Key1", L"Value1", L"Value2" } });
+      Assert::ExpectException<exception>([&]() { object = builder; });
+      Assert::AreEqual<JsonBuilder>({ { L"Key1", L"Value1", L"Value2" } }, builder);
       builder = JsonBuilder({ { L"Key1", L"Value1" }, { L"Key2", L"Value2" } });
       object = builder;
       Assert::AreEqual(2i64, object.Size());
@@ -196,6 +199,9 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>(L"Value1", object[L"Key1"]);
       Assert::AreEqual<Json>(L"Value2", object[L"Key2"]);
       Assert::AreEqual<JsonBuilder>({ { L"Key1", L"Value1" }, { L"Key2", L"Value2" } }, builder);
+      builder = JsonBuilder({ { L"Key1", L"Value1" }, { L"Key2", L"Value2", L"Value3" } });
+      Assert::ExpectException<exception>([&]() { object = builder; });
+      Assert::AreEqual<JsonBuilder>({ { L"Key1", L"Value1" }, { L"Key2", L"Value2", L"Value3" } }, builder);
 
       // JsonBuilder from vector
       builder = JsonBuilder(vector<JsonBuilder>{ L"Key1", L"Value1" });
@@ -207,6 +213,9 @@ namespace Json4CPP::Test
       Assert::AreEqual(L"Key1"s, object.Keys()[0]);
       Assert::AreEqual<Json>(L"Value1", object[L"Key1"]);
       Assert::AreEqual<JsonBuilder>(vector<JsonBuilder>{ { L"Key1", L"Value1" } }, builder);
+      builder = JsonBuilder(vector<JsonBuilder>{ { L"Key1", L"Value1", L"Value3" } });
+      Assert::ExpectException<exception>([&]() { object = builder; });
+      Assert::AreEqual<JsonBuilder>(vector<JsonBuilder>{ { L"Key1", L"Value1", L"Value3" }}, builder);
       builder = JsonBuilder(vector<JsonBuilder>{ { L"Key1", L"Value1" }, { L"Key2", L"Value2" } });
       object = builder;
       Assert::AreEqual(2i64, object.Size());
@@ -215,6 +224,9 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>(L"Value1", object[L"Key1"]);
       Assert::AreEqual<Json>(L"Value2", object[L"Key2"]);
       Assert::AreEqual<JsonBuilder>(vector<JsonBuilder>{ { L"Key1", L"Value1" }, { L"Key2", L"Value2" } }, builder);
+      builder = JsonBuilder(vector<JsonBuilder>{ { L"Key1", L"Value1" }, { L"Key2", L"Value2", L"Value3" } });
+      Assert::ExpectException<exception>([&]() { object = builder; });
+      Assert::AreEqual<JsonBuilder>(vector<JsonBuilder>{ { L"Key1", L"Value1" }, { L"Key2", L"Value2", L"Value3" } }, builder);
 
       // Move
       builder = JsonBuilder();
@@ -328,6 +340,9 @@ namespace Json4CPP::Test
       Assert::AreEqual(L"Key1"s, object.Keys()[0]);
       Assert::AreEqual<Json>(L"Value1", object[L"Key1"]);
       Assert::AreEqual<JsonBuilder>({ { L"", L"" } }, builder);
+      builder = JsonBuilder({ { L"Key1", L"Value1", L"Value2" } });
+      Assert::ExpectException<exception>([&]() { object = move(builder); });
+      Assert::AreEqual<JsonBuilder>({ { L"Key1", L"Value1", L"Value2" } }, builder);
       builder = JsonBuilder({ { L"Key1", L"Value1" }, { L"Key2", L"Value2" } });
       object = move(builder);
       Assert::AreEqual(2i64, object.Size());
@@ -336,6 +351,9 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>(L"Value1", object[L"Key1"]);
       Assert::AreEqual<Json>(L"Value2", object[L"Key2"]);
       Assert::AreEqual<JsonBuilder>({ { L"", L"" }, { L"", L"" } }, builder);
+      builder = JsonBuilder({ { L"Key1", L"Value1" }, { L"Key2", L"Value2", L"Value3" } });
+      Assert::ExpectException<exception>([&]() { object = move(builder); });
+      Assert::AreEqual<JsonBuilder>({ { L"", L"" }, { L"Key2", L"Value2", L"Value3" } }, builder);
 
       // JsonBuilder from vector
       builder = JsonBuilder(vector<JsonBuilder>{ L"Key1", L"Value1" });
@@ -347,6 +365,9 @@ namespace Json4CPP::Test
       Assert::AreEqual(L"Key1"s, object.Keys()[0]);
       Assert::AreEqual<Json>(L"Value1", object[L"Key1"]);
       Assert::AreEqual<JsonBuilder>(vector<JsonBuilder>{ { L"", L"" } }, builder);
+      builder = JsonBuilder(vector<JsonBuilder>{ { L"Key1", L"Value1", L"Value2" } });
+      Assert::ExpectException<exception>([&]() { object = move(builder); });
+      Assert::AreEqual<JsonBuilder>(vector<JsonBuilder>{ { L"Key1", L"Value1", L"Value2" } }, builder);
       builder = JsonBuilder(vector<JsonBuilder>{ { L"Key1", L"Value1" }, { L"Key2", L"Value2" } });
       object = move(builder);
       Assert::AreEqual(2i64, object.Size());
@@ -355,6 +376,9 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>(L"Value1", object[L"Key1"]);
       Assert::AreEqual<Json>(L"Value2", object[L"Key2"]);
       Assert::AreEqual<JsonBuilder>(vector<JsonBuilder>{ { L"", L"" }, { L"", L"" } }, builder);
+      builder = JsonBuilder(vector<JsonBuilder>{ { L"Key1", L"Value1" }, { L"Key2", L"Value2", L"Value3" } });
+      Assert::ExpectException<exception>([&]() { object = move(builder); });
+      Assert::AreEqual<JsonBuilder>(vector<JsonBuilder>{ { L"", L"" }, { L"Key2", L"Value2", L"Value3" } }, builder);
     }
 
     TEST_METHOD(TestConstructorInitializerList)
@@ -365,12 +389,18 @@ namespace Json4CPP::Test
       Assert::AreEqual(1i64, object.Size());
       Assert::AreEqual(L"Key1"s, object.Keys()[0]);
       Assert::AreEqual<Json>(1, object[L"Key1"]);
+
+      Assert::ExpectException<exception>([&]() { object = { { L"Key1", 1, 2 } }; });
+
       object = { { L"Key1", 1 }, { L"Key2", 2 } };
       Assert::AreEqual(2i64, object.Size());
       Assert::AreEqual(L"Key1"s, object.Keys()[0]);
       Assert::AreEqual(L"Key2"s, object.Keys()[1]);
       Assert::AreEqual<Json>(1, object[L"Key1"]);
       Assert::AreEqual<Json>(2, object[L"Key2"]);
+
+      Assert::ExpectException<exception>([&]() { object = { { L"Key1", 1 }, { L"Key2", 2, 3 } }; });
+
       object = {
         { L"Null", nullptr },
         { L"String", L"Test" },
