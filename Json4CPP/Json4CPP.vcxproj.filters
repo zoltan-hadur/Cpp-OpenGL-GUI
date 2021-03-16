@@ -145,5 +145,8 @@
     <Natvis Include="JsonTokenValue.natvis">
       <Filter>Natvis</Filter>
     </Natvis>
+    <Natvis Include="JsonBuilder.natvis">
+      <Filter>Natvis</Filter>
+    </Natvis>
   </ItemGroup>
 </Project>
