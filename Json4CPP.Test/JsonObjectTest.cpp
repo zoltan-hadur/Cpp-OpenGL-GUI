@@ -599,13 +599,20 @@ namespace Json4CPP::Test
       pair<wstring, Json> obj = { L"Object"s, { { L"Key1", 1 }, { L"Key2", 2 } } };
       pair<wstring, Json> arr = { L"Array"s, { 1, 2, 3 } };
 
-      object.Insert(null);
-      object.Insert(str);
-      object.Insert(boolean);
-      object.Insert(real);
-      object.Insert(integer);
-      object.Insert(obj);
-      object.Insert(arr);
+      Assert::IsTrue (object.Insert(null));
+      Assert::IsFalse(object.Insert(null));
+      Assert::IsTrue (object.Insert(str));
+      Assert::IsFalse(object.Insert(str));
+      Assert::IsTrue (object.Insert(boolean));
+      Assert::IsFalse(object.Insert(boolean));
+      Assert::IsTrue (object.Insert(real));
+      Assert::IsFalse(object.Insert(real));
+      Assert::IsTrue (object.Insert(integer));
+      Assert::IsFalse(object.Insert(integer));
+      Assert::IsTrue (object.Insert(obj));
+      Assert::IsFalse(object.Insert(obj));
+      Assert::IsTrue (object.Insert(arr));
+      Assert::IsFalse(object.Insert(arr));
       Assert::AreEqual(7i64, object.Size());
       Assert::AreEqual<Json>(nullptr, object[L"Null"]);
       Assert::AreEqual<Json>(L"Test"s, object[L"String"]);
@@ -622,14 +629,21 @@ namespace Json4CPP::Test
       Assert::AreEqual<pair<wstring, Json>>({ L"Object"s, { { L"Key1", 1 }, { L"Key2", 2 } } }, obj);
       Assert::AreEqual<pair<wstring, Json>>({ L"Array"s, { 1, 2, 3 } }, arr);
 
+      Assert::IsFalse(object.Insert(move(null)));
+      Assert::IsFalse(object.Insert(move(str)));
+      Assert::IsFalse(object.Insert(move(boolean)));
+      Assert::IsFalse(object.Insert(move(real)));
+      Assert::IsFalse(object.Insert(move(integer)));
+      Assert::IsFalse(object.Insert(move(obj)));
+      Assert::IsFalse(object.Insert(move(arr)));
       object.Clear();
-      object.Insert(move(null));
-      object.Insert(move(str));
-      object.Insert(move(boolean));
-      object.Insert(move(real));
-      object.Insert(move(integer));
-      object.Insert(move(obj));
-      object.Insert(move(arr));
+      Assert::IsTrue(object.Insert(move(null)));
+      Assert::IsTrue(object.Insert(move(str)));
+      Assert::IsTrue(object.Insert(move(boolean)));
+      Assert::IsTrue(object.Insert(move(real)));
+      Assert::IsTrue(object.Insert(move(integer)));
+      Assert::IsTrue(object.Insert(move(obj)));
+      Assert::IsTrue(object.Insert(move(arr)));
       Assert::AreEqual(7i64, object.Size());
       Assert::AreEqual<Json>(nullptr, object[L"Null"]);
       Assert::AreEqual<Json>(L"Test"s, object[L"String"]);
@@ -738,6 +752,12 @@ namespace Json4CPP::Test
         object[key] = 1337;
         Assert::AreEqual<Json>(1337, object[key]);
       }
+
+      object.Clear();
+      Assert::AreEqual(0i64, object.Size());
+      object[L"1337"] = 1337;
+      Assert::AreEqual(1i64, object.Size());
+      Assert::AreEqual<Json>(1337, object[L"1337"]);
     }
 
     TEST_METHOD(TestAt)
@@ -1000,6 +1020,8 @@ namespace Json4CPP::Test
       {
         Assert::AreEqual(expected[key], result[key]);
       }
+
+      ExpectException<exception>([&]() { wstringstream(L"0"s) >> result; }, "Expected token: StartObject!");
     }
 
     TEST_METHOD(TestOperatorEqual)
