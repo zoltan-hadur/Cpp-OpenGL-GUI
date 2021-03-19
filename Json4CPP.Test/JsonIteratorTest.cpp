@@ -19,13 +19,13 @@ namespace Json4CPP::Test
       auto it1 = json1.end();
       Assert::AreSame(json1, *it1._json);
       Assert::AreEqual(4i64, it1._position);
-    }
 
-    TEST_METHOD(TestSize)
-    {
-      auto json = Json{ 1, 2, 3, 4 };
-      auto it = json.begin();
-      Assert::AreEqual(4i64, it.Size());
+      JsonIterator def;
+      Assert::IsNull(def._json);
+      Assert::AreEqual(0i64, def._position);
+      JsonIterator it = it0;
+      Assert::AreSame(json0, *it._json);
+      Assert::AreEqual(0i64, it._position);
     }
 
     TEST_METHOD(TestOperatorAssign)
@@ -272,6 +272,13 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>(2, *it0);
       Assert::AreEqual<Json>(3, *it1);
       Assert::IsFalse(it0 >= it1);
+    }
+
+    TEST_METHOD(TestSize)
+    {
+      auto json = Json{ 1, 2, 3, 4 };
+      auto it = json.begin();
+      Assert::AreEqual(4i64, it.Size());
     }
 
     TEST_METHOD(TestKey)

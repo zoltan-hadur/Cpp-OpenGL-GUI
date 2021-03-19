@@ -23,10 +23,9 @@ namespace Json4CPP
 
   JsonConstIterator::JsonConstIterator(Json const* json, int64_t position) : _json(json), _position(position) {}
 
-  difference_type JsonConstIterator::Size() const
-  {
-    return _json->Size();
-  }
+  JsonConstIterator::JsonConstIterator() : _json(nullptr), _position(0) {}
+
+  JsonConstIterator::JsonConstIterator(JsonConstIterator const& it) : _json(it._json), _position(it._position) {}
 
   JsonConstIterator& JsonConstIterator::operator=(JsonConstIterator const& it)
   {
@@ -138,6 +137,11 @@ namespace Json4CPP
   bool JsonConstIterator::operator>=(JsonConstIterator const& it) const
   {
     return _position >= it._position;
+  }
+
+  difference_type JsonConstIterator::Size() const
+  {
+    return _json->Size();
   }
 
   KEY JsonConstIterator::Key() const

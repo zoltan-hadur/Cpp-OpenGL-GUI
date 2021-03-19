@@ -34,7 +34,8 @@ namespace Json4CPP
     using reference = Json&;
     using iterator_category = std::random_access_iterator_tag;
 
-    difference_type Size() const;
+    JsonIterator();
+    JsonIterator(JsonIterator const& it);
     JsonIterator& operator=(JsonIterator const& it);
     bool operator==(JsonIterator it) const;
     bool operator!=(JsonIterator it) const;
@@ -56,6 +57,7 @@ namespace Json4CPP
     bool operator> (JsonIterator const& it) const;
     bool operator>=(JsonIterator const& it) const;
 
+    difference_type Size() const;
     KEY Key() const;
     Json Value() const;
     void Value(Json const& json);
