@@ -111,13 +111,9 @@ namespace Json4CPP
     {
       for (auto& builder : *builders)
       {
-        if (auto pair = get_if<vector<JsonBuilder>>(&builder._value))
+        if (builder.Is(JsonBuilderType::Pair))
         {
-          if (pair->size() != 2)
-          {
-            auto message = WString2String(L"JsonObject(JsonBuilder && builder) must be a list of key-value pairs! This \"pair\" contains "s + Json::Stringify(pair->size()) + L" elements instead of 2!"s);
-            throw exception(message.c_str());
-          }
+          auto pair = get_if<vector<JsonBuilder>>(&builder._value);
           auto key = get<KEY>((*pair)[0]._value);
           auto value = Json((*pair)[1]);
           Insert({ move(key), move(value) });
@@ -127,7 +123,7 @@ namespace Json4CPP
           VALUE value;
           visit(Overload{
             [&](auto const& arg) { value = arg; },
-            [&](vector<JsonBuilder> const& arg) { },  // Empty as it is impossible
+            [&](vector<JsonBuilder> const& arg) { value = JsonArray(arg); },
           }, builder._value);
           auto message = WString2String(L"JsonObject(JsonBuilder const& builder) is not defined for type "s + Json::Stringify(builder.Type()) + L"!"s +
                                         L" Error at: "s + Json::Stringify(Json(value)) + L"."s);
@@ -152,13 +148,9 @@ namespace Json4CPP
     {
       for (auto& builder : *builders)
       {
-        if (auto pair = get_if<vector<JsonBuilder>>(&builder._value))
+        if (builder.Is(JsonBuilderType::Pair))
         {
-          if (pair->size() != 2)
-          {
-            auto message = WString2String(L"JsonObject(JsonBuilder && builder) must be a list of key-value pairs! This \"pair\" contains "s + Json::Stringify(pair->size()) + L" elements instead of 2!"s);
-            throw exception(message.c_str());
-          }
+          auto pair = get_if<vector<JsonBuilder>>(&builder._value);
           auto key = get<KEY>(move((*pair)[0]._value));
           auto value = Json(move((*pair)[1]));
           Insert({ move(key), move(value) });
@@ -168,7 +160,7 @@ namespace Json4CPP
           VALUE value;
           visit(Overload{
             [&](auto const& arg) { value = move(arg); },
-            [&](vector<JsonBuilder> const& arg) { },  // Empty as it is impossible
+            [&](vector<JsonBuilder> const& arg) { value = JsonArray(move(arg)); },
           }, builder._value);
           auto message = WString2String(L"JsonObject(JsonBuilder && builder) is not defined for type "s + Json::Stringify(builder.Type()) + L"!"s +
                                         L" Error at: "s + Json::Stringify(Json(value)) + L"."s);
