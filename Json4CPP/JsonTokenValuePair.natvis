@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
-  <Type Name="std::pair&lt;enum Json4CPP::Detail::JsonToken,std::variant&lt;std::nullptr_t,std::basic_string&lt;wchar_t,std::char_traits&lt;wchar_t&gt;,std::allocator&lt;wchar_t&gt;&gt;,bool,double,int64_t&gt;&gt;">
+  <Type Name="std::pair&lt;enum Json4CPP::Detail::JsonTokenType,std::variant&lt;std::nullptr_t,std::basic_string&lt;wchar_t,std::char_traits&lt;wchar_t&gt;,std::allocator&lt;wchar_t&gt;&gt;,bool,double,__int64&gt;&gt;">
     <DisplayString>({first}, {second})</DisplayString>
     <Expand HideRawView="true">
       <Item Name="[Token]">first</Item>
