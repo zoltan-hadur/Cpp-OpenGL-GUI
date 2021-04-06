@@ -582,6 +582,7 @@ namespace Json4CPP::Test
         Assert::AreEqual<Json>(nullptr, array[i]);
       }
       array.Resize(1500, L"Test"s);
+      Assert::AreEqual(1500i64, array.Size());
       for (int i = 0; i < 1337; ++i)
       {
         Assert::AreEqual<Json>(nullptr, array[i]);
@@ -589,6 +590,18 @@ namespace Json4CPP::Test
       for (int i = 1337; i < 1500; ++i)
       {
         Assert::AreEqual<Json>(L"Test"s, array[i]);
+      }
+      array.Resize(500);
+      Assert::AreEqual(500i64, array.Size());
+      for (int i = 0; i < 500; ++i)
+      {
+        Assert::AreEqual<Json>(nullptr, array[i]);
+      }
+      array.Resize(100, L"Test"s);
+      Assert::AreEqual(100i64, array.Size());
+      for (int i = 0; i < 100; ++i)
+      {
+        Assert::AreEqual<Json>(nullptr, array[i]);
       }
     }
 
@@ -824,6 +837,7 @@ namespace Json4CPP::Test
       {
         Assert::AreEqual<Json>(i + 1, array.At(i));
       }
+      static_assert(is_const<remove_reference<decltype(*array.begin())>::type>::value, "JsonArray::begin() dereference type must be Json const&");
 
       auto const& array2 = JsonArray{ 1, 2, 3, 4, 5 };
       for (auto value : array2)
@@ -834,6 +848,7 @@ namespace Json4CPP::Test
       {
         Assert::AreEqual<Json>(i + 1, array2.At(i));
       }
+      static_assert(is_const<remove_reference<decltype(*array2.begin())>::type>::value, "JsonArray::begin() dereference type must be Json const&");
     }
 
     TEST_METHOD(TestOperatorInsertion)
