@@ -277,12 +277,12 @@ namespace Json4CPP
 
   wostream& operator<<(wostream& os, JsonObject const& object)
   {
-    auto indentSizeActive = JsonIndentSize::IsActive(os);
-    auto indentCharActive = JsonIndentChar::IsActive(os);
-    JsonLinter::Write(os, JsonObject::Write(object, deque<TOKEN>()), indentSizeActive ? JsonIndentSize::GetSize(os) : JsonDefault::IndentSize,
-                                                                     indentCharActive ? JsonIndentChar::GetChar(os) : JsonDefault::IndentChar);
-    if (indentSizeActive) JsonIndentSize::ResetState(os);
-    if (indentCharActive) JsonIndentChar::ResetState(os);
+    auto isIndentSizeActive = JsonIndentSize::IsActive(os);
+    auto isIndentCharActive = JsonIndentChar::IsActive(os);
+    JsonLinter::Write(os, JsonObject::Write(object, deque<TOKEN>()), isIndentSizeActive ? JsonIndentSize::GetSize(os) : JsonDefault::IndentSize,
+                                                                     isIndentCharActive ? JsonIndentChar::GetChar(os) : JsonDefault::IndentChar);
+    if (isIndentSizeActive) JsonIndentSize::ResetState(os);
+    if (isIndentCharActive) JsonIndentChar::ResetState(os);
     return os;
   }
 
