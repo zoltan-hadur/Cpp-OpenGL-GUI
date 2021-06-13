@@ -1527,23 +1527,23 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestOperatorConversionNullptr)
     {
-      ExpectException<exception>([]() { auto temp = (nullptr_t)Json(wstring   ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (nullptr_t)Json(bool      ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (nullptr_t)Json(double    ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (nullptr_t)Json(int64_t   ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (nullptr_t)Json(JsonObject()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (nullptr_t)Json(JsonArray ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (nullptr_t)Json(wstring   ()); }, "Invalid conversion: Cannot convert type 'String' to 'Null'!");
+      ExpectException<exception>([]() { auto temp = (nullptr_t)Json(bool      ()); }, "Invalid conversion: Cannot convert type 'Boolean' to 'Null'!");
+      ExpectException<exception>([]() { auto temp = (nullptr_t)Json(double    ()); }, "Invalid conversion: Cannot convert type 'Real' to 'Null'!");
+      ExpectException<exception>([]() { auto temp = (nullptr_t)Json(int64_t   ()); }, "Invalid conversion: Cannot convert type 'Integer' to 'Null'!");
+      ExpectException<exception>([]() { auto temp = (nullptr_t)Json(JsonObject()); }, "Invalid conversion: Cannot convert type 'Object' to 'Null'!");
+      ExpectException<exception>([]() { auto temp = (nullptr_t)Json(JsonArray ()); }, "Invalid conversion: Cannot convert type 'Array' to 'Null'!");
       Assert::AreEqual(nullptr, (nullptr_t)Json(nullptr_t()));
     }
 
     TEST_METHOD(TestOperatorConversionWstring)
     {
-      ExpectException<exception>([]() { auto temp = (wstring)Json(nullptr_t ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (wstring)Json(bool      ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (wstring)Json(double    ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (wstring)Json(int64_t   ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (wstring)Json(JsonObject()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (wstring)Json(JsonArray ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (wstring)Json(nullptr_t ()); }, "Invalid conversion: Cannot convert type 'Null' to 'String'!");
+      ExpectException<exception>([]() { auto temp = (wstring)Json(bool      ()); }, "Invalid conversion: Cannot convert type 'Boolean' to 'String'!");
+      ExpectException<exception>([]() { auto temp = (wstring)Json(double    ()); }, "Invalid conversion: Cannot convert type 'Real' to 'String'!");
+      ExpectException<exception>([]() { auto temp = (wstring)Json(int64_t   ()); }, "Invalid conversion: Cannot convert type 'Integer' to 'String'!");
+      ExpectException<exception>([]() { auto temp = (wstring)Json(JsonObject()); }, "Invalid conversion: Cannot convert type 'Object' to 'String'!");
+      ExpectException<exception>([]() { auto temp = (wstring)Json(JsonArray ()); }, "Invalid conversion: Cannot convert type 'Array' to 'String'!");
       Assert::AreEqual<wstring>(L"Test"s, (wstring)Json(L"Test"s));
     }
 
@@ -1563,110 +1563,110 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestOperatorConversionChar)
     {
-      ExpectException<exception>([]() { auto temp = (char)Json(nullptr_t ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (char)Json(wstring   ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (char)Json(bool      ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (char)Json(JsonObject()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (char)Json(JsonArray ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (char)Json(nullptr_t ()); }, "Invalid conversion: Cannot convert type 'Null' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (char)Json(wstring   ()); }, "Invalid conversion: Cannot convert type 'String' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (char)Json(bool      ()); }, "Invalid conversion: Cannot convert type 'Boolean' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (char)Json(JsonObject()); }, "Invalid conversion: Cannot convert type 'Object' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (char)Json(JsonArray ()); }, "Invalid conversion: Cannot convert type 'Array' to 'Integer'!");
       Assert::AreEqual<char>('A', (char)Json(65.0));
       Assert::AreEqual<char>('A', (char)Json('A'));
     }
 
     TEST_METHOD(TestOperatorConversionInt8)
     {
-      ExpectException<exception>([]() { auto temp = (int8_t)Json(nullptr_t ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (int8_t)Json(wstring   ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (int8_t)Json(bool      ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (int8_t)Json(JsonObject()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (int8_t)Json(JsonArray ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (int8_t)Json(nullptr_t ()); }, "Invalid conversion: Cannot convert type 'Null' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (int8_t)Json(wstring   ()); }, "Invalid conversion: Cannot convert type 'String' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (int8_t)Json(bool      ()); }, "Invalid conversion: Cannot convert type 'Boolean' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (int8_t)Json(JsonObject()); }, "Invalid conversion: Cannot convert type 'Object' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (int8_t)Json(JsonArray ()); }, "Invalid conversion: Cannot convert type 'Array' to 'Integer'!");
       Assert::AreEqual<int8_t>(-100, (int8_t)Json(-100.0));
       Assert::AreEqual<int8_t>(-100, (int8_t)Json(-100));
     }
 
     TEST_METHOD(TestOperatorConversionUInt8)
     {
-      ExpectException<exception>([]() { auto temp = (uint8_t)Json(nullptr_t ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (uint8_t)Json(wstring   ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (uint8_t)Json(bool      ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (uint8_t)Json(JsonObject()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (uint8_t)Json(JsonArray ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (uint8_t)Json(nullptr_t ()); }, "Invalid conversion: Cannot convert type 'Null' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (uint8_t)Json(wstring   ()); }, "Invalid conversion: Cannot convert type 'String' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (uint8_t)Json(bool      ()); }, "Invalid conversion: Cannot convert type 'Boolean' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (uint8_t)Json(JsonObject()); }, "Invalid conversion: Cannot convert type 'Object' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (uint8_t)Json(JsonArray ()); }, "Invalid conversion: Cannot convert type 'Array' to 'Integer'!");
       Assert::AreEqual<uint8_t>(200, (uint8_t)Json(200.0));
       Assert::AreEqual<uint8_t>(200, (uint8_t)Json(200));
     }
 
     TEST_METHOD(TestOperatorConversionInt16)
     {
-      ExpectException<exception>([]() { auto temp = (int16_t)Json(nullptr_t ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (int16_t)Json(wstring   ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (int16_t)Json(bool      ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (int16_t)Json(JsonObject()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (int16_t)Json(JsonArray ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (int16_t)Json(nullptr_t ()); }, "Invalid conversion: Cannot convert type 'Null' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (int16_t)Json(wstring   ()); }, "Invalid conversion: Cannot convert type 'String' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (int16_t)Json(bool      ()); }, "Invalid conversion: Cannot convert type 'Boolean' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (int16_t)Json(JsonObject()); }, "Invalid conversion: Cannot convert type 'Object' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (int16_t)Json(JsonArray ()); }, "Invalid conversion: Cannot convert type 'Array' to 'Integer'!");
       Assert::AreEqual<int16_t>(-30'000, (int16_t)Json(-30'000.0));
       Assert::AreEqual<int16_t>(-30'000, (int16_t)Json(-30'000));
     }
 
     TEST_METHOD(TestOperatorConversionUInt16)
     {
-      ExpectException<exception>([]() { auto temp = (uint16_t)Json(nullptr_t ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (uint16_t)Json(wstring   ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (uint16_t)Json(bool      ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (uint16_t)Json(JsonObject()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (uint16_t)Json(JsonArray ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (uint16_t)Json(nullptr_t ()); }, "Invalid conversion: Cannot convert type 'Null' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (uint16_t)Json(wstring   ()); }, "Invalid conversion: Cannot convert type 'String' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (uint16_t)Json(bool      ()); }, "Invalid conversion: Cannot convert type 'Boolean' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (uint16_t)Json(JsonObject()); }, "Invalid conversion: Cannot convert type 'Object' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (uint16_t)Json(JsonArray ()); }, "Invalid conversion: Cannot convert type 'Array' to 'Integer'!");
       Assert::AreEqual<uint16_t>(60'000, (uint16_t)Json(60'000.0));
       Assert::AreEqual<uint16_t>(60'000, (uint16_t)Json(60'000));
     }
 
     TEST_METHOD(TestOperatorConversionInt32)
     {
-      ExpectException<exception>([]() { auto temp = (int32_t)Json(nullptr_t ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (int32_t)Json(wstring   ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (int32_t)Json(bool      ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (int32_t)Json(JsonObject()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (int32_t)Json(JsonArray ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (int32_t)Json(nullptr_t ()); }, "Invalid conversion: Cannot convert type 'Null' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (int32_t)Json(wstring   ()); }, "Invalid conversion: Cannot convert type 'String' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (int32_t)Json(bool      ()); }, "Invalid conversion: Cannot convert type 'Boolean' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (int32_t)Json(JsonObject()); }, "Invalid conversion: Cannot convert type 'Object' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (int32_t)Json(JsonArray ()); }, "Invalid conversion: Cannot convert type 'Array' to 'Integer'!");
       Assert::AreEqual<int32_t>(-2'000'000'000, (int32_t)Json(-2'000'000'000.0));
       Assert::AreEqual<int32_t>(-2'000'000'000, (int32_t)Json(-2'000'000'000));
     }
 
     TEST_METHOD(TestOperatorConversionUInt32)
     {
-      ExpectException<exception>([]() { auto temp = (uint32_t)Json(nullptr_t ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (uint32_t)Json(wstring   ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (uint32_t)Json(bool      ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (uint32_t)Json(JsonObject()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (uint32_t)Json(JsonArray ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (uint32_t)Json(nullptr_t ()); }, "Invalid conversion: Cannot convert type 'Null' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (uint32_t)Json(wstring   ()); }, "Invalid conversion: Cannot convert type 'String' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (uint32_t)Json(bool      ()); }, "Invalid conversion: Cannot convert type 'Boolean' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (uint32_t)Json(JsonObject()); }, "Invalid conversion: Cannot convert type 'Object' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (uint32_t)Json(JsonArray ()); }, "Invalid conversion: Cannot convert type 'Array' to 'Integer'!");
       Assert::AreEqual<uint32_t>(4'000'000'000, (uint32_t)Json(4'000'000'000.0));
       Assert::AreEqual<uint32_t>(4'000'000'000, (uint32_t)Json(4'000'000'000ui32));
     }
 
     TEST_METHOD(TestOperatorConversionInt64)
     {
-      ExpectException<exception>([]() { auto temp = (int64_t)Json(nullptr_t ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (int64_t)Json(wstring   ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (int64_t)Json(bool      ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (int64_t)Json(JsonObject()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (int64_t)Json(JsonArray ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (int64_t)Json(nullptr_t ()); }, "Invalid conversion: Cannot convert type 'Null' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (int64_t)Json(wstring   ()); }, "Invalid conversion: Cannot convert type 'String' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (int64_t)Json(bool      ()); }, "Invalid conversion: Cannot convert type 'Boolean' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (int64_t)Json(JsonObject()); }, "Invalid conversion: Cannot convert type 'Object' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (int64_t)Json(JsonArray ()); }, "Invalid conversion: Cannot convert type 'Array' to 'Integer'!");
       Assert::AreEqual<int64_t>(-16'000'000'000, (int64_t)Json(-16'000'000'000.0));
       Assert::AreEqual<int64_t>(-16'000'000'000, (int64_t)Json(-16'000'000'000i64));
     }
 
     TEST_METHOD(TestOperatorConversionUInt64)
     {
-      ExpectException<exception>([]() { auto temp = (uint64_t)Json(nullptr_t ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (uint64_t)Json(wstring   ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (uint64_t)Json(bool      ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (uint64_t)Json(JsonObject()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (uint64_t)Json(JsonArray ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (uint64_t)Json(nullptr_t ()); }, "Invalid conversion: Cannot convert type 'Null' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (uint64_t)Json(wstring   ()); }, "Invalid conversion: Cannot convert type 'String' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (uint64_t)Json(bool      ()); }, "Invalid conversion: Cannot convert type 'Boolean' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (uint64_t)Json(JsonObject()); }, "Invalid conversion: Cannot convert type 'Object' to 'Integer'!");
+      ExpectException<exception>([]() { auto temp = (uint64_t)Json(JsonArray ()); }, "Invalid conversion: Cannot convert type 'Array' to 'Integer'!");
       Assert::AreEqual<uint64_t>(32'000'000'000, (uint64_t)Json(32'000'000'000.0));
       Assert::AreEqual<uint64_t>(32'000'000'000, (uint64_t)Json(32'000'000'000ui64));
     }
 
     TEST_METHOD(TestOperatorConversionFloat)
     {
-      ExpectException<exception>([]() { auto temp = (float)Json(nullptr_t ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (float)Json(wstring   ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (float)Json(bool      ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (float)Json(JsonObject()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (float)Json(JsonArray ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (float)Json(nullptr_t ()); }, "Invalid conversion: Cannot convert type 'Null' to 'Real'!");
+      ExpectException<exception>([]() { auto temp = (float)Json(wstring   ()); }, "Invalid conversion: Cannot convert type 'String' to 'Real'!");
+      ExpectException<exception>([]() { auto temp = (float)Json(bool      ()); }, "Invalid conversion: Cannot convert type 'Boolean' to 'Real'!");
+      ExpectException<exception>([]() { auto temp = (float)Json(JsonObject()); }, "Invalid conversion: Cannot convert type 'Object' to 'Real'!");
+      ExpectException<exception>([]() { auto temp = (float)Json(JsonArray ()); }, "Invalid conversion: Cannot convert type 'Array' to 'Real'!");
       Assert::AreEqual<float>(13.37f, (float)Json(13.37));
       Assert::AreEqual<float>(13.37f, (float)Json(13.37f));
       Assert::AreEqual<float>(1337.0, (float)Json(1337));
@@ -1674,11 +1674,11 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestOperatorConversionDouble)
     {
-      ExpectException<exception>([]() { auto temp = (double)Json(nullptr_t ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (double)Json(wstring   ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (double)Json(bool      ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (double)Json(JsonObject()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (double)Json(JsonArray ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (double)Json(nullptr_t ()); }, "Invalid conversion: Cannot convert type 'Null' to 'Real'!");
+      ExpectException<exception>([]() { auto temp = (double)Json(wstring   ()); }, "Invalid conversion: Cannot convert type 'String' to 'Real'!");
+      ExpectException<exception>([]() { auto temp = (double)Json(bool      ()); }, "Invalid conversion: Cannot convert type 'Boolean' to 'Real'!");
+      ExpectException<exception>([]() { auto temp = (double)Json(JsonObject()); }, "Invalid conversion: Cannot convert type 'Object' to 'Real'!");
+      ExpectException<exception>([]() { auto temp = (double)Json(JsonArray ()); }, "Invalid conversion: Cannot convert type 'Array' to 'Real'!");
       Assert::AreEqual<double>(13.37, (double)Json(13.37));
       Assert::AreEqual<double>(13.37f, (double)Json(13.37f));
       Assert::AreEqual<double>(1337.0, (double)Json(1337));
@@ -1686,23 +1686,23 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestOperatorConversionJsonObject)
     {
-      ExpectException<exception>([]() { auto temp = (JsonObject)Json(nullptr_t ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (JsonObject)Json(wstring   ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (JsonObject)Json(bool      ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (JsonObject)Json(double    ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (JsonObject)Json(int64_t   ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (JsonObject)Json(JsonArray ()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (JsonObject)Json(nullptr_t ()); }, "Invalid conversion: Cannot convert type 'Null' to 'Object'!");
+      ExpectException<exception>([]() { auto temp = (JsonObject)Json(wstring   ()); }, "Invalid conversion: Cannot convert type 'String' to 'Object'!");
+      ExpectException<exception>([]() { auto temp = (JsonObject)Json(bool      ()); }, "Invalid conversion: Cannot convert type 'Boolean' to 'Object'!");
+      ExpectException<exception>([]() { auto temp = (JsonObject)Json(double    ()); }, "Invalid conversion: Cannot convert type 'Real' to 'Object'!");
+      ExpectException<exception>([]() { auto temp = (JsonObject)Json(int64_t   ()); }, "Invalid conversion: Cannot convert type 'Integer' to 'Object'!");
+      ExpectException<exception>([]() { auto temp = (JsonObject)Json(JsonArray ()); }, "Invalid conversion: Cannot convert type 'Array' to 'Object'!");
       Assert::AreEqual<JsonObject>(JsonObject{ { L"Key1"s, 1 }, { L"Key2"s, 2 } }, (JsonObject)Json(JsonObject{ { L"Key1"s, 1 }, { L"Key2"s, 2 } }));
     }
 
     TEST_METHOD(TestOperatorConversionJsonArray)
     {
-      ExpectException<exception>([]() { auto temp = (JsonArray)Json(nullptr_t ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (JsonArray)Json(wstring   ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (JsonArray)Json(bool      ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (JsonArray)Json(double    ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (JsonArray)Json(int64_t   ()); }, "Invalid conversion!");
-      ExpectException<exception>([]() { auto temp = (JsonArray)Json(JsonObject()); }, "Invalid conversion!");
+      ExpectException<exception>([]() { auto temp = (JsonArray)Json(nullptr_t ()); }, "Invalid conversion: Cannot convert type 'Null' to 'Array'!");
+      ExpectException<exception>([]() { auto temp = (JsonArray)Json(wstring   ()); }, "Invalid conversion: Cannot convert type 'String' to 'Array'!");
+      ExpectException<exception>([]() { auto temp = (JsonArray)Json(bool      ()); }, "Invalid conversion: Cannot convert type 'Boolean' to 'Array'!");
+      ExpectException<exception>([]() { auto temp = (JsonArray)Json(double    ()); }, "Invalid conversion: Cannot convert type 'Real' to 'Array'!");
+      ExpectException<exception>([]() { auto temp = (JsonArray)Json(int64_t   ()); }, "Invalid conversion: Cannot convert type 'Integer' to 'Array'!");
+      ExpectException<exception>([]() { auto temp = (JsonArray)Json(JsonObject()); }, "Invalid conversion: Cannot convert type 'Object' to 'Array'!");
       Assert::AreEqual<JsonArray>(JsonArray{ 1, 3, 3, 7 }, (JsonArray)Json(JsonArray{ 1, 3, 3, 7 }));
     }
 
