@@ -177,6 +177,7 @@ namespace Json4CPP
     void Erase(KEY const& key);
     void Erase(int64_t index);
     std::vector<KEY> Keys() const;
+    std::vector<std::reference_wrapper<const KEY>> KeysView() const;
     Json      & operator[](KEY const& key);
     Json      & operator[](int64_t index);
     Json      & At(KEY const& key);

@@ -344,6 +344,15 @@ namespace Json4CPP
     }
   }
 
+  vector<reference_wrapper<const KEY>> Json::KeysView() const
+  {
+    switch (Type())
+    {
+    case JsonType::Object: return get<JsonObject>(_value).KeysView();
+    default: throw exception("KeysView() is only defined for JsonObject!");
+    }
+  }
+
   Json& Json::operator[](KEY const& key)
   {
     switch (Type())
