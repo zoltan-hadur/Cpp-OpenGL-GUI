@@ -45,7 +45,6 @@ namespace Json4CPP
   class JSON_API Json
   {
   private:
-    friend class ::Json4CPP::Test::JsonTest;
     friend class JsonObject;
     friend class JsonArray;
     friend class JsonIterator;
