@@ -682,9 +682,9 @@ namespace Json4CPP::Detail
         [&](int64_t   const& v) { WriteNumber(os, v); },
         [&](auto      const& v)
         {
-          auto message = WString2String(L"Got type "s + wstring(typeid(v)) + L"!"s L"Expected one of the following types: "s +
-            wstring(typeid(nullptr_t())) + L", "s   + wstring(typeid(wstring())) + L", "s +
-            wstring(typeid(bool     ())) + L" or "s + wstring(typeid(double ())) + L"!"s);
+          auto message = WString2String(L"Got type "s + wstring(typeid(v).name()) + L"!"s L"Expected one of the following types: "s +
+            wstring(typeid(nullptr_t()).name()) + L", "s   + wstring(typeid(wstring()).name()) + L", "s +
+            wstring(typeid(bool     ()).name()) + L" or "s + wstring(typeid(double ()).name()) + L"!"s);
           throw exception(message.c_str());
         }
       }, value);
