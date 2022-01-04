@@ -2696,14 +2696,77 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestGet)
     {
-      Assert::IsTrue(Json(nullptr).Get<nullptr_t>() == nullptr);
-      Assert::IsTrue(Json(L"asd"s).Get<wstring>() == L"asd"s);
-      Assert::IsTrue(Json(true).Get<bool>() == true);
-      Assert::IsTrue(Json(false).Get<bool>() == false);
-      Assert::IsTrue(Json(13.37).Get<double>() == 13.37);
-      Assert::IsTrue(Json(1337).Get<int64_t>() == 1337);
-      Assert::IsTrue(Json(JsonObject{ { L"Key1"s, 1 }, { L"Key2"s, 2 } }).Get<JsonObject>() == JsonObject{ { L"Key1"s, 1 }, { L"Key2"s, 2 } });
-      Assert::IsTrue(Json(JsonArray{ 1, 2, 3 }).Get<JsonArray>() == JsonArray{ 1, 2, 3 });
+      auto null = Json(nullptr);
+      Assert::ExpectException<exception>([&]() { null.Get<wstring   >(); });
+      Assert::ExpectException<exception>([&]() { null.Get<bool      >(); });
+      Assert::ExpectException<exception>([&]() { null.Get<double    >(); });
+      Assert::ExpectException<exception>([&]() { null.Get<int64_t   >(); });
+      Assert::ExpectException<exception>([&]() { null.Get<JsonObject>(); });
+      Assert::ExpectException<exception>([&]() { null.Get<JsonArray >(); });
+      Assert::AreEqual(nullptr, null.Get<nullptr_t>());
+
+      auto wstr = Json(L"asd"s);
+      Assert::ExpectException<exception>([&]() { wstr.Get<nullptr_t >(); });
+      Assert::ExpectException<exception>([&]() { wstr.Get<bool      >(); });
+      Assert::ExpectException<exception>([&]() { wstr.Get<double    >(); });
+      Assert::ExpectException<exception>([&]() { wstr.Get<int64_t   >(); });
+      Assert::ExpectException<exception>([&]() { wstr.Get<JsonObject>(); });
+      Assert::ExpectException<exception>([&]() { wstr.Get<JsonArray >(); });
+      Assert::AreEqual(L"asd"s, wstr.Get<wstring>());
+
+      auto boolean = Json(true);
+      Assert::ExpectException<exception>([&]() { boolean.Get<nullptr_t >(); });
+      Assert::ExpectException<exception>([&]() { boolean.Get<wstring   >(); });
+      Assert::ExpectException<exception>([&]() { boolean.Get<double    >(); });
+      Assert::ExpectException<exception>([&]() { boolean.Get<int64_t   >(); });
+      Assert::ExpectException<exception>([&]() { boolean.Get<JsonObject>(); });
+      Assert::ExpectException<exception>([&]() { boolean.Get<JsonArray >(); });
+      Assert::AreEqual(true, boolean.Get<bool>());
+
+      boolean = Json(false);
+      Assert::ExpectException<exception>([&]() { boolean.Get<nullptr_t >(); });
+      Assert::ExpectException<exception>([&]() { boolean.Get<wstring   >(); });
+      Assert::ExpectException<exception>([&]() { boolean.Get<double    >(); });
+      Assert::ExpectException<exception>([&]() { boolean.Get<int64_t   >(); });
+      Assert::ExpectException<exception>([&]() { boolean.Get<JsonObject>(); });
+      Assert::ExpectException<exception>([&]() { boolean.Get<JsonArray >(); });
+      Assert::AreEqual(false, boolean.Get<bool>());
+
+      auto real = Json(13.37);
+      Assert::ExpectException<exception>([&]() { real.Get<nullptr_t >(); });
+      Assert::ExpectException<exception>([&]() { real.Get<wstring   >(); });
+      Assert::ExpectException<exception>([&]() { real.Get<bool      >(); });
+      Assert::ExpectException<exception>([&]() { real.Get<int64_t   >(); });
+      Assert::ExpectException<exception>([&]() { real.Get<JsonObject>(); });
+      Assert::ExpectException<exception>([&]() { real.Get<JsonArray >(); });
+      Assert::AreEqual(13.37, real.Get<double>());
+
+      auto integer = Json(1337);
+      Assert::ExpectException<exception>([&]() { integer.Get<nullptr_t >(); });
+      Assert::ExpectException<exception>([&]() { integer.Get<wstring   >(); });
+      Assert::ExpectException<exception>([&]() { integer.Get<bool      >(); });
+      Assert::ExpectException<exception>([&]() { integer.Get<double    >(); });
+      Assert::ExpectException<exception>([&]() { integer.Get<JsonObject>(); });
+      Assert::ExpectException<exception>([&]() { integer.Get<JsonArray >(); });
+      Assert::AreEqual(1337i64, integer.Get<int64_t>());
+
+      auto object = Json(JsonObject{ { L"Key1"s, 1 }, { L"Key2"s, 2 } });
+      Assert::ExpectException<exception>([&]() { object.Get<nullptr_t >(); });
+      Assert::ExpectException<exception>([&]() { object.Get<wstring   >(); });
+      Assert::ExpectException<exception>([&]() { object.Get<bool      >(); });
+      Assert::ExpectException<exception>([&]() { object.Get<double    >(); });
+      Assert::ExpectException<exception>([&]() { object.Get<int64_t   >(); });
+      Assert::ExpectException<exception>([&]() { object.Get<JsonArray >(); });
+      Assert::AreEqual(JsonObject{ { L"Key1"s, 1 }, { L"Key2"s, 2 } }, object.Get<JsonObject>());
+
+      auto array = Json(JsonArray{ 1, 2, 3 });
+      Assert::ExpectException<exception>([&]() { array.Get<nullptr_t >(); });
+      Assert::ExpectException<exception>([&]() { array.Get<wstring   >(); });
+      Assert::ExpectException<exception>([&]() { array.Get<bool      >(); });
+      Assert::ExpectException<exception>([&]() { array.Get<double    >(); });
+      Assert::ExpectException<exception>([&]() { array.Get<int64_t   >(); });
+      Assert::ExpectException<exception>([&]() { array.Get<JsonObject>(); });
+      Assert::AreEqual(JsonArray{ 1, 2, 3 }, array.Get<JsonArray>());
     }
 
     TEST_METHOD(TestGetIf)

@@ -6,6 +6,7 @@
 #define JSON_API __declspec(dllimport)
 #endif
 
+#include "Helper.h"
 #include "JsonType.h"
 #include "Value.h"
 #include "JsonArray.h"
@@ -139,7 +140,16 @@ namespace Json4CPP
     template<typename T>
     auto const& Get() const
     {
-      return std::get<T>(_value);
+      if (auto result = std::get_if<T>(&_value))
+      {
+        return *result;
+      }
+      else
+      {
+        using namespace std::string_literals;
+        auto message = "Invalid conversion: Cannot convert type '"s + Json4CPP::Detail::WString2String(Json::Stringify(Type())) + "' to '"s + typeid(T).name() + "'!"s;
+        throw std::exception(message.c_str());
+      }
     }
 
     template<typename T>
