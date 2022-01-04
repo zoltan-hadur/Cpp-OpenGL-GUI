@@ -444,7 +444,7 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::String: return Get<wstring>();
+    case JsonType::String: return get<wstring>(_value);
     default:
       auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::String) + L"'!"s);
       throw exception(message.c_str());
@@ -455,7 +455,7 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::String: return move(*GetIf<wstring>());
+    case JsonType::String: return move(*get_if<wstring>(&_value));
     default:
       auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::String) + L"'!"s);
       throw exception(message.c_str());
@@ -467,9 +467,9 @@ namespace Json4CPP
     switch (Type())
     {
     case JsonType::Null   : return false;
-    case JsonType::Boolean: return Get<bool   >();
-    case JsonType::Real   : return Get<double >();
-    case JsonType::Integer: return Get<int64_t>();
+    case JsonType::Boolean: return get<bool   >(_value);
+    case JsonType::Real   : return get<double >(_value);
+    case JsonType::Integer: return get<int64_t>(_value);
     default: return true;
     }
   }
@@ -478,8 +478,8 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return static_cast<char>(Get<double >());
-    case JsonType::Integer: return static_cast<char>(Get<int64_t>());
+    case JsonType::Real   : return static_cast<char>(get<double >(_value));
+    case JsonType::Integer: return static_cast<char>(get<int64_t>(_value));
     default: 
       auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Integer) + L"'!"s);
       throw exception(message.c_str());
@@ -490,8 +490,8 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return static_cast<int8_t>(Get<double >());
-    case JsonType::Integer: return static_cast<int8_t>(Get<int64_t>());
+    case JsonType::Real   : return static_cast<int8_t>(get<double >(_value));
+    case JsonType::Integer: return static_cast<int8_t>(get<int64_t>(_value));
     default:
       auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Integer) + L"'!"s);
       throw exception(message.c_str());
@@ -502,8 +502,8 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return static_cast<uint8_t>(Get<double >());
-    case JsonType::Integer: return static_cast<uint8_t>(Get<int64_t>());
+    case JsonType::Real   : return static_cast<uint8_t>(get<double >(_value));
+    case JsonType::Integer: return static_cast<uint8_t>(get<int64_t>(_value));
     default:
       auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Integer) + L"'!"s);
       throw exception(message.c_str());
@@ -514,8 +514,8 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return static_cast<int16_t>(Get<double >());
-    case JsonType::Integer: return static_cast<int16_t>(Get<int64_t>());
+    case JsonType::Real   : return static_cast<int16_t>(get<double >(_value));
+    case JsonType::Integer: return static_cast<int16_t>(get<int64_t>(_value));
     default:
       auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Integer) + L"'!"s);
       throw exception(message.c_str());
@@ -526,8 +526,8 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return static_cast<uint16_t>(Get<double >());
-    case JsonType::Integer: return static_cast<uint16_t>(Get<int64_t>());
+    case JsonType::Real   : return static_cast<uint16_t>(get<double >(_value));
+    case JsonType::Integer: return static_cast<uint16_t>(get<int64_t>(_value));
     default:
       auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Integer) + L"'!"s);
       throw exception(message.c_str());
@@ -538,8 +538,8 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return static_cast<int32_t>(Get<double >());
-    case JsonType::Integer: return static_cast<int32_t>(Get<int64_t>());
+    case JsonType::Real   : return static_cast<int32_t>(get<double >(_value));
+    case JsonType::Integer: return static_cast<int32_t>(get<int64_t>(_value));
     default:
       auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Integer) + L"'!"s);
       throw exception(message.c_str());
@@ -550,8 +550,8 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return static_cast<uint32_t>(Get<double >());
-    case JsonType::Integer: return static_cast<uint32_t>(Get<int64_t>());
+    case JsonType::Real   : return static_cast<uint32_t>(get<double >(_value));
+    case JsonType::Integer: return static_cast<uint32_t>(get<int64_t>(_value));
     default:
       auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Integer) + L"'!"s);
       throw exception(message.c_str());
@@ -562,8 +562,8 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return static_cast<int64_t>(Get<double >());
-    case JsonType::Integer: return static_cast<int64_t>(Get<int64_t>());
+    case JsonType::Real   : return static_cast<int64_t>(get<double >(_value));
+    case JsonType::Integer: return static_cast<int64_t>(get<int64_t>(_value));
     default:
       auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Integer) + L"'!"s);
       throw exception(message.c_str());
@@ -574,8 +574,8 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return static_cast<uint64_t>(Get<double >());
-    case JsonType::Integer: return static_cast<uint64_t>(Get<int64_t>());
+    case JsonType::Real   : return static_cast<uint64_t>(get<double >(_value));
+    case JsonType::Integer: return static_cast<uint64_t>(get<int64_t>(_value));
     default:
       auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Integer) + L"'!"s);
       throw exception(message.c_str());
@@ -586,8 +586,8 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return static_cast<float>(Get<double >());
-    case JsonType::Integer: return static_cast<float>(Get<int64_t>());
+    case JsonType::Real   : return static_cast<float>(get<double >(_value));
+    case JsonType::Integer: return static_cast<float>(get<int64_t>(_value));
     default:
       auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Real) + L"'!"s);
       throw exception(message.c_str());
@@ -598,8 +598,8 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return static_cast<double>(Get<double >());
-    case JsonType::Integer: return static_cast<double>(Get<int64_t>());
+    case JsonType::Real   : return static_cast<double>(get<double >(_value));
+    case JsonType::Integer: return static_cast<double>(get<int64_t>(_value));
     default:
       auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Real) + L"'!"s);
       throw exception(message.c_str());
@@ -610,7 +610,7 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Object: return Get<JsonObject>();
+    case JsonType::Object: return get<JsonObject>(_value);
     default:
       auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Object) + L"'!"s);
       throw exception(message.c_str());
@@ -621,7 +621,7 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Object: return move(*GetIf<JsonObject>());
+    case JsonType::Object: return move(*get_if<JsonObject>(&_value));
     default:
       auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Object) + L"'!"s);
       throw exception(message.c_str());
@@ -632,7 +632,7 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Array: return Get<JsonArray>();
+    case JsonType::Array: return get<JsonArray>(_value);
     default:
       auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Array) + L"'!"s);
       throw exception(message.c_str());
@@ -643,7 +643,7 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Array: return move(*GetIf<JsonArray>());
+    case JsonType::Array: return move(*get_if<JsonArray>(&_value));
     default:
       auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Array) + L"'!"s);
       throw exception(message.c_str());
