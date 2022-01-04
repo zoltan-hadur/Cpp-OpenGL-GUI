@@ -2862,16 +2862,59 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestStringify)
     {
+      auto json = Json(JsonObject{ { L"Key1"s, 1 }, { L"Key2"s, 2 } });
+      Assert::AreEqual(L"{\"Key1\":1,\"Key2\":2}"s, Json::Stringify(json));
+      Assert::AreEqual<Json>(JsonObject{ { L"Key1"s, 1 }, { L"Key2"s, 2 } }, json);
+      Assert::AreEqual(L"{\"Key1\":1,\"Key2\":2}"s, Json::Stringify(move(json)));
+      Assert::AreEqual<Json>(JsonObject(), json);
+
+      auto builder = JsonBuilder{ { L"Key1"s, 1 }, { L"Key2"s, 2 } };
+      Assert::AreEqual(L"{\"Key1\":1,\"Key2\":2}"s, Json::Stringify(builder));
+      Assert::AreEqual<JsonBuilder>(JsonBuilder{ { L"Key1"s, 1 }, { L"Key2"s, 2 } }, builder);
+      Assert::AreEqual(L"{\"Key1\":1,\"Key2\":2}"s, Json::Stringify(move(builder)));
+      Assert::AreEqual<JsonBuilder>(JsonBuilder{ { L""s, 1 }, { L""s, 2 } }, builder);
+
+      Assert::AreEqual(L"{\"Key1\":1,\"Key2\":2}"s, Json::Stringify(initializer_list<JsonBuilder>{ { L"Key1"s, 1 }, { L"Key2"s, 2 } }));
+
       Assert::AreEqual(L"null"s, Json::Stringify(nullptr));
-      Assert::AreEqual(L"\"asd\""s, Json::Stringify(L"asd"s));
+
+      Assert::AreEqual(L"\"asd\""s, Json::Stringify(L"asd"));
+
+      auto wstr = L"asd"s;
+      Assert::AreEqual(L"\"asd\""s, Json::Stringify(wstr));
+      Assert::AreEqual(L"asd"s, wstr);
+      Assert::AreEqual(L"\"asd\""s, Json::Stringify(move(wstr)));
+      Assert::AreEqual(L""s, wstr);
+
       Assert::AreEqual(L"true"s, Json::Stringify(true));
       Assert::AreEqual(L"false"s, Json::Stringify(false));
+
+      Assert::AreEqual(L"65"s, Json::Stringify('A'));
+      Assert::AreEqual(L"1"s, Json::Stringify(1i8));
+      Assert::AreEqual(L"2"s, Json::Stringify(2ui8));
+      Assert::AreEqual(L"3"s, Json::Stringify(3i16));
+      Assert::AreEqual(L"4"s, Json::Stringify(4ui16));
+      Assert::AreEqual(L"5"s, Json::Stringify(5i32));
+      Assert::AreEqual(L"6"s, Json::Stringify(6ui32));
+      Assert::AreEqual(L"7"s, Json::Stringify(7i64));
+      Assert::AreEqual(L"8"s, Json::Stringify(8ui64));
       Assert::AreEqual(L"13.37"s, Json::Stringify(13.37));
       Assert::AreEqual(L"313.37"s, Json::Stringify(313.37));
       Assert::AreEqual(L"1337"s, Json::Stringify(1337));
       Assert::AreEqual(L"1e+50"s, Json::Stringify(1e50));
-      Assert::AreEqual(L"{\"Key1\":1,\"Key2\":2}"s, Json::Stringify(JsonObject{ { L"Key1"s, 1 }, { L"Key2"s, 2 } }));
-      Assert::AreEqual(L"[1,2,3]"s, Json::Stringify(JsonArray{ 1, 2, 3 }));
+
+      auto object = JsonObject{ { L"Key1"s, 1 }, { L"Key2"s, 2 } };
+      Assert::AreEqual(L"{\"Key1\":1,\"Key2\":2}"s, Json::Stringify(object));
+      Assert::AreEqual(JsonObject{ { L"Key1"s, 1 }, { L"Key2"s, 2 } }, object);
+      Assert::AreEqual(L"{\"Key1\":1,\"Key2\":2}"s, Json::Stringify(move(object)));
+      Assert::AreEqual(JsonObject(), object);
+
+      auto array = JsonArray{ 1, 2, 3 };
+      Assert::AreEqual(L"[1,2,3]"s, Json::Stringify(array));
+      Assert::AreEqual(JsonArray{ 1, 2, 3 }, array);
+      Assert::AreEqual(L"[1,2,3]"s, Json::Stringify(move(array)));
+      Assert::AreEqual(JsonArray(), array);
+
       Assert::AreEqual(L"Complex"s, Json::Stringify(JsonType::Complex));
       Assert::AreEqual(L"PropertyName"s, Json::Stringify(JsonTokenType::PropertyName));
     }

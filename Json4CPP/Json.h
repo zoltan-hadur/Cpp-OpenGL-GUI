@@ -159,11 +159,30 @@ namespace Json4CPP
     }
 
     template<typename T>
-    static std::wstring Stringify(T const& value)
+    static std::wstring Stringify(T && value)
     {
-      if constexpr (std::is_constructible_v<T, Json&>)
+      if constexpr (std::is_same_v<std::decay_t<T>, Json>
+                 || std::is_same_v<std::decay_t<T>, Detail::JsonBuilder>
+                 || std::is_same_v<std::decay_t<T>, std::initializer_list<Detail::JsonBuilder>>
+                 || std::is_same_v<std::decay_t<T>, std::nullptr_t>
+                 || std::is_same_v<std::decay_t<T>, wchar_t const*>
+                 || std::is_same_v<std::decay_t<T>, std::wstring>
+                 || std::is_same_v<std::decay_t<T>, bool>
+                 || std::is_same_v<std::decay_t<T>, char>
+                 || std::is_same_v<std::decay_t<T>, int8_t>
+                 || std::is_same_v<std::decay_t<T>, uint8_t>
+                 || std::is_same_v<std::decay_t<T>, int16_t>
+                 || std::is_same_v<std::decay_t<T>, uint16_t>
+                 || std::is_same_v<std::decay_t<T>, int32_t>
+                 || std::is_same_v<std::decay_t<T>, uint32_t>
+                 || std::is_same_v<std::decay_t<T>, int64_t>
+                 || std::is_same_v<std::decay_t<T>, uint64_t>
+                 || std::is_same_v<std::decay_t<T>, float>
+                 || std::is_same_v<std::decay_t<T>, double>
+                 || std::is_same_v<std::decay_t<T>, JsonObject>
+                 || std::is_same_v<std::decay_t<T>, JsonArray>)
       {
-        return Json(value).Dump();
+        return Json(std::forward<T>(value)).Dump();
       }
       else
       {
