@@ -75,7 +75,7 @@ namespace Json4CPP
     _value = json._value;
   }
 
-  Json::Json(Json && json)
+  Json::Json(Json && json) noexcept
   {
     _value = move(json._value);
   }

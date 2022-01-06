@@ -61,7 +61,7 @@ namespace Json4CPP
   public:
     Json();
     Json(Json const& json);
-    Json(Json     && json);
+    Json(Json     && json) noexcept;
     Json(Detail::JsonBuilder const& value);
     Json(Detail::JsonBuilder     && value);
     Json(std::initializer_list<Detail::JsonBuilder> values);
