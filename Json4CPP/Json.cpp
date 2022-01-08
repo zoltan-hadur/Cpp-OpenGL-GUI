@@ -292,7 +292,7 @@ namespace Json4CPP
     switch (Type())
     {
     case JsonType::Null: _value = JsonObject(); [[fallthrough]];
-    case JsonType::Object: return get<JsonObject>(_value).Insert(pair);
+    case JsonType::Object: return get<JsonObject>(_value).Insert(move(pair));
     default: throw exception("Insert(pair<KEY, Json> && pair) is only defined for JsonObject!");
     }
   }
@@ -312,7 +312,7 @@ namespace Json4CPP
     switch (Type())
     {
     case JsonType::Null: _value = JsonArray(); [[fallthrough]];
-    case JsonType::Array: return get<JsonArray>(_value).Insert(index, value);
+    case JsonType::Array: return get<JsonArray>(_value).Insert(index, move(value));
     default: throw exception("Insert(int64_t index, Json && value) is only defined for JsonArray!");
     }
   }
@@ -670,12 +670,12 @@ namespace Json4CPP
   Json& Json::operator=(Json        const&            value ) { _value =                      value._value ;   return *this; }
   Json& Json::operator=(Json            &&            value ) { _value =                 move(value._value);   return *this; }
   Json& Json::operator=(JsonObject  const&            value ) { _value =                      value ;          return *this; }
-  Json& Json::operator=(JsonObject      &&            value ) { _value =                      value ;          return *this; }
+  Json& Json::operator=(JsonObject      &&            value ) { _value =                 move(value);          return *this; }
   Json& Json::operator=(JsonArray   const&            value ) { _value =                      value ;          return *this; }
-  Json& Json::operator=(JsonArray       &&            value ) { _value =                      value ;          return *this; }
-  Json& Json::operator=(JsonBuilder const&            value ) { _value =            Json(     value )._value ; return *this; }
-  Json& Json::operator=(JsonBuilder     &&            value ) { _value =            Json(move(value))._value ; return *this; }
-  Json& Json::operator=(initializer_list<JsonBuilder> values) { _value =            Json(     values)._value ; return *this; }
+  Json& Json::operator=(JsonArray       &&            value ) { _value =                 move(value);          return *this; }
+  Json& Json::operator=(JsonBuilder const&            value ) { _value =       move(Json(     value )._value); return *this; }
+  Json& Json::operator=(JsonBuilder     &&            value ) { _value =       move(Json(move(value))._value); return *this; }
+  Json& Json::operator=(initializer_list<JsonBuilder> values) { _value =       move(Json(     values)._value); return *this; }
 
   wostream& operator<<(wostream& os, Json const& json)
   {
