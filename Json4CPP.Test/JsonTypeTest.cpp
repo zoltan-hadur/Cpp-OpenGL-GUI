@@ -25,18 +25,20 @@ namespace Json4CPP::Test
         { JsonType::Simple , L"Simple"s  },
         { JsonType::Complex, L"Complex"s },
         { JsonType::Invalid, L"Invalid"s },
+        { JsonType(-1)     , L"Invalid"s },
       };
       for (auto& [input, expected] : pairs)
       {
         wostringstream os;
         os << input;
         Assert::AreEqual(expected, os.str());
+        Assert::AreEqual(expected, (wostringstream() << input).str());
       }
     }
 
     TEST_METHOD(TestOperatorEqual)
     {
-      auto pairs = vector<tuple<JsonType, JsonType, bool>>
+      auto tuples = vector<tuple<JsonType, JsonType, bool>>
       {
         { JsonType::Null   , JsonType::Null   , true  },
         { JsonType::Null   , JsonType::String , false },
@@ -160,7 +162,7 @@ namespace Json4CPP::Test
         { JsonType::Invalid, JsonType::Complex, false },
         { JsonType::Invalid, JsonType::Invalid, true  },
       };
-      for (auto& [left, right, expected] : pairs)
+      for (auto& [left, right, expected] : tuples)
       {
         Assert::AreEqual(expected, left == right);
       }
@@ -168,7 +170,7 @@ namespace Json4CPP::Test
 
     TEST_METHOD(TestOperatorNotEqual)
     {
-      auto pairs = vector<tuple<JsonType, JsonType, bool>>
+      auto tuples = vector<tuple<JsonType, JsonType, bool>>
       {
         { JsonType::Null   , JsonType::Null   , false },
         { JsonType::Null   , JsonType::String , true  },
@@ -292,7 +294,7 @@ namespace Json4CPP::Test
         { JsonType::Invalid, JsonType::Complex, true  },
         { JsonType::Invalid, JsonType::Invalid, false },
       };
-      for (auto& [left, right, expected] : pairs)
+      for (auto& [left, right, expected] : tuples)
       {
         Assert::AreEqual(expected, left != right);
       }

@@ -61,6 +61,8 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -79,6 +81,8 @@
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -95,6 +99,10 @@
     <ClCompile Include="JsonArrayTest.cpp" />
     <ClCompile Include="JsonBuilderTest.cpp" />
     <ClCompile Include="JsonBuilderTypeTest.cpp" />
+    <ClCompile Include="JsonConstIteratorTest.cpp" />
+    <ClCompile Include="JsonIndentCharTest.cpp" />
+    <ClCompile Include="JsonIndentSizeTest.cpp" />
+    <ClCompile Include="JsonIteratorTest.cpp" />
     <ClCompile Include="JsonLinterTest.cpp" />
     <ClCompile Include="JsonTokenTest.cpp" />
     <ClCompile Include="JsonObjectTest.cpp" />

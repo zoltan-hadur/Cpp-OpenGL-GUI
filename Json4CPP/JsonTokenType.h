@@ -11,6 +11,7 @@
 
 namespace Json4CPP::Detail
 {
+  // Available values: Undefined, Null, String, Boolean, Real, Integer, PropertyName, StartObject, EndObject, StartArray, EndArray.
   enum class JSON_API JsonTokenType
   {
     Undefined,
@@ -26,6 +27,6 @@ namespace Json4CPP::Detail
     EndArray,
   };
 
-  JSON_API std::wostream& operator<<(std::wostream& os, JsonTokenType const& token);
-  JSON_API std::wstring Dump(JsonTokenType const& token);
+  JSON_API std::wostream& operator<<(std::wostream& os, JsonTokenType token);
+  JSON_API std::wstring Dump(JsonTokenType token);
 }

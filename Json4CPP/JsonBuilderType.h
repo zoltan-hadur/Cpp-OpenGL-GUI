@@ -8,6 +8,7 @@
 
 namespace Json4CPP::Detail
 {
+  // Available values: Null, String, Boolean, Real, Integer, Number, Object, Array, Pair, Empty, Simple, Complex, Invalid.
   enum class JSON_API JsonBuilderType
   {
     Null    = 1 << 0,                             // Value is std::nullptr.
@@ -25,7 +26,7 @@ namespace Json4CPP::Detail
     Invalid = 1 << 31
   };
 
-  JSON_API std::wostream& operator<<(std::wostream& os, JsonBuilderType const& type);
+  JSON_API std::wostream& operator<<(std::wostream& os, JsonBuilderType type);
 
   JSON_API bool operator==(JsonBuilderType left, JsonBuilderType right);
   JSON_API bool operator!=(JsonBuilderType left, JsonBuilderType right);

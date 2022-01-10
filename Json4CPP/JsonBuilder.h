@@ -33,36 +33,39 @@ namespace Json4CPP
     public:
       JsonBuilder();
 
-      JsonBuilder(VALUE          value);
-      JsonBuilder(std::nullptr_t value);
-      JsonBuilder(const wchar_t* value);
-      JsonBuilder(std::wstring   value);
-      JsonBuilder(bool           value);
-      JsonBuilder(char           value);
-      JsonBuilder(int8_t         value);
-      JsonBuilder(uint8_t        value);
-      JsonBuilder(int16_t        value);
-      JsonBuilder(uint16_t       value);
-      JsonBuilder(int32_t        value);
-      JsonBuilder(uint32_t       value);
-      JsonBuilder(int64_t        value);
-      JsonBuilder(uint64_t       value);
-      JsonBuilder(float          value);
-      JsonBuilder(double         value);
-      JsonBuilder(JsonObject     value);
-      JsonBuilder(JsonArray      value);
-      JsonBuilder(Json           value);
+      JsonBuilder(VALUE        const& value);
+      JsonBuilder(VALUE            && value);
+      JsonBuilder(std::nullptr_t      value);
+      JsonBuilder(wchar_t      const* value);
+      JsonBuilder(std::wstring const& value);
+      JsonBuilder(std::wstring     && value);
+      JsonBuilder(bool                value);
+      JsonBuilder(char                value);
+      JsonBuilder(int8_t              value);
+      JsonBuilder(uint8_t             value);
+      JsonBuilder(int16_t             value);
+      JsonBuilder(uint16_t            value);
+      JsonBuilder(int32_t             value);
+      JsonBuilder(uint32_t            value);
+      JsonBuilder(int64_t             value);
+      JsonBuilder(uint64_t            value);
+      JsonBuilder(float               value);
+      JsonBuilder(double              value);
+      JsonBuilder(JsonObject   const& value);
+      JsonBuilder(JsonObject       && value);
+      JsonBuilder(JsonArray    const& value);
+      JsonBuilder(JsonArray        && value);
+      JsonBuilder(Json         const& value);
+      JsonBuilder(Json             && value);
       JsonBuilder(std::initializer_list<JsonBuilder> values);
-      JsonBuilder(std::vector<JsonBuilder>           values);
-
-      template<typename T>
-      JsonBuilder(T value)
-      {
-        TypeDebug<T>(); // Type T is not supported. See output error C2027 for the exact type.
-      }
+      JsonBuilder(std::vector<JsonBuilder> const&    values);
+      JsonBuilder(std::vector<JsonBuilder>     &&    values);
 
       JsonBuilderType Type() const;
       bool Is(JsonBuilderType type) const;
+
+      JSON_API friend bool operator==(JsonBuilder const& left, JsonBuilder const& right);
+      JSON_API friend bool operator!=(JsonBuilder const& left, JsonBuilder const& right);
     };
   }
 }

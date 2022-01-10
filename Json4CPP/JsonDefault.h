@@ -10,7 +10,8 @@ namespace Json4CPP
 {
   struct JSON_API JsonDefault
   {
-    static uint8_t Indentation;
-    static uint8_t MaxDepth;
+    inline static uint8_t IndentSize = 2;
+    inline static wchar_t IndentChar = L' ';
+    inline static uint8_t MaxDepth = 20;
   };
 }

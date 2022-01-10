@@ -56,7 +56,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;JSON4CPP_EXPORTS;_WINDOWS;_USRDLL;NOMINMAX;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>false</ConformanceMode>
+      <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -74,7 +74,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;JSON4CPP_EXPORTS;_WINDOWS;_USRDLL;NOMINMAX;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>false</ConformanceMode>
+      <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -91,7 +91,11 @@
     <ClInclude Include="JsonArray.h" />
     <ClInclude Include="JsonBuilder.h" />
     <ClInclude Include="JsonBuilderType.h" />
+    <ClInclude Include="JsonConstIterator.h" />
     <ClInclude Include="JsonDefault.h" />
+    <ClInclude Include="JsonIndentChar.h" />
+    <ClInclude Include="JsonIndentSize.h" />
+    <ClInclude Include="JsonIterator.h" />
     <ClInclude Include="JsonLinter.h" />
     <ClInclude Include="JsonObject.h" />
     <ClInclude Include="JsonTokenType.h" />
@@ -107,7 +111,10 @@
     <ClCompile Include="JsonArray.cpp" />
     <ClCompile Include="JsonBuilder.cpp" />
     <ClCompile Include="JsonBuilderType.cpp" />
-    <ClCompile Include="JsonDefault.cpp" />
+    <ClCompile Include="JsonConstIterator.cpp" />
+    <ClCompile Include="JsonIndentChar.cpp" />
+    <ClCompile Include="JsonIndentSize.cpp" />
+    <ClCompile Include="JsonIterator.cpp" />
     <ClCompile Include="JsonLinter.cpp" />
     <ClCompile Include="JsonObject.cpp" />
     <ClCompile Include="JsonTokenType.cpp" />
@@ -124,6 +131,7 @@
   <ItemGroup>
     <Natvis Include="Json.natvis" />
     <Natvis Include="JsonArray.natvis" />
+    <Natvis Include="JsonBuilder.natvis" />
     <Natvis Include="JsonObject.natvis" />
     <Natvis Include="JsonTokenValue.natvis" />
     <Natvis Include="JsonTokenValuePair.natvis" />

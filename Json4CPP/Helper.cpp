@@ -84,6 +84,11 @@ namespace Json4CPP::Detail
     return wstring_convert<codecvt_utf8_utf16<wchar_t>>().to_bytes(string);
   }
 
+  wstring U32String2WString(u32string const& string)
+  {
+    return String2WString(wstring_convert<codecvt_utf8<char32_t>, char32_t>().to_bytes(string));
+  }
+
   pair<uint64_t, uint64_t> GetStreamPosition(wistream& is, wistream::pos_type pos)
   {
     auto state = is.rdstate();

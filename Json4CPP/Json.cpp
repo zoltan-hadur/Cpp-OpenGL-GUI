@@ -5,6 +5,8 @@
 #include "JsonBuilder.h"
 #include "Value.h"
 #include "Helper.h"
+#include "JsonIndentSize.h"
+#include "JsonIndentChar.h"
 
 #include <sstream>
 #include <iostream>
@@ -17,9 +19,9 @@ using namespace Json4CPP::Detail;
 
 namespace Json4CPP
 {
-  Json operator""_json(const wchar_t* value, size_t size)
+  Json operator""_Json(wchar_t const* value, size_t size)
   {
-    return Json::Read(JsonLinter::Read(value));
+    return Json::Parse(value);
   }
 
   Json Json::Read(deque<TOKEN>& tokens)
@@ -33,6 +35,11 @@ namespace Json4CPP
       auto message = WString2String(L"Invalid token: "s + Json::Stringify(token) + L", with invalid data: "s + JsonLinter::Dump(value) + L"!"s);
       throw exception(message.c_str());
     }
+  }
+
+  Json Json::Read(deque<TOKEN> && tokens)
+  {
+    return Read(tokens);
   }
 
   deque<TOKEN>& Json::Write(Json const& json, deque<TOKEN>& tokens)
@@ -53,12 +60,27 @@ namespace Json4CPP
     return tokens;
   }
 
+  deque<TOKEN> && Json::Write(Json const& json, deque<TOKEN> && tokens)
+  {
+    return move(Write(json, tokens));
+  }
+
   Json::Json()
   {
     _value = nullptr;
   }
 
-  Json::Json(JsonBuilder value)
+  Json::Json(Json const& json)
+  {
+    _value = json._value;
+  }
+
+  Json::Json(Json && json) noexcept
+  {
+    _value = move(json._value);
+  }
+
+  Json::Json(JsonBuilder const& value)
   {
     switch (value.Type())
     {
@@ -86,33 +108,59 @@ namespace Json4CPP
     }
   }
 
+  Json::Json(JsonBuilder && value)
+  {
+    switch (value.Type())
+    {
+    case JsonBuilderType::Empty :
+    case JsonBuilderType::Object:
+      _value = JsonObject(move(value));
+      break;
+    case JsonBuilderType::Pair  :
+    case JsonBuilderType::Array :
+      _value = JsonArray (move(value));
+      break;
+    default:
+      visit(Overload{
+        [&](nullptr_t && arg) { _value = move(arg); },
+        [&](wstring   && arg) { _value = move(arg); },
+        [&](bool      && arg) { _value = move(arg); },
+        [&](double    && arg) { _value = move(arg); },
+        [&](int64_t   && arg) { _value = move(arg); },
+        [&](auto && arg)
+        {
+          throw exception("Should not be possible!");
+        }
+      }, move(value._value));
+      break;
+    }
+  }
+
   Json::Json(initializer_list<JsonBuilder> values) : Json(JsonBuilder(values))
   {
 
   }
 
-  Json::Json(Json const& json)
-  {
-    _value = json._value;
-  }
-
-  Json::Json(nullptr_t      value) { _value =         value;  }
-  Json::Json(const wchar_t* value) { _value = wstring(value); }
-  Json::Json(wstring        value) { _value =         value;  }
-  Json::Json(bool           value) { _value =         value;  }
-  Json::Json(char           value) { _value = int64_t(value); }
-  Json::Json(int8_t         value) { _value = int64_t(value); }
-  Json::Json(uint8_t        value) { _value = int64_t(value); }
-  Json::Json(int16_t        value) { _value = int64_t(value); }
-  Json::Json(uint16_t       value) { _value = int64_t(value); }
-  Json::Json(int32_t        value) { _value = int64_t(value); }
-  Json::Json(uint32_t       value) { _value = int64_t(value); }
-  Json::Json(int64_t        value) { _value =         value;  }
-  Json::Json(uint64_t       value) { _value = int64_t(value); }
-  Json::Json(float          value) { _value = double (value); }
-  Json::Json(double         value) { _value =         value;  }
-  Json::Json(JsonObject     value) { _value =         value;  }
-  Json::Json(JsonArray      value) { _value =         value;  }
+  Json::Json(nullptr_t         value) { _value =                      value  ; }
+  Json::Json(wchar_t    const* value) { _value =              wstring(value) ; }
+  Json::Json(wstring    const& value) { _value =                      value  ; }
+  Json::Json(wstring        && value) { _value =                 move(value) ; }
+  Json::Json(bool              value) { _value =                      value  ; }
+  Json::Json(char              value) { _value = static_cast<int64_t>(value) ; }
+  Json::Json(int8_t            value) { _value = static_cast<int64_t>(value) ; }
+  Json::Json(uint8_t           value) { _value = static_cast<int64_t>(value) ; }
+  Json::Json(int16_t           value) { _value = static_cast<int64_t>(value) ; }
+  Json::Json(uint16_t          value) { _value = static_cast<int64_t>(value) ; }
+  Json::Json(int32_t           value) { _value = static_cast<int64_t>(value) ; }
+  Json::Json(uint32_t          value) { _value = static_cast<int64_t>(value) ; }
+  Json::Json(int64_t           value) { _value =                      value  ; }
+  Json::Json(uint64_t          value) { _value = static_cast<int64_t>(value) ; }
+  Json::Json(float             value) { _value = static_cast<double >(value) ; }
+  Json::Json(double            value) { _value =                      value  ; }
+  Json::Json(JsonObject const& value) { _value =                      value  ; }
+  Json::Json(JsonObject     && value) { _value =                 move(value) ; }
+  Json::Json(JsonArray  const& value) { _value =                      value  ; }
+  Json::Json(JsonArray      && value) { _value =                 move(value) ; }
 
   JsonType Json::Type() const
   {
@@ -124,11 +172,26 @@ namespace Json4CPP
     return Type() == type;
   }
 
-  wstring Json::Dump(uint8_t indentation) const
+  wstring Json::Dump(uint8_t indentSize, wchar_t indentChar) const
   {
     wstringstream os;
-    JsonLinter::Write(os, Json::Write(*this, deque<TOKEN>()), indentation);
+    JsonLinter::Write(os, Json::Write(*this, deque<TOKEN>()), indentSize, indentChar);
     return os.str();
+  }
+
+  Json Json::Parse(string const& string)
+  {
+    return Json::Read(JsonLinter::Read(String2WString(string)));
+  }
+
+  Json Json::Parse(wstring const& wstring)
+  {
+    return Json::Read(JsonLinter::Read(wstring));
+  }
+
+  Json Json::Parse(u32string const& u32string)
+  {
+    return Json::Read(JsonLinter::Read(U32String2WString(u32string)));
   }
 
   Json Json::Read(path filePath)
@@ -138,7 +201,22 @@ namespace Json4CPP
 
   void Json::Write(path filePath) const
   {
-    WriteAllText(filePath, Dump(JsonDefault::Indentation));
+    WriteAllText(filePath, Dump(JsonDefault::IndentSize, JsonDefault::IndentChar));
+  }
+
+  void Json::Write(path filePath, uint8_t indentSize) const
+  {
+    WriteAllText(filePath, Dump(indentSize, JsonDefault::IndentChar));
+  }
+
+  void Json::Write(path filePath, wchar_t indentChar) const
+  {
+    WriteAllText(filePath, Dump(JsonDefault::IndentSize, indentChar));
+  }
+
+  void Json::Write(path filePath, uint8_t indentSize, wchar_t indentChar) const
+  {
+    WriteAllText(filePath, Dump(indentSize, indentChar));
   }
 
   int64_t Json::Size() const
@@ -160,6 +238,15 @@ namespace Json4CPP
     }
   }
 
+  void Json::Resize(int64_t size, Json const& json)
+  {
+    switch (Type())
+    {
+    case JsonType::Array: get<JsonArray>(_value).Resize(size, json); break;
+    default: throw exception("Resize(int64_t size, Json const& json) is only defined for JsonArray!");
+    }
+  }
+
   void Json::Clear()
   {
     switch (Type())
@@ -170,42 +257,72 @@ namespace Json4CPP
     }
   }
 
-  void Json::PushBack(Json value)
+  void Json::PushBack(Json const& value)
   {
     switch (Type())
     {
     case JsonType::Null: _value = JsonArray(); [[fallthrough]];
     case JsonType::Array: get<JsonArray>(_value).PushBack(value); break;
-    default: throw exception("PushBack(Json value) is only defined for JsonArray!");
+    default: throw exception("PushBack(Json const& value) is only defined for JsonArray!");
     }
   }
 
-  bool Json::Insert(pair<KEY, Json> pair)
+  void Json::PushBack(Json && value)
+  {
+    switch (Type())
+    {
+    case JsonType::Null: _value = JsonArray(); [[fallthrough]];
+    case JsonType::Array: get<JsonArray>(_value).PushBack(move(value)); break;
+    default: throw exception("PushBack(Json && value) is only defined for JsonArray!");
+    }
+  }
+
+  bool Json::Insert(pair<KEY, Json> const& pair)
   {
     switch (Type())
     {
     case JsonType::Null  : _value = JsonObject(); [[fallthrough]];
     case JsonType::Object: return get<JsonObject>(_value).Insert(pair);
-    default: throw exception("Insert(pair<KEY, Json> pair) is only defined for JsonObject!");
+    default: throw exception("Insert(pair<KEY, Json> const& pair) is only defined for JsonObject!");
     }
   }
 
-  void Json::Insert(int64_t index, Json value)
+  bool Json::Insert(pair<KEY, Json> && pair)
+  {
+    switch (Type())
+    {
+    case JsonType::Null: _value = JsonObject(); [[fallthrough]];
+    case JsonType::Object: return get<JsonObject>(_value).Insert(move(pair));
+    default: throw exception("Insert(pair<KEY, Json> && pair) is only defined for JsonObject!");
+    }
+  }
+
+  void Json::Insert(int64_t index, Json const& value)
   {
     switch (Type())
     {
     case JsonType::Null  : _value = JsonArray(); [[fallthrough]];
     case JsonType::Array: return get<JsonArray>(_value).Insert(index, value);
-    default: throw exception("Insert(Json value, int64_t index) is only defined for JsonArray!");
+    default: throw exception("Insert(int64_t index, Json const& value) is only defined for JsonArray!");
     }
   }
 
-  void Json::Erase(KEY key)
+  void Json::Insert(int64_t index, Json && value)
+  {
+    switch (Type())
+    {
+    case JsonType::Null: _value = JsonArray(); [[fallthrough]];
+    case JsonType::Array: return get<JsonArray>(_value).Insert(index, move(value));
+    default: throw exception("Insert(int64_t index, Json && value) is only defined for JsonArray!");
+    }
+  }
+
+  void Json::Erase(KEY const& key)
   {
     switch (Type())
     {
     case JsonType::Object: get<JsonObject>(_value).Erase(key); break;
-    default: throw exception("Erase(KEY key) is only defined for JsonObject!");
+    default: throw exception("Erase(KEY const& key) is only defined for JsonObject!");
     }
   }
 
@@ -227,31 +344,31 @@ namespace Json4CPP
     }
   }
 
+  vector<reference_wrapper<const KEY>> Json::KeysView() const
+  {
+    switch (Type())
+    {
+    case JsonType::Object: return get<JsonObject>(_value).KeysView();
+    default: throw exception("KeysView() is only defined for JsonObject!");
+    }
+  }
+
   Json& Json::operator[](KEY const& key)
   {
     switch (Type())
     {
     case JsonType::Null  : _value = JsonObject(); [[fallthrough]];
     case JsonType::Object: return get<JsonObject>(_value)[key];
-    default: throw exception("Operator[KEY] is only defined for JsonObject!");
+    default: throw exception("Operator[](KEY const& key) is only defined for JsonObject!");
     }
   }
 
-  Json& Json::operator[](int64_t const& index)
+  Json& Json::operator[](int64_t index)
   {
     switch (Type())
     {
     case JsonType::Array: return get<JsonArray>(_value)[index];
-    default: throw exception("Operator[int] is only defined for JsonArray!");
-    }
-  }
-
-  Json Json::At(KEY const& key) const
-  {
-    switch (Type())
-    {
-    case JsonType::Object: return get<JsonObject>(_value).At(key);
-    default: throw exception("At(KEY key) is only defined for JsonObject!");
+    default: throw exception("Operator[](int64_t index) is only defined for JsonArray!");
     }
   }
 
@@ -260,46 +377,88 @@ namespace Json4CPP
     switch (Type())
     {
     case JsonType::Object: return get<JsonObject>(_value).At(key);
-    default: throw exception("At(KEY key) is only defined for JsonObject!");
+    default: throw exception("At(KEY const& key) is only defined for JsonObject!");
     }
   }
 
-  Json Json::At(int64_t const& index) const
+  Json const& Json::At(KEY const& key) const
+  {
+    switch (Type())
+    {
+    case JsonType::Object: return get<JsonObject>(_value).At(key);
+    default: throw exception("At(KEY const& key) is only defined for JsonObject!");
+    }
+  }
+
+  Json& Json::At(int64_t index)
   {
     switch (Type())
     {
     case JsonType::Array: return get<JsonArray>(_value).At(index);
-    default: throw exception("At(int index) is only defined for JsonArray!");
+    default: throw exception("At(int64_t index) is only defined for JsonArray!");
     }
   }
 
-  Json& Json::At(int64_t const& index)
+  Json const& Json::At(int64_t index) const
   {
     switch (Type())
     {
     case JsonType::Array: return get<JsonArray>(_value).At(index);
-    default: throw exception("At(int index) is only defined for JsonArray!");
+    default: throw exception("At(int64_t index) is only defined for JsonArray!");
     }
+  }
+
+  JsonIterator Json::begin()
+  {
+    return JsonIterator(this, 0);
+  }
+
+  JsonIterator Json::end()
+  {
+    return JsonIterator(this, Size());
+  }
+
+  JsonConstIterator Json::begin() const
+  {
+    return JsonConstIterator(this, 0);
+  }
+
+  JsonConstIterator Json::end() const
+  {
+    return JsonConstIterator(this, Size());
   }
 
 #pragma region Conversion operators
-#pragma warning(push)
-#pragma warning(disable : 4244)
-  Json::operator nullptr_t() const
+  Json::operator std::nullptr_t() const
   {
     switch (Type())
     {
     case JsonType::Null: return nullptr;
-    default: throw exception("Invalid conversion!");
+    default:
+      auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Null) + L"'!"s);
+      throw exception(message.c_str());
     }
   }
 
-  Json::operator wstring() const
+  Json::operator std::wstring const&() const
   {
     switch (Type())
     {
-    case JsonType::String: return Get<wstring>();
-    default: throw exception("Invalid conversion!");
+    case JsonType::String: return get<wstring>(_value);
+    default:
+      auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::String) + L"'!"s);
+      throw exception(message.c_str());
+    }
+  }
+
+  Json::operator std::wstring && ()
+  {
+    switch (Type())
+    {
+    case JsonType::String: return move(*get_if<wstring>(&_value));
+    default:
+      auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::String) + L"'!"s);
+      throw exception(message.c_str());
     }
   }
 
@@ -308,9 +467,9 @@ namespace Json4CPP
     switch (Type())
     {
     case JsonType::Null   : return false;
-    case JsonType::Boolean: return Get<bool   >();
-    case JsonType::Real   : return Get<double >();
-    case JsonType::Integer: return Get<int64_t>();
+    case JsonType::Boolean: return get<bool   >(_value);
+    case JsonType::Real   : return get<double >(_value);
+    case JsonType::Integer: return get<int64_t>(_value);
     default: return true;
     }
   }
@@ -319,9 +478,11 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return Get<double >();
-    case JsonType::Integer: return Get<int64_t>();
-    default: throw exception("Invalid conversion!");
+    case JsonType::Real   : return static_cast<char>(get<double >(_value));
+    case JsonType::Integer: return static_cast<char>(get<int64_t>(_value));
+    default: 
+      auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Integer) + L"'!"s);
+      throw exception(message.c_str());
     }
   }
 
@@ -329,9 +490,11 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return Get<double >();
-    case JsonType::Integer: return Get<int64_t>();
-    default: throw exception("Invalid conversion!");
+    case JsonType::Real   : return static_cast<int8_t>(get<double >(_value));
+    case JsonType::Integer: return static_cast<int8_t>(get<int64_t>(_value));
+    default:
+      auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Integer) + L"'!"s);
+      throw exception(message.c_str());
     }
   }
 
@@ -339,9 +502,11 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return Get<double >();
-    case JsonType::Integer: return Get<int64_t>();
-    default: throw exception("Invalid conversion!");
+    case JsonType::Real   : return static_cast<uint8_t>(get<double >(_value));
+    case JsonType::Integer: return static_cast<uint8_t>(get<int64_t>(_value));
+    default:
+      auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Integer) + L"'!"s);
+      throw exception(message.c_str());
     }
   }
 
@@ -349,9 +514,11 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return Get<double >();
-    case JsonType::Integer: return Get<int64_t>();
-    default: throw exception("Invalid conversion!");
+    case JsonType::Real   : return static_cast<int16_t>(get<double >(_value));
+    case JsonType::Integer: return static_cast<int16_t>(get<int64_t>(_value));
+    default:
+      auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Integer) + L"'!"s);
+      throw exception(message.c_str());
     }
   }
 
@@ -359,9 +526,11 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return Get<double >();
-    case JsonType::Integer: return Get<int64_t>();
-    default: throw exception("Invalid conversion!");
+    case JsonType::Real   : return static_cast<uint16_t>(get<double >(_value));
+    case JsonType::Integer: return static_cast<uint16_t>(get<int64_t>(_value));
+    default:
+      auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Integer) + L"'!"s);
+      throw exception(message.c_str());
     }
   }
 
@@ -369,9 +538,11 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return Get<double >();
-    case JsonType::Integer: return Get<int64_t>();
-    default: throw exception("Invalid conversion!");
+    case JsonType::Real   : return static_cast<int32_t>(get<double >(_value));
+    case JsonType::Integer: return static_cast<int32_t>(get<int64_t>(_value));
+    default:
+      auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Integer) + L"'!"s);
+      throw exception(message.c_str());
     }
   }
 
@@ -379,9 +550,11 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return Get<double >();
-    case JsonType::Integer: return Get<int64_t>();
-    default: throw exception("Invalid conversion!");
+    case JsonType::Real   : return static_cast<uint32_t>(get<double >(_value));
+    case JsonType::Integer: return static_cast<uint32_t>(get<int64_t>(_value));
+    default:
+      auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Integer) + L"'!"s);
+      throw exception(message.c_str());
     }
   }
 
@@ -389,9 +562,11 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return Get<double >();
-    case JsonType::Integer: return Get<int64_t>();
-    default: throw exception("Invalid conversion!");
+    case JsonType::Real   : return static_cast<int64_t>(get<double >(_value));
+    case JsonType::Integer: return static_cast<int64_t>(get<int64_t>(_value));
+    default:
+      auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Integer) + L"'!"s);
+      throw exception(message.c_str());
     }
   }
 
@@ -399,9 +574,11 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return Get<double >();
-    case JsonType::Integer: return Get<int64_t>();
-    default: throw exception("Invalid conversion!");
+    case JsonType::Real   : return static_cast<uint64_t>(get<double >(_value));
+    case JsonType::Integer: return static_cast<uint64_t>(get<int64_t>(_value));
+    default:
+      auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Integer) + L"'!"s);
+      throw exception(message.c_str());
     }
   }
 
@@ -409,9 +586,11 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return Get<double >();
-    case JsonType::Integer: return Get<int64_t>();
-    default: throw exception("Invalid conversion!");
+    case JsonType::Real   : return static_cast<float>(get<double >(_value));
+    case JsonType::Integer: return static_cast<float>(get<int64_t>(_value));
+    default:
+      auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Real) + L"'!"s);
+      throw exception(message.c_str());
     }
   }
 
@@ -419,56 +598,94 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return Get<double >();
-    case JsonType::Integer: return Get<int64_t>();
-    default: throw exception("Invalid conversion!");
+    case JsonType::Real   : return static_cast<double>(get<double >(_value));
+    case JsonType::Integer: return static_cast<double>(get<int64_t>(_value));
+    default:
+      auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Real) + L"'!"s);
+      throw exception(message.c_str());
     }
   }
 
-  Json::operator JsonObject() const
+  Json::operator JsonObject const&() const
   {
     switch (Type())
     {
-    case JsonType::Object: return Get<JsonObject>();
-    default: throw exception("Invalid conversion!");
+    case JsonType::Object: return get<JsonObject>(_value);
+    default:
+      auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Object) + L"'!"s);
+      throw exception(message.c_str());
     }
   }
 
-  Json::operator JsonArray() const
+  Json::operator JsonObject &&()
   {
     switch (Type())
     {
-    case JsonType::Array: return Get<JsonArray>();
-    default: throw exception("Invalid conversion!");
+    case JsonType::Object: return move(*get_if<JsonObject>(&_value));
+    default:
+      auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Object) + L"'!"s);
+      throw exception(message.c_str());
     }
   }
-#pragma warning(pop)
+
+  Json::operator JsonArray const&() const
+  {
+    switch (Type())
+    {
+    case JsonType::Array: return get<JsonArray>(_value);
+    default:
+      auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Array) + L"'!"s);
+      throw exception(message.c_str());
+    }
+  }
+
+  Json::operator JsonArray &&()
+  {
+    switch (Type())
+    {
+    case JsonType::Array: return move(*get_if<JsonArray>(&_value));
+    default:
+      auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Array) + L"'!"s);
+      throw exception(message.c_str());
+    }
+  }
 #pragma endregion
 
-  Json& Json::operator=(nullptr_t                     value ) { _value =         value;          return *this; }
-  Json& Json::operator=(const wchar_t*                value ) { _value = wstring(value);         return *this; }
-  Json& Json::operator=(wstring                       value ) { _value =         value;          return *this; }
-  Json& Json::operator=(bool                          value ) { _value =         value;          return *this; }
-  Json& Json::operator=(char                          value ) { _value = int64_t(value);         return *this; }
-  Json& Json::operator=(int8_t                        value ) { _value = int64_t(value);         return *this; }
-  Json& Json::operator=(uint8_t                       value ) { _value = int64_t(value);         return *this; }
-  Json& Json::operator=(int16_t                       value ) { _value = int64_t(value);         return *this; }
-  Json& Json::operator=(uint16_t                      value ) { _value = int64_t(value);         return *this; }
-  Json& Json::operator=(int32_t                       value ) { _value = int64_t(value);         return *this; }
-  Json& Json::operator=(uint32_t                      value ) { _value = int64_t(value);         return *this; }
-  Json& Json::operator=(int64_t                       value ) { _value =         value;          return *this; }
-  Json& Json::operator=(uint64_t                      value ) { _value = int64_t(value);         return *this; }
-  Json& Json::operator=(float                         value ) { _value = double (value);         return *this; }
-  Json& Json::operator=(double                        value ) { _value =         value;          return *this; }
-  Json& Json::operator=(Json                          value ) { _value =         value._value;   return *this; }
-  Json& Json::operator=(JsonObject                    value ) { _value =         value;          return *this; }
-  Json& Json::operator=(JsonArray                     value ) { _value =         value;          return *this; }
-  Json& Json::operator=(JsonBuilder                   value ) { _value = Json   (value )._value; return *this; }
-  Json& Json::operator=(initializer_list<JsonBuilder> values) { _value = Json   (values)._value; return *this; }
+  Json& Json::operator=(nullptr_t                     value ) { _value =                      value ;          return *this; }
+  Json& Json::operator=(wchar_t const*                value ) { _value =              wstring(value);          return *this; }
+  Json& Json::operator=(wstring     const&            value ) { _value =                      value ;          return *this; }
+  Json& Json::operator=(wstring         &&            value ) { _value =                 move(value);          return *this; }
+  Json& Json::operator=(bool                          value ) { _value =                      value ;          return *this; }
+  Json& Json::operator=(char                          value ) { _value = static_cast<int64_t>(value);          return *this; }
+  Json& Json::operator=(int8_t                        value ) { _value = static_cast<int64_t>(value);          return *this; }
+  Json& Json::operator=(uint8_t                       value ) { _value = static_cast<int64_t>(value);          return *this; }
+  Json& Json::operator=(int16_t                       value ) { _value = static_cast<int64_t>(value);          return *this; }
+  Json& Json::operator=(uint16_t                      value ) { _value = static_cast<int64_t>(value);          return *this; }
+  Json& Json::operator=(int32_t                       value ) { _value = static_cast<int64_t>(value);          return *this; }
+  Json& Json::operator=(uint32_t                      value ) { _value = static_cast<int64_t>(value);          return *this; }
+  Json& Json::operator=(int64_t                       value ) { _value =                      value ;          return *this; }
+  Json& Json::operator=(uint64_t                      value ) { _value = static_cast<int64_t>(value);          return *this; }
+  Json& Json::operator=(float                         value ) { _value = static_cast<double> (value);          return *this; }
+  Json& Json::operator=(double                        value ) { _value =                      value ;          return *this; }
+  Json& Json::operator=(Json        const&            value ) { _value =                      value._value ;   return *this; }
+  Json& Json::operator=(Json            &&            value ) { _value =                 move(value._value);   return *this; }
+  Json& Json::operator=(JsonObject  const&            value ) { _value =                      value ;          return *this; }
+  Json& Json::operator=(JsonObject      &&            value ) { _value =                 move(value);          return *this; }
+  Json& Json::operator=(JsonArray   const&            value ) { _value =                      value ;          return *this; }
+  Json& Json::operator=(JsonArray       &&            value ) { _value =                 move(value);          return *this; }
+  Json& Json::operator=(JsonBuilder const&            value ) { _value =       move(Json(     value )._value); return *this; }
+  Json& Json::operator=(JsonBuilder     &&            value ) { _value =       move(Json(move(value))._value); return *this; }
+  Json& Json::operator=(initializer_list<JsonBuilder> values) { _value =       move(Json(     values)._value); return *this; }
 
   wostream& operator<<(wostream& os, Json const& json)
   {
-    return JsonLinter::Write(os, Json::Write(json, deque<TOKEN>()), JsonDefault::Indentation);
+    auto indentSizeActive = JsonIndentSize::IsActive(os);
+    auto indentCharActive = JsonIndentChar::IsActive(os);
+    JsonLinter::Write(os, Json::Write(json, deque<TOKEN>()), indentSizeActive ? JsonIndentSize::GetSize(os) : JsonDefault::IndentSize,
+                                                             indentCharActive ? JsonIndentChar::GetChar(os) : JsonDefault::IndentChar);
+    if (indentSizeActive) JsonIndentSize::ResetState(os);
+    if (indentCharActive) JsonIndentChar::ResetState(os);
+    return os;
   }
 
   wistream& operator>>(wistream&is, Json& json)

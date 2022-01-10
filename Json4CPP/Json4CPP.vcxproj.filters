@@ -60,6 +60,18 @@
     <ClInclude Include="JsonTokenType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="JsonIndentSize.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="JsonIndentChar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="JsonIterator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="JsonConstIterator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -80,9 +92,6 @@
     <ClCompile Include="JsonBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="JsonDefault.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="JsonObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -99,6 +108,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="JsonTokenType.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="JsonIndentSize.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="JsonIndentChar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="JsonIterator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="JsonConstIterator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -122,6 +143,9 @@
       <Filter>Natvis</Filter>
     </Natvis>
     <Natvis Include="JsonTokenValue.natvis">
+      <Filter>Natvis</Filter>
+    </Natvis>
+    <Natvis Include="JsonBuilder.natvis">
       <Filter>Natvis</Filter>
     </Natvis>
   </ItemGroup>

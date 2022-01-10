@@ -14,6 +14,7 @@ namespace Json4CPP::Test
     {
       auto pairs = vector<pair<JsonTokenType, wstring>>
       {
+        { JsonTokenType::Undefined   , L"Undefined"s    },
         { JsonTokenType::Null        , L"Null"s         },
         { JsonTokenType::String      , L"String"s       },
         { JsonTokenType::Boolean     , L"Boolean"s      },
@@ -24,12 +25,14 @@ namespace Json4CPP::Test
         { JsonTokenType::EndObject   , L"EndObject"s    },
         { JsonTokenType::StartArray  , L"StartArray"s   },
         { JsonTokenType::EndArray    , L"EndArray"s     },
+        { JsonTokenType(-1)          , L"Undefined"s    },
       };
       for (auto& [input, expected] : pairs)
       {
         wostringstream os;
         os << input;
         Assert::AreEqual(expected, os.str());
+        Assert::AreEqual(expected, (wostringstream() << input).str());
       }
     }
 

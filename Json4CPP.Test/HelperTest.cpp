@@ -121,6 +121,21 @@ namespace Json4CPP::Test
       Assert::AreEqual(expected, actual);
     }
 
+    TEST_METHOD(TestU32String2WString)
+    {
+      auto str = string{ (char)0xF0, (char)0xA4, (char)0xAD, (char)0xA2 };
+      auto str2 = u8"𤭢"s;
+      auto wstr = wstring{ 0xD852, 0xDF62 };
+      auto wstr2 = L"𤭢"s;
+      u32string ustr = u32string{ 0x00024B62 };
+      auto ustr2 = U"𤭢"s;
+      Assert::AreEqual(str2, str);
+      Assert::AreEqual(wstr2, wstr);
+      Assert::AreEqual(ustr2, ustr);
+      Assert::AreEqual(wstr, String2WString(str));
+      Assert::AreEqual(wstr, U32String2WString(ustr));
+    }
+
     TEST_METHOD(TestGetStreamPosition)
     {
       auto ss = wstringstream(L"abc\r\n"

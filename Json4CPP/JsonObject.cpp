@@ -6,6 +6,8 @@
 #include "Value.h"
 #include "Helper.h"
 #include "JsonLinter.h"
+#include "JsonIndentSize.h"
+#include "JsonIndentChar.h"
 
 using namespace std;
 using namespace Json4CPP::Detail;
@@ -23,20 +25,22 @@ namespace Json4CPP
     auto object = JsonObject();
     auto property = L""s;
     auto counter = 0;
-    auto& [token, value] = tokens.front();
-    if (token == JsonTokenType::StartObject)
     {
-      tokens.pop_front();
-    }
-    else
-    {
-      auto message = WString2String(L"Expected token: "s + Json::Stringify(JsonTokenType::StartObject) + L"!"s);
-      throw exception(message.c_str());
+      auto& [token, value] = tokens.front();
+      if (token == JsonTokenType::StartObject)
+      {
+        tokens.pop_front();
+      }
+      else
+      {
+        auto message = WString2String(L"Expected token: "s + Json::Stringify(JsonTokenType::StartObject) + L"!"s);
+        throw exception(message.c_str());
+      }
     }
 
     while (tokens.size())
     {
-      tie(token, value) = tokens.front();
+      auto& [token, value] = tokens.front();
       // Property then value then property then value etc...
       if (counter++ % 2 == 0 && token != JsonTokenType::PropertyName && token != JsonTokenType::EndObject)
       {
@@ -45,15 +49,15 @@ namespace Json4CPP
       }
       switch (token)
       {
-      case JsonTokenType::PropertyName: property = get<wstring>(value);                           tokens.pop_front(); break;
-      case JsonTokenType::Null        : object.Insert({ property, Json(get<nullptr_t>(value)) }); tokens.pop_front(); break;
-      case JsonTokenType::String      : object.Insert({ property, Json(get<wstring  >(value)) }); tokens.pop_front(); break;
-      case JsonTokenType::Boolean     : object.Insert({ property, Json(get<bool     >(value)) }); tokens.pop_front(); break;
-      case JsonTokenType::Real        : object.Insert({ property, Json(get<double   >(value)) }); tokens.pop_front(); break;
-      case JsonTokenType::Integer     : object.Insert({ property, Json(get<int64_t  >(value)) }); tokens.pop_front(); break;
-      case JsonTokenType::StartObject : object.Insert({ property, JsonObject::Read   (tokens) });                     break;
-      case JsonTokenType::StartArray  : object.Insert({ property, JsonArray::Read    (tokens) });                     break;
-      case JsonTokenType::EndObject   : tokens.pop_front(); return object;
+      case JsonTokenType::PropertyName:                      property =      move(get<wstring  >(value))    ; tokens.pop_front(); break;
+      case JsonTokenType::Null        : object.Insert({ move(property),           get<nullptr_t>(value)   }); tokens.pop_front(); break;
+      case JsonTokenType::String      : object.Insert({ move(property),      move(get<wstring  >(value))  }); tokens.pop_front(); break;
+      case JsonTokenType::Boolean     : object.Insert({ move(property),           get<bool     >(value)   }); tokens.pop_front(); break;
+      case JsonTokenType::Real        : object.Insert({ move(property),           get<double   >(value)   }); tokens.pop_front(); break;
+      case JsonTokenType::Integer     : object.Insert({ move(property),           get<int64_t  >(value)   }); tokens.pop_front(); break;
+      case JsonTokenType::StartObject : object.Insert({ move(property), JsonObject::Read(tokens)          });                     break;
+      case JsonTokenType::StartArray  : object.Insert({ move(property), JsonArray ::Read(tokens)          });                     break;
+      case JsonTokenType::EndObject   :                                                                       tokens.pop_front(); return object;
       default:
       {
         auto message = WString2String(L"Invalid token: "s + Json::Stringify(token) + L"!"s);
@@ -63,6 +67,11 @@ namespace Json4CPP
     }
     auto message = WString2String(L"Expected token: "s + Json::Stringify(JsonTokenType::EndObject) + L"!"s);
     throw exception(message.c_str());
+  }
+
+  JsonObject JsonObject::Read(deque<TOKEN> && tokens)
+  {
+    return Read(tokens);
   }
 
   deque<TOKEN>& JsonObject::Write(JsonObject const& object, deque<TOKEN>& tokens)
@@ -77,7 +86,22 @@ namespace Json4CPP
     return tokens;
   }
 
-  JsonObject::JsonObject(JsonBuilder builder)
+  deque<TOKEN> && JsonObject::Write(JsonObject const& object, deque<TOKEN> && tokens)
+  {
+    return move(Write(object, tokens));
+  }
+
+  JsonObject::JsonObject(Json const& json)
+  {
+    *this = json.operator const Json4CPP::JsonObject & ();
+  }
+
+  JsonObject::JsonObject(Json && json)
+  {
+    *this = move(json.operator Json4CPP::JsonObject && ());
+  }
+
+  JsonObject::JsonObject(JsonBuilder const& builder)
   {
     if (auto object = get_if<JsonObject>(&builder._value))
     {
@@ -87,20 +111,21 @@ namespace Json4CPP
     {
       for (auto& builder : *builders)
       {
-        if (auto pair = get_if<vector<JsonBuilder>>(&builder._value))
+        if (builder.Is(JsonBuilderType::Pair))
         {
+          auto pair = get_if<vector<JsonBuilder>>(&builder._value);
           auto key = get<KEY>((*pair)[0]._value);
           auto value = Json((*pair)[1]);
-          Insert({ key, value });
+          Insert({ move(key), move(value) });
         }
         else
         {
           VALUE value;
           visit(Overload{
             [&](auto const& arg) { value = arg; },
-            [&](vector<JsonBuilder> const& arg) { },  // Empty as it is impossible
+            [&](vector<JsonBuilder> const& arg) { value = JsonArray(arg); },
           }, builder._value);
-          auto message = WString2String(L"JsonObject(JsonBuilder builder) is not defined for type "s + Json::Stringify(builder.Type()) + L"!"s +
+          auto message = WString2String(L"JsonObject(JsonBuilder const& builder) is not defined for type "s + Json::Stringify(builder.Type()) + L"!"s +
                                         L" Error at: "s + Json::Stringify(Json(value)) + L"."s);
           throw exception(message.c_str());
         }
@@ -108,7 +133,44 @@ namespace Json4CPP
     }
     else
     {
-      auto message = WString2String(L"JsonObject(JsonBuilder builder) is not defined for type "s + Json::Stringify(builder.Type()) + L"!"s);
+      auto message = WString2String(L"JsonObject(JsonBuilder const& builder) is not defined for type "s + Json::Stringify(builder.Type()) + L"!"s);
+      throw exception(message.c_str());
+    }
+  }
+
+  JsonObject::JsonObject(JsonBuilder && builder)
+  {
+    if (auto object = get_if<JsonObject>(&builder._value))
+    {
+      *this = move(*object);
+    }
+    else if (auto builders = get_if<vector<JsonBuilder>>(&builder._value))
+    {
+      for (auto& builder : *builders)
+      {
+        if (builder.Is(JsonBuilderType::Pair))
+        {
+          auto pair = get_if<vector<JsonBuilder>>(&builder._value);
+          auto key = get<KEY>(move((*pair)[0]._value));
+          auto value = Json(move((*pair)[1]));
+          Insert({ move(key), move(value) });
+        }
+        else
+        {
+          VALUE value;
+          visit(Overload{
+            [&](auto const& arg) { value = move(arg); },
+            [&](vector<JsonBuilder> const& arg) { value = JsonArray(move(arg)); },
+          }, builder._value);
+          auto message = WString2String(L"JsonObject(JsonBuilder && builder) is not defined for type "s + Json::Stringify(builder.Type()) + L"!"s +
+                                        L" Error at: "s + Json::Stringify(Json(value)) + L"."s);
+          throw exception(message.c_str());
+        }
+      }
+    }
+    else
+    {
+      auto message = WString2String(L"JsonObject(JsonBuilder && builder) is not defined for type "s + Json::Stringify(builder.Type()) + L"!"s);
       throw exception(message.c_str());
     }
   }
@@ -118,16 +180,10 @@ namespace Json4CPP
 
   }
 
-  JsonObject::JsonObject(JsonObject const& object)
-  {
-    _pairs = object._pairs;
-    _indexes = object._indexes;
-  }
-
-  wstring JsonObject::Dump(uint8_t indentation) const
+  wstring JsonObject::Dump(uint8_t indentSize, wchar_t indentChar) const
   {
     wstringstream os;
-    JsonLinter::Write(os, JsonObject::Write(*this, deque<TOKEN>()), indentation);
+    JsonLinter::Write(os, JsonObject::Write(*this, deque<TOKEN>()), indentSize, indentChar);
     return os.str();
   }
 
@@ -142,15 +198,23 @@ namespace Json4CPP
     _indexes.clear();
   }
 
-  bool JsonObject::Insert(pair<KEY, Json> pair)
+  bool JsonObject::Insert(pair<KEY, Json> const& pair)
   {
     if (_indexes.count(pair.first)) return false;
+    _indexes[pair.first] = _pairs.size();
     _pairs.push_back(pair);
-    _indexes[pair.first] = _pairs.size() - 1;
     return true;
   }
 
-  void JsonObject::Erase(KEY key)
+  bool JsonObject::Insert(pair<KEY, Json> && pair)
+  {
+    if (_indexes.count(pair.first)) return false;
+    _indexes[pair.first] = _pairs.size();
+    _pairs.push_back(move(pair));
+    return true;
+  }
+
+  void JsonObject::Erase(KEY const& key)
   {
     if (!_indexes.count(key)) return;
     _pairs.erase(remove_if(_pairs.begin(), _pairs.end(), [&](pair<KEY, Json> const& pair) { return pair.first == key; }), _pairs.end());
@@ -168,20 +232,27 @@ namespace Json4CPP
     return keys;
   }
 
+  vector<reference_wrapper<const KEY>> JsonObject::KeysView() const
+  {
+    vector<reference_wrapper<const KEY>> keys;
+    transform(_pairs.begin(), _pairs.end(), back_inserter(keys), [](pair<KEY, Json> const& pair) { return ref(pair.first); });
+    return keys;
+  }
+
   Json& JsonObject::operator[](KEY const& key)
   {
     if (!_indexes.count(key)) Insert({ key, Json{} });
-    return _pairs[_indexes.at(key)].second;
-  }
-
-  Json JsonObject::At(KEY const& key) const
-  {
-    return _pairs[_indexes.at(key)].second;
+    return _pairs[_indexes[key]].second;
   }
 
   Json& JsonObject::At(KEY const& key)
   {
-    return _pairs[_indexes.at(key)].second;
+    return _pairs.at(_indexes.at(key)).second;
+  }
+
+  Json const& JsonObject::At(KEY const& key) const
+  {
+    return _pairs.at(_indexes.at(key)).second;
   }
 
   vector<pair<KEY, Json>>::iterator JsonObject::begin()
@@ -206,7 +277,13 @@ namespace Json4CPP
 
   wostream& operator<<(wostream& os, JsonObject const& object)
   {
-    return JsonLinter::Write(os, JsonObject::Write(object, deque<TOKEN>()), JsonDefault::Indentation);
+    auto isIndentSizeActive = JsonIndentSize::IsActive(os);
+    auto isIndentCharActive = JsonIndentChar::IsActive(os);
+    JsonLinter::Write(os, JsonObject::Write(object, deque<TOKEN>()), isIndentSizeActive ? JsonIndentSize::GetSize(os) : JsonDefault::IndentSize,
+                                                                     isIndentCharActive ? JsonIndentChar::GetChar(os) : JsonDefault::IndentChar);
+    if (isIndentSizeActive) JsonIndentSize::ResetState(os);
+    if (isIndentCharActive) JsonIndentChar::ResetState(os);
+    return os;
   }
 
   wistream& operator>>(wistream& is, JsonObject& object)
