@@ -58,7 +58,7 @@ namespace Json4CPP
     bool operator>=(JsonConstIterator const& it) const;
 
     difference_type Size() const;
-    KEY Key() const;
+    std::wstring Key() const;
     Json Value() const;
   };
 }

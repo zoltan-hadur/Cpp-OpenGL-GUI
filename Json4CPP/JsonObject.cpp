@@ -114,7 +114,7 @@ namespace Json4CPP
         if (builder.Is(JsonBuilderType::Pair))
         {
           auto pair = get_if<vector<JsonBuilder>>(&builder._value);
-          auto key = get<KEY>((*pair)[0]._value);
+          auto key = get<wstring>((*pair)[0]._value);
           auto value = Json((*pair)[1]);
           Insert({ move(key), move(value) });
         }
@@ -151,7 +151,7 @@ namespace Json4CPP
         if (builder.Is(JsonBuilderType::Pair))
         {
           auto pair = get_if<vector<JsonBuilder>>(&builder._value);
-          auto key = get<KEY>(move((*pair)[0]._value));
+          auto key = get<wstring>(move((*pair)[0]._value));
           auto value = Json(move((*pair)[1]));
           Insert({ move(key), move(value) });
         }
@@ -198,7 +198,7 @@ namespace Json4CPP
     _indexes.clear();
   }
 
-  bool JsonObject::Insert(pair<KEY, Json> const& pair)
+  bool JsonObject::Insert(pair<wstring, Json> const& pair)
   {
     if (_indexes.count(pair.first)) return false;
     _indexes[pair.first] = _pairs.size();
@@ -206,7 +206,7 @@ namespace Json4CPP
     return true;
   }
 
-  bool JsonObject::Insert(pair<KEY, Json> && pair)
+  bool JsonObject::Insert(pair<wstring, Json> && pair)
   {
     if (_indexes.count(pair.first)) return false;
     _indexes[pair.first] = _pairs.size();
@@ -214,10 +214,10 @@ namespace Json4CPP
     return true;
   }
 
-  void JsonObject::Erase(KEY const& key)
+  void JsonObject::Erase(wstring const& key)
   {
     if (!_indexes.count(key)) return;
-    _pairs.erase(remove_if(_pairs.begin(), _pairs.end(), [&](pair<KEY, Json> const& pair) { return pair.first == key; }), _pairs.end());
+    _pairs.erase(remove_if(_pairs.begin(), _pairs.end(), [&](pair<wstring, Json> const& pair) { return pair.first == key; }), _pairs.end());
     _indexes.clear();
     for (int i = 0; i < _pairs.size(); ++i)
     {
@@ -225,52 +225,52 @@ namespace Json4CPP
     }
   }
 
-  vector<KEY> JsonObject::Keys() const
+  vector<wstring> JsonObject::Keys() const
   {
-    vector<KEY> keys;
-    transform(_pairs.begin(), _pairs.end(), back_inserter(keys), [](pair<KEY, Json> const& pair) { return pair.first; });
+    vector<wstring> keys;
+    transform(_pairs.begin(), _pairs.end(), back_inserter(keys), [](pair<wstring, Json> const& pair) { return pair.first; });
     return keys;
   }
 
-  vector<reference_wrapper<const KEY>> JsonObject::KeysView() const
+  vector<reference_wrapper<const wstring>> JsonObject::KeysView() const
   {
-    vector<reference_wrapper<const KEY>> keys;
-    transform(_pairs.begin(), _pairs.end(), back_inserter(keys), [](pair<KEY, Json> const& pair) { return ref(pair.first); });
+    vector<reference_wrapper<const wstring>> keys;
+    transform(_pairs.begin(), _pairs.end(), back_inserter(keys), [](pair<wstring, Json> const& pair) { return ref(pair.first); });
     return keys;
   }
 
-  Json& JsonObject::operator[](KEY const& key)
+  Json& JsonObject::operator[](wstring const& key)
   {
     if (!_indexes.count(key)) Insert({ key, Json{} });
     return _pairs[_indexes[key]].second;
   }
 
-  Json& JsonObject::At(KEY const& key)
+  Json& JsonObject::At(wstring const& key)
   {
     return _pairs.at(_indexes.at(key)).second;
   }
 
-  Json const& JsonObject::At(KEY const& key) const
+  Json const& JsonObject::At(wstring const& key) const
   {
     return _pairs.at(_indexes.at(key)).second;
   }
 
-  vector<pair<KEY, Json>>::iterator JsonObject::begin()
+  vector<pair<wstring, Json>>::iterator JsonObject::begin()
   {
     return _pairs.begin();
   }
 
-  vector<pair<KEY, Json>>::iterator JsonObject::end()
+  vector<pair<wstring, Json>>::iterator JsonObject::end()
   {
     return _pairs.end();
   }
 
-  vector<pair<KEY, Json>>::const_iterator JsonObject::begin() const
+  vector<pair<wstring, Json>>::const_iterator JsonObject::begin() const
   {
     return _pairs.begin();
   }
 
-  vector<pair<KEY, Json>>::const_iterator JsonObject::end() const
+  vector<pair<wstring, Json>>::const_iterator JsonObject::end() const
   {
     return _pairs.end();
   }

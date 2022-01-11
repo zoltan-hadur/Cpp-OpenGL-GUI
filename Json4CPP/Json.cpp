@@ -277,23 +277,23 @@ namespace Json4CPP
     }
   }
 
-  bool Json::Insert(pair<KEY, Json> const& pair)
+  bool Json::Insert(pair<wstring, Json> const& pair)
   {
     switch (Type())
     {
     case JsonType::Null  : _value = JsonObject(); [[fallthrough]];
     case JsonType::Object: return get<JsonObject>(_value).Insert(pair);
-    default: throw exception("Insert(pair<KEY, Json> const& pair) is only defined for JsonObject!");
+    default: throw exception("Insert(pair<wstring, Json> const& pair) is only defined for JsonObject!");
     }
   }
 
-  bool Json::Insert(pair<KEY, Json> && pair)
+  bool Json::Insert(pair<wstring, Json> && pair)
   {
     switch (Type())
     {
     case JsonType::Null: _value = JsonObject(); [[fallthrough]];
     case JsonType::Object: return get<JsonObject>(_value).Insert(move(pair));
-    default: throw exception("Insert(pair<KEY, Json> && pair) is only defined for JsonObject!");
+    default: throw exception("Insert(pair<wstring, Json> && pair) is only defined for JsonObject!");
     }
   }
 
@@ -317,12 +317,12 @@ namespace Json4CPP
     }
   }
 
-  void Json::Erase(KEY const& key)
+  void Json::Erase(wstring const& key)
   {
     switch (Type())
     {
     case JsonType::Object: get<JsonObject>(_value).Erase(key); break;
-    default: throw exception("Erase(KEY const& key) is only defined for JsonObject!");
+    default: throw exception("Erase(wstring const& key) is only defined for JsonObject!");
     }
   }
 
@@ -335,7 +335,7 @@ namespace Json4CPP
     }
   }
 
-  vector<KEY> Json::Keys() const
+  vector<wstring> Json::Keys() const
   {
     switch (Type())
     {
@@ -344,7 +344,7 @@ namespace Json4CPP
     }
   }
 
-  vector<reference_wrapper<const KEY>> Json::KeysView() const
+  vector<reference_wrapper<const wstring>> Json::KeysView() const
   {
     switch (Type())
     {
@@ -353,13 +353,13 @@ namespace Json4CPP
     }
   }
 
-  Json& Json::operator[](KEY const& key)
+  Json& Json::operator[](wstring const& key)
   {
     switch (Type())
     {
     case JsonType::Null  : _value = JsonObject(); [[fallthrough]];
     case JsonType::Object: return get<JsonObject>(_value)[key];
-    default: throw exception("Operator[](KEY const& key) is only defined for JsonObject!");
+    default: throw exception("Operator[](wstring const& key) is only defined for JsonObject!");
     }
   }
 
@@ -372,21 +372,21 @@ namespace Json4CPP
     }
   }
 
-  Json& Json::At(KEY const& key)
+  Json& Json::At(wstring const& key)
   {
     switch (Type())
     {
     case JsonType::Object: return get<JsonObject>(_value).At(key);
-    default: throw exception("At(KEY const& key) is only defined for JsonObject!");
+    default: throw exception("At(wstring const& key) is only defined for JsonObject!");
     }
   }
 
-  Json const& Json::At(KEY const& key) const
+  Json const& Json::At(wstring const& key) const
   {
     switch (Type())
     {
     case JsonType::Object: return get<JsonObject>(_value).At(key);
-    default: throw exception("At(KEY const& key) is only defined for JsonObject!");
+    default: throw exception("At(wstring const& key) is only defined for JsonObject!");
     }
   }
 

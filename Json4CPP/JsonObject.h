@@ -33,9 +33,9 @@ namespace Json4CPP
     friend class JsonIterator;
     friend class JsonConstIterator;
 #pragma warning(suppress: 4251)
-    std::vector<std::pair<KEY, Json>> _pairs;
+    std::vector<std::pair<std::wstring, Json>> _pairs;
 #pragma warning(suppress: 4251)
-    std::unordered_map<KEY, int64_t> _indexes;
+    std::unordered_map<std::wstring, int64_t> _indexes;
 
     static JsonObject                   Read (                          std::deque<Detail::TOKEN>  & tokens);
     static JsonObject                   Read (                          std::deque<Detail::TOKEN> && tokens);
@@ -53,19 +53,19 @@ namespace Json4CPP
 
     int64_t Size() const;
     void Clear();
-    bool Insert(std::pair<KEY, Json> const& pair);
-    bool Insert(std::pair<KEY, Json>     && pair);
-    void Erase(KEY const& key);
-    std::vector<KEY> Keys() const;
-    std::vector<std::reference_wrapper<const KEY>> KeysView() const;
-    Json      & operator[](KEY const& key);
-    Json      & At(KEY const& key);
-    Json const& At(KEY const& key) const;
+    bool Insert(std::pair<std::wstring, Json> const& pair);
+    bool Insert(std::pair<std::wstring, Json>     && pair);
+    void Erase(std::wstring const& key);
+    std::vector<std::wstring> Keys() const;
+    std::vector<std::reference_wrapper<const std::wstring>> KeysView() const;
+    Json      & operator[](std::wstring const& key);
+    Json      & At(std::wstring const& key);
+    Json const& At(std::wstring const& key) const;
 
-    std::vector<std::pair<KEY, Json>>::      iterator begin();
-    std::vector<std::pair<KEY, Json>>::      iterator end  ();
-    std::vector<std::pair<KEY, Json>>::const_iterator begin() const;
-    std::vector<std::pair<KEY, Json>>::const_iterator end  () const;
+    std::vector<std::pair<std::wstring, Json>>::      iterator begin();
+    std::vector<std::pair<std::wstring, Json>>::      iterator end  ();
+    std::vector<std::pair<std::wstring, Json>>::const_iterator begin() const;
+    std::vector<std::pair<std::wstring, Json>>::const_iterator end  () const;
 
     JSON_API friend std::wostream& operator<<(std::wostream& os, JsonObject const& object);
     JSON_API friend std::wistream& operator>>(std::wistream& is, JsonObject      & object);

@@ -198,18 +198,18 @@ namespace Json4CPP
     void Clear();
     void PushBack(Json const& value);
     void PushBack(Json     && value);
-    bool Insert(std::pair<KEY, Json> const& pair);
-    bool Insert(std::pair<KEY, Json>     && pair);
+    bool Insert(std::pair<std::wstring, Json> const& pair);
+    bool Insert(std::pair<std::wstring, Json>     && pair);
     void Insert(int64_t index, Json const& value);
     void Insert(int64_t index, Json     && value);
-    void Erase(KEY const& key);
+    void Erase(std::wstring const& key);
     void Erase(int64_t index);
-    std::vector<KEY> Keys() const;
-    std::vector<std::reference_wrapper<const KEY>> KeysView() const;
-    Json      & operator[](KEY const& key);
+    std::vector<std::wstring> Keys() const;
+    std::vector<std::reference_wrapper<const std::wstring>> KeysView() const;
+    Json      & operator[](std::wstring const& key);
     Json      & operator[](int64_t index);
-    Json      & At(KEY const& key);
-    Json const& At(KEY const& key) const;
+    Json      & At(std::wstring const& key);
+    Json const& At(std::wstring const& key) const;
     Json      & At(int64_t index);
     Json const& At(int64_t index) const;
 

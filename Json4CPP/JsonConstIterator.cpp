@@ -144,7 +144,7 @@ namespace Json4CPP
     return _json->Size();
   }
 
-  KEY JsonConstIterator::Key() const
+  wstring JsonConstIterator::Key() const
   {
     switch (_json->Type())
     {

@@ -21,8 +21,6 @@ namespace Json4CPP
   class JSON_API JsonArray;
   class JSON_API Json;
 
-  using KEY = std::wstring;
-
   namespace Detail
   {
     class JSON_API JsonBuilder;
