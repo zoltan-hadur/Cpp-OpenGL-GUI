@@ -229,6 +229,15 @@ namespace Json4CPP
     }
   }
 
+  int64_t Json::Count(wstring const& key) const
+  {
+    switch (Type())
+    {
+    case JsonType::Object: return get<JsonObject>(_value).Count(key);
+    default: throw exception("Count(wstring const& key) is only defined for JsonObject!");
+    }
+  }
+
   void Json::Resize(int64_t size)
   {
     switch (Type())

@@ -868,6 +868,29 @@ namespace Json4CPP::Test
       Assert::AreEqual(7i64, JsonObject{ { L"Null", nullptr }, { L"String", L"Test" }, { L"Boolean", true }, { L"Real", 13.37 }, { L"Integer", 1337 }, { L"Object", {{ L"Key1", 1 }, { L"Key2", 2 } } }, { L"Array", { 1, 2, 3 } } }.Size());
     }
 
+    TEST_METHOD(TestCount)
+    {
+      JsonObject object = {
+        { L"Null", nullptr },
+        { L"String", L"Test" },
+        { L"Boolean", true },
+        { L"Real", 13.37 },
+        { L"Integer", 1337 },
+        { L"Object", {
+          { L"Key1", 1 },
+          { L"Key2", 2 } }
+        },
+        { L"Array", { 1, 2, 3 } },
+      };
+
+      Assert::AreEqual(0i64, object.Count(L"asd"));
+      Assert::AreEqual(0i64, object.Count(L"asd"s));
+      for (auto key : object.Keys())
+      {
+        Assert::AreEqual(1i64, object.Count(key));
+      }
+    }
+
     TEST_METHOD(TestClear)
     {
       auto object = JsonObject{ { L"Key1", 1 }, { L"Key2", 2 } };

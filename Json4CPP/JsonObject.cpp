@@ -192,6 +192,11 @@ namespace Json4CPP
     return _pairs.size();
   }
 
+  int64_t JsonObject::Count(wstring const& key) const
+  {
+    return _indexes.count(key);
+  }
+
   void JsonObject::Clear()
   {
     _pairs.clear();

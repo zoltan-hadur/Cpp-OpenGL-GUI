@@ -2934,6 +2934,36 @@ namespace Json4CPP::Test
       Assert::AreEqual(4i64, Json(JsonArray{ 1, 3, 3, 7 }).Size());
     }
 
+    TEST_METHOD(TestCount)
+    {
+      ExpectException<exception>([]() { Json(nullptr_t()).Count(wstring()); }, "Count(wstring const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(wstring  ()).Count(wstring()); }, "Count(wstring const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(bool     ()).Count(wstring()); }, "Count(wstring const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(double   ()).Count(wstring()); }, "Count(wstring const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(int64_t  ()).Count(wstring()); }, "Count(wstring const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(JsonArray()).Count(wstring()); }, "Count(wstring const& key) is only defined for JsonObject!");
+
+      auto json = Json{
+        { L"Null", nullptr },
+        { L"String", L"Test" },
+        { L"Boolean", true },
+        { L"Real", 13.37 },
+        { L"Integer", 1337 },
+        { L"Object", {
+          { L"Key1", 1 },
+          { L"Key2", 2 } }
+        },
+        { L"Array", { 1, 2, 3 } },
+      };
+
+      Assert::AreEqual(0i64, json.Count(L"asd"));
+      Assert::AreEqual(0i64, json.Count(L"asd"s));
+      for (auto key : json.Keys())
+      {
+        Assert::AreEqual(1i64, json.Count(key));
+      }
+    }
+
     TEST_METHOD(TestResize)
     {
       ExpectException<exception>([]() { Json(nullptr_t ()).Resize(1); }, "Resize(int64_t size) is only defined for JsonArray!");

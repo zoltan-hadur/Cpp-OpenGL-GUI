@@ -52,6 +52,7 @@ namespace Json4CPP
     std::wstring Dump(uint8_t indentSize = 0, wchar_t indentChar = L' ') const;
 
     int64_t Size() const;
+    int64_t Count(std::wstring const& key) const;
     void Clear();
     bool Insert(std::pair<std::wstring, Json> const& pair);
     bool Insert(std::pair<std::wstring, Json>     && pair);
