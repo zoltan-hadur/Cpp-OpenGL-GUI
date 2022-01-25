@@ -98,6 +98,7 @@
     <ClInclude Include="JsonIterator.h" />
     <ClInclude Include="JsonLinter.h" />
     <ClInclude Include="JsonObject.h" />
+    <ClInclude Include="JsonPointer.h" />
     <ClInclude Include="JsonTokenType.h" />
     <ClInclude Include="JsonType.h" />
     <ClInclude Include="stdafx.h" />
@@ -117,6 +118,7 @@
     <ClCompile Include="JsonIterator.cpp" />
     <ClCompile Include="JsonLinter.cpp" />
     <ClCompile Include="JsonObject.cpp" />
+    <ClCompile Include="JsonPointer.cpp" />
     <ClCompile Include="JsonTokenType.cpp" />
     <ClCompile Include="JsonType.cpp" />
     <ClCompile Include="stdafx.cpp">

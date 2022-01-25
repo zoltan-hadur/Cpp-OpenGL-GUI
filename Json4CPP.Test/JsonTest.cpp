@@ -3208,8 +3208,89 @@ namespace Json4CPP::Test
       Assert::AreEqual(L"Key2"s, keys[1].get());
     }
 
-    TEST_METHOD(TestOperatorSubscript1)
+    TEST_METHOD(TestOperatorSubscriptJsonPointer)
     {
+      ExpectException<exception>([]() { auto temp = Json(nullptr_t())[JsonPointer()]; }, "Operator[](JsonPointer const& ptr) is only defined for JsonObject and JsonArray!");
+      ExpectException<exception>([]() { auto temp = Json(wstring  ())[JsonPointer()]; }, "Operator[](JsonPointer const& ptr) is only defined for JsonObject and JsonArray!");
+      ExpectException<exception>([]() { auto temp = Json(bool     ())[JsonPointer()]; }, "Operator[](JsonPointer const& ptr) is only defined for JsonObject and JsonArray!");
+      ExpectException<exception>([]() { auto temp = Json(double   ())[JsonPointer()]; }, "Operator[](JsonPointer const& ptr) is only defined for JsonObject and JsonArray!");
+      ExpectException<exception>([]() { auto temp = Json(int64_t  ())[JsonPointer()]; }, "Operator[](JsonPointer const& ptr) is only defined for JsonObject and JsonArray!");
+
+      auto json0 = Json{ 1, 3, 3, 7 };
+      Assert::AreEqual<Json>(json0, json0[L""_JsonPointer]);
+      Assert::AreEqual<Json>(json0[0], json0[L"/0"_JsonPointer]);
+      Assert::AreEqual<Json>(json0[1], json0[L"/1"_JsonPointer]);
+      Assert::AreEqual<Json>(json0[2], json0[L"/2"_JsonPointer]);
+      Assert::AreEqual<Json>(json0[3], json0[L"/3"_JsonPointer]);
+      json0[L"/2"_JsonPointer] = 1337;
+      Assert::AreEqual<Json>(1337, json0[L"/2"_JsonPointer]);
+      auto json1 = Json{
+        { L"Null", nullptr },
+        { L"String", L"Test" },
+        { L"Boolean", true },
+        { L"Real", 13.37 },
+        { L"Integer", 1337 },
+        { L"Object", {
+          { L"Key1", 1 },
+          { L"Key2", 2 } }
+        },
+        { L"Array", { 1, 2, 3 } },
+      };
+      Assert::AreEqual<Json>(json1                    , json1[L""_JsonPointer]);
+      Assert::AreEqual<Json>(json1[L"Null"]           , json1[L"/Null"_JsonPointer]);
+      Assert::AreEqual<Json>(json1[L"String"]         , json1[L"/String"_JsonPointer]);
+      Assert::AreEqual<Json>(json1[L"Boolean"]        , json1[L"/Boolean"_JsonPointer]);
+      Assert::AreEqual<Json>(json1[L"Real"]           , json1[L"/Real"_JsonPointer]);
+      Assert::AreEqual<Json>(json1[L"Integer"]        , json1[L"/Integer"_JsonPointer]);
+      Assert::AreEqual<Json>(json1[L"Object"]         , json1[L"/Object"_JsonPointer]);
+      Assert::AreEqual<Json>(json1[L"Object"][L"Key1"], json1[L"/Object/Key1"_JsonPointer]);
+      Assert::AreEqual<Json>(json1[L"Object"][L"Key2"], json1[L"/Object/Key2"_JsonPointer]);
+      Assert::AreEqual<Json>(json1[L"Array"]          , json1[L"/Array"_JsonPointer]);
+      Assert::AreEqual<Json>(json1[L"Array"][0]       , json1[L"/Array/0"_JsonPointer]);
+      Assert::AreEqual<Json>(json1[L"Array"][1]       , json1[L"/Array/1"_JsonPointer]);
+      Assert::AreEqual<Json>(json1[L"Array"][2]       , json1[L"/Array/2"_JsonPointer]);
+      auto json2 = Json{
+        { L"foo"s   , { L"bar"s, L"baz"s } } ,
+        { L""s      , 0 },
+        { L"a/b"s   , 1 },
+        { L"c%d"s   , 2 },
+        { L"e^f"s   , 3 },
+        { L"g|h"s   , 4 },
+        { L"i\\j"s  , 5},
+        { L"k\"l"s  , 6},
+        { L" "s     , 7 },
+        { L"m~n"s   , 8 }
+      };
+      Assert::AreEqual<Json>(json2            , json2[L""_JsonPointer]);
+      Assert::AreEqual<Json>(json2[L"foo"s]   , json2[L"/foo"_JsonPointer]);
+      Assert::AreEqual<Json>(json2[L"foo"s][0], json2[L"/foo/0"_JsonPointer]);
+      Assert::AreEqual<Json>(json2[L""s]      , json2[L"/"_JsonPointer]);
+      Assert::AreEqual<Json>(json2[L"a/b"s]   , json2[L"/a~1b"_JsonPointer]);
+      Assert::AreEqual<Json>(json2[L"c%d"s]   , json2[L"/c%d"_JsonPointer]);
+      Assert::AreEqual<Json>(json2[L"e^f"s]   , json2[L"/e^f"_JsonPointer]);
+      Assert::AreEqual<Json>(json2[L"g|h"s]   , json2[L"/g|h"_JsonPointer]);
+      Assert::AreEqual<Json>(json2[L"i\\j"s]  , json2[L"/i\\j"_JsonPointer]);
+      Assert::AreEqual<Json>(json2[L"k\"l"s]  , json2[L"/k\"l"_JsonPointer]);
+      Assert::AreEqual<Json>(json2[L" "s]     , json2[L"/ "_JsonPointer]);
+      Assert::AreEqual<Json>(json2[L"m~n"s]   , json2[L"/m~0n"_JsonPointer]);
+
+      ExpectException<exception>([&]() { auto temp = json2[L"/Non/Existent"_JsonPointer]; }      , "Reference token \"Non\" at path \"/Non\" not found!");
+      ExpectException<exception>([&]() { auto temp = json1[L"/Object/NonExistent"_JsonPointer]; }, "Reference token \"NonExistent\" at path \"/Object/NonExistent\" not found!");
+      ExpectException<exception>([&]() { auto temp = json2[L"/foo/-"_JsonPointer]; }             , "Reference token \"-\" at path \"/foo/-\" points to the member after the last array element which does not exist!");
+      ExpectException<exception>([&]() { auto temp = json2[L"/foo/00"_JsonPointer]; }            , "Reference token \"00\" at path \"/foo/00\" is not an array index!");
+      ExpectException<exception>([&]() { auto temp = json2[L"/foo/01"_JsonPointer]; }            , "Reference token \"01\" at path \"/foo/01\" is not an array index!");
+      ExpectException<exception>([&]() { auto temp = json2[L"/foo/-1"_JsonPointer]; }            , "Reference token \"-1\" at path \"/foo/-1\" is not an array index!");
+      ExpectException<exception>([&]() { auto temp = json2[L"/foo/1a"_JsonPointer]; }            , "Reference token \"1a\" at path \"/foo/1a\" is not an array index!");
+      ExpectException<exception>([&]() { auto temp = json2[L"/foo/3"_JsonPointer]; }             , "Reference token \"3\" at path \"/foo/3\" is out of range!");
+    }
+
+    TEST_METHOD(TestOperatorSubscriptWString)
+    {
+      ExpectException<exception>([]() { auto temp = Json(wstring  ())[L""      ]; }, "Operator[](wstring const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { auto temp = Json(bool     ())[L""      ]; }, "Operator[](wstring const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { auto temp = Json(double   ())[L""      ]; }, "Operator[](wstring const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { auto temp = Json(int64_t  ())[L""      ]; }, "Operator[](wstring const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { auto temp = Json(JsonArray())[L""      ]; }, "Operator[](wstring const& key) is only defined for JsonObject!");
       ExpectException<exception>([]() { auto temp = Json(wstring  ())[wstring()]; }, "Operator[](wstring const& key) is only defined for JsonObject!");
       ExpectException<exception>([]() { auto temp = Json(bool     ())[wstring()]; }, "Operator[](wstring const& key) is only defined for JsonObject!");
       ExpectException<exception>([]() { auto temp = Json(double   ())[wstring()]; }, "Operator[](wstring const& key) is only defined for JsonObject!");
@@ -3230,16 +3311,26 @@ namespace Json4CPP::Test
       Assert::IsTrue(json.Is(JsonType::Object));
       Assert::AreEqual(2i64, json.Size());
       Assert::AreEqual<Json>(1337, json[L"Key2"s]);
+      json[L"Key2"] = 2;
+      Assert::IsTrue(json.Is(JsonType::Object));
+      Assert::AreEqual(2i64, json.Size());
+      Assert::AreEqual<Json>(2, json[L"Key2"]);
     }
 
-    TEST_METHOD(TestOperatorSubscript2)
+    TEST_METHOD(TestOperatorSubscriptIndex)
     {
-      ExpectException<exception>([]() { auto temp = Json(nullptr_t ())[int64_t()]; }, "Operator[](int64_t index) is only defined for JsonArray!");
-      ExpectException<exception>([]() { auto temp = Json(wstring   ())[int64_t()]; }, "Operator[](int64_t index) is only defined for JsonArray!");
-      ExpectException<exception>([]() { auto temp = Json(bool      ())[int64_t()]; }, "Operator[](int64_t index) is only defined for JsonArray!");
-      ExpectException<exception>([]() { auto temp = Json(double    ())[int64_t()]; }, "Operator[](int64_t index) is only defined for JsonArray!");
-      ExpectException<exception>([]() { auto temp = Json(int64_t   ())[int64_t()]; }, "Operator[](int64_t index) is only defined for JsonArray!");
-      ExpectException<exception>([]() { auto temp = Json(JsonObject())[int64_t()]; }, "Operator[](int64_t index) is only defined for JsonArray!");
+      auto jsons = vector<Json>{ Json(nullptr_t()), Json(wstring()), Json(bool()), Json(double()), Json(int64_t()), Json(JsonObject()) };
+      for (auto json : jsons)
+      {
+        ExpectException<exception>([&]() { json[int8_t  ()]; }, "Operator[](int64_t index) is only defined for JsonArray!");
+        ExpectException<exception>([&]() { json[uint8_t ()]; }, "Operator[](int64_t index) is only defined for JsonArray!");
+        ExpectException<exception>([&]() { json[int16_t ()]; }, "Operator[](int64_t index) is only defined for JsonArray!");
+        ExpectException<exception>([&]() { json[uint16_t()]; }, "Operator[](int64_t index) is only defined for JsonArray!");
+        ExpectException<exception>([&]() { json[int32_t ()]; }, "Operator[](int64_t index) is only defined for JsonArray!");
+        ExpectException<exception>([&]() { json[uint32_t()]; }, "Operator[](int64_t index) is only defined for JsonArray!");
+        ExpectException<exception>([&]() { json[int64_t ()]; }, "Operator[](int64_t index) is only defined for JsonArray!");
+        ExpectException<exception>([&]() { json[uint64_t()]; }, "Operator[](int64_t index) is only defined for JsonArray!");
+      }
 
       auto json = Json(JsonArray());
       json.Resize(4);
@@ -3252,10 +3343,180 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>(3, json[1]);
       Assert::AreEqual<Json>(3, json[2]);
       Assert::AreEqual<Json>(7, json[3]);
+      Assert::AreEqual<Json>(7, json[3i8]);
+      Assert::AreEqual<Json>(7, json[3ui8]);
+      Assert::AreEqual<Json>(7, json[3i16]);
+      Assert::AreEqual<Json>(7, json[3ui16]);
+      Assert::AreEqual<Json>(7, json[3i32]);
+      Assert::AreEqual<Json>(7, json[3ui32]);
+      Assert::AreEqual<Json>(7, json[3i64]);
+      Assert::AreEqual<Json>(7, json[3ui64]);
     }
 
-    TEST_METHOD(TestAt1)
+    TEST_METHOD(TestAtJsonPointer)
     {
+      ExpectException<exception>([]() { auto temp = Json(nullptr_t()).At(JsonPointer()); }, "At(JsonPointer const& ptr) is only defined for JsonObject and JsonArray!");
+      ExpectException<exception>([]() { auto temp = Json(wstring  ()).At(JsonPointer()); }, "At(JsonPointer const& ptr) is only defined for JsonObject and JsonArray!");
+      ExpectException<exception>([]() { auto temp = Json(bool     ()).At(JsonPointer()); }, "At(JsonPointer const& ptr) is only defined for JsonObject and JsonArray!");
+      ExpectException<exception>([]() { auto temp = Json(double   ()).At(JsonPointer()); }, "At(JsonPointer const& ptr) is only defined for JsonObject and JsonArray!");
+      ExpectException<exception>([]() { auto temp = Json(int64_t  ()).At(JsonPointer()); }, "At(JsonPointer const& ptr) is only defined for JsonObject and JsonArray!");
+
+      auto json0 = Json{ 1, 3, 3, 7 };
+      Assert::AreEqual<Json>(json0, json0.At(L""_JsonPointer));
+      Assert::AreEqual<Json>(json0.At(0), json0.At(L"/0"_JsonPointer));
+      Assert::AreEqual<Json>(json0.At(1), json0.At(L"/1"_JsonPointer));
+      Assert::AreEqual<Json>(json0.At(2), json0.At(L"/2"_JsonPointer));
+      Assert::AreEqual<Json>(json0.At(3), json0.At(L"/3"_JsonPointer));
+      json0.At(L"/2"_JsonPointer) = 1337;
+      Assert::AreEqual<Json>(1337, json0.At(L"/2"_JsonPointer));
+
+      auto json1 = Json{
+        { L"Null", nullptr },
+        { L"String", L"Test" },
+        { L"Boolean", true },
+        { L"Real", 13.37 },
+        { L"Integer", 1337 },
+        { L"Object", {
+          { L"Key1", 1 },
+          { L"Key2", 2 } }
+        },
+        { L"Array", { 1, 2, 3 } },
+      };
+      Assert::AreEqual<Json>(json1                          , json1.At(L""_JsonPointer));
+      Assert::AreEqual<Json>(json1.At(L"Null")              , json1.At(L"/Null"_JsonPointer));
+      Assert::AreEqual<Json>(json1.At(L"String")            , json1.At(L"/String"_JsonPointer));
+      Assert::AreEqual<Json>(json1.At(L"Boolean")           , json1.At(L"/Boolean"_JsonPointer));
+      Assert::AreEqual<Json>(json1.At(L"Real")              , json1.At(L"/Real"_JsonPointer));
+      Assert::AreEqual<Json>(json1.At(L"Integer")           , json1.At(L"/Integer"_JsonPointer));
+      Assert::AreEqual<Json>(json1.At(L"Object")            , json1.At(L"/Object"_JsonPointer));
+      Assert::AreEqual<Json>(json1.At(L"Object").At(L"Key1"), json1.At(L"/Object/Key1"_JsonPointer));
+      Assert::AreEqual<Json>(json1.At(L"Object").At(L"Key2"), json1.At(L"/Object/Key2"_JsonPointer));
+      Assert::AreEqual<Json>(json1.At(L"Array")             , json1.At(L"/Array"_JsonPointer));
+      Assert::AreEqual<Json>(json1.At(L"Array").At(0)       , json1.At(L"/Array/0"_JsonPointer));
+      Assert::AreEqual<Json>(json1.At(L"Array").At(1)       , json1.At(L"/Array/1"_JsonPointer));
+      Assert::AreEqual<Json>(json1.At(L"Array").At(2)       , json1.At(L"/Array/2"_JsonPointer));
+
+      auto json2 = Json{
+        { L"foo"s   , { L"bar"s, L"baz"s } } ,
+        { L""s      , 0 },
+        { L"a/b"s   , 1 },
+        { L"c%d"s   , 2 },
+        { L"e^f"s   , 3 },
+        { L"g|h"s   , 4 },
+        { L"i\\j"s  , 5},
+        { L"k\"l"s  , 6},
+        { L" "s     , 7 },
+        { L"m~n"s   , 8 }
+      };
+      Assert::AreEqual<Json>(json2                  , json2.At(L""_JsonPointer));
+      Assert::AreEqual<Json>(json2.At(L"foo"s)      , json2.At(L"/foo"_JsonPointer));
+      Assert::AreEqual<Json>(json2.At(L"foo"s).At(0), json2.At(L"/foo/0"_JsonPointer));
+      Assert::AreEqual<Json>(json2.At(L""s)         , json2.At(L"/"_JsonPointer));
+      Assert::AreEqual<Json>(json2.At(L"a/b"s)      , json2.At(L"/a~1b"_JsonPointer));
+      Assert::AreEqual<Json>(json2.At(L"c%d"s)      , json2.At(L"/c%d"_JsonPointer));
+      Assert::AreEqual<Json>(json2.At(L"e^f"s)      , json2.At(L"/e^f"_JsonPointer));
+      Assert::AreEqual<Json>(json2.At(L"g|h"s)      , json2.At(L"/g|h"_JsonPointer));
+      Assert::AreEqual<Json>(json2.At(L"i\\j"s)     , json2.At(L"/i\\j"_JsonPointer));
+      Assert::AreEqual<Json>(json2.At(L"k\"l"s)     , json2.At(L"/k\"l"_JsonPointer));
+      Assert::AreEqual<Json>(json2.At(L" "s)        , json2.At(L"/ "_JsonPointer));
+      Assert::AreEqual<Json>(json2.At(L"m~n"s)      , json2.At(L"/m~0n"_JsonPointer));
+
+      ExpectException<exception>([&]() { auto temp = json2.At(L"/Non/Existent"_JsonPointer); }      , "Reference token \"Non\" at path \"/Non\" not found!");
+      ExpectException<exception>([&]() { auto temp = json1.At(L"/Object/NonExistent"_JsonPointer); }, "Reference token \"NonExistent\" at path \"/Object/NonExistent\" not found!");
+      ExpectException<exception>([&]() { auto temp = json2.At(L"/foo/-"_JsonPointer); }             , "Reference token \"-\" at path \"/foo/-\" points to the member after the last array element which does not exist!");
+      ExpectException<exception>([&]() { auto temp = json2.At(L"/foo/00"_JsonPointer); }            , "Reference token \"00\" at path \"/foo/00\" is not an array index!");
+      ExpectException<exception>([&]() { auto temp = json2.At(L"/foo/01"_JsonPointer); }            , "Reference token \"01\" at path \"/foo/01\" is not an array index!");
+      ExpectException<exception>([&]() { auto temp = json2.At(L"/foo/-1"_JsonPointer); }            , "Reference token \"-1\" at path \"/foo/-1\" is not an array index!");
+      ExpectException<exception>([&]() { auto temp = json2.At(L"/foo/1a"_JsonPointer); }            , "Reference token \"1a\" at path \"/foo/1a\" is not an array index!");
+      ExpectException<exception>([&]() { auto temp = json2.At(L"/foo/3"_JsonPointer); }             , "Reference token \"3\" at path \"/foo/3\" is out of range!");
+    }
+
+    TEST_METHOD(TestAtJsonPointerConst)
+    {
+      ExpectException<exception>([]() { auto const temp = Json(nullptr_t()).At(JsonPointer()); }, "At(JsonPointer const& ptr) is only defined for JsonObject and JsonArray!");
+      ExpectException<exception>([]() { auto const temp = Json(wstring  ()).At(JsonPointer()); }, "At(JsonPointer const& ptr) is only defined for JsonObject and JsonArray!");
+      ExpectException<exception>([]() { auto const temp = Json(bool     ()).At(JsonPointer()); }, "At(JsonPointer const& ptr) is only defined for JsonObject and JsonArray!");
+      ExpectException<exception>([]() { auto const temp = Json(double   ()).At(JsonPointer()); }, "At(JsonPointer const& ptr) is only defined for JsonObject and JsonArray!");
+      ExpectException<exception>([]() { auto const temp = Json(int64_t  ()).At(JsonPointer()); }, "At(JsonPointer const& ptr) is only defined for JsonObject and JsonArray!");
+
+      auto const json0 = Json{ 1, 3, 3, 7 };
+      Assert::AreEqual<Json>(json0, json0.At(L""_JsonPointer));
+      Assert::AreEqual<Json>(json0.At(0), json0.At(L"/0"_JsonPointer));
+      Assert::AreEqual<Json>(json0.At(1), json0.At(L"/1"_JsonPointer));
+      Assert::AreEqual<Json>(json0.At(2), json0.At(L"/2"_JsonPointer));
+      Assert::AreEqual<Json>(json0.At(3), json0.At(L"/3"_JsonPointer));
+
+      auto const json1 = Json{
+        { L"Null", nullptr },
+        { L"String", L"Test" },
+        { L"Boolean", true },
+        { L"Real", 13.37 },
+        { L"Integer", 1337 },
+        { L"Object", {
+          { L"Key1", 1 },
+          { L"Key2", 2 } }
+        },
+        { L"Array", { 1, 2, 3 } },
+      };
+      Assert::AreEqual<Json>(json1                          , json1.At(L""_JsonPointer));
+      Assert::AreEqual<Json>(json1.At(L"Null")              , json1.At(L"/Null"_JsonPointer));
+      Assert::AreEqual<Json>(json1.At(L"String")            , json1.At(L"/String"_JsonPointer));
+      Assert::AreEqual<Json>(json1.At(L"Boolean")           , json1.At(L"/Boolean"_JsonPointer));
+      Assert::AreEqual<Json>(json1.At(L"Real")              , json1.At(L"/Real"_JsonPointer));
+      Assert::AreEqual<Json>(json1.At(L"Integer")           , json1.At(L"/Integer"_JsonPointer));
+      Assert::AreEqual<Json>(json1.At(L"Object")            , json1.At(L"/Object"_JsonPointer));
+      Assert::AreEqual<Json>(json1.At(L"Object").At(L"Key1"), json1.At(L"/Object/Key1"_JsonPointer));
+      Assert::AreEqual<Json>(json1.At(L"Object").At(L"Key2"), json1.At(L"/Object/Key2"_JsonPointer));
+      Assert::AreEqual<Json>(json1.At(L"Array")             , json1.At(L"/Array"_JsonPointer));
+      Assert::AreEqual<Json>(json1.At(L"Array").At(0)       , json1.At(L"/Array/0"_JsonPointer));
+      Assert::AreEqual<Json>(json1.At(L"Array").At(1)       , json1.At(L"/Array/1"_JsonPointer));
+      Assert::AreEqual<Json>(json1.At(L"Array").At(2)       , json1.At(L"/Array/2"_JsonPointer));
+
+      auto const json2 = Json{
+        { L"foo"s   , { L"bar"s, L"baz"s } } ,
+        { L""s      , 0 },
+        { L"a/b"s   , 1 },
+        { L"c%d"s   , 2 },
+        { L"e^f"s   , 3 },
+        { L"g|h"s   , 4 },
+        { L"i\\j"s  , 5},
+        { L"k\"l"s  , 6},
+        { L" "s     , 7 },
+        { L"m~n"s   , 8 }
+      };
+      Assert::AreEqual<Json>(json2                  , json2.At(L""_JsonPointer));
+      Assert::AreEqual<Json>(json2.At(L"foo"s)      , json2.At(L"/foo"_JsonPointer));
+      Assert::AreEqual<Json>(json2.At(L"foo"s).At(0), json2.At(L"/foo/0"_JsonPointer));
+      Assert::AreEqual<Json>(json2.At(L""s)         , json2.At(L"/"_JsonPointer));
+      Assert::AreEqual<Json>(json2.At(L"a/b"s)      , json2.At(L"/a~1b"_JsonPointer));
+      Assert::AreEqual<Json>(json2.At(L"c%d"s)      , json2.At(L"/c%d"_JsonPointer));
+      Assert::AreEqual<Json>(json2.At(L"e^f"s)      , json2.At(L"/e^f"_JsonPointer));
+      Assert::AreEqual<Json>(json2.At(L"g|h"s)      , json2.At(L"/g|h"_JsonPointer));
+      Assert::AreEqual<Json>(json2.At(L"i\\j"s)     , json2.At(L"/i\\j"_JsonPointer));
+      Assert::AreEqual<Json>(json2.At(L"k\"l"s)     , json2.At(L"/k\"l"_JsonPointer));
+      Assert::AreEqual<Json>(json2.At(L" "s)        , json2.At(L"/ "_JsonPointer));
+      Assert::AreEqual<Json>(json2.At(L"m~n"s)      , json2.At(L"/m~0n"_JsonPointer));
+
+      ExpectException<exception>([&]() { auto const temp = json2.At(L"/Non/Existent"_JsonPointer); }      , "Reference token \"Non\" at path \"/Non\" not found!");
+      ExpectException<exception>([&]() { auto const temp = json1.At(L"/Object/NonExistent"_JsonPointer); }, "Reference token \"NonExistent\" at path \"/Object/NonExistent\" not found!");
+      ExpectException<exception>([&]() { auto const temp = json2.At(L"/foo/-"_JsonPointer); }             , "Reference token \"-\" at path \"/foo/-\" points to the member after the last array element which does not exist!");
+      ExpectException<exception>([&]() { auto const temp = json2.At(L"/foo/00"_JsonPointer); }            , "Reference token \"00\" at path \"/foo/00\" is not an array index!");
+      ExpectException<exception>([&]() { auto const temp = json2.At(L"/foo/01"_JsonPointer); }            , "Reference token \"01\" at path \"/foo/01\" is not an array index!");
+      ExpectException<exception>([&]() { auto const temp = json2.At(L"/foo/-1"_JsonPointer); }            , "Reference token \"-1\" at path \"/foo/-1\" is not an array index!");
+      ExpectException<exception>([&]() { auto const temp = json2.At(L"/foo/1a"_JsonPointer); }            , "Reference token \"1a\" at path \"/foo/1a\" is not an array index!");
+      ExpectException<exception>([&]() { auto const temp = json2.At(L"/foo/3"_JsonPointer); }             , "Reference token \"3\" at path \"/foo/3\" is out of range!");
+
+      static_assert(is_const<remove_reference<decltype(json0.At(L"/0"_JsonPointer))>::type>::value, "JsonObject::At(JsonPointer) return type must be Json const&");
+    }
+
+    TEST_METHOD(TestAtWstring)
+    {
+      ExpectException<exception>([]() { Json(nullptr_t()).At(L""      ); }, "At(wstring const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(wstring  ()).At(L""      ); }, "At(wstring const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(bool     ()).At(L""      ); }, "At(wstring const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(double   ()).At(L""      ); }, "At(wstring const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(int64_t  ()).At(L""      ); }, "At(wstring const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(JsonArray()).At(L""      ); }, "At(wstring const& key) is only defined for JsonObject!");
       ExpectException<exception>([]() { Json(nullptr_t()).At(wstring()); }, "At(wstring const& key) is only defined for JsonObject!");
       ExpectException<exception>([]() { Json(wstring  ()).At(wstring()); }, "At(wstring const& key) is only defined for JsonObject!");
       ExpectException<exception>([]() { Json(bool     ()).At(wstring()); }, "At(wstring const& key) is only defined for JsonObject!");
@@ -3273,10 +3534,22 @@ namespace Json4CPP::Test
       json.At(L"Key2"s) = 31337;
       Assert::AreEqual<Json>(1337, json.At(L"Key1"s));
       Assert::AreEqual<Json>(31337, json.At(L"Key2"s));
+      Assert::AreEqual<Json>(1337, json.At(L"Key1"));
+      Assert::AreEqual<Json>(31337, json.At(L"Key2"));
+      json.At(L"Key1") = 1;
+      json.At(L"Key2") = 2;
+      Assert::AreEqual<Json>(1, json.At(L"Key1"));
+      Assert::AreEqual<Json>(2, json.At(L"Key2"));
     }
 
-    TEST_METHOD(TestAt2)
+    TEST_METHOD(TestAtWstringConst)
     {
+      ExpectException<exception>([]() { auto const temp = Json(nullptr_t()); auto tmp = temp.At(L""      ); }, "At(wstring const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { auto const temp = Json(wstring  ()); auto tmp = temp.At(L""      ); }, "At(wstring const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { auto const temp = Json(bool     ()); auto tmp = temp.At(L""      ); }, "At(wstring const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { auto const temp = Json(double   ()); auto tmp = temp.At(L""      ); }, "At(wstring const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { auto const temp = Json(int64_t  ()); auto tmp = temp.At(L""      ); }, "At(wstring const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { auto const temp = Json(JsonArray()); auto tmp = temp.At(L""      ); }, "At(wstring const& key) is only defined for JsonObject!");
       ExpectException<exception>([]() { auto const temp = Json(nullptr_t()); auto tmp = temp.At(wstring()); }, "At(wstring const& key) is only defined for JsonObject!");
       ExpectException<exception>([]() { auto const temp = Json(wstring  ()); auto tmp = temp.At(wstring()); }, "At(wstring const& key) is only defined for JsonObject!");
       ExpectException<exception>([]() { auto const temp = Json(bool     ()); auto tmp = temp.At(wstring()); }, "At(wstring const& key) is only defined for JsonObject!");
@@ -3290,17 +3563,26 @@ namespace Json4CPP::Test
       };
       Assert::AreEqual<Json>(1, json.At(L"Key1"s));
       Assert::AreEqual<Json>(2, json.At(L"Key2"s));
-      static_assert(is_const<remove_reference<decltype(json.At(L"Key1"))>::type>::value, "JsonObject::At(wstring) return type must be Json const&");
+      Assert::AreEqual<Json>(1, json.At(L"Key1"));
+      Assert::AreEqual<Json>(2, json.At(L"Key2"));
+      static_assert(is_const<remove_reference<decltype(json.At(L"Key1"s))>::type>::value, "JsonObject::At(wstring) return type must be Json const&");
+      static_assert(is_const<remove_reference<decltype(json.At(L"Key1" ))>::type>::value, "JsonObject::At(wstring) return type must be Json const&");
     }
 
-    TEST_METHOD(TestAt3)
+    TEST_METHOD(TestAtInteger)
     {
-      ExpectException<exception>([]() { Json(nullptr_t ()).At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
-      ExpectException<exception>([]() { Json(wstring   ()).At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
-      ExpectException<exception>([]() { Json(bool      ()).At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
-      ExpectException<exception>([]() { Json(double    ()).At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
-      ExpectException<exception>([]() { Json(int64_t   ()).At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
-      ExpectException<exception>([]() { Json(JsonObject()).At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
+      auto jsons = vector<Json>{ Json(nullptr_t()), Json(wstring()), Json(bool()), Json(double()), Json(int64_t()), Json(JsonObject()) };
+      for (auto json : jsons)
+      {
+        ExpectException<exception>([&]() { json.At(int8_t  ()); }, "At(int64_t index) is only defined for JsonArray!");
+        ExpectException<exception>([&]() { json.At(uint8_t ()); }, "At(int64_t index) is only defined for JsonArray!");
+        ExpectException<exception>([&]() { json.At(int16_t ()); }, "At(int64_t index) is only defined for JsonArray!");
+        ExpectException<exception>([&]() { json.At(uint16_t()); }, "At(int64_t index) is only defined for JsonArray!");
+        ExpectException<exception>([&]() { json.At(int32_t ()); }, "At(int64_t index) is only defined for JsonArray!");
+        ExpectException<exception>([&]() { json.At(uint32_t()); }, "At(int64_t index) is only defined for JsonArray!");
+        ExpectException<exception>([&]() { json.At(int64_t ()); }, "At(int64_t index) is only defined for JsonArray!");
+        ExpectException<exception>([&]() { json.At(uint64_t()); }, "At(int64_t index) is only defined for JsonArray!");
+      }
 
       auto json = Json{ 1, 3, 3, 7 };
       Assert::AreEqual<Json>(1, json.At(0));
@@ -3315,23 +3597,53 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>(1338, json.At(1));
       Assert::AreEqual<Json>(1339, json.At(2));
       Assert::AreEqual<Json>(1340, json.At(3));
+      Assert::AreEqual<Json>(1340, json.At(3i8));
+      Assert::AreEqual<Json>(1340, json.At(3ui8));
+      Assert::AreEqual<Json>(1340, json.At(3i16));
+      Assert::AreEqual<Json>(1340, json.At(3ui16));
+      Assert::AreEqual<Json>(1340, json.At(3i32));
+      Assert::AreEqual<Json>(1340, json.At(3ui32));
+      Assert::AreEqual<Json>(1340, json.At(3i64));
+      Assert::AreEqual<Json>(1340, json.At(3ui64));
     }
 
-    TEST_METHOD(TestAt4)
+    TEST_METHOD(TestAtIntegerConst)
     {
-      ExpectException<exception>([]() { auto const temp = Json(nullptr_t ()); auto tmp = temp.At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
-      ExpectException<exception>([]() { auto const temp = Json(wstring   ()); auto tmp = temp.At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
-      ExpectException<exception>([]() { auto const temp = Json(bool      ()); auto tmp = temp.At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
-      ExpectException<exception>([]() { auto const temp = Json(double    ()); auto tmp = temp.At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
-      ExpectException<exception>([]() { auto const temp = Json(int64_t   ()); auto tmp = temp.At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
-      ExpectException<exception>([]() { auto const temp = Json(JsonObject()); auto tmp = temp.At(int64_t()); }, "At(int64_t index) is only defined for JsonArray!");
+      auto const jsons = vector<Json>{ Json(nullptr_t()), Json(wstring()), Json(bool()), Json(double()), Json(int64_t()), Json(JsonObject()) };
+      for (auto const json : jsons)
+      {
+        ExpectException<exception>([&]() { json.At(int8_t  ()); }, "At(int64_t index) is only defined for JsonArray!");
+        ExpectException<exception>([&]() { json.At(uint8_t ()); }, "At(int64_t index) is only defined for JsonArray!");
+        ExpectException<exception>([&]() { json.At(int16_t ()); }, "At(int64_t index) is only defined for JsonArray!");
+        ExpectException<exception>([&]() { json.At(uint16_t()); }, "At(int64_t index) is only defined for JsonArray!");
+        ExpectException<exception>([&]() { json.At(int32_t ()); }, "At(int64_t index) is only defined for JsonArray!");
+        ExpectException<exception>([&]() { json.At(uint32_t()); }, "At(int64_t index) is only defined for JsonArray!");
+        ExpectException<exception>([&]() { json.At(int64_t ()); }, "At(int64_t index) is only defined for JsonArray!");
+        ExpectException<exception>([&]() { json.At(uint64_t()); }, "At(int64_t index) is only defined for JsonArray!");
+      }
 
       auto const json = Json{ 1, 3, 3, 7 };
       Assert::AreEqual<Json>(1, json.At(0));
       Assert::AreEqual<Json>(3, json.At(1));
       Assert::AreEqual<Json>(3, json.At(2));
       Assert::AreEqual<Json>(7, json.At(3));
-      static_assert(is_const<remove_reference<decltype(json.At(0))>::type>::value, "JsonArray::At(index) return type must be Json const&");
+      Assert::AreEqual<Json>(7, json.At(3i8));
+      Assert::AreEqual<Json>(7, json.At(3ui8));
+      Assert::AreEqual<Json>(7, json.At(3i16));
+      Assert::AreEqual<Json>(7, json.At(3ui16));
+      Assert::AreEqual<Json>(7, json.At(3i32));
+      Assert::AreEqual<Json>(7, json.At(3ui32));
+      Assert::AreEqual<Json>(7, json.At(3i64));
+      Assert::AreEqual<Json>(7, json.At(3ui64));
+      static_assert(is_const<remove_reference<decltype(json.At(0    ))>::type>::value, "JsonArray::At(index) return type must be Json const&");
+      static_assert(is_const<remove_reference<decltype(json.At(0i8  ))>::type>::value, "JsonArray::At(index) return type must be Json const&");
+      static_assert(is_const<remove_reference<decltype(json.At(0ui8 ))>::type>::value, "JsonArray::At(index) return type must be Json const&");
+      static_assert(is_const<remove_reference<decltype(json.At(0i16 ))>::type>::value, "JsonArray::At(index) return type must be Json const&");
+      static_assert(is_const<remove_reference<decltype(json.At(0ui16))>::type>::value, "JsonArray::At(index) return type must be Json const&");
+      static_assert(is_const<remove_reference<decltype(json.At(0i32 ))>::type>::value, "JsonArray::At(index) return type must be Json const&");
+      static_assert(is_const<remove_reference<decltype(json.At(0ui32))>::type>::value, "JsonArray::At(index) return type must be Json const&");
+      static_assert(is_const<remove_reference<decltype(json.At(0i64 ))>::type>::value, "JsonArray::At(index) return type must be Json const&");
+      static_assert(is_const<remove_reference<decltype(json.At(0ui64))>::type>::value, "JsonArray::At(index) return type must be Json const&");
     }
 
     TEST_METHOD(TestOperatorConversionNullptr)

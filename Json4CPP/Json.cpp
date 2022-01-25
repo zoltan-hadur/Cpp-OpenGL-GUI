@@ -362,6 +362,22 @@ namespace Json4CPP
     }
   }
 
+  Json& Json::operator[](JsonPointer const& ptr)
+  {
+    switch (Type())
+    {
+    case JsonType::Object:
+    case JsonType::Array :
+      return ptr.Navigate(*this);
+    default: throw exception("Operator[](JsonPointer const& ptr) is only defined for JsonObject and JsonArray!");
+    }
+  }
+
+  Json& Json::operator[](wchar_t const* key)
+  {
+    return (*this)[wstring(key)];
+  }
+
   Json& Json::operator[](wstring const& key)
   {
     switch (Type())
@@ -379,6 +395,38 @@ namespace Json4CPP
     case JsonType::Array: return get<JsonArray>(_value)[index];
     default: throw exception("Operator[](int64_t index) is only defined for JsonArray!");
     }
+  }
+
+  Json& Json::At(JsonPointer const& ptr)
+  {
+    switch (Type())
+    {
+    case JsonType::Object:
+    case JsonType::Array :
+      return ptr.Navigate(*this);
+    default: throw exception("At(JsonPointer const& ptr) is only defined for JsonObject and JsonArray!");
+    }
+  }
+
+  Json const& Json::At(JsonPointer const& ptr) const
+  {
+    switch (Type())
+    {
+    case JsonType::Object:
+    case JsonType::Array :
+      return ptr.Navigate(*this);
+    default: throw exception("At(JsonPointer const& ptr) is only defined for JsonObject and JsonArray!");
+    }
+  }
+
+  Json& Json::At(wchar_t const* key)
+  {
+    return At(wstring(key));
+  }
+
+  Json const& Json::At(wchar_t const* key) const
+  {
+    return At(wstring(key));
   }
 
   Json& Json::At(wstring const& key)

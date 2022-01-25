@@ -68,6 +68,9 @@
     <ClCompile Include="JsonConstIteratorTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="JsonPointerTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="UTF-8.txt">

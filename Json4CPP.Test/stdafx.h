@@ -39,11 +39,12 @@ namespace Microsoft::VisualStudio::CppUnitTestFramework
   template<> static std::wstring ToString<Json4CPP::        JsonArray      >(Json4CPP::        JsonArray       const& array  ) { return Json4CPP::Json::Stringify(               array  ); }
   template<> static std::wstring ToString<Json4CPP::        Json           >(Json4CPP::        Json            const& json   ) { return Json4CPP::Json::Stringify(               json   ); }
   template<> static std::wstring ToString<Json4CPP::        JsonType       >(Json4CPP::        JsonType        const& type   ) { return Json4CPP::Json::Stringify(               type   ); }
+  template<> static std::wstring ToString<Json4CPP::        JsonPointer    >(Json4CPP::        JsonPointer     const& ptr    ) { return Json4CPP::Json::Stringify(               ptr    ); }
   template<> static std::wstring ToString<Json4CPP::Detail::JsonBuilder    >(Json4CPP::Detail::JsonBuilder     const& builder) { return Json4CPP::Json::Stringify(               builder); }
   template<> static std::wstring ToString<Json4CPP::Detail::JsonBuilderType>(Json4CPP::Detail::JsonBuilderType const& type   ) { return Json4CPP::Json::Stringify(               type   ); }
   template<> static std::wstring ToString<Json4CPP::Detail::JsonTokenType  >(Json4CPP::Detail::JsonTokenType   const& type   ) { return Json4CPP::Json::Stringify(               type   ); }
   template<> static std::wstring ToString<Json4CPP::Detail::VALUE          >(Json4CPP::Detail::VALUE           const& value  ) { return Json4CPP::Json::Stringify(Json4CPP::Json(value) ); }
-  template<> static std::wstring ToString<Json4CPP::Detail::VALUE_TOKEN    >(Json4CPP::Detail::VALUE_TOKEN     const& value  ) { return Json4CPP::Detail::JsonLinter::Dump(value);        }
+  template<> static std::wstring ToString<Json4CPP::Detail::VALUE_TOKEN    >(Json4CPP::Detail::VALUE_TOKEN     const& value  ) { return Json4CPP::Detail::JsonLinter::Dump(value);         }
 
   template<> static std::wstring ToString<std::nullptr_t>(std::nullptr_t const& value) { return Json4CPP::Json::Stringify(value); }
   template<> static std::wstring ToString<uint16_t>(uint16_t const& value) { return Json4CPP::Json::Stringify(value); }

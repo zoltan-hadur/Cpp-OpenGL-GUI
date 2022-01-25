@@ -15,6 +15,7 @@
 #include "JsonTokenType.h"
 #include "JsonIterator.h"
 #include "JsonConstIterator.h"
+#include "JsonPointer.h"
 
 #include <variant>
 #include <string>
@@ -207,12 +208,33 @@ namespace Json4CPP
     void Erase(int64_t index);
     std::vector<std::wstring> Keys() const;
     std::vector<std::reference_wrapper<const std::wstring>> KeysView() const;
+    Json      & operator[](JsonPointer const& ptr);
+    Json      & operator[](wchar_t      const* key);
     Json      & operator[](std::wstring const& key);
     Json      & operator[](int64_t index);
+    template<typename T, std::enable_if_t<std::is_integral_v<T>>* = nullptr>
+    Json      & operator[](T index)
+    {
+      return (*this)[static_cast<int64_t>(index)];
+    }
+    Json      & At(JsonPointer const& ptr);
+    Json const& At(JsonPointer const& ptr) const;
+    Json      & At(wchar_t      const* key);
+    Json const& At(wchar_t      const* key) const;
     Json      & At(std::wstring const& key);
     Json const& At(std::wstring const& key) const;
     Json      & At(int64_t index);
     Json const& At(int64_t index) const;
+    template<typename T, std::enable_if_t<std::is_integral_v<T>>* = nullptr>
+    Json      & At(T index)
+    {
+      return At(static_cast<int64_t>(index));
+    }
+    template<typename T, std::enable_if_t<std::is_integral_v<T>>* = nullptr>
+    Json const& At(T index) const
+    {
+      return At(static_cast<int64_t>(index));
+    }
 
     JsonIterator begin();
     JsonIterator end  ();

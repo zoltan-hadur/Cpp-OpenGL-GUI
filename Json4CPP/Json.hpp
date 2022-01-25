@@ -14,4 +14,5 @@
 #include "JsonConstIterator.h"
 #include "JsonIndentSize.h"
 #include "JsonIndentChar.h"
+#include "JsonPointer.h"
 #include "Value.h"
