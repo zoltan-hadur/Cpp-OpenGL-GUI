@@ -114,7 +114,7 @@ namespace Json4CPP
         if (builder.Is(JsonBuilderType::Pair))
         {
           auto& pair = get<vector<JsonBuilder>>(builder._value);
-          auto key = get<wstring>(pair[0]._value);
+          auto& key = get<wstring>(pair[0]._value);
           auto value = Json(pair[1]);
           Insert({ move(key), move(value) });
         }
@@ -151,7 +151,7 @@ namespace Json4CPP
         if (builder.Is(JsonBuilderType::Pair))
         {
           auto& pair = get<vector<JsonBuilder>>(builder._value);
-          auto key = get<wstring>(move(pair[0]._value));
+          auto& key = get<wstring>(pair[0]._value);
           auto value = Json(move(pair[1]));
           Insert({ move(key), move(value) });
         }

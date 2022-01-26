@@ -116,7 +116,7 @@ namespace Json4CPP
     }
     auto* result = &json;
     wstring path;
-    for (auto encodedToken : _encodedTokens)
+    for (auto const& encodedToken : _encodedTokens)
     {
       path = path + L"/" + encodedToken;
       auto decodedToken = regex_replace(regex_replace(encodedToken, wregex(L"~1"s), L"/"s), wregex(L"~0"s), L"~"s);

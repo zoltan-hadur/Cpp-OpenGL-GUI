@@ -2958,7 +2958,7 @@ namespace Json4CPP::Test
 
       Assert::AreEqual(0i64, json.Count(L"asd"));
       Assert::AreEqual(0i64, json.Count(L"asd"s));
-      for (auto key : json.Keys())
+      for (auto& key : json.Keys())
       {
         Assert::AreEqual(1i64, json.Count(key));
       }
@@ -3320,7 +3320,7 @@ namespace Json4CPP::Test
     TEST_METHOD(TestOperatorSubscriptIndex)
     {
       auto jsons = vector<Json>{ Json(nullptr_t()), Json(wstring()), Json(bool()), Json(double()), Json(int64_t()), Json(JsonObject()) };
-      for (auto json : jsons)
+      for (auto& json : jsons)
       {
         ExpectException<exception>([&]() { json[int8_t  ()]; }, "Operator[](int64_t index) is only defined for JsonArray!");
         ExpectException<exception>([&]() { json[uint8_t ()]; }, "Operator[](int64_t index) is only defined for JsonArray!");
@@ -3572,7 +3572,7 @@ namespace Json4CPP::Test
     TEST_METHOD(TestAtInteger)
     {
       auto jsons = vector<Json>{ Json(nullptr_t()), Json(wstring()), Json(bool()), Json(double()), Json(int64_t()), Json(JsonObject()) };
-      for (auto json : jsons)
+      for (auto& json : jsons)
       {
         ExpectException<exception>([&]() { json.At(int8_t  ()); }, "At(int64_t index) is only defined for JsonArray!");
         ExpectException<exception>([&]() { json.At(uint8_t ()); }, "At(int64_t index) is only defined for JsonArray!");
@@ -3610,7 +3610,7 @@ namespace Json4CPP::Test
     TEST_METHOD(TestAtIntegerConst)
     {
       auto const jsons = vector<Json>{ Json(nullptr_t()), Json(wstring()), Json(bool()), Json(double()), Json(int64_t()), Json(JsonObject()) };
-      for (auto const json : jsons)
+      for (auto const& json : jsons)
       {
         ExpectException<exception>([&]() { json.At(int8_t  ()); }, "At(int64_t index) is only defined for JsonArray!");
         ExpectException<exception>([&]() { json.At(uint8_t ()); }, "At(int64_t index) is only defined for JsonArray!");
@@ -3674,7 +3674,7 @@ namespace Json4CPP::Test
       value = L"asd"s;
       Assert::AreEqual<Json>(L"Test"s, json);
       Assert::AreEqual<wstring>(L"asd"s, value);
-      auto value2 = (wstring&&)json;
+      auto value2 = move((wstring&&)json);
       Assert::AreEqual<Json>(L""s, json);
       Assert::AreEqual<wstring>(L"Test"s, value2);
       value2 = L"asd"s;
@@ -3831,7 +3831,7 @@ namespace Json4CPP::Test
 
       auto json = Json{ { L"Key1"s, 1 }, { L"Key2"s, 2 } };
       Assert::AreEqual<Json>({ { L"Key1"s, 1 }, { L"Key2"s, 2 } }, json);
-      auto value = (JsonObject&&)json;
+      auto value = move((JsonObject&&)json);
       Assert::AreEqual<Json>(JsonObject(), json);
       Assert::AreEqual<JsonObject>({ { L"Key1"s, 1 }, { L"Key2"s, 2 } }, value);
     }
@@ -3848,7 +3848,7 @@ namespace Json4CPP::Test
 
       auto json = Json{ 1, 3, 3, 7 };
       Assert::AreEqual<Json>({ 1, 3, 3, 7 }, json);
-      auto value = (JsonArray&&)json;
+      auto value = move((JsonArray&&)json);
       Assert::AreEqual<Json>(JsonArray(), json);
       Assert::AreEqual<JsonArray>({ 1, 3, 3, 7 }, value);
     }

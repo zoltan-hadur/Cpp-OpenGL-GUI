@@ -885,7 +885,7 @@ namespace Json4CPP::Test
 
       Assert::AreEqual(0i64, object.Count(L"asd"));
       Assert::AreEqual(0i64, object.Count(L"asd"s));
-      for (auto key : object.Keys())
+      for (auto& key : object.Keys())
       {
         Assert::AreEqual(1i64, object.Count(key));
       }
@@ -1058,7 +1058,7 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>(2, object[L"Array"][1]);
       Assert::AreEqual<Json>(3, object[L"Array"][2]);
 
-      for (auto key : object.Keys())
+      for (auto& key : object.Keys())
       {
         object[key] = 1337;
         Assert::AreEqual<Json>(1337, object[key]);
@@ -1099,7 +1099,7 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>(2, object.At(L"Array").At(1));
       Assert::AreEqual<Json>(3, object.At(L"Array").At(2));
 
-      for (auto key : object.Keys())
+      for (auto& key : object.Keys())
       {
         object.At(key) = 9999;
         Assert::AreEqual<Json>(9999, object.At(key));
@@ -1156,7 +1156,7 @@ namespace Json4CPP::Test
       {
         value = 1337;
       }
-      for (auto key : object.Keys())
+      for (auto& key : object.Keys())
       {
         Assert::AreEqual<Json>(1337, object[key]);
       }
@@ -1178,7 +1178,7 @@ namespace Json4CPP::Test
       {
         value = 1337;
       }
-      for (auto key : object.Keys())
+      for (auto& key : object.Keys())
       {
         Assert::AreEqual<Json>(map[key], object[key]);
       }
@@ -1203,7 +1203,7 @@ namespace Json4CPP::Test
       {
         value = 1337;
       }
-      for (auto key : object.Keys())
+      for (auto& key : object.Keys())
       {
         Assert::AreEqual<Json>(map.at(key), object.At(key));
       }
@@ -1225,7 +1225,7 @@ namespace Json4CPP::Test
       {
         value = 1337;
       }
-      for (auto key : object2.Keys())
+      for (auto& key : object2.Keys())
       {
         Assert::AreEqual<Json>(map2.at(key), object2.At(key));
       }
@@ -1327,7 +1327,7 @@ namespace Json4CPP::Test
       wstringstream ss(input);
       ss >> result;
       Assert::AreEqual(expected, result);
-      for (auto key : expected.Keys())
+      for (auto& key : expected.Keys())
       {
         Assert::AreEqual(expected[key], result[key]);
       }
