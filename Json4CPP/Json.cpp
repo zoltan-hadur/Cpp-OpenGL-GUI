@@ -498,7 +498,7 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::String: return move(*get_if<wstring>(&_value));
+    case JsonType::String: return move(get<wstring>(_value));
     default:
       auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::String) + L"'!"s);
       throw exception(message.c_str());
@@ -664,7 +664,7 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Object: return move(*get_if<JsonObject>(&_value));
+    case JsonType::Object: return move(get<JsonObject>(_value));
     default:
       auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Object) + L"'!"s);
       throw exception(message.c_str());
@@ -686,7 +686,7 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Array: return move(*get_if<JsonArray>(&_value));
+    case JsonType::Array: return move(get<JsonArray>(_value));
     default:
       auto message = WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Array) + L"'!"s);
       throw exception(message.c_str());
