@@ -159,9 +159,9 @@ namespace Json4CPP
         {
           VALUE value;
           visit(Overload{
-            [&](auto const& arg) { value = move(arg); },
-            [&](vector<JsonBuilder> const& arg) { value = JsonArray(move(arg)); },
-          }, builder._value);
+            [&](auto && arg) { value = move(arg); },
+            [&](vector<JsonBuilder> && arg) { value = JsonArray(move(arg)); },
+          }, move(builder._value));
           auto message = WString2String(L"JsonObject(JsonBuilder && builder) is not defined for type "s + Json::Stringify(builder.Type()) + L"!"s +
                                         L" Error at: "s + Json::Stringify(Json(value)) + L"."s);
           throw exception(message.c_str());
