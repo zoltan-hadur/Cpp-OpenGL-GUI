@@ -192,7 +192,7 @@ namespace Json4CPP
 
   Json& JsonArray::At(int64_t index)
   {
-    return _values[index];
+    return const_cast<Json&>(as_const(*this).At(index));
   }
 
   Json const& JsonArray::At(int64_t index) const

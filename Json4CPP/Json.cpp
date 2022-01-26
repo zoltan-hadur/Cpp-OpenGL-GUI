@@ -399,13 +399,7 @@ namespace Json4CPP
 
   Json& Json::At(JsonPointer const& ptr)
   {
-    switch (Type())
-    {
-    case JsonType::Object:
-    case JsonType::Array :
-      return ptr.Navigate(*this);
-    default: throw exception("At(JsonPointer const& ptr) is only defined for JsonObject and JsonArray!");
-    }
+    return const_cast<Json&>(as_const(*this).At(ptr));
   }
 
   Json const& Json::At(JsonPointer const& ptr) const
@@ -421,7 +415,7 @@ namespace Json4CPP
 
   Json& Json::At(wchar_t const* key)
   {
-    return At(wstring(key));
+    return const_cast<Json&>(as_const(*this).At(key));
   }
 
   Json const& Json::At(wchar_t const* key) const
@@ -431,11 +425,7 @@ namespace Json4CPP
 
   Json& Json::At(wstring const& key)
   {
-    switch (Type())
-    {
-    case JsonType::Object: return get<JsonObject>(_value).At(key);
-    default: throw exception("At(wstring const& key) is only defined for JsonObject!");
-    }
+    return const_cast<Json&>(as_const(*this).At(key));
   }
 
   Json const& Json::At(wstring const& key) const
@@ -449,11 +439,7 @@ namespace Json4CPP
 
   Json& Json::At(int64_t index)
   {
-    switch (Type())
-    {
-    case JsonType::Array: return get<JsonArray>(_value).At(index);
-    default: throw exception("At(int64_t index) is only defined for JsonArray!");
-    }
+    return const_cast<Json&>(as_const(*this).At(index));
   }
 
   Json const& Json::At(int64_t index) const
@@ -486,7 +472,7 @@ namespace Json4CPP
   }
 
 #pragma region Conversion operators
-  Json::operator std::nullptr_t() const
+  Json::operator nullptr_t() const
   {
     switch (Type())
     {
@@ -497,7 +483,7 @@ namespace Json4CPP
     }
   }
 
-  Json::operator std::wstring const&() const
+  Json::operator wstring const&() const
   {
     switch (Type())
     {
@@ -508,7 +494,7 @@ namespace Json4CPP
     }
   }
 
-  Json::operator std::wstring && ()
+  Json::operator wstring && ()
   {
     switch (Type())
     {

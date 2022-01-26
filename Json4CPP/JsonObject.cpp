@@ -252,7 +252,7 @@ namespace Json4CPP
 
   Json& JsonObject::At(wstring const& key)
   {
-    return _pairs.at(_indexes.at(key)).second;
+    return const_cast<Json&>(as_const(*this).At(key));
   }
 
   Json const& JsonObject::At(wstring const& key) const
