@@ -694,31 +694,31 @@ namespace Json4CPP
   }
 #pragma endregion
 
-  Json& Json::operator=(nullptr_t                     value ) { _value =                      value ;          return *this; }
-  Json& Json::operator=(wchar_t const*                value ) { _value =              wstring(value);          return *this; }
-  Json& Json::operator=(wstring     const&            value ) { _value =                      value ;          return *this; }
-  Json& Json::operator=(wstring         &&            value ) { _value =                 move(value);          return *this; }
-  Json& Json::operator=(bool                          value ) { _value =                      value ;          return *this; }
-  Json& Json::operator=(char                          value ) { _value = static_cast<int64_t>(value);          return *this; }
-  Json& Json::operator=(int8_t                        value ) { _value = static_cast<int64_t>(value);          return *this; }
-  Json& Json::operator=(uint8_t                       value ) { _value = static_cast<int64_t>(value);          return *this; }
-  Json& Json::operator=(int16_t                       value ) { _value = static_cast<int64_t>(value);          return *this; }
-  Json& Json::operator=(uint16_t                      value ) { _value = static_cast<int64_t>(value);          return *this; }
-  Json& Json::operator=(int32_t                       value ) { _value = static_cast<int64_t>(value);          return *this; }
-  Json& Json::operator=(uint32_t                      value ) { _value = static_cast<int64_t>(value);          return *this; }
-  Json& Json::operator=(int64_t                       value ) { _value =                      value ;          return *this; }
-  Json& Json::operator=(uint64_t                      value ) { _value = static_cast<int64_t>(value);          return *this; }
-  Json& Json::operator=(float                         value ) { _value = static_cast<double> (value);          return *this; }
-  Json& Json::operator=(double                        value ) { _value =                      value ;          return *this; }
-  Json& Json::operator=(Json        const&            value ) { _value =                      value._value ;   return *this; }
-  Json& Json::operator=(Json            &&            value ) { _value =                 move(value._value);   return *this; }
-  Json& Json::operator=(JsonObject  const&            value ) { _value =                      value ;          return *this; }
-  Json& Json::operator=(JsonObject      &&            value ) { _value =                 move(value);          return *this; }
-  Json& Json::operator=(JsonArray   const&            value ) { _value =                      value ;          return *this; }
-  Json& Json::operator=(JsonArray       &&            value ) { _value =                 move(value);          return *this; }
-  Json& Json::operator=(JsonBuilder const&            value ) { _value =       move(Json(     value )._value); return *this; }
-  Json& Json::operator=(JsonBuilder     &&            value ) { _value =       move(Json(move(value))._value); return *this; }
-  Json& Json::operator=(initializer_list<JsonBuilder> values) { _value =       move(Json(     values)._value); return *this; }
+  Json& Json::operator=(nullptr_t                     value )          { _value =                      value ;          return *this; }
+  Json& Json::operator=(wchar_t const*                value )          { _value =              wstring(value);          return *this; }
+  Json& Json::operator=(wstring     const&            value )          { _value =                      value ;          return *this; }
+  Json& Json::operator=(wstring         &&            value )          { _value =                 move(value);          return *this; }
+  Json& Json::operator=(bool                          value )          { _value =                      value ;          return *this; }
+  Json& Json::operator=(char                          value )          { _value = static_cast<int64_t>(value);          return *this; }
+  Json& Json::operator=(int8_t                        value )          { _value = static_cast<int64_t>(value);          return *this; }
+  Json& Json::operator=(uint8_t                       value )          { _value = static_cast<int64_t>(value);          return *this; }
+  Json& Json::operator=(int16_t                       value )          { _value = static_cast<int64_t>(value);          return *this; }
+  Json& Json::operator=(uint16_t                      value )          { _value = static_cast<int64_t>(value);          return *this; }
+  Json& Json::operator=(int32_t                       value )          { _value = static_cast<int64_t>(value);          return *this; }
+  Json& Json::operator=(uint32_t                      value )          { _value = static_cast<int64_t>(value);          return *this; }
+  Json& Json::operator=(int64_t                       value )          { _value =                      value ;          return *this; }
+  Json& Json::operator=(uint64_t                      value )          { _value = static_cast<int64_t>(value);          return *this; }
+  Json& Json::operator=(float                         value )          { _value = static_cast<double> (value);          return *this; }
+  Json& Json::operator=(double                        value )          { _value =                      value ;          return *this; }
+  Json& Json::operator=(Json        const&            value )          { _value =                      value._value ;   return *this; }
+  Json& Json::operator=(Json            &&            value ) noexcept { _value =                 move(value._value);   return *this; }
+  Json& Json::operator=(JsonObject  const&            value )          { _value =                      value ;          return *this; }
+  Json& Json::operator=(JsonObject      &&            value )          { _value =                 move(value);          return *this; }
+  Json& Json::operator=(JsonArray   const&            value )          { _value =                      value ;          return *this; }
+  Json& Json::operator=(JsonArray       &&            value )          { _value =                 move(value);          return *this; }
+  Json& Json::operator=(JsonBuilder const&            value )          { _value =       move(Json(     value )._value); return *this; }
+  Json& Json::operator=(JsonBuilder     &&            value )          { _value =       move(Json(move(value))._value); return *this; }
+  Json& Json::operator=(initializer_list<JsonBuilder> values)          { _value =       move(Json(     values)._value); return *this; }
 
   wostream& operator<<(wostream& os, Json const& json)
   {

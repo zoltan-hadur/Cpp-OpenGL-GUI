@@ -278,7 +278,7 @@ namespace Json4CPP
     Json& operator= (float                      value);
     Json& operator= (double                     value);
     Json& operator= (Json                const& value);
-    Json& operator= (Json                    && value);
+    Json& operator= (Json                    && value) noexcept;
     Json& operator= (JsonObject          const& value);
     Json& operator= (JsonObject              && value);
     Json& operator= (JsonArray           const& value);
