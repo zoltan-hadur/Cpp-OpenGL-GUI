@@ -66,20 +66,12 @@ namespace Json4CPP
 
   wstring JsonPointer::Path() const
   {
-    if (Empty())
-    {
-      return L""s;
-    }
-    wstring path;
-    for (auto const& token : _encodedTokens)
-    {
-      path = path + L'/' + token;
-    }
-    return path;
+    return _path;
   }
 
   void JsonPointer::Path(wstring const& path)
   {
+    _path = path;
     _encodedTokens = ExtractEncodedTokens(path);
   }
 
@@ -89,14 +81,12 @@ namespace Json4CPP
     {
       return *this;
     }
-    JsonPointer result = *this;
-    result._encodedTokens.pop_back();
-    return result;
+    return JsonPointer(_path.substr(0, _path.find_last_of(L'/')));
   }
 
   bool JsonPointer::Empty() const
   {
-    return _encodedTokens.empty();
+    return _path.empty();
   }
 
   Json& JsonPointer::Navigate(Json& json) const
@@ -166,7 +156,7 @@ namespace Json4CPP
 
   wostream& operator<<(wostream& os, JsonPointer const& ptr)
   {
-    return os << ptr.Path();
+    return os << ptr._path;
   }
 
   wistream& operator>>(wistream& is, JsonPointer& ptr)
@@ -177,7 +167,7 @@ namespace Json4CPP
 
   bool operator==(JsonPointer const& left, JsonPointer const& right)
   {
-    return left.Path() == right.Path();
+    return left._path == right._path;
   }
 
   bool operator!=(JsonPointer const& left, JsonPointer const& right)
@@ -187,9 +177,7 @@ namespace Json4CPP
 
   JsonPointer operator/ (JsonPointer const& left, JsonPointer const& right)
   {
-    auto result = left;
-    result._encodedTokens.insert(result._encodedTokens.end(), right._encodedTokens.begin(), right._encodedTokens.end());
-    return result;
+    return JsonPointer(left._path + right._path);
   }
 
   JsonPointer operator/ (JsonPointer const& left, wstring && encodedToken)
@@ -204,7 +192,7 @@ namespace Json4CPP
 
   JsonPointer& operator/=(JsonPointer& left, JsonPointer const& right)
   {
-    left._encodedTokens.insert(left._encodedTokens.end(), right._encodedTokens.begin(), right._encodedTokens.end());
+    left.Path(left._path + right._path);
     return left;
   }
 

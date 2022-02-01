@@ -135,6 +135,7 @@
     <Natvis Include="JsonArray.natvis" />
     <Natvis Include="JsonBuilder.natvis" />
     <Natvis Include="JsonObject.natvis" />
+    <Natvis Include="JsonPointer.natvis" />
     <Natvis Include="JsonTokenValue.natvis" />
     <Natvis Include="JsonTokenValuePair.natvis" />
     <Natvis Include="JsonKeyValuePair.natvis" />

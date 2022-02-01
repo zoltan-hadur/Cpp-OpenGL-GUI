@@ -20,6 +20,8 @@ namespace Json4CPP
   {
   private:
 #pragma warning(suppress: 4251)
+    std::wstring _path;
+#pragma warning(suppress: 4251)
     std::vector<std::wstring> _encodedTokens;
     std::vector<std::wstring> ExtractEncodedTokens(std::wstring const& path) const;
   public:
