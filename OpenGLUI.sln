@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GLUI", "GLUI\GLUI.vcxproj", "{737E80A8-C0AA-4157-90AB-39341310CECD}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Json4CPP", "Json4CPP\Json4CPP.vcxproj", "{5A1A5B04-E299-4A68-8305-5A3BE3F79012}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Json4CPP.Test", "Json4CPP.Test\Json4CPP.Test.vcxproj", "{2517BF00-D3B8-4D80-8EDA-A331286E3295}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Log4CPP", "Log4CPP\Log4CPP.vcxproj", "{4C401594-8B08-4EB9-9B2A-4964BE010B1D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{2517BF00-D3B8-4D80-8EDA-A331286E3295}.Debug|x64.Build.0 = Debug|x64
 		{2517BF00-D3B8-4D80-8EDA-A331286E3295}.Release|x64.ActiveCfg = Release|x64
 		{2517BF00-D3B8-4D80-8EDA-A331286E3295}.Release|x64.Build.0 = Release|x64
+		{4C401594-8B08-4EB9-9B2A-4964BE010B1D}.Debug|x64.ActiveCfg = Debug|x64
+		{4C401594-8B08-4EB9-9B2A-4964BE010B1D}.Debug|x64.Build.0 = Debug|x64
+		{4C401594-8B08-4EB9-9B2A-4964BE010B1D}.Release|x64.ActiveCfg = Release|x64
+		{4C401594-8B08-4EB9-9B2A-4964BE010B1D}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
