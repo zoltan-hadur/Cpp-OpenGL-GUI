@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
   <Type Name="OpenGLUI::Foundation::Delegate&lt;*&gt;">
-    <DisplayString Condition="_func._Mystorage._Ptrs[std::_Small_object_num_ptrs - 1] == nullptr">{nullptr}</DisplayString>
+    <DisplayString Condition="_func._Mystorage._Ptrs[std::_Small_object_num_ptrs - 1] == nullptr">null</DisplayString>
     <DisplayString>{_func,na}</DisplayString>
   </Type>
 </AutoVisualizer>
