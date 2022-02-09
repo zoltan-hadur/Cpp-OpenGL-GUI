@@ -13,7 +13,12 @@ namespace OpenGLUI::Foundation::Test
   class FunctionInfoTestClass
   {
   public:
-    double Method(int, int*, int&, int const*, int const&, int&&)
+    double Method1(int, int*, int&, int const*, int const&, int&&)
+    {
+      return 0.0;
+    }
+
+    double Method2(int, int*, int&, int const*, int const&, int&&) const
     {
       return 0.0;
     }
@@ -87,15 +92,34 @@ namespace OpenGLUI::Foundation::Test
       static_assert(is_same_v<FunctionInfo<Function>::Argument<5>::Type, int&&>);
     }
 
-    TEST_METHOD(TestMethod)
+    TEST_METHOD(TestMethod1)
     {
-      using Method = decltype(&FunctionInfoTestClass::Method);
+      using Method = decltype(&FunctionInfoTestClass::Method1);
 
       static_assert(is_same_v<FunctionInfo<Method>::Signature, double(int, int*, int&, int const*, int const&, int&&)>);
       static_assert(is_same_v<FunctionInfo<Method>::VoidSignature, void(int, int*, int&, int const*, int const&, int&&)>);
       static_assert(is_same_v<FunctionInfo<Method>::ReturnType, double>);
       static_assert(FunctionInfo<Method>::IsFree == false);
       static_assert(FunctionInfo<Method>::IsMutable == true);
+      static_assert(is_same_v<FunctionInfo<Method>::Arguments::Types, tuple<int, int*, int&, int const*, int const&, int&&>>);
+      static_assert(FunctionInfo<Method>::Arguments::Count == 6);
+      static_assert(is_same_v<FunctionInfo<Method>::Argument<0>::Type, int>);
+      static_assert(is_same_v<FunctionInfo<Method>::Argument<1>::Type, int*>);
+      static_assert(is_same_v<FunctionInfo<Method>::Argument<2>::Type, int&>);
+      static_assert(is_same_v<FunctionInfo<Method>::Argument<3>::Type, int const*>);
+      static_assert(is_same_v<FunctionInfo<Method>::Argument<4>::Type, int const&>);
+      static_assert(is_same_v<FunctionInfo<Method>::Argument<5>::Type, int&&>);
+    }
+
+    TEST_METHOD(TestMethod2)
+    {
+      using Method = decltype(&FunctionInfoTestClass::Method2);
+
+      static_assert(is_same_v<FunctionInfo<Method>::Signature, double(int, int*, int&, int const*, int const&, int&&)>);
+      static_assert(is_same_v<FunctionInfo<Method>::VoidSignature, void(int, int*, int&, int const*, int const&, int&&)>);
+      static_assert(is_same_v<FunctionInfo<Method>::ReturnType, double>);
+      static_assert(FunctionInfo<Method>::IsFree == false);
+      static_assert(FunctionInfo<Method>::IsMutable == false);
       static_assert(is_same_v<FunctionInfo<Method>::Arguments::Types, tuple<int, int*, int&, int const*, int const&, int&&>>);
       static_assert(FunctionInfo<Method>::Arguments::Count == 6);
       static_assert(is_same_v<FunctionInfo<Method>::Argument<0>::Type, int>);

@@ -129,7 +129,10 @@ namespace Json4CPP::Test
       auto wstr2 = L"𤭢"s;
       u32string ustr = u32string{ 0x00024B62 };
       auto ustr2 = U"𤭢"s;
-      Assert::AreEqual(str2, str);
+      for (int i = 0; i < 4; ++i)
+      {
+        Assert::AreEqual(str.c_str()[i], (char)str2.c_str()[i]);
+      }
       Assert::AreEqual(wstr2, wstr);
       Assert::AreEqual(ustr2, ustr);
       Assert::AreEqual(wstr, String2WString(str));
