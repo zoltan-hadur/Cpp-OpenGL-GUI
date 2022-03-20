@@ -16,7 +16,7 @@ using namespace Json4CPP::Detail;
 
 namespace Json4CPP
 {
-  vector<wstring> JsonPointer::ExtractEncodedTokens(wstring const& path) const
+  vector<wstring> JsonPointer::ExtractEncodedTokens(wstring const& path)
   {
     vector<wstring> result;
     if (path.empty())
@@ -47,6 +47,22 @@ namespace Json4CPP
       end = path.find(L'/', start);
     } while (start != 0);
     return result;
+  }
+
+  wstring JsonPointer::DecodeToken(wstring encodedToken)
+  {
+    return regex_replace(regex_replace(encodedToken, wregex(L"~1"s), L"/"s), wregex(L"~0"s), L"~"s);
+  }
+
+  bool JsonPointer::PointsAfterTheLastArrayElement(wstring decodedToken)
+  {
+    return decodedToken.length() == 1 && decodedToken[0] == L'-';
+  }
+
+  bool JsonPointer::ArrayIndex(wstring decodedToken)
+  {
+    return decodedToken.length() == 1 && decodedToken[0] == L'0' || // It is either a single '0' or digits without a leading '0'
+           decodedToken.length() >= 1 && decodedToken[0] != L'0' && all_of(decodedToken.begin(), decodedToken.end(), [](wchar_t c) { return iswdigit(c); });
   }
 
   JsonPointer::JsonPointer()
@@ -84,6 +100,15 @@ namespace Json4CPP
     return JsonPointer(_path.substr(0, _path.find_last_of(L'/')));
   }
 
+  wstring JsonPointer::Target() const
+  {
+    if (Empty())
+    {
+      return L""s;
+    }
+    return DecodeToken(_encodedTokens.back());
+  }
+
   bool JsonPointer::Empty() const
   {
     return _path.empty();
@@ -109,7 +134,7 @@ namespace Json4CPP
     for (auto const& encodedToken : _encodedTokens)
     {
       path = path + L"/" + encodedToken;
-      auto decodedToken = regex_replace(regex_replace(encodedToken, wregex(L"~1"s), L"/"s), wregex(L"~0"s), L"~"s);
+      auto decodedToken = DecodeToken(encodedToken);
       switch (result->Type())
       {
       case JsonType::Object:
@@ -124,13 +149,12 @@ namespace Json4CPP
         }
         break;
       case JsonType::Array:
-        if (decodedToken.length() == 1 && decodedToken[0] == L'-')
+        if (PointsAfterTheLastArrayElement(decodedToken))
         {
           auto message = WString2String(L"Reference token \""s + encodedToken + L"\" at path \""s + path + L"\" points to the member after the last array element which does not exist!"s);
           throw exception(message.c_str());
         }
-        else if (decodedToken.length() == 1 && decodedToken[0] == L'0' || // It is either a single '0' or digits without a leading '0'
-                 decodedToken.length() >= 1 && decodedToken[0] != L'0' && all_of(decodedToken.begin(), decodedToken.end(), [](wchar_t c) { return iswdigit(c); }))
+        else if (ArrayIndex(decodedToken))
         {
           int64_t index;
           wstringstream(decodedToken) >> index;

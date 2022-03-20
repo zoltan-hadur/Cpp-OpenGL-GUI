@@ -76,6 +76,14 @@ namespace Json4CPP::Test
       Assert::AreEqual(L""s, ptr.Parent().Parent().Parent().Path());
     }
 
+    TEST_METHOD(TestTarget)
+    {
+      auto ptr = JsonPointer();
+      Assert::AreEqual(L""s, ptr.Target());
+      ptr = JsonPointer(L"/foo/aa~1bb~1cc~0dd~0ee~01ff~10gg"s);
+      Assert::AreEqual(L"aa/bb/cc~dd~ee~1ff/0gg"s, ptr.Target());
+    }
+
     TEST_METHOD(TestEmpty)
     {
       auto ptr = JsonPointer();

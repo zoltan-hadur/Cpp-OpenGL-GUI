@@ -23,7 +23,10 @@ namespace Json4CPP
     std::wstring _path;
 #pragma warning(suppress: 4251)
     std::vector<std::wstring> _encodedTokens;
-    std::vector<std::wstring> ExtractEncodedTokens(std::wstring const& path) const;
+    static std::vector<std::wstring> ExtractEncodedTokens(std::wstring const& path);
+    static std::wstring DecodeToken(std::wstring encodedToken);
+    static bool PointsAfterTheLastArrayElement(std::wstring decodedToken);
+    static bool ArrayIndex(std::wstring decodedToken);
   public:
     JsonPointer();
     JsonPointer(wchar_t      const* path);
@@ -32,6 +35,7 @@ namespace Json4CPP
     std::wstring Path() const;
     void Path(std::wstring const& path);
     JsonPointer Parent() const;
+    std::wstring Target() const;
     bool Empty() const;
 
     Json      & Navigate(Json      & json) const;
