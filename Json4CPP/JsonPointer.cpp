@@ -178,6 +178,19 @@ namespace Json4CPP
     return *result;
   }
 
+  bool JsonPointer::Exists(Json const& json) const
+  {
+    try
+    {
+      Navigate(json);
+      return true;
+    }
+    catch (...)
+    {
+      return false;
+    }
+  }
+
   wostream& operator<<(wostream& os, JsonPointer const& ptr)
   {
     return os << ptr._path;

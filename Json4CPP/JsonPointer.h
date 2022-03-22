@@ -40,6 +40,7 @@ namespace Json4CPP
 
     Json      & Navigate(Json      & json) const;
     Json const& Navigate(Json const& json) const;
+    bool Exists(Json const& json) const;
 
     JSON_API friend std::wostream& operator<<(std::wostream& os, JsonPointer const& ptr);
     JSON_API friend std::wistream& operator>>(std::wistream& is, JsonPointer      & ptr);

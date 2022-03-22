@@ -253,6 +253,87 @@ namespace Json4CPP::Test
       static_assert(is_const<remove_reference<decltype(JsonPointer(L"/0"s).Navigate(json0))>::type>::value, "JsonObject::At(JsonPointer) return type must be Json const&");
     }
 
+    TEST_METHOD(TestExists)
+    {
+      auto const null    = Json(nullptr_t());
+      auto const text    = Json(wstring  ());
+      auto const boolean = Json(bool     ());
+      auto const real    = Json(double   ());
+      auto const number  = Json(int64_t  ());
+      Assert::IsFalse(JsonPointer().Exists(null   ));
+      Assert::IsFalse(JsonPointer().Exists(text   ));
+      Assert::IsFalse(JsonPointer().Exists(boolean));
+      Assert::IsFalse(JsonPointer().Exists(real   ));
+      Assert::IsFalse(JsonPointer().Exists(number ));
+
+      auto const json0 = Json{ 1, 3, 3, 7 };
+      Assert::IsTrue(JsonPointer(L""s  ).Exists(json0));
+      Assert::IsTrue(JsonPointer(L"/0"s).Exists(json0));
+      Assert::IsTrue(JsonPointer(L"/1"s).Exists(json0));
+      Assert::IsTrue(JsonPointer(L"/2"s).Exists(json0));
+      Assert::IsTrue(JsonPointer(L"/3"s).Exists(json0));
+
+      auto const json1 = Json{
+        { L"Null", nullptr },
+        { L"String", L"Test" },
+        { L"Boolean", true },
+        { L"Real", 13.37 },
+        { L"Integer", 1337 },
+        { L"Object", {
+          { L"Key1", 1 },
+          { L"Key2", 2 } }
+        },
+        { L"Array", { 1, 2, 3 } },
+      };
+      Assert::IsTrue(JsonPointer(L""s)            .Exists(json1));
+      Assert::IsTrue(JsonPointer(L"/Null"s)       .Exists(json1));
+      Assert::IsTrue(JsonPointer(L"/String"s)     .Exists(json1));
+      Assert::IsTrue(JsonPointer(L"/Boolean"s)    .Exists(json1));
+      Assert::IsTrue(JsonPointer(L"/Real"s)       .Exists(json1));
+      Assert::IsTrue(JsonPointer(L"/Integer"s)    .Exists(json1));
+      Assert::IsTrue(JsonPointer(L"/Object"s)     .Exists(json1));
+      Assert::IsTrue(JsonPointer(L"/Object/Key1"s).Exists(json1));
+      Assert::IsTrue(JsonPointer(L"/Object/Key2"s).Exists(json1));
+      Assert::IsTrue(JsonPointer(L"/Array"s)      .Exists(json1));
+      Assert::IsTrue(JsonPointer(L"/Array/0"s)    .Exists(json1));
+      Assert::IsTrue(JsonPointer(L"/Array/1"s)    .Exists(json1));
+      Assert::IsTrue(JsonPointer(L"/Array/2"s)    .Exists(json1));
+
+      auto const json2 = Json{
+        { L"foo"s   , { L"bar"s, L"baz"s } } ,
+        { L""s      , 0 },
+        { L"a/b"s   , 1 },
+        { L"c%d"s   , 2 },
+        { L"e^f"s   , 3 },
+        { L"g|h"s   , 4 },
+        { L"i\\j"s  , 5},
+        { L"k\"l"s  , 6},
+        { L" "s     , 7 },
+        { L"m~n"s   , 8 }
+      };
+      Assert::IsTrue(JsonPointer(L""s)      .Exists(json2));
+      Assert::IsTrue(JsonPointer(L"/foo"s)  .Exists(json2));
+      Assert::IsTrue(JsonPointer(L"/foo/0"s).Exists(json2));
+      Assert::IsTrue(JsonPointer(L"/"s)     .Exists(json2));
+      Assert::IsTrue(JsonPointer(L"/a~1b"s) .Exists(json2));
+      Assert::IsTrue(JsonPointer(L"/c%d"s)  .Exists(json2));
+      Assert::IsTrue(JsonPointer(L"/e^f"s)  .Exists(json2));
+      Assert::IsTrue(JsonPointer(L"/g|h"s)  .Exists(json2));
+      Assert::IsTrue(JsonPointer(L"/i\\j"s) .Exists(json2));
+      Assert::IsTrue(JsonPointer(L"/k\"l"s) .Exists(json2));
+      Assert::IsTrue(JsonPointer(L"/ "s)    .Exists(json2));
+      Assert::IsTrue(JsonPointer(L"/m~0n"s) .Exists(json2));
+
+      Assert::IsFalse(JsonPointer(L"/Non/Existent"s)      .Exists(json2));
+      Assert::IsFalse(JsonPointer(L"/Object/NonExistent"s).Exists(json1));
+      Assert::IsFalse(JsonPointer(L"/foo/-"s)             .Exists(json2));
+      Assert::IsFalse(JsonPointer(L"/foo/00"s)            .Exists(json2));
+      Assert::IsFalse(JsonPointer(L"/foo/01"s)            .Exists(json2));
+      Assert::IsFalse(JsonPointer(L"/foo/-1"s)            .Exists(json2));
+      Assert::IsFalse(JsonPointer(L"/foo/1a"s)            .Exists(json2));
+      Assert::IsFalse(JsonPointer(L"/foo/3"s)             .Exists(json2));
+    }
+
     TEST_METHOD(TestOperatorInsertion)
     {
       auto ptr = JsonPointer();
