@@ -1,18 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
   <Type Name="Json4CPP::Json">
-    <DisplayString Condition="_value._Which == 0">null</DisplayString>
-    <DisplayString Condition="_value._Which == 1">{_value._Tail._Head}</DisplayString>
-    <DisplayString Condition="_value._Which == 2">{_value._Tail._Tail._Head}</DisplayString>
-    <DisplayString Condition="_value._Which == 3">{_value._Tail._Tail._Tail._Head}</DisplayString>
-    <DisplayString Condition="_value._Which == 4">{_value._Tail._Tail._Tail._Tail._Head}</DisplayString>
-    <DisplayString Condition="_value._Which == 5">{_value._Tail._Tail._Tail._Tail._Tail._Head}</DisplayString>
-    <DisplayString Condition="_value._Which == 6">{_value._Tail._Tail._Tail._Tail._Tail._Tail._Head}</DisplayString>
+    <DisplayString Condition="_value._Which == 0">null</DisplayString>                                                  <!-- std::nullptr_t       -->
+    <DisplayString Condition="_value._Which == 1">{_value._Tail._Head}</DisplayString>                                  <!-- std::wstring         -->
+    <DisplayString Condition="_value._Which == 2">{_value._Tail._Tail._Head}</DisplayString>                            <!-- bool                 -->
+    <DisplayString Condition="_value._Which == 3">{_value._Tail._Tail._Tail._Head}</DisplayString>                      <!-- double               -->
+    <DisplayString Condition="_value._Which == 4">{_value._Tail._Tail._Tail._Tail._Head}</DisplayString>                <!-- int64_t              -->
+    <DisplayString Condition="_value._Which == 5">{_value._Tail._Tail._Tail._Tail._Tail._Head}</DisplayString>          <!-- Json4CPP::JsonObject -->
+    <DisplayString Condition="_value._Which == 6">{_value._Tail._Tail._Tail._Tail._Tail._Tail._Head}</DisplayString>    <!-- JJson4CPP::sonArray  -->
     <Expand HideRawView="true">
-      <ExpandedItem Condition="_value._Which == 5">
+      <Synthetic Condition="_value._Which == 0" Name="[Value]">   <!-- std::nullptr_t       -->
+        <DisplayString>null</DisplayString>
+      </Synthetic>
+      <ExpandedItem Condition="_value._Which == 1">               <!-- std::wstring         -->
+        _value._Tail._Head
+      </ExpandedItem>
+      <Item Condition="_value._Which == 2" Name="[Value]">        <!-- bool                 -->
+        _value._Tail._Tail._Head
+      </Item>
+      <Item Condition="_value._Which == 3" Name="[Value]">        <!-- double               -->
+        _value._Tail._Tail._Tail._Head
+      </Item>
+      <Item Condition="_value._Which == 4" Name="[Value]">        <!-- int64_t              -->
+        _value._Tail._Tail._Tail._Tail._Head
+      </Item>
+      <ExpandedItem Condition="_value._Which == 5">               <!-- Json4CPP::JsonObject -->
         _value._Tail._Tail._Tail._Tail._Tail._Head
       </ExpandedItem>
-      <ExpandedItem Condition="_value._Which == 6">
+      <ExpandedItem Condition="_value._Which == 6">               <!-- Json4CPP::JsonArray  -->
         _value._Tail._Tail._Tail._Tail._Tail._Tail._Head
       </ExpandedItem>
     </Expand>

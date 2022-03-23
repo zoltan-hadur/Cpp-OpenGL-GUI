@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+  <!-- std::pair<Json4CPP::Detail::JsonTokenType, std::variant<std::nullptr_t, std::wstring, bool, double, int64_t>> -->
   <Type Name="std::pair&lt;enum Json4CPP::Detail::JsonTokenType,std::variant&lt;std::nullptr_t,std::basic_string&lt;wchar_t,std::char_traits&lt;wchar_t&gt;,std::allocator&lt;wchar_t&gt;&gt;,bool,double,__int64&gt;&gt;">
-    <DisplayString>({first}, {second})</DisplayString>
+    <DisplayString>({first,en}, {second})</DisplayString>
     <Expand HideRawView="true">
-      <Item Name="[Token]">first</Item>
+      <Item Name="[Token]">first,en</Item>
       <Item Name="[Value]">second</Item>
     </Expand>
   </Type>
