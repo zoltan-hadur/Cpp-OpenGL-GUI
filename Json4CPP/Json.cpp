@@ -7,6 +7,7 @@
 #include "Helper.h"
 #include "JsonIndentSize.h"
 #include "JsonIndentChar.h"
+#include "JsonPatch.h"
 
 #include <sstream>
 #include <iostream>
@@ -449,6 +450,11 @@ namespace Json4CPP
     case JsonType::Array: return get<JsonArray>(_value).At(index);
     default: throw exception("At(int64_t index) is only defined for JsonArray!");
     }
+  }
+
+  Json Json::Patch(JsonPatch const& patch)
+  {
+    return patch.Apply(*this);
   }
 
   JsonIterator Json::begin()

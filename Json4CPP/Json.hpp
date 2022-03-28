@@ -15,4 +15,5 @@
 #include "JsonIndentSize.h"
 #include "JsonIndentChar.h"
 #include "JsonPointer.h"
+#include "JsonPatch.h"
 #include "Value.h"

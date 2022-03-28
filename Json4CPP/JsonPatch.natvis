@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+  <Type Name="Json4CPP::JsonPatch">
+    <DisplayString>{{ Array={{Operations={_operations.size()}}} }}</DisplayString>
+    <Expand HideRawView="true">
+      <Item Name="[size]" ExcludeView="simple">_operations.size()</Item>
+      <Item Name="[capacity]" ExcludeView="simple">_operations.capacity()</Item>
+      <ArrayItems>
+        <Size>_operations.size()</Size>
+        <ValuePointer>_operations._Mypair._Myval2._Myfirst</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+  <Type Name="std::shared_ptr&lt;Json4CPP::JsonPatch::OperationBase&gt;">
+    <DisplayString>{_Ptr,na}</DisplayString>
+    <Expand HideRawView="true">
+      <ExpandedItem>_Ptr</ExpandedItem>
+    </Expand>
+  </Type>
+  <Type Name="Json4CPP::JsonPatch::OperationAdd">
+    <DisplayString>{{ [Operation]=Add, [Path]={_path}, [Value]={_value} }}</DisplayString>
+    <Expand HideRawView="true">
+      <Synthetic Name="[Operation]">
+        <DisplayString>Add</DisplayString>
+      </Synthetic>
+      <Item Name="[Path]">_path</Item>
+      <Item Name="[Value]">_value</Item>
+    </Expand>
+  </Type>
+  <Type Name="Json4CPP::JsonPatch::OperationRemove">
+    <DisplayString>{{ [Operation]=Remove, [Path]={_path} }}</DisplayString>
+    <Expand HideRawView="true">
+      <Synthetic Name="[Operation]">
+        <DisplayString>Remove</DisplayString>
+      </Synthetic>
+      <Item Name="[Path]">_path</Item>
+    </Expand>
+  </Type>
+  <Type Name="Json4CPP::JsonPatch::OperationReplace">
+    <DisplayString>{{ [Operation]=Replace, [Path]={_path}, [Value]={_value} }}</DisplayString>
+    <Expand HideRawView="true">
+      <Synthetic Name="[Operation]">
+        <DisplayString>Replace</DisplayString>
+      </Synthetic>
+      <Item Name="[Path]">_path</Item>
+      <Item Name="[Value]">_value</Item>
+    </Expand>
+  </Type>
+  <Type Name="Json4CPP::JsonPatch::OperationMove">
+    <DisplayString>{{ [Operation]=Move, [From]={_from}, [Path]={_path} }}</DisplayString>
+    <Expand HideRawView="true">
+      <Synthetic Name="[Operation]">
+        <DisplayString>Move</DisplayString>
+      </Synthetic>
+      <Item Name="[From]">_from</Item>
+      <Item Name="[Path]">_path</Item>
+    </Expand>
+  </Type>
+  <Type Name="Json4CPP::JsonPatch::OperationCopy">
+    <DisplayString>{{ [Operation]=Copy, [From]={_from}, [Path]={_path} }}</DisplayString>
+    <Expand HideRawView="true">
+      <Synthetic Name="[Operation]">
+        <DisplayString>Copy</DisplayString>
+      </Synthetic>
+      <Item Name="[From]">_from</Item>
+      <Item Name="[Path]">_path</Item>
+    </Expand>
+  </Type>
+  <Type Name="Json4CPP::JsonPatch::OperationTest">
+    <DisplayString>{{ [Operation]=Test, [Path]={_path}, [Value]={_value} }}</DisplayString>
+    <Expand HideRawView="true">
+      <Synthetic Name="[Operation]">
+        <DisplayString>Test</DisplayString>
+      </Synthetic>
+      <Item Name="[Path]">_path</Item>
+      <Item Name="[Value]">_value</Item>
+    </Expand>
+  </Type>
+</AutoVisualizer>

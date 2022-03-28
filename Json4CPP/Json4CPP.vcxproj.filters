@@ -75,6 +75,9 @@
     <ClInclude Include="JsonPointer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="JsonPatch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -128,6 +131,9 @@
     <ClCompile Include="JsonPointer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="JsonPatch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
@@ -155,6 +161,9 @@
       <Filter>Natvis</Filter>
     </Natvis>
     <Natvis Include="JsonPointer.natvis">
+      <Filter>Natvis</Filter>
+    </Natvis>
+    <Natvis Include="JsonPatch.natvis">
       <Filter>Natvis</Filter>
     </Natvis>
   </ItemGroup>

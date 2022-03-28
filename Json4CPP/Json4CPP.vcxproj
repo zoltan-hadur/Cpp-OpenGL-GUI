@@ -98,6 +98,7 @@
     <ClInclude Include="JsonIterator.h" />
     <ClInclude Include="JsonLinter.h" />
     <ClInclude Include="JsonObject.h" />
+    <ClInclude Include="JsonPatch.h" />
     <ClInclude Include="JsonPointer.h" />
     <ClInclude Include="JsonTokenType.h" />
     <ClInclude Include="JsonType.h" />
@@ -118,6 +119,7 @@
     <ClCompile Include="JsonIterator.cpp" />
     <ClCompile Include="JsonLinter.cpp" />
     <ClCompile Include="JsonObject.cpp" />
+    <ClCompile Include="JsonPatch.cpp" />
     <ClCompile Include="JsonPointer.cpp" />
     <ClCompile Include="JsonTokenType.cpp" />
     <ClCompile Include="JsonType.cpp" />
@@ -135,6 +137,7 @@
     <Natvis Include="JsonArray.natvis" />
     <Natvis Include="JsonBuilder.natvis" />
     <Natvis Include="JsonObject.natvis" />
+    <Natvis Include="JsonPatch.natvis" />
     <Natvis Include="JsonPointer.natvis" />
     <Natvis Include="JsonTokenValue.natvis" />
     <Natvis Include="JsonTokenValuePair.natvis" />

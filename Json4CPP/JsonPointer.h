@@ -15,10 +15,12 @@ namespace Json4CPP
   class JSON_API Json;
   class JSON_API JsonObject;
   class JSON_API JsonArray;
+  class JSON_API JsonPatch;
 
   class JSON_API JsonPointer
   {
   private:
+    friend class JsonPatch;
 #pragma warning(suppress: 4251)
     std::wstring _path;
 #pragma warning(suppress: 4251)
