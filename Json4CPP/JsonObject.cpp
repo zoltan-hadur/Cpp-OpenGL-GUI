@@ -317,11 +317,25 @@ namespace Json4CPP
 
   bool operator==(JsonObject const& left, JsonObject const& right)
   {
-    return left._pairs == right._pairs;
+    if (left._pairs.size() != right._pairs.size())
+    {
+      return false;
+    }
+    else
+    {
+      for (auto& key : left.KeysView())
+      {
+        if (!right.Count(key) || left.At(key) != right.At(key))
+        {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   bool operator!=(JsonObject const& left, JsonObject const& right)
   {
-    return left._pairs != right._pairs;
+    return !(left == right);
   }
 }
