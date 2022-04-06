@@ -104,6 +104,7 @@
     <ClCompile Include="JsonIndentSizeTest.cpp" />
     <ClCompile Include="JsonIteratorTest.cpp" />
     <ClCompile Include="JsonLinterTest.cpp" />
+    <ClCompile Include="JsonPatchTest.cpp" />
     <ClCompile Include="JsonPointerTest.cpp" />
     <ClCompile Include="JsonTokenTest.cpp" />
     <ClCompile Include="JsonObjectTest.cpp" />
