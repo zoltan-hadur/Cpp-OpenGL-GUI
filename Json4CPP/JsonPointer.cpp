@@ -158,7 +158,7 @@ namespace Json4CPP
         {
           int64_t index;
           wstringstream(decodedToken) >> index;
-          if (index < 0 || result->Size() <= index)
+          if (result->Size() <= index)
           {
             auto message = WString2String(L"Reference token \""s + encodedToken + L"\" at path \""s + path + L"\" is out of range!"s);
             throw exception(message.c_str());
