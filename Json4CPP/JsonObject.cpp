@@ -49,15 +49,23 @@ namespace Json4CPP
       }
       switch (token)
       {
-      case JsonTokenType::PropertyName:                      property =      move(get<wstring  >(value))    ; tokens.pop_front(); break;
-      case JsonTokenType::Null        : object.Insert({ move(property),           get<nullptr_t>(value)   }); tokens.pop_front(); break;
-      case JsonTokenType::String      : object.Insert({ move(property),      move(get<wstring  >(value))  }); tokens.pop_front(); break;
-      case JsonTokenType::Boolean     : object.Insert({ move(property),           get<bool     >(value)   }); tokens.pop_front(); break;
-      case JsonTokenType::Real        : object.Insert({ move(property),           get<double   >(value)   }); tokens.pop_front(); break;
-      case JsonTokenType::Integer     : object.Insert({ move(property),           get<int64_t  >(value)   }); tokens.pop_front(); break;
-      case JsonTokenType::StartObject : object.Insert({ move(property), JsonObject::Read(tokens)          });                     break;
-      case JsonTokenType::StartArray  : object.Insert({ move(property), JsonArray ::Read(tokens)          });                     break;
-      case JsonTokenType::EndObject   :                                                                       tokens.pop_front(); return object;
+      case JsonTokenType::PropertyName:
+        property = move(get<wstring>(value));
+        tokens.pop_front();
+        if (object.Count(property))
+        {
+          auto message = WString2String(L"Duplicated key: \""s + property + L"\"!"s);
+          throw exception(message.c_str());
+        }
+        break;
+      case JsonTokenType::Null        : object.Insert({ move(property),      get<nullptr_t>(value)  }); tokens.pop_front(); break;
+      case JsonTokenType::String      : object.Insert({ move(property), move(get<wstring  >(value)) }); tokens.pop_front(); break;
+      case JsonTokenType::Boolean     : object.Insert({ move(property),      get<bool     >(value)  }); tokens.pop_front(); break;
+      case JsonTokenType::Real        : object.Insert({ move(property),      get<double   >(value)  }); tokens.pop_front(); break;
+      case JsonTokenType::Integer     : object.Insert({ move(property),      get<int64_t  >(value)  }); tokens.pop_front(); break;
+      case JsonTokenType::StartObject : object.Insert({ move(property), JsonObject::Read(tokens)    });                     break;
+      case JsonTokenType::StartArray  : object.Insert({ move(property), JsonArray ::Read(tokens)    });                     break;
+      case JsonTokenType::EndObject   :                                                                 tokens.pop_front(); return object;
       default:
       {
         auto message = WString2String(L"Invalid token: "s + Json::Stringify(token) + L"!"s);
@@ -116,6 +124,11 @@ namespace Json4CPP
           auto& pair = get<vector<JsonBuilder>>(builder._value);
           auto& key = get<wstring>(pair[0]._value);
           auto value = Json(pair[1]);
+          if (Count(key))
+          {
+            auto message = WString2String(L"Duplicated key: \""s + key + L"\"!"s);
+            throw exception(message.c_str());
+          }
           Insert({ move(key), move(value) });
         }
         else
@@ -153,6 +166,11 @@ namespace Json4CPP
           auto& pair = get<vector<JsonBuilder>>(builder._value);
           auto& key = get<wstring>(pair[0]._value);
           auto value = Json(move(pair[1]));
+          if (Count(key))
+          {
+            auto message = WString2String(L"Duplicated key: \""s + key + L"\"!"s);
+            throw exception(message.c_str());
+          }
           Insert({ move(key), move(value) });
         }
         else
