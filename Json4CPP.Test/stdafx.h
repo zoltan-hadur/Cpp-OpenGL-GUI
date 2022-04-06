@@ -40,7 +40,6 @@ namespace Microsoft::VisualStudio::CppUnitTestFramework
   template<> static std::wstring ToString<Json4CPP::        Json           >(Json4CPP::        Json            const& json   ) { return Json4CPP::Json::Stringify(               json   ); }
   template<> static std::wstring ToString<Json4CPP::        JsonType       >(Json4CPP::        JsonType        const& type   ) { return Json4CPP::Json::Stringify(               type   ); }
   template<> static std::wstring ToString<Json4CPP::        JsonPointer    >(Json4CPP::        JsonPointer     const& ptr    ) { return Json4CPP::Json::Stringify(               ptr    ); }
-  template<> static std::wstring ToString<Json4CPP::Detail::JsonBuilder    >(Json4CPP::Detail::JsonBuilder     const& builder) { return Json4CPP::Json::Stringify(               builder); }
   template<> static std::wstring ToString<Json4CPP::Detail::JsonBuilderType>(Json4CPP::Detail::JsonBuilderType const& type   ) { return Json4CPP::Json::Stringify(               type   ); }
   template<> static std::wstring ToString<Json4CPP::Detail::JsonTokenType  >(Json4CPP::Detail::JsonTokenType   const& type   ) { return Json4CPP::Json::Stringify(               type   ); }
   template<> static std::wstring ToString<Json4CPP::Detail::VALUE          >(Json4CPP::Detail::VALUE           const& value  ) { return Json4CPP::Json::Stringify(Json4CPP::Json(value) ); }
@@ -50,6 +49,14 @@ namespace Microsoft::VisualStudio::CppUnitTestFramework
   template<> static std::wstring ToString<uint16_t>(uint16_t const& value) { return Json4CPP::Json::Stringify(value); }
   template<> static std::wstring ToString<std::u32string>(std::u32string const& value) { return Json4CPP::Detail::U32String2WString(value); }
   template<> static std::wstring ToString<std::pair<std::wstring, Json4CPP::Json>>(std::pair<std::wstring, Json4CPP::Json> const& pair) { return Json4CPP::Json::Stringify(Json4CPP::JsonObject{ { pair.first, pair.second } }); }
+
+  template<>
+  static std::wstring ToString<Json4CPP::Detail::JsonBuilder>(Json4CPP::Detail::JsonBuilder const& builder)
+  {
+    std::wstringstream os;
+    os << builder;
+    return os.str();
+  }
 
   template<typename T, typename F>
   static void ExpectException(F func, std::string const& msg)

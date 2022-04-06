@@ -270,5 +270,29 @@ namespace Json4CPP::Test
         Assert::AreEqual(Json(vector<JsonBuilder>()), Json(input));
       }
     }
+
+    TEST_METHOD(TestOperatorExtraction)
+    {
+      auto builder = JsonBuilder{
+        nullptr,
+        true,
+        13.37,
+        1337,
+        JsonObject{ { L"Key1"s, 1 }, { L"Key2"s, 2 } },
+        JsonArray{ 1, 3, 3, 7 },
+        vector<JsonBuilder>{
+          nullptr,
+          true,
+          13.37,
+          1337,
+          JsonObject{ { L"Key1"s, 1 }, { L"Key2"s, 2 } },
+          JsonArray{ 1, 3, 3, 7 }
+        }
+      };
+      wostringstream os;
+      os << builder;
+      auto result = os.str();
+      Assert::AreEqual(L"[null,true,13.37,1337,{\"Key1\":1,\"Key2\":2},[1,3,3,7],[null,true,13.37,1337,{\"Key1\":1,\"Key2\":2},[1,3,3,7]]]"s, result);
+    }
   };
 }

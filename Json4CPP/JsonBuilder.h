@@ -12,6 +12,7 @@
 #include <string>
 #include <initializer_list>
 #include <vector>
+#include <iostream>
 
 namespace Json4CPP
 {
@@ -63,6 +64,8 @@ namespace Json4CPP
 
       JsonBuilderType Type() const;
       bool Is(JsonBuilderType type) const;
+
+      JSON_API friend std::wostream& operator<<(std::wostream& os, JsonBuilder const& builder);
 
       JSON_API friend bool operator==(JsonBuilder const& left, JsonBuilder const& right);
       JSON_API friend bool operator!=(JsonBuilder const& left, JsonBuilder const& right);

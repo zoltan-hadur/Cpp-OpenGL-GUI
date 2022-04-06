@@ -48,6 +48,27 @@ namespace Json4CPP::Detail
     return Type() == type;
   }
 
+  wostream& operator<<(wostream& os, JsonBuilder const& builder)
+  {
+    visit(Overload{
+      [&](auto const& v) { os << Json::Stringify(v); },
+      [&](vector<JsonBuilder> const& arg)
+      {
+        os << L"[";
+        for (int i = 0; i < arg.size(); ++i)
+        {
+          os << arg[i];
+          if (i < arg.size() - 1)
+          {
+            os << L",";
+          }
+        }
+        os << L"]";
+      }
+    }, builder._value);
+    return os;
+  }
+
   bool operator==(JsonBuilder const& left, JsonBuilder const& right)
   {
     return left._value == right._value;
