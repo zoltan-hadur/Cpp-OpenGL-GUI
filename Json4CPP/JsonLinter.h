@@ -31,6 +31,11 @@ namespace Json4CPP::Detail
     static void           ParseArray  (std::wistream& is, std::deque<TOKEN>& tokens, uint8_t depth);
     static void           Read        (std::wistream& is, std::deque<TOKEN>& tokens, uint8_t depth);
 
+    /// <summary>
+    /// Escapes ", \, \b, \f, \n, \r, \t characters and any other character between 0x00 and 0x1f.
+    /// </summary>
+    static std::wstring EscapeString  (std::wstring const& value);
+
     static std::wostream& WriteNumber (std::wostream& os, NUMBER number);
     static std::wostream& WriteObject (std::wostream& os, std::deque<TOKEN>& tokens, uint8_t indentSize, wchar_t indentChar, uint8_t depth);
     static std::wostream& WriteArray  (std::wostream& os, std::deque<TOKEN>& tokens, uint8_t indentSize, wchar_t indentChar, uint8_t depth);

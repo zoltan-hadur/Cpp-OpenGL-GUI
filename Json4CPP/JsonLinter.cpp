@@ -407,6 +407,34 @@ namespace Json4CPP::Detail
     }
   }
 
+  std::wstring JsonLinter::EscapeString(std::wstring const& value)
+  {
+    std::wostringstream os;
+    for (auto& c : value)
+    {
+      switch (c)
+      {
+      case L'"' : os << L"\\\""s; break;
+      case L'\\': os << L"\\\\"s; break;
+      case L'\b': os << L"\\b"s ; break;
+      case L'\f': os << L"\\f"s ; break;
+      case L'\n': os << L"\\n"s ; break;
+      case L'\r': os << L"\\r"s ; break;
+      case L'\t': os << L"\\t"s ; break;
+      default:
+        if (L'\x00' <= c && c <= L'\x1f')
+        {
+          os << L"\\u"s << std::hex << std::setw(4) << std::setfill(L'0') << (int)c;
+        }
+        else
+        {
+          os << c;
+        }
+      }
+    }
+    return os.str();
+  }
+
   std::wostream& JsonLinter::WriteNumber(std::wostream& os, NUMBER number)
   {
     enum class Type { IntegerI, IntegerD, Float, Double };
@@ -653,7 +681,7 @@ namespace Json4CPP::Detail
 
     case JsonTokenType::String:
     case JsonTokenType::PropertyName:
-      os << L"\""s << Helper::EscapeString(std::get<std::wstring>(value)) << L"\""s;
+      os << L"\""s << EscapeString(std::get<std::wstring>(value)) << L"\""s;
       break;
 
     case JsonTokenType::Boolean:
@@ -679,7 +707,7 @@ namespace Json4CPP::Detail
     default:
       std::visit(Helper::Overload{
         [&](std::nullptr_t const& v) { os << L"null"s; },
-        [&](std::wstring   const& v) { os << L"\""s << Helper::EscapeString(v) << L"\""s; },
+        [&](std::wstring   const& v) { os << L"\""s << EscapeString(v) << L"\""s; },
         [&](bool           const& v) { os << (v ? L"true"s : L"false"s); },
         [&](double         const& v) { WriteNumber(os, v); },
         [&](int64_t        const& v) { WriteNumber(os, v); },

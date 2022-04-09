@@ -660,6 +660,14 @@ namespace Json4CPP::Test
       }
     }
 
+    TEST_METHOD(TestEscapeString)
+    {
+      auto input    =    L"test\r\n\t\"test\"\\test\\"s;
+      auto expected = LR"("test\r\n\t\"test\"\\test\\")"s;
+      auto output = JsonLinter::Dump(input);
+      Assert::AreEqual(expected, output);
+    }
+
     TEST_METHOD(TestWriteNumber)
     {
       auto pairs = vector<pair<deque<TOKEN>, wstring>>

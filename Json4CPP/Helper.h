@@ -26,11 +26,6 @@ namespace Json4CPP::Helper
   // Writes UTF-16 encoded wstring into UTF-8 without BOM encoded file.
   JSON_API void         WriteAllText(std::filesystem::path const& path, std::wstring const& value);
 
-  /// <summary>
-  /// Escapes ", \, \b, \f, \n, \r, \t characters and any other character between 0x00 and 0x1f.
-  /// </summary>
-  JSON_API std::wstring EscapeString  (std::wstring const& value);
-
   // Widens the string character by character, for example: 'a' (0x61) -> L'a' (0x0061) or (char)-100 -> (wchar_t)156.
   JSON_API std::wstring WidenString   (std::string  const& value);
 

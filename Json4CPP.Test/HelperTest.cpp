@@ -82,14 +82,6 @@ namespace Json4CPP::Test
       Assert::IsTrue(equal(istreambuf_iterator<wchar_t>(is1.rdbuf()), istreambuf_iterator<wchar_t>(), istreambuf_iterator<wchar_t>(is2.rdbuf())));
     }
 
-    TEST_METHOD(TestEscapeString)
-    {
-      auto input    =   L"test\r\n\t\"test\"\\test\\"s;
-      auto expected = LR"(test\r\n\t\"test\"\\test\\)"s;
-      auto output = EscapeString(input);
-      Assert::AreEqual(expected, output);
-    }
-
     TEST_METHOD(TestWidenString)
     {
       auto expected = wstring{ ((wchar_t)-100) & 0x00FF, ((wchar_t)-50) & 0x00FF, 50, 100 };

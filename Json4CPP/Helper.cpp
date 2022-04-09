@@ -25,34 +25,6 @@ namespace Json4CPP::Helper
     std::wfstream(path, std::wfstream::out | std::wfstream::binary) << WidenString(WString2String(value));
   }
 
-  std::wstring EscapeString(std::wstring const& value)
-  {
-    std::wostringstream os;
-    for (auto& c : value)
-    {
-      switch (c)
-      {
-      case L'"' : os << L"\\\""s; break;
-      case L'\\': os << L"\\\\"s; break;
-      case L'\b': os << L"\\b"s ; break;
-      case L'\f': os << L"\\f"s ; break;
-      case L'\n': os << L"\\n"s ; break;
-      case L'\r': os << L"\\r"s ; break;
-      case L'\t': os << L"\\t"s ; break;
-      default:
-        if (L'\x00' <= c && c <= L'\x1f')
-        {
-          os << L"\\u"s << std::hex << std::setw(4) << std::setfill(L'0') << (int)c;
-        }
-        else
-        {
-          os << c;
-        }
-      }
-    }
-    return os.str();
-  }
-
   std::wstring WidenString(std::string const& value)
   {
     auto str = std::wstring(value.size(), L'\0');
