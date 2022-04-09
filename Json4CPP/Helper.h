@@ -10,7 +10,7 @@
 #include <istream>
 #include <filesystem>
 
-namespace Json4CPP::Detail
+namespace Json4CPP::Helper
 {
   template<typename ...Args>
   struct Overload : Args...
@@ -47,20 +47,17 @@ namespace Json4CPP::Detail
   JSON_API std::wstring U32String2WString(std::u32string const& string);
 
   /// <summary>
-  /// Returns the { line, column } pair of the specified position in the stream.<para/>
-  /// Line endings are handled as \r\n.
+  /// Returns the { line, column } pair of the specified position in the stream.
   /// </summary>
   JSON_API std::pair<uint64_t, uint64_t> GetStreamPosition(std::wistream& is, std::wistream::pos_type pos);
 
   /// <summary>
-  /// Returns the { line, column } data as L"Line: {line} Column: {column}"s of the specified position in the stream.<para/>
-  /// Line endings are handled as \r\n.
+  /// Returns the { line, column } data as L"Line: {line} Column: {column}"s of the specified position in the stream.
   /// </summary>
   JSON_API std::wstring GetFormattedStreamPosition (std::wistream& is, std::wistream::pos_type pos);
 
   /// <summary>
-  /// Returns the { line, column } data as "Line: {line} Column: {column}"s of the specified position in the stream.<para/>
-  /// Line endings are handled as \r\n.
+  /// Returns the { line, column } data as "Line: {line} Column: {column}"s of the specified position in the stream.
   /// </summary>
   JSON_API std::string  GetFormattedStreamPositionA(std::wistream& is, std::wistream::pos_type pos);
 }

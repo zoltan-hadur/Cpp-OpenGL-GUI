@@ -5,8 +5,7 @@
 #include "JsonBuilder.h"
 #include "Helper.h"
 
-using namespace std;
-using namespace std::filesystem;
+using namespace std::string_literals;
 
 namespace Json4CPP::Detail::Value
 {
@@ -15,15 +14,15 @@ namespace Json4CPP::Detail::Value
   JsonType GetType(VALUE const& value)
   {
     JsonType result;
-    visit(Overload{
-      [&](nullptr_t  const& v) { result = JsonType::Null;    },
-      [&](wstring    const& v) { result = JsonType::String;  },
-      [&](bool       const& v) { result = JsonType::Boolean; },
-      [&](double     const& v) { result = JsonType::Real;    },
-      [&](int64_t    const& v) { result = JsonType::Integer; },
-      [&](JsonObject const& v) { result = JsonType::Object;  },
-      [&](JsonArray  const& v) { result = JsonType::Array;   },
-      [&](auto       const& v) { result = JsonType::Invalid; }
+    std::visit(Helper::Overload{
+      [&](std::nullptr_t const& v) { result = JsonType::Null;    },
+      [&](std::wstring   const& v) { result = JsonType::String;  },
+      [&](bool           const& v) { result = JsonType::Boolean; },
+      [&](double         const& v) { result = JsonType::Real;    },
+      [&](int64_t        const& v) { result = JsonType::Integer; },
+      [&](JsonObject     const& v) { result = JsonType::Object;  },
+      [&](JsonArray      const& v) { result = JsonType::Array;   },
+      [&](auto           const& v) { result = JsonType::Invalid; }
     }, value);
     return result;
   }
@@ -31,26 +30,26 @@ namespace Json4CPP::Detail::Value
   JsonBuilderType GetType(VALUE_BUILDER const& value)
   {
     JsonBuilderType result;
-    visit(Overload{
-      [&](nullptr_t  const& v) { result = JsonBuilderType::Null;    },
-      [&](wstring    const& v) { result = JsonBuilderType::String;  },
-      [&](bool       const& v) { result = JsonBuilderType::Boolean; },
-      [&](double     const& v) { result = JsonBuilderType::Real;    },
-      [&](int64_t    const& v) { result = JsonBuilderType::Integer; },
-      [&](JsonObject const& v) { result = JsonBuilderType::Object;  },
-      [&](JsonArray  const& v) { result = JsonBuilderType::Array;   },
-      [&](vector<JsonBuilder> const& arg)
+    std::visit(Helper::Overload{
+      [&](std::nullptr_t const& v) { result = JsonBuilderType::Null;    },
+      [&](std::wstring   const& v) { result = JsonBuilderType::String;  },
+      [&](bool           const& v) { result = JsonBuilderType::Boolean; },
+      [&](double         const& v) { result = JsonBuilderType::Real;    },
+      [&](int64_t        const& v) { result = JsonBuilderType::Integer; },
+      [&](JsonObject     const& v) { result = JsonBuilderType::Object;  },
+      [&](JsonArray      const& v) { result = JsonBuilderType::Array;   },
+      [&](std::vector<JsonBuilder> const& arg)
       {
         if (arg.size() == 0)
           result = JsonBuilderType::Empty;
         else if (arg.size() == 2 && arg[0].Type() == JsonBuilderType::String)
           result = JsonBuilderType::Pair;
-        else if (all_of(arg.begin(), arg.end(), [](JsonBuilder const& value) { return value.Is(JsonBuilderType::Pair); }))
+        else if (std::all_of(arg.begin(), arg.end(), [](JsonBuilder const& value) { return value.Is(JsonBuilderType::Pair); }))
           result = JsonBuilderType::Object;
         else
           result = JsonBuilderType::Array;
       },
-      [&](auto       const& v) { result = JsonBuilderType::Invalid; }
+      [&](auto const& v) { result = JsonBuilderType::Invalid; }
     }, value);
     return result;
   }
@@ -58,21 +57,21 @@ namespace Json4CPP::Detail::Value
   bool Equal(VALUE const& left, VALUE const& right)
   {
     bool result;
-    visit(Overload{
-      [&](nullptr_t  const& l, nullptr_t  const& r) { result = true;   },
-      [&](wstring    const& l, wstring    const& r) { result = l == r; },
-      [&](bool       const& l, bool       const& r) { result = l == r; },
-      [&](bool       const& l, double     const& r) { result = l == r; },
-      [&](bool       const& l, int64_t    const& r) { result = l == r; },
-      [&](double     const& l, bool       const& r) { result = l == r; },
-      [&](double     const& l, double     const& r) { result = l == r; },
-      [&](double     const& l, int64_t    const& r) { result = l == r; },
-      [&](int64_t    const& l, bool       const& r) { result = l == r; },
-      [&](int64_t    const& l, double     const& r) { result = l == r; },
-      [&](int64_t    const& l, int64_t    const& r) { result = l == r; },
-      [&](JsonObject const& l, JsonObject const& r) { result = l == r; },
-      [&](JsonArray  const& l, JsonArray  const& r) { result = l == r; },
-      [&](auto       const& l, auto       const& r) { result = false;  }
+    std::visit(Helper::Overload{
+      [&](std::nullptr_t const& l, std::nullptr_t const& r) { result = true;   },
+      [&](std::wstring   const& l, std::wstring   const& r) { result = l == r; },
+      [&](bool           const& l, bool           const& r) { result = l == r; },
+      [&](bool           const& l, double         const& r) { result = l == r; },
+      [&](bool           const& l, int64_t        const& r) { result = l == r; },
+      [&](double         const& l, bool           const& r) { result = l == r; },
+      [&](double         const& l, double         const& r) { result = l == r; },
+      [&](double         const& l, int64_t        const& r) { result = l == r; },
+      [&](int64_t        const& l, bool           const& r) { result = l == r; },
+      [&](int64_t        const& l, double         const& r) { result = l == r; },
+      [&](int64_t        const& l, int64_t        const& r) { result = l == r; },
+      [&](JsonObject     const& l, JsonObject     const& r) { result = l == r; },
+      [&](JsonArray      const& l, JsonArray      const& r) { result = l == r; },
+      [&](auto           const& l, auto           const& r) { result = false;  }
     }, left, right);
     return result;
   }
@@ -85,24 +84,24 @@ namespace Json4CPP::Detail::Value
   bool LessThan(VALUE const& left, VALUE const& right)
   {
     bool result;
-    visit(Overload{
-      [&](nullptr_t  const& l, auto       const& r) { result = false; },
-      [&](auto       const& l, nullptr_t  const& r) { result = true;  },
-      [&](nullptr_t  const& l, nullptr_t  const& r) { result = false; },
-      [&](wstring    const& l, wstring    const& r) { result = l < r; },
-      [&](bool       const& l, bool       const& r) { result = l < r; },
-      [&](bool       const& l, double     const& r) { result = l < r; },
-      [&](bool       const& l, int64_t    const& r) { result = l < r; },
-      [&](double     const& l, bool       const& r) { result = l < r; },
-      [&](double     const& l, double     const& r) { result = l < r; },
-      [&](double     const& l, int64_t    const& r) { result = l < r; },
-      [&](int64_t    const& l, bool       const& r) { result = l < r; },
-      [&](int64_t    const& l, double     const& r) { result = l < r; },
-      [&](int64_t    const& l, int64_t    const& r) { result = l < r; },
-      [&](auto       const& l, auto       const& r)
+    std::visit(Helper::Overload{
+      [&](std::nullptr_t const& l, auto           const& r) { result = false; },
+      [&](auto           const& l, std::nullptr_t const& r) { result = true;  },
+      [&](std::nullptr_t const& l, std::nullptr_t const& r) { result = false; },
+      [&](std::wstring   const& l, std::wstring   const& r) { result = l < r; },
+      [&](bool           const& l, bool           const& r) { result = l < r; },
+      [&](bool           const& l, double         const& r) { result = l < r; },
+      [&](bool           const& l, int64_t        const& r) { result = l < r; },
+      [&](double         const& l, bool           const& r) { result = l < r; },
+      [&](double         const& l, double         const& r) { result = l < r; },
+      [&](double         const& l, int64_t        const& r) { result = l < r; },
+      [&](int64_t        const& l, bool           const& r) { result = l < r; },
+      [&](int64_t        const& l, double         const& r) { result = l < r; },
+      [&](int64_t        const& l, int64_t        const& r) { result = l < r; },
+      [&](auto           const& l, auto           const& r)
       {
-        auto message = "Operator< is not defined for types "s + string(typeid(l).name()) + " and "s + string(typeid(r).name()) + "!"s;
-        throw exception(message.c_str());
+        auto message = Helper::WString2String(L"Operator< is not defined for types \""s + Json::Stringify(GetType(left)) + L"\" and \""s + Json::Stringify(GetType(right)) + L"\"!"s);
+        throw std::exception(message.c_str());
       }
     }, left, right);
     return result;
@@ -111,24 +110,24 @@ namespace Json4CPP::Detail::Value
   bool LessThanOrEqual(VALUE const& left, VALUE const& right)
   {
     bool result;
-    visit(Overload{
-      [&](nullptr_t  const& l, auto       const& r) { result = false;  },
-      [&](auto       const& l, nullptr_t  const& r) { result = true;   },
-      [&](nullptr_t  const& l, nullptr_t  const& r) { result = true;   },
-      [&](wstring    const& l, wstring    const& r) { result = l <= r; },
-      [&](bool       const& l, bool       const& r) { result = l <= r; },
-      [&](bool       const& l, double     const& r) { result = l <= r; },
-      [&](bool       const& l, int64_t    const& r) { result = l <= r; },
-      [&](double     const& l, bool       const& r) { result = l <= r; },
-      [&](double     const& l, double     const& r) { result = l <= r; },
-      [&](double     const& l, int64_t    const& r) { result = l <= r; },
-      [&](int64_t    const& l, bool       const& r) { result = l <= r; },
-      [&](int64_t    const& l, double     const& r) { result = l <= r; },
-      [&](int64_t    const& l, int64_t    const& r) { result = l <= r; },
-      [&](auto       const& l, auto       const& r)
+    std::visit(Helper::Overload{
+      [&](std::nullptr_t const& l, auto           const& r) { result = false;  },
+      [&](auto           const& l, std::nullptr_t const& r) { result = true;   },
+      [&](std::nullptr_t const& l, std::nullptr_t const& r) { result = true;   },
+      [&](std::wstring   const& l, std::wstring   const& r) { result = l <= r; },
+      [&](bool           const& l, bool           const& r) { result = l <= r; },
+      [&](bool           const& l, double         const& r) { result = l <= r; },
+      [&](bool           const& l, int64_t        const& r) { result = l <= r; },
+      [&](double         const& l, bool           const& r) { result = l <= r; },
+      [&](double         const& l, double         const& r) { result = l <= r; },
+      [&](double         const& l, int64_t        const& r) { result = l <= r; },
+      [&](int64_t        const& l, bool           const& r) { result = l <= r; },
+      [&](int64_t        const& l, double         const& r) { result = l <= r; },
+      [&](int64_t        const& l, int64_t        const& r) { result = l <= r; },
+      [&](auto           const& l, auto           const& r)
       {
-        auto message = "Operator<= is not defined for types "s + string(typeid(l).name()) + " and "s + string(typeid(r).name()) + "!"s;
-        throw exception(message.c_str());
+        auto message = Helper::WString2String(L"Operator<= is not defined for types \""s + Json::Stringify(GetType(left)) + L"\" and \""s + Json::Stringify(GetType(right)) + L"\"!"s);
+        throw std::exception(message.c_str());
       }
     }, left, right);
     return result;
@@ -137,24 +136,24 @@ namespace Json4CPP::Detail::Value
   bool GreaterThan(VALUE const& left, VALUE const& right)
   {
     bool result;
-    visit(Overload{
-      [&](nullptr_t  const& l, auto       const& r) { result = true;  },
-      [&](auto       const& l, nullptr_t  const& r) { result = false; },
-      [&](nullptr_t  const& l, nullptr_t  const& r) { result = false; },
-      [&](wstring    const& l, wstring    const& r) { result = l > r; },
-      [&](bool       const& l, bool       const& r) { result = l > r; },
-      [&](bool       const& l, double     const& r) { result = l > r; },
-      [&](bool       const& l, int64_t    const& r) { result = l > r; },
-      [&](double     const& l, bool       const& r) { result = l > r; },
-      [&](double     const& l, double     const& r) { result = l > r; },
-      [&](double     const& l, int64_t    const& r) { result = l > r; },
-      [&](int64_t    const& l, bool       const& r) { result = l > r; },
-      [&](int64_t    const& l, double     const& r) { result = l > r; },
-      [&](int64_t    const& l, int64_t    const& r) { result = l > r; },
-      [&](auto       const& l, auto       const& r)
+    std::visit(Helper::Overload{
+      [&](std::nullptr_t const& l, auto           const& r) { result = true;  },
+      [&](auto           const& l, std::nullptr_t const& r) { result = false; },
+      [&](std::nullptr_t const& l, std::nullptr_t const& r) { result = false; },
+      [&](std::wstring   const& l, std::wstring   const& r) { result = l > r; },
+      [&](bool           const& l, bool           const& r) { result = l > r; },
+      [&](bool           const& l, double         const& r) { result = l > r; },
+      [&](bool           const& l, int64_t        const& r) { result = l > r; },
+      [&](double         const& l, bool           const& r) { result = l > r; },
+      [&](double         const& l, double         const& r) { result = l > r; },
+      [&](double         const& l, int64_t        const& r) { result = l > r; },
+      [&](int64_t        const& l, bool           const& r) { result = l > r; },
+      [&](int64_t        const& l, double         const& r) { result = l > r; },
+      [&](int64_t        const& l, int64_t        const& r) { result = l > r; },
+      [&](auto           const& l, auto           const& r)
       {
-        auto message = "Operator> is not defined for types "s + string(typeid(l).name()) + " and "s + string(typeid(r).name()) + "!"s;
-        throw exception(message.c_str());
+        auto message = Helper::WString2String(L"Operator> is not defined for types \""s + Json::Stringify(GetType(left)) + L"\" and \""s + Json::Stringify(GetType(right)) + L"\"!"s);
+        throw std::exception(message.c_str());
       }
     }, left, right);
     return result;
@@ -163,24 +162,24 @@ namespace Json4CPP::Detail::Value
   bool GreaterThanOrEqual(VALUE const& left, VALUE const& right)
   {
     bool result;
-    visit(Overload{
-      [&](nullptr_t  const& l, auto       const& r) { result = true;   },
-      [&](auto       const& l, nullptr_t  const& r) { result = false;  },
-      [&](nullptr_t  const& l, nullptr_t  const& r) { result = true;   },
-      [&](wstring    const& l, wstring    const& r) { result = l >= r; },
-      [&](bool       const& l, bool       const& r) { result = l >= r; },
-      [&](bool       const& l, double     const& r) { result = l >= r; },
-      [&](bool       const& l, int64_t    const& r) { result = l >= r; },
-      [&](double     const& l, bool       const& r) { result = l >= r; },
-      [&](double     const& l, double     const& r) { result = l >= r; },
-      [&](double     const& l, int64_t    const& r) { result = l >= r; },
-      [&](int64_t    const& l, bool       const& r) { result = l >= r; },
-      [&](int64_t    const& l, double     const& r) { result = l >= r; },
-      [&](int64_t    const& l, int64_t    const& r) { result = l >= r; },
-      [&](auto       const& l, auto       const& r)
+    std::visit(Helper::Overload{
+      [&](std::nullptr_t const& l, auto           const& r) { result = true;   },
+      [&](auto           const& l, std::nullptr_t const& r) { result = false;  },
+      [&](std::nullptr_t const& l, std::nullptr_t const& r) { result = true;   },
+      [&](std::wstring   const& l, std::wstring   const& r) { result = l >= r; },
+      [&](bool           const& l, bool           const& r) { result = l >= r; },
+      [&](bool           const& l, double         const& r) { result = l >= r; },
+      [&](bool           const& l, int64_t        const& r) { result = l >= r; },
+      [&](double         const& l, bool           const& r) { result = l >= r; },
+      [&](double         const& l, double         const& r) { result = l >= r; },
+      [&](double         const& l, int64_t        const& r) { result = l >= r; },
+      [&](int64_t        const& l, bool           const& r) { result = l >= r; },
+      [&](int64_t        const& l, double         const& r) { result = l >= r; },
+      [&](int64_t        const& l, int64_t        const& r) { result = l >= r; },
+      [&](auto           const& l, auto           const& r)
       {
-        auto message = "Operator>= is not defined for types "s + string(typeid(l).name()) + " and "s + string(typeid(r).name()) + "!"s;
-        throw exception(message.c_str());
+        auto message = Helper::WString2String(L"Operator>= is not defined for types \""s + Json::Stringify(GetType(left)) + L"\" and \""s + Json::Stringify(GetType(right)) + L"\"!"s);
+        throw std::exception(message.c_str());
       }
     }, left, right);
     return result;
@@ -189,24 +188,24 @@ namespace Json4CPP::Detail::Value
   VALUE Add(VALUE const& left, VALUE const& right)
   {
     VALUE result;
-    visit(Overload{
-      [&](nullptr_t  const& l, auto       const& r) { result = nullptr;          },
-      [&](auto       const& l, nullptr_t  const& r) { result = nullptr;          },
-      [&](nullptr_t  const& l, nullptr_t  const& r) { result = nullptr;          },
-      [&](wstring    const& l, wstring    const& r) { result = l +           r ; },
-      [&](bool       const& l, bool       const& r) { result = l + (int64_t)(r); },
-      [&](bool       const& l, double     const& r) { result = l +           r ; },
-      [&](bool       const& l, int64_t    const& r) { result = l +           r ; },
-      [&](double     const& l, bool       const& r) { result = l +           r ; },
-      [&](double     const& l, double     const& r) { result = l +           r ; },
-      [&](double     const& l, int64_t    const& r) { result = l +           r ; },
-      [&](int64_t    const& l, bool       const& r) { result = l +           r ; },
-      [&](int64_t    const& l, double     const& r) { result = l +           r ; },
-      [&](int64_t    const& l, int64_t    const& r) { result = l +           r ; },
-      [&](auto       const& l, auto       const& r)
+    std::visit(Helper::Overload{
+      [&](std::nullptr_t const& l, auto           const& r) { result = nullptr;                     },
+      [&](auto           const& l, std::nullptr_t const& r) { result = nullptr;                     },
+      [&](std::nullptr_t const& l, std::nullptr_t const& r) { result = nullptr;                     },
+      [&](std::wstring   const& l, std::wstring   const& r) { result = l +                      r ; },
+      [&](bool           const& l, bool           const& r) { result = l + static_cast<int64_t>(r); },
+      [&](bool           const& l, double         const& r) { result = l +                      r ; },
+      [&](bool           const& l, int64_t        const& r) { result = l +                      r ; },
+      [&](double         const& l, bool           const& r) { result = l +                      r ; },
+      [&](double         const& l, double         const& r) { result = l +                      r ; },
+      [&](double         const& l, int64_t        const& r) { result = l +                      r ; },
+      [&](int64_t        const& l, bool           const& r) { result = l +                      r ; },
+      [&](int64_t        const& l, double         const& r) { result = l +                      r ; },
+      [&](int64_t        const& l, int64_t        const& r) { result = l +                      r ; },
+      [&](auto           const& l, auto           const& r)
       {
-        auto message = "Operator+ is not defined for types "s + string(typeid(l).name()) + " and "s + string(typeid(r).name()) + "!"s;
-        throw exception(message.c_str());
+        auto message = Helper::WString2String(L"Operator+ is not defined for types \""s + Json::Stringify(GetType(left)) + L"\" and \""s + Json::Stringify(GetType(right)) + L"\"!"s);
+        throw std::exception(message.c_str());
       }
     }, left, right);
     return result;
@@ -214,24 +213,24 @@ namespace Json4CPP::Detail::Value
 
   VALUE& AddAssign(VALUE& left, VALUE const& right)
   {
-    visit(Overload{
-      [&](nullptr_t  & l, auto       const& r) { left = nullptr;          },
-      [&](auto       & l, nullptr_t  const& r) { left = nullptr;          },
-      [&](nullptr_t  & l, nullptr_t  const& r) { left = nullptr;          },
-      [&](wstring    & l, wstring    const& r) { left = l +           r ; },
-      [&](bool       & l, bool       const& r) { left = l + (int64_t)(r); },
-      [&](bool       & l, double     const& r) { left = l +           r ; },
-      [&](bool       & l, int64_t    const& r) { left = l +           r ; },
-      [&](double     & l, bool       const& r) { left = l +           r ; },
-      [&](double     & l, double     const& r) { left = l +           r ; },
-      [&](double     & l, int64_t    const& r) { left = l +           r ; },
-      [&](int64_t    & l, bool       const& r) { left = l +           r ; },
-      [&](int64_t    & l, double     const& r) { left = l +           r ; },
-      [&](int64_t    & l, int64_t    const& r) { left = l +           r ; },
-      [&](auto       & l, auto       const& r)
+    std::visit(Helper::Overload{
+      [&](std::nullptr_t & l, auto           const& r) { left = nullptr;                     },
+      [&](auto           & l, std::nullptr_t const& r) { left = nullptr;                     },
+      [&](std::nullptr_t & l, std::nullptr_t const& r) { left = nullptr;                     },
+      [&](std::wstring   & l, std::wstring   const& r) { left = l +                      r ; },
+      [&](bool           & l, bool           const& r) { left = l + static_cast<int64_t>(r); },
+      [&](bool           & l, double         const& r) { left = l +                      r ; },
+      [&](bool           & l, int64_t        const& r) { left = l +                      r ; },
+      [&](double         & l, bool           const& r) { left = l +                      r ; },
+      [&](double         & l, double         const& r) { left = l +                      r ; },
+      [&](double         & l, int64_t        const& r) { left = l +                      r ; },
+      [&](int64_t        & l, bool           const& r) { left = l +                      r ; },
+      [&](int64_t        & l, double         const& r) { left = l +                      r ; },
+      [&](int64_t        & l, int64_t        const& r) { left = l +                      r ; },
+      [&](auto           & l, auto           const& r)
       {
-        auto message = "Operator+= is not defined for types "s + string(typeid(l).name()) + " and "s + string(typeid(r).name()) + "!"s;
-        throw exception(message.c_str());
+        auto message = Helper::WString2String(L"Operator+= is not defined for types \""s + Json::Stringify(GetType(left)) + L"\" and \""s + Json::Stringify(GetType(right)) + L"\"!"s);
+        throw std::exception(message.c_str());
       }
     }, left, right);
     return left;
@@ -240,23 +239,23 @@ namespace Json4CPP::Detail::Value
   VALUE Subtract(VALUE const& left, VALUE const& right)
   {
     VALUE result;
-    visit(Overload{
-      [&](nullptr_t  const& l, auto       const& r) { result = nullptr;          },
-      [&](auto       const& l, nullptr_t  const& r) { result = nullptr;          },
-      [&](nullptr_t  const& l, nullptr_t  const& r) { result = nullptr;          },
-      [&](bool       const& l, bool       const& r) { result = l - (int64_t)(r); },
-      [&](bool       const& l, double     const& r) { result = l -           r ; },
-      [&](bool       const& l, int64_t    const& r) { result = l -           r ; },
-      [&](double     const& l, bool       const& r) { result = l -           r ; },
-      [&](double     const& l, double     const& r) { result = l -           r ; },
-      [&](double     const& l, int64_t    const& r) { result = l -           r ; },
-      [&](int64_t    const& l, bool       const& r) { result = l -           r ; },
-      [&](int64_t    const& l, double     const& r) { result = l -           r ; },
-      [&](int64_t    const& l, int64_t    const& r) { result = l -           r ; },
-      [&](auto       const& l, auto       const& r)
+    std::visit(Helper::Overload{
+      [&](std::nullptr_t const& l, auto           const& r) { result = nullptr;                     },
+      [&](auto           const& l, std::nullptr_t const& r) { result = nullptr;                     },
+      [&](std::nullptr_t const& l, std::nullptr_t const& r) { result = nullptr;                     },
+      [&](bool           const& l, bool           const& r) { result = l - static_cast<int64_t>(r); },
+      [&](bool           const& l, double         const& r) { result = l -                      r ; },
+      [&](bool           const& l, int64_t        const& r) { result = l -                      r ; },
+      [&](double         const& l, bool           const& r) { result = l -                      r ; },
+      [&](double         const& l, double         const& r) { result = l -                      r ; },
+      [&](double         const& l, int64_t        const& r) { result = l -                      r ; },
+      [&](int64_t        const& l, bool           const& r) { result = l -                      r ; },
+      [&](int64_t        const& l, double         const& r) { result = l -                      r ; },
+      [&](int64_t        const& l, int64_t        const& r) { result = l -                      r ; },
+      [&](auto           const& l, auto           const& r)
       {
-        auto message = "Operator- is not defined for types "s + string(typeid(l).name()) + " and "s + string(typeid(r).name()) + "!"s;
-        throw exception(message.c_str());
+        auto message = Helper::WString2String(L"Operator- is not defined for types \""s + Json::Stringify(GetType(left)) + L"\" and \""s + Json::Stringify(GetType(right)) + L"\"!"s);
+        throw std::exception(message.c_str());
       }
     }, left, right);
     return result;
@@ -264,23 +263,23 @@ namespace Json4CPP::Detail::Value
 
   VALUE& SubtractAssign(VALUE& left, VALUE const& right)
   {
-    visit(Overload{
-      [&](nullptr_t  & l, auto       const& r) { left = nullptr;          },
-      [&](auto       & l, nullptr_t  const& r) { left = nullptr;          },
-      [&](nullptr_t  & l, nullptr_t  const& r) { left = nullptr;          },
-      [&](bool       & l, bool       const& r) { left = l - (int64_t)(r); },
-      [&](bool       & l, double     const& r) { left = l -           r ; },
-      [&](bool       & l, int64_t    const& r) { left = l -           r ; },
-      [&](double     & l, bool       const& r) { left = l -           r ; },
-      [&](double     & l, double     const& r) { left = l -           r ; },
-      [&](double     & l, int64_t    const& r) { left = l -           r ; },
-      [&](int64_t    & l, bool       const& r) { left = l -           r ; },
-      [&](int64_t    & l, double     const& r) { left = l -           r ; },
-      [&](int64_t    & l, int64_t    const& r) { left = l -           r ; },
-      [&](auto       & l, auto       const& r)
+    std::visit(Helper::Overload{
+      [&](std::nullptr_t & l, auto           const& r) { left = nullptr;                     },
+      [&](auto           & l, std::nullptr_t const& r) { left = nullptr;                     },
+      [&](std::nullptr_t & l, std::nullptr_t const& r) { left = nullptr;                     },
+      [&](bool           & l, bool           const& r) { left = l - static_cast<int64_t>(r); },
+      [&](bool           & l, double         const& r) { left = l -                      r ; },
+      [&](bool           & l, int64_t        const& r) { left = l -                      r ; },
+      [&](double         & l, bool           const& r) { left = l -                      r ; },
+      [&](double         & l, double         const& r) { left = l -                      r ; },
+      [&](double         & l, int64_t        const& r) { left = l -                      r ; },
+      [&](int64_t        & l, bool           const& r) { left = l -                      r ; },
+      [&](int64_t        & l, double         const& r) { left = l -                      r ; },
+      [&](int64_t        & l, int64_t        const& r) { left = l -                      r ; },
+      [&](auto           & l, auto           const& r)
       {
-        auto message = "Operator-= is not defined for types "s + string(typeid(l).name()) + " and "s + string(typeid(r).name()) + "!"s;
-        throw exception(message.c_str());
+        auto message = Helper::WString2String(L"Operator-= is not defined for types \""s + Json::Stringify(GetType(left)) + L"\" and \""s + Json::Stringify(GetType(right)) + L"\"!"s);
+        throw std::exception(message.c_str());
       }
     }, left, right);
     return left;
@@ -289,23 +288,23 @@ namespace Json4CPP::Detail::Value
   VALUE Multiply(VALUE const& left, VALUE const& right)
   {
     VALUE result;
-    visit(Overload{
-      [&](nullptr_t  const& l, auto       const& r) { result = nullptr;          },
-      [&](auto       const& l, nullptr_t  const& r) { result = nullptr;          },
-      [&](nullptr_t  const& l, nullptr_t  const& r) { result = nullptr;          },
-      [&](bool       const& l, bool       const& r) { result = l * (int64_t)(r); },
-      [&](bool       const& l, double     const& r) { result = l *           r ; },
-      [&](bool       const& l, int64_t    const& r) { result = l *           r ; },
-      [&](double     const& l, bool       const& r) { result = l *           r ; },
-      [&](double     const& l, double     const& r) { result = l *           r ; },
-      [&](double     const& l, int64_t    const& r) { result = l *           r ; },
-      [&](int64_t    const& l, bool       const& r) { result = l *           r ; },
-      [&](int64_t    const& l, double     const& r) { result = l *           r ; },
-      [&](int64_t    const& l, int64_t    const& r) { result = l *           r ; },
-      [&](auto       const& l, auto       const& r)
+    std::visit(Helper::Overload{
+      [&](std::nullptr_t const& l, auto           const& r) { result = nullptr;                     },
+      [&](auto           const& l, std::nullptr_t const& r) { result = nullptr;                     },
+      [&](std::nullptr_t const& l, std::nullptr_t const& r) { result = nullptr;                     },
+      [&](bool           const& l, bool           const& r) { result = l * static_cast<int64_t>(r); },
+      [&](bool           const& l, double         const& r) { result = l *                      r ; },
+      [&](bool           const& l, int64_t        const& r) { result = l *                      r ; },
+      [&](double         const& l, bool           const& r) { result = l *                      r ; },
+      [&](double         const& l, double         const& r) { result = l *                      r ; },
+      [&](double         const& l, int64_t        const& r) { result = l *                      r ; },
+      [&](int64_t        const& l, bool           const& r) { result = l *                      r ; },
+      [&](int64_t        const& l, double         const& r) { result = l *                      r ; },
+      [&](int64_t        const& l, int64_t        const& r) { result = l *                      r ; },
+      [&](auto           const& l, auto           const& r)
       {
-        auto message = "Operator* is not defined for types "s + string(typeid(l).name()) + " and "s + string(typeid(r).name()) + "!"s;
-        throw exception(message.c_str());
+        auto message = Helper::WString2String(L"Operator* is not defined for types \""s + Json::Stringify(GetType(left)) + L"\" and \""s + Json::Stringify(GetType(right)) + L"\"!"s);
+        throw std::exception(message.c_str());
       }
     }, left, right);
     return result;
@@ -313,23 +312,23 @@ namespace Json4CPP::Detail::Value
 
   VALUE& MultiplyAssign(VALUE& left, VALUE const& right)
   {
-    visit(Overload{
-      [&](nullptr_t  & l, auto       const& r) { left = nullptr;                     },
-      [&](auto       & l, nullptr_t  const& r) { left = nullptr;                     },
-      [&](nullptr_t  & l, nullptr_t  const& r) { left = nullptr;                     },
-      [&](bool       & l, bool       const& r) { left = l * (int64_t)(r); },
-      [&](bool       & l, double     const& r) { left = l *           r ; },
-      [&](bool       & l, int64_t    const& r) { left = l *           r ; },
-      [&](double     & l, bool       const& r) { left = l *           r ; },
-      [&](double     & l, double     const& r) { left = l *           r ; },
-      [&](double     & l, int64_t    const& r) { left = l *           r ; },
-      [&](int64_t    & l, bool       const& r) { left = l *           r ; },
-      [&](int64_t    & l, double     const& r) { left = l *           r ; },
-      [&](int64_t    & l, int64_t    const& r) { left = l *           r ; },
-      [&](auto       & l, auto       const& r)
+    std::visit(Helper::Overload{
+      [&](std::nullptr_t & l, auto           const& r) { left = nullptr;                     },
+      [&](auto           & l, std::nullptr_t const& r) { left = nullptr;                     },
+      [&](std::nullptr_t & l, std::nullptr_t const& r) { left = nullptr;                     },
+      [&](bool           & l, bool           const& r) { left = l * static_cast<int64_t>(r); },
+      [&](bool           & l, double         const& r) { left = l *                      r ; },
+      [&](bool           & l, int64_t        const& r) { left = l *                      r ; },
+      [&](double         & l, bool           const& r) { left = l *                      r ; },
+      [&](double         & l, double         const& r) { left = l *                      r ; },
+      [&](double         & l, int64_t        const& r) { left = l *                      r ; },
+      [&](int64_t        & l, bool           const& r) { left = l *                      r ; },
+      [&](int64_t        & l, double         const& r) { left = l *                      r ; },
+      [&](int64_t        & l, int64_t        const& r) { left = l *                      r ; },
+      [&](auto           & l, auto           const& r)
       {
-        auto message = "Operator*= is not defined for types "s + string(typeid(l).name()) + " and "s + string(typeid(r).name()) + "!"s;
-        throw exception(message.c_str());
+        auto message = Helper::WString2String(L"Operator*= is not defined for types \""s + Json::Stringify(GetType(left)) + L"\" and \""s + Json::Stringify(GetType(right)) + L"\"!"s);
+        throw std::exception(message.c_str());
       }
     }, left, right);
     return left;
@@ -338,24 +337,24 @@ namespace Json4CPP::Detail::Value
   VALUE Divide(VALUE const& left, VALUE const& right)
   {
     VALUE result;
-    visit(Overload{
-      [&](nullptr_t  const& l, auto       const& r) { result = nullptr;                    },
-      [&](auto       const& l, nullptr_t  const& r) { result = nullptr;                    },
-      [&](nullptr_t  const& l, nullptr_t  const& r) { result = nullptr;                    },
-      [&](wstring    const& l, wstring    const& r) { result = wstring(path(l) / path(r)); },
-      [&](bool       const& l, bool       const& r) { result = l / (double)(r);            },
-      [&](bool       const& l, double     const& r) { result = l /          r ;            },
-      [&](bool       const& l, int64_t    const& r) { result = l / (double)(r);            },
-      [&](double     const& l, bool       const& r) { result = l /          r ;            },
-      [&](double     const& l, double     const& r) { result = l /          r ;            },
-      [&](double     const& l, int64_t    const& r) { result = l /          r ;            },
-      [&](int64_t    const& l, bool       const& r) { result = l / (double)(r);            },
-      [&](int64_t    const& l, double     const& r) { result = l /          r ;            },
-      [&](int64_t    const& l, int64_t    const& r) { result = l / (double)(r);            },
-      [&](auto       const& l, auto       const& r)
+    std::visit(Helper::Overload{
+      [&](std::nullptr_t const& l, auto           const& r) { result = nullptr;                                                           },
+      [&](auto           const& l, std::nullptr_t const& r) { result = nullptr;                                                           },
+      [&](std::nullptr_t const& l, std::nullptr_t const& r) { result = nullptr;                                                           },
+      [&](std::wstring   const& l, std::wstring   const& r) { result = std::wstring(std::filesystem::path(l) / std::filesystem::path(r)); },
+      [&](bool           const& l, bool           const& r) { result =                                    l  / static_cast<double>  (r) ; },
+      [&](bool           const& l, double         const& r) { result =                                    l  /                       r  ; },
+      [&](bool           const& l, int64_t        const& r) { result =                                    l  / static_cast<double>  (r) ; },
+      [&](double         const& l, bool           const& r) { result =                                    l  /                       r  ; },
+      [&](double         const& l, double         const& r) { result =                                    l  /                       r  ; },
+      [&](double         const& l, int64_t        const& r) { result =                                    l  /                       r  ; },
+      [&](int64_t        const& l, bool           const& r) { result =                                    l  / static_cast<double>  (r) ; },
+      [&](int64_t        const& l, double         const& r) { result =                                    l  /                       r  ; },
+      [&](int64_t        const& l, int64_t        const& r) { result =                                    l  / static_cast<double>  (r) ; },
+      [&](auto           const& l, auto           const& r)
       {
-        auto message = "Operator/ is not defined for types "s + string(typeid(l).name()) + " and "s + string(typeid(r).name()) + "!"s;
-        throw exception(message.c_str());
+        auto message = Helper::WString2String(L"Operator/ is not defined for types \""s + Json::Stringify(GetType(left)) + L"\" and \""s + Json::Stringify(GetType(right)) + L"\"!"s);
+        throw std::exception(message.c_str());
       }
     }, left, right);
     return result;
@@ -363,24 +362,24 @@ namespace Json4CPP::Detail::Value
 
   VALUE& DivideAssign(VALUE& left, VALUE const& right)
   {
-    visit(Overload{
-      [&](nullptr_t  & l, auto       const& r) { left = nullptr;                    },
-      [&](auto       & l, nullptr_t  const& r) { left = nullptr;                    },
-      [&](nullptr_t  & l, nullptr_t  const& r) { left = nullptr;                    },
-      [&](wstring    & l, wstring    const& r) { left = wstring(path(l) / path(r)); },
-      [&](bool       & l, bool       const& r) { left = l / (double)(r);            },
-      [&](bool       & l, double     const& r) { left = l /          r ;            },
-      [&](bool       & l, int64_t    const& r) { left = l / (double)(r);            },
-      [&](double     & l, bool       const& r) { left = l /          r ;            },
-      [&](double     & l, double     const& r) { left = l /          r ;            },
-      [&](double     & l, int64_t    const& r) { left = l /          r ;            },
-      [&](int64_t    & l, bool       const& r) { left = l / (double)(r);            },
-      [&](int64_t    & l, double     const& r) { left = l /          r ;            },
-      [&](int64_t    & l, int64_t    const& r) { left = l / (double)(r);            },
-      [&](auto       & l, auto       const& r)
+    std::visit(Helper::Overload{
+      [&](std::nullptr_t & l, auto           const& r) { left = nullptr;                                                           },
+      [&](auto           & l, std::nullptr_t const& r) { left = nullptr;                                                           },
+      [&](std::nullptr_t & l, std::nullptr_t const& r) { left = nullptr;                                                           },
+      [&](std::wstring   & l, std::wstring   const& r) { left = std::wstring(std::filesystem::path(l) / std::filesystem::path(r)); },
+      [&](bool           & l, bool           const& r) { left =                                    l  / static_cast<double>  (r) ; },
+      [&](bool           & l, double         const& r) { left =                                    l  /                       r  ; },
+      [&](bool           & l, int64_t        const& r) { left =                                    l  / static_cast<double>  (r) ; },
+      [&](double         & l, bool           const& r) { left =                                    l  /                       r  ; },
+      [&](double         & l, double         const& r) { left =                                    l  /                       r  ; },
+      [&](double         & l, int64_t        const& r) { left =                                    l  /                       r  ; },
+      [&](int64_t        & l, bool           const& r) { left =                                    l  / static_cast<double>  (r) ; },
+      [&](int64_t        & l, double         const& r) { left =                                    l  /                       r  ; },
+      [&](int64_t        & l, int64_t        const& r) { left =                                    l  / static_cast<double>  (r) ; },
+      [&](auto           & l, auto           const& r)
       {
-        auto message = "Operator/= is not defined for types "s + string(typeid(l).name()) + " and "s + string(typeid(r).name()) + "!"s;
-        throw exception(message.c_str());
+        auto message = Helper::WString2String(L"Operator/= is not defined for types \""s + Json::Stringify(GetType(left)) + L"\" and \""s + Json::Stringify(GetType(right)) + L"\"!"s);
+        throw std::exception(message.c_str());
       }
     }, left, right);
     return left;
@@ -389,23 +388,23 @@ namespace Json4CPP::Detail::Value
   VALUE Modulo(VALUE const& left, VALUE const& right)
   {
     VALUE result;
-    visit(Overload{
-      [&](nullptr_t  const& l, auto       const& r) { result = nullptr;    },
-      [&](auto       const& l, nullptr_t  const& r) { result = nullptr;    },
-      [&](nullptr_t  const& l, nullptr_t  const& r) { result = nullptr;    },
-      [&](bool       const& l, bool       const& r) { result = fmod(l, r); },
-      [&](bool       const& l, double     const& r) { result = fmod(l, r); },
-      [&](bool       const& l, int64_t    const& r) { result = fmod(l, r); },
-      [&](double     const& l, bool       const& r) { result = fmod(l, r); },
-      [&](double     const& l, double     const& r) { result = fmod(l, r); },
-      [&](double     const& l, int64_t    const& r) { result = fmod(l, r); },
-      [&](int64_t    const& l, bool       const& r) { result = fmod(l, r); },
-      [&](int64_t    const& l, double     const& r) { result = fmod(l, r); },
-      [&](int64_t    const& l, int64_t    const& r) { result = fmod(l, r); },
-      [&](auto       const& l, auto       const& r)
+    std::visit(Helper::Overload{
+      [&](std::nullptr_t const& l, auto           const& r) { result = nullptr;    },
+      [&](auto           const& l, std::nullptr_t const& r) { result = nullptr;    },
+      [&](std::nullptr_t const& l, std::nullptr_t const& r) { result = nullptr;    },
+      [&](bool           const& l, bool           const& r) { result = fmod(l, r); },
+      [&](bool           const& l, double         const& r) { result = fmod(l, r); },
+      [&](bool           const& l, int64_t        const& r) { result = fmod(l, r); },
+      [&](double         const& l, bool           const& r) { result = fmod(l, r); },
+      [&](double         const& l, double         const& r) { result = fmod(l, r); },
+      [&](double         const& l, int64_t        const& r) { result = fmod(l, r); },
+      [&](int64_t        const& l, bool           const& r) { result = fmod(l, r); },
+      [&](int64_t        const& l, double         const& r) { result = fmod(l, r); },
+      [&](int64_t        const& l, int64_t        const& r) { result = fmod(l, r); },
+      [&](auto           const& l, auto           const& r)
       {
-        auto message = "Operator% is not defined for types "s + string(typeid(l).name()) + " and "s + string(typeid(r).name()) + "!"s;
-        throw exception(message.c_str());
+        auto message = Helper::WString2String(L"Operator% is not defined for types \""s + Json::Stringify(GetType(left)) + L"\" and \""s + Json::Stringify(GetType(right)) + L"\"!"s);
+        throw std::exception(message.c_str());
       }
     }, left, right);
     return result;
@@ -413,23 +412,23 @@ namespace Json4CPP::Detail::Value
 
   VALUE& ModuloAssign(VALUE& left, VALUE const& right)
   {
-    visit(Overload{
-      [&](nullptr_t  & l, auto       const& r) { left = nullptr;    },
-      [&](auto       & l, nullptr_t  const& r) { left = nullptr;    },
-      [&](nullptr_t  & l, nullptr_t  const& r) { left = nullptr;    },
-      [&](bool       & l, bool       const& r) { left = fmod(l, r); },
-      [&](bool       & l, double     const& r) { left = fmod(l, r); },
-      [&](bool       & l, int64_t    const& r) { left = fmod(l, r); },
-      [&](double     & l, bool       const& r) { left = fmod(l, r); },
-      [&](double     & l, double     const& r) { left = fmod(l, r); },
-      [&](double     & l, int64_t    const& r) { left = fmod(l, r); },
-      [&](int64_t    & l, bool       const& r) { left = fmod(l, r); },
-      [&](int64_t    & l, double     const& r) { left = fmod(l, r); },
-      [&](int64_t    & l, int64_t    const& r) { left = fmod(l, r); },
-      [&](auto       & l, auto       const& r)
+    std::visit(Helper::Overload{
+      [&](std::nullptr_t & l, auto           const& r) { left = nullptr;    },
+      [&](auto           & l, std::nullptr_t const& r) { left = nullptr;    },
+      [&](std::nullptr_t & l, std::nullptr_t const& r) { left = nullptr;    },
+      [&](bool           & l, bool           const& r) { left = fmod(l, r); },
+      [&](bool           & l, double         const& r) { left = fmod(l, r); },
+      [&](bool           & l, int64_t        const& r) { left = fmod(l, r); },
+      [&](double         & l, bool           const& r) { left = fmod(l, r); },
+      [&](double         & l, double         const& r) { left = fmod(l, r); },
+      [&](double         & l, int64_t        const& r) { left = fmod(l, r); },
+      [&](int64_t        & l, bool           const& r) { left = fmod(l, r); },
+      [&](int64_t        & l, double         const& r) { left = fmod(l, r); },
+      [&](int64_t        & l, int64_t        const& r) { left = fmod(l, r); },
+      [&](auto           & l, auto           const& r)
       {
-        auto message = "Operator%= is not defined for types "s + string(typeid(l).name()) + " and "s + string(typeid(r).name()) + "!"s;
-        throw exception(message.c_str());
+        auto message = Helper::WString2String(L"Operator%= is not defined for types \""s + Json::Stringify(GetType(left)) + L"\" and \""s + Json::Stringify(GetType(right)) + L"\"!"s);
+        throw std::exception(message.c_str());
       }
     }, left, right);
     return left;
@@ -438,15 +437,15 @@ namespace Json4CPP::Detail::Value
   VALUE Negate(VALUE const& value)
   {
     VALUE result;
-    visit(Overload{
-      [&](nullptr_t  const& v) { result = nullptr;       },
-      [&](bool       const& v) { result = -(int64_t)(v); },
-      [&](double     const& v) { result = -v;            },
-      [&](int64_t    const& v) { result = -v;            },
-      [&](auto       const& v)
+    std::visit(Helper::Overload{
+      [&](std::nullptr_t const& v) { result = nullptr;                  },
+      [&](bool           const& v) { result = -static_cast<int64_t>(v); },
+      [&](double         const& v) { result = -v;                       },
+      [&](int64_t        const& v) { result = -v;                       },
+      [&](auto           const& v)
       {
-        auto message = "Operator- is not defined for type "s + string(typeid(v).name()) + "!"s;
-        throw exception(message.c_str());
+        auto message = Helper::WString2String(L"Operator- is not defined for type \""s + Json::Stringify(GetType(value)) + L"\"!"s);
+        throw std::exception(message.c_str());
       }
     }, value);
     return result;
@@ -455,15 +454,15 @@ namespace Json4CPP::Detail::Value
   bool Not(VALUE const& value)
   {
     bool result;
-    visit(Overload{
-      [&](nullptr_t  const& v) { result = true; },
-      [&](bool       const& v) { result = !v;   },
-      [&](double     const& v) { result = !v;   },
-      [&](int64_t    const& v) { result = !v;   },
-      [&](auto       const& v)
+    std::visit(Helper::Overload{
+      [&](std::nullptr_t const& v) { result = true; },
+      [&](bool           const& v) { result = !v;   },
+      [&](double         const& v) { result = !v;   },
+      [&](int64_t        const& v) { result = !v;   },
+      [&](auto           const& v)
       {
-        auto message = "Operator! is not defined for type "s + string(typeid(v).name()) + "!"s;
-        throw exception(message.c_str());
+        auto message = Helper::WString2String(L"Operator! is not defined for type \""s + Json::Stringify(GetType(value)) + L"\"!"s);
+        throw std::exception(message.c_str());
       }
     }, value);
     return result;
@@ -471,14 +470,14 @@ namespace Json4CPP::Detail::Value
 
   VALUE& PreIncrement(VALUE& value)
   {
-    visit(Overload{
-      [&](nullptr_t  & v) { value = nullptr; },
-      [&](double     & v) { value = ++v;     },
-      [&](int64_t    & v) { value = ++v;     },
-      [&](auto       & v)
+    std::visit(Helper::Overload{
+      [&](std::nullptr_t & v) { value = nullptr; },
+      [&](double         & v) { value = ++v;     },
+      [&](int64_t        & v) { value = ++v;     },
+      [&](auto           & v)
       {
-        auto message = "Operator++ (pre-increment) is not defined for type "s + string(typeid(v).name()) + "!"s;
-        throw exception(message.c_str());
+        auto message = Helper::WString2String(L"Operator++ (pre-increment) is not defined for type \""s + Json::Stringify(GetType(value)) + L"\"!"s);
+        throw std::exception(message.c_str());
       }
     }, value);
     return value;
@@ -487,14 +486,14 @@ namespace Json4CPP::Detail::Value
   VALUE PostIncrement(VALUE& value)
   {
     VALUE result;
-    visit(Overload{
-      [&](nullptr_t  & v) { result = nullptr; },
-      [&](double     & v) { result = v++;     },
-      [&](int64_t    & v) { result = v++;     },
-      [&](auto       & v)
+    std::visit(Helper::Overload{
+      [&](std::nullptr_t & v) { result = nullptr; },
+      [&](double         & v) { result = v++;     },
+      [&](int64_t        & v) { result = v++;     },
+      [&](auto           & v)
       {
-        auto message = "Operator++ (post-increment) is not defined for type "s + string(typeid(v).name()) + "!"s;
-        throw exception(message.c_str());
+        auto message = Helper::WString2String(L"Operator++ (post-increment) is not defined for type \""s + Json::Stringify(GetType(value)) + L"\"!"s);
+        throw std::exception(message.c_str());
       }
     }, value);
     return result;
@@ -502,14 +501,14 @@ namespace Json4CPP::Detail::Value
 
   VALUE& PreDecrement(VALUE& value)
   {
-    visit(Overload{
-      [&](nullptr_t  & v) { value = nullptr; },
-      [&](double     & v) { value = --v;     },
-      [&](int64_t    & v) { value = --v;     },
-      [&](auto       & v)
+    std::visit(Helper::Overload{
+      [&](std::nullptr_t & v) { value = nullptr; },
+      [&](double         & v) { value = --v;     },
+      [&](int64_t        & v) { value = --v;     },
+      [&](auto           & v)
       {
-        auto message = "Operator-- (pre-decrement) is not defined for type "s + string(typeid(v).name()) + "!"s;
-        throw exception(message.c_str());
+        auto message = Helper::WString2String(L"Operator-- (pre-decrement) is not defined for type \""s + Json::Stringify(GetType(value)) + L"\"!"s);
+        throw std::exception(message.c_str());
       }
     }, value);
     return value;
@@ -518,14 +517,14 @@ namespace Json4CPP::Detail::Value
   VALUE PostDecrement(VALUE& value)
   {
     VALUE result;
-    visit(Overload{
-      [&](nullptr_t  & v) { result = nullptr; },
-      [&](double     & v) { result = v--;     },
-      [&](int64_t    & v) { result = v--;     },
-      [&](auto       & v)
+    std::visit(Helper::Overload{
+      [&](std::nullptr_t & v) { result = nullptr; },
+      [&](double         & v) { result = v--;     },
+      [&](int64_t        & v) { result = v--;     },
+      [&](auto           & v)
       {
-        auto message = "Operator-- (post-decrement) is not defined for type "s + string(typeid(v).name()) + "!"s;
-        throw exception(message.c_str());
+        auto message = Helper::WString2String(L"Operator-- (post-decrement) is not defined for type \""s + Json::Stringify(GetType(value)) + L"\"!"s);
+        throw std::exception(message.c_str());
       }
     }, value);
     return result;
@@ -533,12 +532,12 @@ namespace Json4CPP::Detail::Value
 
   bool LogicalAnd(VALUE const& left, VALUE const& right)
   {
-    return (bool)Json(left) && (bool)Json(right);
+    return static_cast<bool>(Json(left)) && static_cast<bool>(Json(right));
   }
 
   bool LogicalOr(VALUE const& left, VALUE const& right)
   {
-    return (bool)Json(left) || (bool)Json(right);
+    return static_cast<bool>(Json(left)) || static_cast<bool>(Json(right));
   }
 #pragma warning(pop)
 }

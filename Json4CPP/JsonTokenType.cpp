@@ -2,11 +2,11 @@
 
 #include "JsonTokenType.h"
 
-using namespace std;
+using namespace std::string_literals;
 
 namespace Json4CPP::Detail
 {
-  wostream& operator<<(wostream& os, JsonTokenType token)
+  std::wostream& operator<<(std::wostream& os, JsonTokenType token)
   {
     switch (token)
     {
@@ -23,12 +23,5 @@ namespace Json4CPP::Detail
     default:
     case JsonTokenType::Undefined   : return os << L"Undefined"s   ;
     }
-  }
-
-  wstring Dump(JsonTokenType token)
-  {
-    wostringstream os;
-    os << token;
-    return os.str();
   }
 }

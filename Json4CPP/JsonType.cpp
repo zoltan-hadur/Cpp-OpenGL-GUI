@@ -2,11 +2,11 @@
 
 #include "JsonType.h"
 
-using namespace std;
+using namespace std::string_literals;
 
 namespace Json4CPP
 {
-  wostream& operator<<(wostream& os, JsonType type)
+  std::wostream& operator<<(std::wostream& os, JsonType type)
   {
     switch (type)
     {
@@ -27,7 +27,7 @@ namespace Json4CPP
 
   bool operator==(JsonType left, JsonType right)
   {
-    return (int)left & (int)right;
+    return static_cast<int>(left) & static_cast<int>(right);
   }
 
   bool operator!=(JsonType left, JsonType right)

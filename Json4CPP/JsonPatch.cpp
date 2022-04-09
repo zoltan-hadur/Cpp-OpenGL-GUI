@@ -7,8 +7,7 @@
 #include <iostream>
 #include <string>
 
-using namespace std;
-using namespace Json4CPP::Detail;
+using namespace std::string_literals;
 
 namespace Json4CPP
 {
@@ -16,24 +15,24 @@ namespace Json4CPP
   {
     if (!json.Count(L"path"s))
     {
-      auto message = WString2String(L"Key 'path' is missing from object: "s + Json::Stringify(json) + L"!"s);
-      throw exception(message.c_str());
+      auto message = Helper::WString2String(L"Key 'path' is missing from object: "s + Json::Stringify(json) + L"!"s);
+      throw std::exception(message.c_str());
     }
     auto& path = json.At(L"path"s);
     if (!path.Is(JsonType::String))
     {
-      auto message = WString2String(L"Path: "s + Json::Stringify(path) + L" is not a string!"s);
-      throw exception(message.c_str());
+      auto message = Helper::WString2String(L"Path: "s + Json::Stringify(path) + L" is not a string!"s);
+      throw std::exception(message.c_str());
     }
-    _path = JsonPointer(path.Get<wstring>());
+    _path = JsonPointer(path.Get<std::wstring>());
   }
 
   JsonPatch::OperationAdd::OperationAdd(Json const& json) : OperationBase(json)
   {
     if (!json.Count(L"value"s))
     {
-      auto message = WString2String(L"Key 'value' is missing from object: "s + Json::Stringify(json) + L"!"s);
-      throw exception(message.c_str());
+      auto message = Helper::WString2String(L"Key 'value' is missing from object: "s + Json::Stringify(json) + L"!"s);
+      throw std::exception(message.c_str());
     }
     _value = json.At(L"value"s);
   }
@@ -56,8 +55,8 @@ namespace Json4CPP
     auto parent = _path.Parent();
     if (!parent.Exists(json))
     {
-      auto message = WString2String(L"Parent: \""s + parent.Path() + L"\" does not exist!"s);
-      throw exception(message.c_str());
+      auto message = Helper::WString2String(L"Parent: \""s + parent.Path() + L"\" does not exist!"s);
+      throw std::exception(message.c_str());
     }
 
     auto& parentElement = json.At(parent);
@@ -71,18 +70,18 @@ namespace Json4CPP
       else if (JsonPointer::ArrayIndex(target))
       {
         int64_t index;
-        wstringstream(target) >> index;
+        std::wstringstream(target) >> index;
         if (parentElement.Size() < index)
         {
-          auto message = WString2String(L"Target location: \""s + _path.Path() + L"\" is out of range!"s);
-          throw exception(message.c_str());
+          auto message = Helper::WString2String(L"Target location: \""s + _path.Path() + L"\" is out of range!"s);
+          throw std::exception(message.c_str());
         }
         parentElement.Insert(index, _value);
       }
       else
       {
-        auto message = WString2String(L"Target location's parent: \""s + parent.Path() + L"\" is an array, thus target : \""s + target + L"\" must be either an index or '-'!"s);
-        throw exception(message.c_str());
+        auto message = Helper::WString2String(L"Target location's parent: \""s + parent.Path() + L"\" is an array, thus target : \""s + target + L"\" must be either an index or '-'!"s);
+        throw std::exception(message.c_str());
       }
     }
     else
@@ -105,8 +104,8 @@ namespace Json4CPP
   {
     if (_path.Empty() || !_path.Exists(json))
     {
-      auto message = WString2String(L"Target location: \""s + _path.Path() + L"\" does not exist!"s);
-      throw exception(message.c_str());
+      auto message = Helper::WString2String(L"Target location: \""s + _path.Path() + L"\" does not exist!"s);
+      throw std::exception(message.c_str());
     }
 
     auto& parentElement = json.At(_path.Parent());
@@ -114,7 +113,7 @@ namespace Json4CPP
     if (parentElement.Is(JsonType::Array) && JsonPointer::ArrayIndex(target))
     {
       int64_t index;
-      wstringstream(target) >> index;
+      std::wstringstream(target) >> index;
       parentElement.Erase(index);
     }
     else // It is not an array index, thus it must be a key
@@ -127,8 +126,8 @@ namespace Json4CPP
   {
     if (!json.Count(L"value"s))
     {
-      auto message = WString2String(L"Key 'value' is missing from object: "s + Json::Stringify(json) + L"!"s);
-      throw exception(message.c_str());
+      auto message = Helper::WString2String(L"Key 'value' is missing from object: "s + Json::Stringify(json) + L"!"s);
+      throw std::exception(message.c_str());
     }
     _value = json.At(L"value"s);
   }
@@ -142,8 +141,8 @@ namespace Json4CPP
   {
     if (_path.Empty() || !_path.Exists(json))
     {
-      auto message = WString2String(L"Target location: \""s + _path.Path() + L"\" does not exist!"s);
-      throw exception(message.c_str());
+      auto message = Helper::WString2String(L"Target location: \""s + _path.Path() + L"\" does not exist!"s);
+      throw std::exception(message.c_str());
     }
 
     json[_path] = _value;
@@ -153,20 +152,20 @@ namespace Json4CPP
   {
     if (!json.Count(L"from"s))
     {
-      auto message = WString2String(L"Key 'from' is missing from object: "s + Json::Stringify(json) + L"!"s);
-      throw exception(message.c_str());
+      auto message = Helper::WString2String(L"Key 'from' is missing from object: "s + Json::Stringify(json) + L"!"s);
+      throw std::exception(message.c_str());
     }
     auto& from = json.At(L"from"s);
     if (!from.Is(JsonType::String))
     {
-      auto message = WString2String(L"From: "s + Json::Stringify(from) + L" is not a string!"s);
-      throw exception(message.c_str());
+      auto message = Helper::WString2String(L"From: "s + Json::Stringify(from) + L" is not a string!"s);
+      throw std::exception(message.c_str());
     }
-    _from = JsonPointer(from.Get<wstring>());
+    _from = JsonPointer(from.Get<std::wstring>());
     if (_path.Parent().Path().starts_with(_from.Path()))
     {
-      auto message = WString2String(L"Location 'from': \"" + _from.Path() + L"\" is a prefix of location 'path': \""s + _path.Path() + L"\"! A location cannot be moved into one of its children."s);
-      throw exception(message.c_str());
+      auto message = Helper::WString2String(L"Location 'from': \"" + _from.Path() + L"\" is a prefix of location 'path': \""s + _path.Path() + L"\"! A location cannot be moved into one of its children."s);
+      throw std::exception(message.c_str());
     }
   }
 
@@ -179,8 +178,8 @@ namespace Json4CPP
   {
     if (!_from.Exists(json))
     {
-      auto message = WString2String(L"From location: \""s + _from.Path() + L"\" does not exist!"s);
-      throw exception(message.c_str());
+      auto message = Helper::WString2String(L"From location: \""s + _from.Path() + L"\" does not exist!"s);
+      throw std::exception(message.c_str());
     }
 
     auto value = json.At(_from);
@@ -194,16 +193,16 @@ namespace Json4CPP
   {
     if (!json.Count(L"from"s))
     {
-      auto message = WString2String(L"Key 'from' is missing from object: "s + Json::Stringify(json) + L"!"s);
-      throw exception(message.c_str());
+      auto message = Helper::WString2String(L"Key 'from' is missing from object: "s + Json::Stringify(json) + L"!"s);
+      throw std::exception(message.c_str());
     }
     auto& from = json.At(L"from"s);
     if (!from.Is(JsonType::String))
     {
-      auto message = WString2String(L"From: "s + Json::Stringify(from) + L" is not a string!"s);
-      throw exception(message.c_str());
+      auto message = Helper::WString2String(L"From: "s + Json::Stringify(from) + L" is not a string!"s);
+      throw std::exception(message.c_str());
     }
-    _from = JsonPointer(from.Get<wstring>());
+    _from = JsonPointer(from.Get<std::wstring>());
   }
 
   JsonPatch::OperationCopy::operator JsonObject() const
@@ -215,8 +214,8 @@ namespace Json4CPP
   {
     if (!_from.Exists(json))
     {
-      auto message = WString2String(L"From location: \""s + _from.Path() + L"\" does not exist!"s);
-      throw exception(message.c_str());
+      auto message = Helper::WString2String(L"From location: \""s + _from.Path() + L"\" does not exist!"s);
+      throw std::exception(message.c_str());
     }
 
     auto value = json.At(_from);
@@ -228,8 +227,8 @@ namespace Json4CPP
   {
     if (!json.Count(L"value"s))
     {
-      auto message = WString2String(L"Key 'value' is missing from object: "s + Json::Stringify(json) + L"!"s);
-      throw exception(message.c_str());
+      auto message = Helper::WString2String(L"Key 'value' is missing from object: "s + Json::Stringify(json) + L"!"s);
+      throw std::exception(message.c_str());
     }
     _value = json.At(L"value"s);
   }
@@ -243,13 +242,13 @@ namespace Json4CPP
   {
     if (!_path.Exists(json))
     {
-      auto message = WString2String(L"Target location: \""s + _path.Path() + L"\" does not exist!"s);
-      throw exception(message.c_str());
+      auto message = Helper::WString2String(L"Target location: \""s + _path.Path() + L"\" does not exist!"s);
+      throw std::exception(message.c_str());
     }
     else if (json.At(_path) != _value)
     {
-      auto message = WString2String(L"Target location value: "s + Json::Stringify(json.At(_path)) + L" is not equal to " + Json::Stringify(_value) + L"!"s);
-      throw exception(message.c_str());
+      auto message = Helper::WString2String(L"Target location value: "s + Json::Stringify(json.At(_path)) + L" is not equal to " + Json::Stringify(_value) + L"!"s);
+      throw std::exception(message.c_str());
     }
   }
 
@@ -264,28 +263,28 @@ namespace Json4CPP
     {
       if (!element.Is(JsonType::Object))
       {
-        auto message = WString2String(L"Value: "s + Json::Stringify(element) + L" is not an object!"s);
-        throw exception(message.c_str());
+        auto message = Helper::WString2String(L"Value: "s + Json::Stringify(element) + L" is not an object!"s);
+        throw std::exception(message.c_str());
       }
       if (!element.Count(L"op"s))
       {
-        auto message = WString2String(L"Key 'op' is missing from object: "s + Json::Stringify(element) + L"!"s);
-        throw exception(message.c_str());
+        auto message = Helper::WString2String(L"Key 'op' is missing from object: "s + Json::Stringify(element) + L"!"s);
+        throw std::exception(message.c_str());
       }
-      auto op = element.At(L"op"s).Get<wstring>();
-      static auto factory = map<wstring, function<shared_ptr<OperationBase>(Json const&)>>
+      auto op = element.At(L"op"s).Get<std::wstring>();
+      static auto factory = std::map<std::wstring, std::function<std::shared_ptr<OperationBase>(Json const&)>>
       {
-        { L"add"    , [](Json const& element) { return make_shared<OperationAdd    >(element); } },
-        { L"remove" , [](Json const& element) { return make_shared<OperationRemove >(element); } },
-        { L"replace", [](Json const& element) { return make_shared<OperationReplace>(element); } },
-        { L"move"   , [](Json const& element) { return make_shared<OperationMove   >(element); } },
-        { L"copy"   , [](Json const& element) { return make_shared<OperationCopy   >(element); } },
-        { L"test"   , [](Json const& element) { return make_shared<OperationTest   >(element); } }
+        { L"add"    , [](Json const& element) { return std::make_shared<OperationAdd    >(element); } },
+        { L"remove" , [](Json const& element) { return std::make_shared<OperationRemove >(element); } },
+        { L"replace", [](Json const& element) { return std::make_shared<OperationReplace>(element); } },
+        { L"move"   , [](Json const& element) { return std::make_shared<OperationMove   >(element); } },
+        { L"copy"   , [](Json const& element) { return std::make_shared<OperationCopy   >(element); } },
+        { L"test"   , [](Json const& element) { return std::make_shared<OperationTest   >(element); } }
       };
       if (!factory.count(op))
       {
-        auto message = WString2String(L"Operation \""s + op + L"\" is not a valid operation! It must be one of \"add\", \"remove\", \"replace\", \"move\", \"copy\", or \"test\"."s);
-        throw exception(message.c_str());
+        auto message = Helper::WString2String(L"Operation \""s + op + L"\" is not a valid operation! It must be one of \"add\", \"remove\", \"replace\", \"move\", \"copy\", or \"test\"."s);
+        throw std::exception(message.c_str());
       }
       _operations.push_back(factory[op](element));
     }
@@ -300,10 +299,10 @@ namespace Json4CPP
       {
         operation->Execute(result);
       }
-      catch (exception e)
+      catch (std::exception e)
       {
-        auto message = WString2String(L"Operation: "s + Json::Stringify((JsonObject)*operation) + L" failed! "s) + e.what();
-        throw exception(message.c_str());
+        auto message = Helper::WString2String(L"Operation: "s + Json::Stringify((JsonObject)*operation) + L" failed! "s) + e.what();
+        throw std::exception(message.c_str());
       }
     }
     return result;
@@ -319,12 +318,12 @@ namespace Json4CPP
     return array;
   }
 
-  wostream& operator<<(wostream& os, JsonPatch const& patch)
+  std::wostream& operator<<(std::wostream& os, JsonPatch const& patch)
   {
     return os << (JsonArray)patch;
   }
 
-  wistream& operator>>(wistream& is, JsonPatch& patch)
+  std::wistream& operator>>(std::wistream& is, JsonPatch& patch)
   {
     JsonArray array;
     is >> array;

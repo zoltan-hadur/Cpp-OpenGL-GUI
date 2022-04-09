@@ -4,6 +4,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using namespace Json4CPP;
 using namespace Json4CPP::Detail;
+using namespace Json4CPP::Helper;
 
 namespace Json4CPP::Test
 {
@@ -1039,6 +1040,9 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>({ 1, 2, 3 }, array.At(6));
 
       static_assert(is_const<remove_reference<decltype(array.At(0))>::type>::value, "JsonArray::At(index) return type must be Json const&");
+
+      Assert::ExpectException<out_of_range>([&]() { auto result = array.At(-1); });
+      Assert::ExpectException<out_of_range>([&]() { auto result = array.At( 7); });
     }
 
     TEST_METHOD(TestAt)
@@ -1057,6 +1061,9 @@ namespace Json4CPP::Test
         array.At(i) = 9999;
         Assert::AreEqual<Json>(9999, array.At(i));
       }
+
+      Assert::ExpectException<out_of_range>([&]() { auto result = array.At(-1); });
+      Assert::ExpectException<out_of_range>([&]() { auto result = array.At( 7); });
     }
 
     TEST_METHOD(TestIterator)

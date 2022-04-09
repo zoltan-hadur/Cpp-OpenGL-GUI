@@ -14,7 +14,8 @@ namespace Json4CPP
   class JSON_API JsonIndentSize
   {
   private:
-    inline static int _valueIndex = std::ios_base::xalloc();
+    inline static int _activeIndex = std::ios_base::xalloc();
+    inline static int _sizeIndex   = std::ios_base::xalloc();
     uint8_t _size;
   public:
     JsonIndentSize(uint8_t size);

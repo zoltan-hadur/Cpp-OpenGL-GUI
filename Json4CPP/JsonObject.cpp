@@ -9,17 +9,16 @@
 #include "JsonIndentSize.h"
 #include "JsonIndentChar.h"
 
-using namespace std;
-using namespace Json4CPP::Detail;
+using namespace std::string_literals;
 
 namespace Json4CPP
 {
-  JsonObject JsonObject::Read(deque<TOKEN>& tokens)
+  JsonObject JsonObject::Read(std::deque<Detail::TOKEN>& tokens)
   {
     if (tokens.empty())
     {
-      auto message = WString2String(L"Expected token: "s + Json::Stringify(JsonTokenType::StartObject) + L"!"s);
-      throw exception(message.c_str());
+      auto message = Helper::WString2String(L"Expected token: "s + Json::Stringify(Detail::JsonTokenType::StartObject) + L"!"s);
+      throw std::exception(message.c_str());
     }
 
     auto object = JsonObject();
@@ -27,14 +26,14 @@ namespace Json4CPP
     auto counter = 0;
     {
       auto& [token, value] = tokens.front();
-      if (token == JsonTokenType::StartObject)
+      if (token == Detail::JsonTokenType::StartObject)
       {
         tokens.pop_front();
       }
       else
       {
-        auto message = WString2String(L"Expected token: "s + Json::Stringify(JsonTokenType::StartObject) + L"!"s);
-        throw exception(message.c_str());
+        auto message = Helper::WString2String(L"Expected token: "s + Json::Stringify(Detail::JsonTokenType::StartObject) + L"!"s);
+        throw std::exception(message.c_str());
       }
     }
 
@@ -42,61 +41,61 @@ namespace Json4CPP
     {
       auto& [token, value] = tokens.front();
       // Property then value then property then value etc...
-      if (counter++ % 2 == 0 && token != JsonTokenType::PropertyName && token != JsonTokenType::EndObject)
+      if (counter++ % 2 == 0 && token != Detail::JsonTokenType::PropertyName && token != Detail::JsonTokenType::EndObject)
       {
-        auto message = WString2String(L"Expected token: "s + Json::Stringify(JsonTokenType::PropertyName) + L"!"s);
-        throw exception(message.c_str());
+        auto message = Helper::WString2String(L"Expected token: "s + Json::Stringify(Detail::JsonTokenType::PropertyName) + L"!"s);
+        throw std::exception(message.c_str());
       }
       switch (token)
       {
-      case JsonTokenType::PropertyName:
-        property = move(get<wstring>(value));
+      case Detail::JsonTokenType::PropertyName:
+        property = std::move(std::get<std::wstring>(value));
         tokens.pop_front();
         if (object.Count(property))
         {
-          auto message = WString2String(L"Duplicated key: \""s + property + L"\"!"s);
-          throw exception(message.c_str());
+          auto message = Helper::WString2String(L"Duplicated key: \""s + property + L"\"!"s);
+          throw std::exception(message.c_str());
         }
         break;
-      case JsonTokenType::Null        : object.Insert({ move(property),      get<nullptr_t>(value)  }); tokens.pop_front(); break;
-      case JsonTokenType::String      : object.Insert({ move(property), move(get<wstring  >(value)) }); tokens.pop_front(); break;
-      case JsonTokenType::Boolean     : object.Insert({ move(property),      get<bool     >(value)  }); tokens.pop_front(); break;
-      case JsonTokenType::Real        : object.Insert({ move(property),      get<double   >(value)  }); tokens.pop_front(); break;
-      case JsonTokenType::Integer     : object.Insert({ move(property),      get<int64_t  >(value)  }); tokens.pop_front(); break;
-      case JsonTokenType::StartObject : object.Insert({ move(property), JsonObject::Read(tokens)    });                     break;
-      case JsonTokenType::StartArray  : object.Insert({ move(property), JsonArray ::Read(tokens)    });                     break;
-      case JsonTokenType::EndObject   :                                                                 tokens.pop_front(); return object;
+      case Detail::JsonTokenType::Null        : object.Insert({ std::move(property),           std::get<std::nullptr_t>(value)  }); tokens.pop_front(); break;
+      case Detail::JsonTokenType::String      : object.Insert({ std::move(property), std::move(std::get<std::wstring  >(value)) }); tokens.pop_front(); break;
+      case Detail::JsonTokenType::Boolean     : object.Insert({ std::move(property),           std::get<bool          >(value)  }); tokens.pop_front(); break;
+      case Detail::JsonTokenType::Real        : object.Insert({ std::move(property),           std::get<double        >(value)  }); tokens.pop_front(); break;
+      case Detail::JsonTokenType::Integer     : object.Insert({ std::move(property),           std::get<int64_t       >(value)  }); tokens.pop_front(); break;
+      case Detail::JsonTokenType::StartObject : object.Insert({ std::move(property), JsonObject::Read(tokens) }); break;
+      case Detail::JsonTokenType::StartArray  : object.Insert({ std::move(property), JsonArray ::Read(tokens) }); break;
+      case Detail::JsonTokenType::EndObject   : tokens.pop_front(); return object;
       default:
       {
-        auto message = WString2String(L"Invalid token: "s + Json::Stringify(token) + L"!"s);
-        throw exception(message.c_str());
+        auto message = Helper::WString2String(L"Invalid token: "s + Json::Stringify(token) + L"!"s);
+        throw std::exception(message.c_str());
       }
       }
     }
-    auto message = WString2String(L"Expected token: "s + Json::Stringify(JsonTokenType::EndObject) + L"!"s);
-    throw exception(message.c_str());
+    auto message = Helper::WString2String(L"Expected token: "s + Json::Stringify(Detail::JsonTokenType::EndObject) + L"!"s);
+    throw std::exception(message.c_str());
   }
 
-  JsonObject JsonObject::Read(deque<TOKEN> && tokens)
+  JsonObject JsonObject::Read(std::deque<Detail::TOKEN> && tokens)
   {
     return Read(tokens);
   }
 
-  deque<TOKEN>& JsonObject::Write(JsonObject const& object, deque<TOKEN>& tokens)
+  std::deque<Detail::TOKEN>& JsonObject::Write(JsonObject const& object, std::deque<Detail::TOKEN>& tokens)
   {
-    tokens.push_back({ JsonTokenType::StartObject, L"{"s });
+    tokens.push_back({ Detail::JsonTokenType::StartObject, L"{"s });
     for (auto& [key, value] : object)
     {
-      tokens.push_back({ JsonTokenType::PropertyName, key });
+      tokens.push_back({ Detail::JsonTokenType::PropertyName, key });
       Json::Write(value, tokens);
     }
-    tokens.push_back({ JsonTokenType::EndObject, L"}"s });
+    tokens.push_back({ Detail::JsonTokenType::EndObject, L"}"s });
     return tokens;
   }
 
-  deque<TOKEN> && JsonObject::Write(JsonObject const& object, deque<TOKEN> && tokens)
+  std::deque<Detail::TOKEN> && JsonObject::Write(JsonObject const& object, std::deque<Detail::TOKEN> && tokens)
   {
-    return move(Write(object, tokens));
+    return std::move(Write(object, tokens));
   }
 
   JsonObject::JsonObject(Json const& json)
@@ -106,102 +105,102 @@ namespace Json4CPP
 
   JsonObject::JsonObject(Json && json)
   {
-    *this = move(json.operator Json4CPP::JsonObject && ());
+    *this = std::move(json.operator Json4CPP::JsonObject && ());
   }
 
-  JsonObject::JsonObject(JsonBuilder const& builder)
+  JsonObject::JsonObject(Detail::JsonBuilder const& builder)
   {
-    if (auto object = get_if<JsonObject>(&builder._value))
+    if (auto object = std::get_if<JsonObject>(&builder._value))
     {
       *this = *object;
     }
-    else if (auto builders = get_if<vector<JsonBuilder>>(&builder._value))
+    else if (auto builders = std::get_if<std::vector<Detail::JsonBuilder>>(&builder._value))
     {
       for (auto& builder : *builders)
       {
-        if (builder.Is(JsonBuilderType::Pair))
+        if (builder.Is(Detail::JsonBuilderType::Pair))
         {
-          auto& pair = get<vector<JsonBuilder>>(builder._value);
-          auto& key = get<wstring>(pair[0]._value);
+          auto& pair = std::get<std::vector<Detail::JsonBuilder>>(builder._value);
+          auto key = std::get<std::wstring>(pair[0]._value);
           auto value = Json(pair[1]);
           if (Count(key))
           {
-            auto message = WString2String(L"Duplicated key: \""s + key + L"\"!"s);
-            throw exception(message.c_str());
+            auto message = Helper::WString2String(L"Duplicated key: \""s + key + L"\"!"s);
+            throw std::exception(message.c_str());
           }
-          Insert({ move(key), move(value) });
+          Insert({ std::move(key), std::move(value) });
         }
         else
         {
-          VALUE value;
-          visit(Overload{
+          Detail::VALUE value;
+          std::visit(Helper::Overload{
             [&](auto const& arg) { value = arg; },
-            [&](vector<JsonBuilder> const& arg) { value = JsonArray(arg); },
+            [&](std::vector<Detail::JsonBuilder> const& arg) { value = JsonArray(arg); },
           }, builder._value);
-          auto message = WString2String(L"JsonObject(JsonBuilder const& builder) is not defined for type "s + Json::Stringify(builder.Type()) + L"!"s +
-                                        L" Error at: "s + Json::Stringify(Json(value)) + L"."s);
-          throw exception(message.c_str());
+          auto message = Helper::WString2String(L"JsonObject(JsonBuilder const& builder) is not defined for type "s + Json::Stringify(builder.Type()) + L"!"s +
+                                                L" Error at: "s + Json::Stringify(Json(value)) + L"."s);
+          throw std::exception(message.c_str());
         }
       }
     }
     else
     {
-      auto message = WString2String(L"JsonObject(JsonBuilder const& builder) is not defined for type "s + Json::Stringify(builder.Type()) + L"!"s);
-      throw exception(message.c_str());
+      auto message = Helper::WString2String(L"JsonObject(JsonBuilder const& builder) is not defined for type "s + Json::Stringify(builder.Type()) + L"!"s);
+      throw std::exception(message.c_str());
     }
   }
 
-  JsonObject::JsonObject(JsonBuilder && builder)
+  JsonObject::JsonObject(Detail::JsonBuilder && builder)
   {
-    if (auto object = get_if<JsonObject>(&builder._value))
+    if (auto object = std::get_if<JsonObject>(&builder._value))
     {
-      *this = move(*object);
+      *this = std::move(*object);
     }
-    else if (auto builders = get_if<vector<JsonBuilder>>(&builder._value))
+    else if (auto builders = std::get_if<std::vector<Detail::JsonBuilder>>(&builder._value))
     {
       for (auto& builder : *builders)
       {
-        if (builder.Is(JsonBuilderType::Pair))
+        if (builder.Is(Detail::JsonBuilderType::Pair))
         {
-          auto& pair = get<vector<JsonBuilder>>(builder._value);
-          auto& key = get<wstring>(pair[0]._value);
-          auto value = Json(move(pair[1]));
+          auto& pair = std::get<std::vector<Detail::JsonBuilder>>(builder._value);
+          auto& key = std::get<std::wstring>(pair[0]._value);
+          auto value = Json(std::move(pair[1]));
           if (Count(key))
           {
-            auto message = WString2String(L"Duplicated key: \""s + key + L"\"!"s);
-            throw exception(message.c_str());
+            auto message = Helper::WString2String(L"Duplicated key: \""s + key + L"\"!"s);
+            throw std::exception(message.c_str());
           }
-          Insert({ move(key), move(value) });
+          Insert({ std::move(key), std::move(value) });
         }
         else
         {
-          VALUE value;
-          visit(Overload{
-            [&](auto && arg) { value = move(arg); },
-            [&](vector<JsonBuilder> && arg) { value = JsonArray(move(arg)); },
+          Detail::VALUE value;
+          std::visit(Helper::Overload{
+            [&](auto && arg) { value = std::move(arg); },
+            [&](std::vector<Detail::JsonBuilder> && arg) { value = JsonArray(std::move(arg)); },
           }, move(builder._value));
-          auto message = WString2String(L"JsonObject(JsonBuilder && builder) is not defined for type "s + Json::Stringify(builder.Type()) + L"!"s +
-                                        L" Error at: "s + Json::Stringify(Json(value)) + L"."s);
-          throw exception(message.c_str());
+          auto message = Helper::WString2String(L"JsonObject(JsonBuilder && builder) is not defined for type "s + Json::Stringify(builder.Type()) + L"!"s +
+                                                L" Error at: "s + Json::Stringify(Json(value)) + L"."s);
+          throw std::exception(message.c_str());
         }
       }
     }
     else
     {
-      auto message = WString2String(L"JsonObject(JsonBuilder && builder) is not defined for type "s + Json::Stringify(builder.Type()) + L"!"s);
-      throw exception(message.c_str());
+      auto message = Helper::WString2String(L"JsonObject(JsonBuilder && builder) is not defined for type "s + Json::Stringify(builder.Type()) + L"!"s);
+      throw std::exception(message.c_str());
     }
   }
 
-  JsonObject::JsonObject(initializer_list<JsonBuilder> builders) : JsonObject(JsonBuilder(builders))
+  JsonObject::JsonObject(std::initializer_list<Detail::JsonBuilder> builders) : JsonObject(Detail::JsonBuilder(builders))
   {
 
   }
 
-  wstring JsonObject::Dump(uint8_t indentSize, wchar_t indentChar) const
+  std::wstring JsonObject::Dump(uint8_t indentSize, wchar_t indentChar) const
   {
-    wstringstream os;
-    JsonLinter::Write(os, JsonObject::Write(*this, deque<TOKEN>()), indentSize, indentChar);
+    std::wstringstream os;
+    Detail::JsonLinter::Write(os, JsonObject::Write(*this, std::deque<Detail::TOKEN>()), indentSize, indentChar);
     return os.str();
   }
 
@@ -210,18 +209,18 @@ namespace Json4CPP
     return _pairs.size();
   }
 
-  int64_t JsonObject::Count(wstring const& key) const
+  int64_t JsonObject::Count(std::wstring const& key) const
   {
     return _indexes.count(key);
   }
 
   void JsonObject::Clear()
   {
-    _pairs.clear();
+    _pairs  .clear();
     _indexes.clear();
   }
 
-  bool JsonObject::Insert(pair<wstring, Json> const& pair)
+  bool JsonObject::Insert(std::pair<std::wstring, Json> const& pair)
   {
     if (_indexes.count(pair.first)) return false;
     _indexes[pair.first] = _pairs.size();
@@ -229,18 +228,18 @@ namespace Json4CPP
     return true;
   }
 
-  bool JsonObject::Insert(pair<wstring, Json> && pair)
+  bool JsonObject::Insert(std::pair<std::wstring, Json> && pair)
   {
     if (_indexes.count(pair.first)) return false;
     _indexes[pair.first] = _pairs.size();
-    _pairs.push_back(move(pair));
+    _pairs.push_back(std::move(pair));
     return true;
   }
 
-  void JsonObject::Erase(wstring const& key)
+  void JsonObject::Erase(std::wstring const& key)
   {
     if (!_indexes.count(key)) return;
-    _pairs.erase(remove_if(_pairs.begin(), _pairs.end(), [&](pair<wstring, Json> const& pair) { return pair.first == key; }), _pairs.end());
+    _pairs.erase(std::remove_if(_pairs.begin(), _pairs.end(), [&](std::pair<std::wstring, Json> const& pair) { return pair.first == key; }), _pairs.end());
     _indexes.clear();
     for (int i = 0; i < _pairs.size(); ++i)
     {
@@ -248,70 +247,72 @@ namespace Json4CPP
     }
   }
 
-  vector<wstring> JsonObject::Keys() const
+  std::vector<std::wstring> JsonObject::Keys() const
   {
-    vector<wstring> keys;
-    transform(_pairs.begin(), _pairs.end(), back_inserter(keys), [](pair<wstring, Json> const& pair) { return pair.first; });
+    std::vector<std::wstring> keys;
+    std::transform(_pairs.begin(), _pairs.end(), std::back_inserter(keys), [](std::pair<std::wstring, Json> const& pair) { return pair.first; });
     return keys;
   }
 
-  vector<reference_wrapper<const wstring>> JsonObject::KeysView() const
+  std::vector<std::reference_wrapper<const std::wstring>> JsonObject::KeysView() const
   {
-    vector<reference_wrapper<const wstring>> keys;
-    transform(_pairs.begin(), _pairs.end(), back_inserter(keys), [](pair<wstring, Json> const& pair) { return ref(pair.first); });
+    std::vector<std::reference_wrapper<const std::wstring>> keys;
+    std::transform(_pairs.begin(), _pairs.end(), std::back_inserter(keys), [](std::pair<std::wstring, Json> const& pair) { return std::ref(pair.first); });
     return keys;
   }
 
-  Json& JsonObject::operator[](wstring const& key)
+  Json& JsonObject::operator[](std::wstring const& key)
   {
     if (!_indexes.count(key)) Insert({ key, Json{} });
     return _pairs[_indexes[key]].second;
   }
 
-  Json& JsonObject::At(wstring const& key)
+  Json& JsonObject::At(std::wstring const& key)
   {
-    return const_cast<Json&>(as_const(*this).At(key));
+    return const_cast<Json&>(std::as_const(*this).At(key));
   }
 
-  Json const& JsonObject::At(wstring const& key) const
+  Json const& JsonObject::At(std::wstring const& key) const
   {
     return _pairs.at(_indexes.at(key)).second;
   }
 
-  vector<pair<wstring, Json>>::iterator JsonObject::begin()
+  std::vector<std::pair<std::wstring, Json>>::iterator JsonObject::begin()
   {
     return _pairs.begin();
   }
 
-  vector<pair<wstring, Json>>::iterator JsonObject::end()
+  std::vector<std::pair<std::wstring, Json>>::iterator JsonObject::end()
   {
     return _pairs.end();
   }
 
-  vector<pair<wstring, Json>>::const_iterator JsonObject::begin() const
+  std::vector<std::pair<std::wstring, Json>>::const_iterator JsonObject::begin() const
   {
     return _pairs.begin();
   }
 
-  vector<pair<wstring, Json>>::const_iterator JsonObject::end() const
+  std::vector<std::pair<std::wstring, Json>>::const_iterator JsonObject::end() const
   {
     return _pairs.end();
   }
 
-  wostream& operator<<(wostream& os, JsonObject const& object)
+  std::wostream& operator<<(std::wostream& os, JsonObject const& object)
   {
     auto isIndentSizeActive = JsonIndentSize::IsActive(os);
     auto isIndentCharActive = JsonIndentChar::IsActive(os);
-    JsonLinter::Write(os, JsonObject::Write(object, deque<TOKEN>()), isIndentSizeActive ? JsonIndentSize::GetSize(os) : JsonDefault::IndentSize,
-                                                                     isIndentCharActive ? JsonIndentChar::GetChar(os) : JsonDefault::IndentChar);
+    Detail::JsonLinter::Write(os,
+                              JsonObject::Write(object, std::deque<Detail::TOKEN>()),
+                              isIndentSizeActive ? JsonIndentSize::GetSize(os) : JsonDefault::IndentSize,
+                              isIndentCharActive ? JsonIndentChar::GetChar(os) : JsonDefault::IndentChar);
     if (isIndentSizeActive) JsonIndentSize::ResetState(os);
     if (isIndentCharActive) JsonIndentChar::ResetState(os);
     return os;
   }
 
-  wistream& operator>>(wistream& is, JsonObject& object)
+  std::wistream& operator>>(std::wistream& is, JsonObject& object)
   {
-    object = JsonObject::Read(JsonLinter::Read(is));
+    object = JsonObject::Read(Detail::JsonLinter::Read(is));
     return is;
   }
 

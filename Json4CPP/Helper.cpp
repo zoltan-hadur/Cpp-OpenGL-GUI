@@ -4,31 +4,30 @@
 #include <locale>
 #include <codecvt>
 
-using namespace std;
-using namespace std::filesystem;
+using namespace std::string_literals;
 
-namespace Json4CPP::Detail
+namespace Json4CPP::Helper
 {
-  wstring ReadAllText(path const& path)
+  std::wstring ReadAllText(std::filesystem::path const& path)
   {
-    if (auto is = ifstream(path, fstream::in | fstream::binary))
+    if (auto is = std::ifstream(path, std::fstream::in | std::fstream::binary))
     {
-      stringstream ss;
+      std::stringstream ss;
       ss << is.rdbuf();
       return String2WString(ss.str());
     }
     auto message = "Could not open file: "s + path.string() + "!"s;
-    throw exception(message.c_str());
+    throw std::exception(message.c_str());
   }
 
-  void WriteAllText(path const& path, wstring const& value)
+  void WriteAllText(std::filesystem::path const& path, std::wstring const& value)
   {
-    wfstream(path, wfstream::out | wfstream::binary) << WidenString(WString2String(value));
+    std::wfstream(path, std::wfstream::out | std::wfstream::binary) << WidenString(WString2String(value));
   }
 
-  wstring EscapeString(wstring const& value)
+  std::wstring EscapeString(std::wstring const& value)
   {
-    wostringstream os;
+    std::wostringstream os;
     for (auto& c : value)
     {
       switch (c)
@@ -43,7 +42,7 @@ namespace Json4CPP::Detail
       default:
         if (L'\x00' <= c && c <= L'\x1f')
         {
-          os << L"\\u"s << hex << setw(4) << setfill(L'0') << (int)c;
+          os << L"\\u"s << std::hex << std::setw(4) << std::setfill(L'0') << (int)c;
         }
         else
         {
@@ -54,9 +53,9 @@ namespace Json4CPP::Detail
     return os.str();
   }
 
-  wstring WidenString(string const& value)
+  std::wstring WidenString(std::string const& value)
   {
-    auto str = wstring(value.size(), L'\0');
+    auto str = std::wstring(value.size(), L'\0');
     for (int i = 0; i < str.size(); ++i)
     {
       str[i] = value[i] & 0x00FF;
@@ -64,9 +63,9 @@ namespace Json4CPP::Detail
     return str;
   }
 
-  string  NarrowWString(wstring const& value)
+  std::string  NarrowWString(std::wstring const& value)
   {
-    auto str = string(value.size(), L'\0');
+    auto str = std::string(value.size(), L'\0');
     for (int i = 0; i < str.size(); ++i)
     {
       str[i] = value[i] & 0x00FF;
@@ -74,40 +73,37 @@ namespace Json4CPP::Detail
     return str;
   }
 
-  wstring String2WString(string const& string)
+  std::wstring String2WString(std::string const& string)
   {
-    return wstring_convert<codecvt_utf8_utf16<wchar_t>>().from_bytes(string);
+    return std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>>().from_bytes(string);
   }
 
-  string WString2String(const wstring& string)
+  std::string WString2String(std::wstring const& string)
   {
-    return wstring_convert<codecvt_utf8_utf16<wchar_t>>().to_bytes(string);
+    return std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>>().to_bytes(string);
   }
 
-  wstring U32String2WString(u32string const& string)
+  std::wstring U32String2WString(std::u32string const& string)
   {
-    return String2WString(wstring_convert<codecvt_utf8<char32_t>, char32_t>().to_bytes(string));
+    return String2WString(std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t>().to_bytes(string));
   }
 
-  pair<uint64_t, uint64_t> GetStreamPosition(wistream& is, wistream::pos_type pos)
+  std::pair<uint64_t, uint64_t> GetStreamPosition(std::wistream& is, std::wistream::pos_type pos)
   {
     auto state = is.rdstate();
     is.clear();
     is.seekg(is.beg);
     uint64_t column = 0;
     uint64_t line = 1;
-    auto carriageReturn = false;
     while (is.tellg() != pos)
     {
-      if (carriageReturn && is.get() == L'\n')
+      if (is.get() == L'\n')
       {
-        carriageReturn = false;
         column = 0;
         line++;
       }
       else
       {
-        carriageReturn = is.get() == L'\r';
         column++;
       }
     }
@@ -115,15 +111,14 @@ namespace Json4CPP::Detail
     return { line, column };
   }
 
-  wstring GetFormattedStreamPosition(wistream& is, wistream::pos_type pos)
+  std::wstring GetFormattedStreamPosition(std::wistream& is, std::wistream::pos_type pos)
   {
     auto [line, column] = GetStreamPosition(is, pos);
-    return L"Line: "s + to_wstring(line) + L" Column: "s + to_wstring(column);
+    return L"Line: "s + std::to_wstring(line) + L" Column: "s + std::to_wstring(column);
   }
 
-  string GetFormattedStreamPositionA(wistream& is, wistream::pos_type pos)
+  std::string GetFormattedStreamPositionA(std::wistream& is, std::wistream::pos_type pos)
   {
-    auto [line, column] = GetStreamPosition(is, pos);
-    return "Line: "s + to_string(line) + " Column: "s + to_string(column);
+    return WString2String(GetFormattedStreamPosition(is, pos));
   }
 }

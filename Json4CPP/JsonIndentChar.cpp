@@ -2,8 +2,6 @@
 
 #include "JsonIndentChar.h"
 
-using namespace std;
-
 namespace Json4CPP
 {
   JsonIndentChar::JsonIndentChar(wchar_t c)
@@ -11,25 +9,26 @@ namespace Json4CPP
     _char = c;
   }
 
-  bool JsonIndentChar::IsActive(wostream& os)
+  bool JsonIndentChar::IsActive(std::wostream& os)
   {
-    return os.iword(_valueIndex) & 0b100000000;
+    return static_cast<bool>(os.iword(_activeIndex));
   }
 
-  wchar_t JsonIndentChar::GetChar(wostream& os)
+  wchar_t JsonIndentChar::GetChar(std::wostream& os)
   {
-    return os.iword(_valueIndex) & 0b011111111;
+    return static_cast<wchar_t>(os.iword(_charIndex));
   }
 
-  void JsonIndentChar::ResetState(wostream& os)
+  void JsonIndentChar::ResetState(std::wostream& os)
   {
-    os.iword(_valueIndex) = 0;
+    os.iword(_activeIndex) = false;
+    os.iword(_charIndex)   = 0;
   }
 
-  wostream& operator<<(wostream& os, JsonIndentChar const& jsonIndentChar)
+  std::wostream& operator<<(std::wostream& os, JsonIndentChar const& jsonIndentChar)
   {
-    os.iword(jsonIndentChar._valueIndex) |= 0b100000000;                        // Set active flag
-    os.iword(jsonIndentChar._valueIndex) |= 0b011111111 & jsonIndentChar._char; // Set char
+    os.iword(jsonIndentChar._activeIndex) |= true;
+    os.iword(jsonIndentChar._charIndex)   |= jsonIndentChar._char;
     return os;
   }
 }

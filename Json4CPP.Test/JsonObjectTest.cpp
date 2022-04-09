@@ -4,6 +4,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using namespace Json4CPP;
 using namespace Json4CPP::Detail;
+using namespace Json4CPP::Helper;
 
 namespace Json4CPP::Test
 {

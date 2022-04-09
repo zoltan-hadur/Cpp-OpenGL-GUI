@@ -4,39 +4,39 @@
 #include "JsonBuilder.h"
 #include "Helper.h"
 
-using namespace std;
+using namespace std::string_literals;
 
 namespace Json4CPP::Detail
 {
   JsonBuilder::JsonBuilder() : JsonBuilder(nullptr) {}
 
-  JsonBuilder::JsonBuilder(VALUE      const& value) { visit([&](auto const& arg) { _value =      arg ; },        value) ; }
-  JsonBuilder::JsonBuilder(VALUE          && value) { visit([&](auto     && arg) { _value = move(arg); },   move(value)); }
-  JsonBuilder::JsonBuilder(nullptr_t         value) {                              _value =                      value  ; }
-  JsonBuilder::JsonBuilder(wchar_t    const* value) {                              _value =              wstring(value) ; }
-  JsonBuilder::JsonBuilder(wstring    const& value) {                              _value =                      value  ; }
-  JsonBuilder::JsonBuilder(wstring        && value) {                              _value =                 move(value) ; }
-  JsonBuilder::JsonBuilder(bool              value) {                              _value =                      value  ; }
-  JsonBuilder::JsonBuilder(char              value) {                              _value = static_cast<int64_t>(value) ; }
-  JsonBuilder::JsonBuilder(int8_t            value) {                              _value = static_cast<int64_t>(value) ; }
-  JsonBuilder::JsonBuilder(uint8_t           value) {                              _value = static_cast<int64_t>(value) ; }
-  JsonBuilder::JsonBuilder(int16_t           value) {                              _value = static_cast<int64_t>(value) ; }
-  JsonBuilder::JsonBuilder(uint16_t          value) {                              _value = static_cast<int64_t>(value) ; }
-  JsonBuilder::JsonBuilder(int32_t           value) {                              _value = static_cast<int64_t>(value) ; }
-  JsonBuilder::JsonBuilder(uint32_t          value) {                              _value = static_cast<int64_t>(value) ; }
-  JsonBuilder::JsonBuilder(int64_t           value) {                              _value =                      value  ; }
-  JsonBuilder::JsonBuilder(uint64_t          value) {                              _value = static_cast<int64_t>(value) ; }
-  JsonBuilder::JsonBuilder(float             value) {                              _value = static_cast<double >(value) ; }
-  JsonBuilder::JsonBuilder(double            value) {                              _value =                      value  ; }
-  JsonBuilder::JsonBuilder(JsonObject const& value) {                              _value =                      value  ; }
-  JsonBuilder::JsonBuilder(JsonObject     && value) {                              _value =                 move(value) ; }
-  JsonBuilder::JsonBuilder(JsonArray  const& value) {                              _value =                      value  ; }
-  JsonBuilder::JsonBuilder(JsonArray      && value) {                              _value =                 move(value) ; }
-  JsonBuilder::JsonBuilder(Json       const& value) : JsonBuilder(     value._value)  { }
-  JsonBuilder::JsonBuilder(Json           && value) : JsonBuilder(move(value._value)) { }
-  JsonBuilder::JsonBuilder(initializer_list<JsonBuilder>        values) { _value = vector<JsonBuilder>(values); }
-  JsonBuilder::JsonBuilder(vector          <JsonBuilder> const& values) { _value =                     values ; }
-  JsonBuilder::JsonBuilder(vector          <JsonBuilder>     && values) { _value =                move(values); }
+  JsonBuilder::JsonBuilder(VALUE        const& value) { std::visit([&](auto const& arg) { _value =           arg ; },           value) ; }
+  JsonBuilder::JsonBuilder(VALUE            && value) { std::visit([&](auto     && arg) { _value = std::move(arg); }, std::move(value)); }
+  JsonBuilder::JsonBuilder(std::nullptr_t      value) {                                   _value =                              value  ; }
+  JsonBuilder::JsonBuilder(wchar_t      const* value) {                                   _value =                 std::wstring(value) ; }
+  JsonBuilder::JsonBuilder(std::wstring const& value) {                                   _value =                              value  ; }
+  JsonBuilder::JsonBuilder(std::wstring     && value) {                                   _value =                    std::move(value) ; }
+  JsonBuilder::JsonBuilder(bool                value) {                                   _value =                              value  ; }
+  JsonBuilder::JsonBuilder(char                value) {                                   _value =         static_cast<int64_t>(value) ; }
+  JsonBuilder::JsonBuilder(int8_t              value) {                                   _value =         static_cast<int64_t>(value) ; }
+  JsonBuilder::JsonBuilder(uint8_t             value) {                                   _value =         static_cast<int64_t>(value) ; }
+  JsonBuilder::JsonBuilder(int16_t             value) {                                   _value =         static_cast<int64_t>(value) ; }
+  JsonBuilder::JsonBuilder(uint16_t            value) {                                   _value =         static_cast<int64_t>(value) ; }
+  JsonBuilder::JsonBuilder(int32_t             value) {                                   _value =         static_cast<int64_t>(value) ; }
+  JsonBuilder::JsonBuilder(uint32_t            value) {                                   _value =         static_cast<int64_t>(value) ; }
+  JsonBuilder::JsonBuilder(int64_t             value) {                                   _value =                              value  ; }
+  JsonBuilder::JsonBuilder(uint64_t            value) {                                   _value =         static_cast<int64_t>(value) ; }
+  JsonBuilder::JsonBuilder(float               value) {                                   _value =         static_cast<double >(value) ; }
+  JsonBuilder::JsonBuilder(double              value) {                                   _value =                              value  ; }
+  JsonBuilder::JsonBuilder(JsonObject   const& value) {                                   _value =                              value  ; }
+  JsonBuilder::JsonBuilder(JsonObject       && value) {                                   _value =                    std::move(value) ; }
+  JsonBuilder::JsonBuilder(JsonArray    const& value) {                                   _value =                              value  ; }
+  JsonBuilder::JsonBuilder(JsonArray        && value) {                                   _value =                    std::move(value) ; }
+  JsonBuilder::JsonBuilder(Json         const& value) : JsonBuilder(          value._value)  { }
+  JsonBuilder::JsonBuilder(Json             && value) : JsonBuilder(std::move(value._value)) { }
+  JsonBuilder::JsonBuilder(std::initializer_list<JsonBuilder>        values) { _value = std::vector<JsonBuilder>(values); }
+  JsonBuilder::JsonBuilder(std::vector          <JsonBuilder> const& values) { _value =                          values ; }
+  JsonBuilder::JsonBuilder(std::vector          <JsonBuilder>     && values) { _value =                std::move(values); }
 
   JsonBuilderType JsonBuilder::Type() const
   {
@@ -48,11 +48,11 @@ namespace Json4CPP::Detail
     return Type() == type;
   }
 
-  wostream& operator<<(wostream& os, JsonBuilder const& builder)
+  std::wostream& operator<<(std::wostream& os, JsonBuilder const& builder)
   {
-    visit(Overload{
+    std::visit(Helper::Overload{
       [&](auto const& v) { os << Json::Stringify(v); },
-      [&](vector<JsonBuilder> const& arg)
+      [&](std::vector<JsonBuilder> const& arg)
       {
         os << L"[";
         for (int i = 0; i < arg.size(); ++i)

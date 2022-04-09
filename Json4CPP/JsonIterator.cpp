@@ -11,15 +11,13 @@
 #include "JsonObject.h"
 #include "JsonArray.h"
 
-using namespace std;
-
 namespace Json4CPP
 {
-  using difference_type = int64_t;
-  using value_type = Json;
-  using pointer = Json*;
-  using reference = Json&;
-  using iterator_category = random_access_iterator_tag;
+  using difference_type   = int64_t;
+  using value_type        = Json;
+  using pointer           = Json*;
+  using reference         = Json&;
+  using iterator_category = std::random_access_iterator_tag;
 
   JsonIterator::JsonIterator(Json* json, int64_t position) : _json(json), _position(position) {}
 
@@ -29,7 +27,7 @@ namespace Json4CPP
 
   JsonIterator& JsonIterator::operator=(JsonIterator const& it)
   {
-    _json = it._json;
+    _json     = it._json;
     _position = it._position;
     return *this;
   }
@@ -46,44 +44,44 @@ namespace Json4CPP
 
   reference JsonIterator::operator*()
   {
-    return (*_json)[_position];
+    return _json->At(_position);
   }
 
   pointer JsonIterator::operator->()
   {
-    return &(*_json)[_position];
+    return &(_json->At(_position));
   }
 
   JsonIterator& JsonIterator::operator++()
   {
-    if (++_position > Size()) throw out_of_range("Iterator out of range!");
+    if (++_position > Size()) throw std::out_of_range("Iterator out of range!");
     return *this;
   }
 
   JsonIterator JsonIterator::operator++(int)
   {
     auto result = *this;
-    ++*this;
+    ++(*this);
     return result;
   }
 
   JsonIterator& JsonIterator::operator--()
   {
-    if (--_position < 0) throw out_of_range("Iterator out of range!");
+    if (--_position < 0) throw std::out_of_range("Iterator out of range!");
     return *this;
   }
 
   JsonIterator JsonIterator::operator--(int)
   {
     auto result = *this;
-    --*this;
+    --(*this);
     return result;
   }
 
   JsonIterator& JsonIterator::operator+=(difference_type n)
   {
     _position += n;
-    if (_position < 0 || _position > Size()) throw out_of_range("Iterator out of range!");
+    if (_position < 0 || _position > Size()) throw std::out_of_range("Iterator out of range!");
     return *this;
   }
 
@@ -100,7 +98,7 @@ namespace Json4CPP
   JsonIterator& JsonIterator::operator-=(difference_type n)
   {
     _position -= n;
-    if (_position < 0 || _position > Size()) throw out_of_range("Iterator out of range!");
+    if (_position < 0 || _position > Size()) throw std::out_of_range("Iterator out of range!");
     return *this;
   }
 
@@ -116,7 +114,7 @@ namespace Json4CPP
 
   reference JsonIterator::operator[](difference_type n)
   {
-    return (*_json)[_position + n];
+    return _json->At(_position + n);
   }
 
   bool JsonIterator::operator<(JsonIterator const& it) const
@@ -144,12 +142,12 @@ namespace Json4CPP
     return _json->Size();
   }
 
-  wstring JsonIterator::Key() const
+  std::wstring JsonIterator::Key() const
   {
     switch (_json->Type())
     {
-    case JsonType::Object: return get<JsonObject>(_json->_value)._pairs[_position].first;
-    default: throw exception("Key() is only defined for JsonObject!");
+    case JsonType::Object: return std::get<JsonObject>(_json->_value)._pairs[_position].first;
+    default: throw std::exception("Key() is only defined for JsonObject!");
     }
   }
 
@@ -157,8 +155,8 @@ namespace Json4CPP
   {
     switch (_json->Type())
     {
-    case JsonType::Object: return get<JsonObject>(_json->_value)._pairs[_position].second;
-    default: throw exception("Value() is only defined for JsonObject!");
+    case JsonType::Object: return std::get<JsonObject>(_json->_value)._pairs[_position].second;
+    default: throw std::exception("Value() is only defined for JsonObject!");
     }
   }
 
@@ -166,8 +164,8 @@ namespace Json4CPP
   {
     switch (_json->Type())
     {
-    case JsonType::Object: get<JsonObject>(_json->_value)._pairs[_position].second = json; break;
-    default: throw exception("Value(Json const& json) is only defined for JsonObject!");
+    case JsonType::Object: std::get<JsonObject>(_json->_value)._pairs[_position].second = json; break;
+    default: throw std::exception("Value(Json const& json) is only defined for JsonObject!");
     }
   }
 
@@ -175,8 +173,8 @@ namespace Json4CPP
   {
     switch (_json->Type())
     {
-    case JsonType::Object: get<JsonObject>(_json->_value)._pairs[_position].second = move(json); break;
-    default: throw exception("Value(Json && json) is only defined for JsonObject!");
+    case JsonType::Object: std::get<JsonObject>(_json->_value)._pairs[_position].second = std::move(json); break;
+    default: throw std::exception("Value(Json && json) is only defined for JsonObject!");
     }
   }
 }

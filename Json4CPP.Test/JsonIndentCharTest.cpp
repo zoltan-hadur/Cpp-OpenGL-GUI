@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
@@ -17,12 +17,16 @@ namespace Json4CPP::Test
       Assert::IsTrue(JsonIndentChar::IsActive(ss));
     }
 
-    TEST_METHOD(TestGetSize)
+    TEST_METHOD(TestGetChar)
     {
       wstringstream ss;
       Assert::AreEqual(wchar_t(), JsonIndentChar::GetChar(ss));
-      ss << JsonIndentChar(L'\t');
-      Assert::AreEqual(L'\t', JsonIndentChar::GetChar(ss));
+      ss << JsonIndentChar(static_cast<wchar_t>(0xFFFF));
+      Assert::AreEqual(static_cast<wchar_t>(0xFFFF), JsonIndentChar::GetChar(ss));
+      ss = wstringstream();
+      Assert::AreEqual(wchar_t(), JsonIndentChar::GetChar(ss));
+      ss << JsonIndentChar(L'€');
+      Assert::AreEqual(L'€', JsonIndentChar::GetChar(ss));
     }
 
     TEST_METHOD(TestResetState)

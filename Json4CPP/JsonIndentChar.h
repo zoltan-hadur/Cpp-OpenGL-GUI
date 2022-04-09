@@ -14,7 +14,8 @@ namespace Json4CPP
   class JSON_API JsonIndentChar
   {
   private:
-    inline static int _valueIndex = std::ios_base::xalloc();
+    inline static int _activeIndex = std::ios_base::xalloc();
+    inline static int _charIndex   = std::ios_base::xalloc();
     wchar_t _char;
   public:
     JsonIndentChar(wchar_t c);

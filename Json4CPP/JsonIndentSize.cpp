@@ -2,8 +2,6 @@
 
 #include "JsonIndentSize.h"
 
-using namespace std;
-
 namespace Json4CPP
 {
   JsonIndentSize::JsonIndentSize(uint8_t size)
@@ -11,25 +9,26 @@ namespace Json4CPP
     _size = size;
   }
 
-  bool JsonIndentSize::IsActive(wostream& os)
+  bool JsonIndentSize::IsActive(std::wostream& os)
   {
-    return os.iword(_valueIndex) & 0b100000000;
+    return static_cast<bool>(os.iword(_activeIndex));
   }
 
-  uint8_t JsonIndentSize::GetSize(wostream& os)
+  uint8_t JsonIndentSize::GetSize(std::wostream& os)
   {
-    return os.iword(_valueIndex) & 0b011111111;
+    return static_cast<uint8_t>(os.iword(_sizeIndex));
   }
 
-  void JsonIndentSize::ResetState(wostream& os)
+  void JsonIndentSize::ResetState(std::wostream& os)
   {
-    os.iword(_valueIndex) = 0;
+    os.iword(_activeIndex) = false;
+    os.iword(_sizeIndex)   = 0;
   }
 
-  wostream& operator<<(wostream& os, JsonIndentSize const& jsonIndentSize)
+  std::wostream& operator<<(std::wostream& os, JsonIndentSize const& jsonIndentSize)
   {
-    os.iword(jsonIndentSize._valueIndex) |= 0b100000000;                        // Set active flag
-    os.iword(jsonIndentSize._valueIndex) |= 0b011111111 & jsonIndentSize._size; // Set size
+    os.iword(jsonIndentSize._activeIndex) |= true;
+    os.iword(jsonIndentSize._sizeIndex)   |= jsonIndentSize._size;
     return os;
   }
 }

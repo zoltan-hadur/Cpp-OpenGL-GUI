@@ -28,5 +28,4 @@ namespace Json4CPP::Detail
   };
 
   JSON_API std::wostream& operator<<(std::wostream& os, JsonTokenType token);
-  JSON_API std::wstring Dump(JsonTokenType token);
 }

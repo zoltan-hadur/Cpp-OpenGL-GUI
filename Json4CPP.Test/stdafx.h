@@ -47,7 +47,7 @@ namespace Microsoft::VisualStudio::CppUnitTestFramework
 
   template<> static std::wstring ToString<std::nullptr_t>(std::nullptr_t const& value) { return Json4CPP::Json::Stringify(value); }
   template<> static std::wstring ToString<uint16_t>(uint16_t const& value) { return Json4CPP::Json::Stringify(value); }
-  template<> static std::wstring ToString<std::u32string>(std::u32string const& value) { return Json4CPP::Detail::U32String2WString(value); }
+  template<> static std::wstring ToString<std::u32string>(std::u32string const& value) { return Json4CPP::Helper::U32String2WString(value); }
   template<> static std::wstring ToString<std::pair<std::wstring, Json4CPP::Json>>(std::pair<std::wstring, Json4CPP::Json> const& pair) { return Json4CPP::Json::Stringify(Json4CPP::JsonObject{ { pair.first, pair.second } }); }
 
   template<>

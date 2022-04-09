@@ -5,6 +5,7 @@ using namespace std;
 using namespace std::filesystem;
 using namespace Json4CPP;
 using namespace Json4CPP::Detail;
+using namespace Json4CPP::Helper;
 using namespace OpenGLUI::Foundation;
 
 namespace Json4CPP::Test
@@ -3605,6 +3606,9 @@ namespace Json4CPP::Test
       Assert::AreEqual<Json>(1340, json.At(3ui32));
       Assert::AreEqual<Json>(1340, json.At(3i64));
       Assert::AreEqual<Json>(1340, json.At(3ui64));
+
+      Assert::ExpectException<out_of_range>([&]() { auto result = json.At(-1); });
+      Assert::ExpectException<out_of_range>([&]() { auto result = json.At( 4); });
     }
 
     TEST_METHOD(TestAtIntegerConst)
@@ -3644,6 +3648,9 @@ namespace Json4CPP::Test
       static_assert(is_const<remove_reference<decltype(json.At(0ui32))>::type>::value, "JsonArray::At(index) return type must be Json const&");
       static_assert(is_const<remove_reference<decltype(json.At(0i64 ))>::type>::value, "JsonArray::At(index) return type must be Json const&");
       static_assert(is_const<remove_reference<decltype(json.At(0ui64))>::type>::value, "JsonArray::At(index) return type must be Json const&");
+
+      Assert::ExpectException<out_of_range>([&]() { auto result = json.At(-1); });
+      Assert::ExpectException<out_of_range>([&]() { auto result = json.At( 4); });
     }
 
     TEST_METHOD(TestOperatorConversionNullptr)

@@ -8,29 +8,28 @@
 #include "JsonIndentSize.h"
 #include "JsonIndentChar.h"
 
-using namespace std;
-using namespace Json4CPP::Detail;
+using namespace std::string_literals;
 
 namespace Json4CPP
 {
-  JsonArray JsonArray::Read(deque<TOKEN>& tokens)
+  JsonArray JsonArray::Read(std::deque<Detail::TOKEN>& tokens)
   {
     if (tokens.empty())
     {
-      auto message = WString2String(L"Expected token: "s + Json::Stringify(JsonTokenType::StartArray) + L"!"s);
-      throw exception(message.c_str());
+      auto message = Helper::WString2String(L"Expected token: "s + Json::Stringify(Detail::JsonTokenType::StartArray) + L"!"s);
+      throw std::exception(message.c_str());
     }
 
     auto array = JsonArray();
     auto& [token, value] = tokens.front();
-    if (token == JsonTokenType::StartArray)
+    if (token == Detail::JsonTokenType::StartArray)
     {
       tokens.pop_front();
     }
     else
     {
-      auto message = WString2String(L"Expected token: "s + Json::Stringify(JsonTokenType::StartArray) + L"!"s);
-      throw exception(message.c_str());
+      auto message = Helper::WString2String(L"Expected token: "s + Json::Stringify(Detail::JsonTokenType::StartArray) + L"!"s);
+      throw std::exception(message.c_str());
     }
 
     while (tokens.size())
@@ -38,44 +37,44 @@ namespace Json4CPP
       tie(token, value) = tokens.front();
       switch (token)
       {
-      case JsonTokenType::Null       : array._values.push_back(     get<nullptr_t>(value)) ; tokens.pop_front(); break;
-      case JsonTokenType::String     : array._values.push_back(move(get<wstring  >(value))); tokens.pop_front(); break;
-      case JsonTokenType::Boolean    : array._values.push_back(     get<bool     >(value)) ; tokens.pop_front(); break;
-      case JsonTokenType::Real       : array._values.push_back(     get<double   >(value)) ; tokens.pop_front(); break;
-      case JsonTokenType::Integer    : array._values.push_back(     get<int64_t  >(value)) ; tokens.pop_front(); break;
-      case JsonTokenType::StartObject: array._values.push_back(JsonObject::Read   (tokens));                     break;
-      case JsonTokenType::StartArray : array._values.push_back(JsonArray ::Read   (tokens));                     break;
-      case JsonTokenType::EndArray   : tokens.pop_front(); return array;
+      case Detail::JsonTokenType::Null       : array._values.push_back(          std::get<std::nullptr_t>(value)) ; tokens.pop_front(); break;
+      case Detail::JsonTokenType::String     : array._values.push_back(std::move(std::get<std::wstring  >(value))); tokens.pop_front(); break;
+      case Detail::JsonTokenType::Boolean    : array._values.push_back(          std::get<bool          >(value)) ; tokens.pop_front(); break;
+      case Detail::JsonTokenType::Real       : array._values.push_back(          std::get<double        >(value)) ; tokens.pop_front(); break;
+      case Detail::JsonTokenType::Integer    : array._values.push_back(          std::get<int64_t       >(value)) ; tokens.pop_front(); break;
+      case Detail::JsonTokenType::StartObject: array._values.push_back(JsonObject::Read(tokens)); break;
+      case Detail::JsonTokenType::StartArray : array._values.push_back(JsonArray ::Read(tokens)); break;
+      case Detail::JsonTokenType::EndArray   : tokens.pop_front(); return array;
       default:
       {
-        auto message = WString2String(L"Invalid token: "s + Json::Stringify(token) + L"!"s);
-        throw exception(message.c_str());
+        auto message = Helper::WString2String(L"Invalid token: "s + Json::Stringify(token) + L"!"s);
+        throw std::exception(message.c_str());
       }
       }
     }
-    auto message = WString2String(L"Expected token: "s + Json::Stringify(JsonTokenType::EndArray) + L"!"s);
-    throw exception(message.c_str());
+    auto message = Helper::WString2String(L"Expected token: "s + Json::Stringify(Detail::JsonTokenType::EndArray) + L"!"s);
+    throw std::exception(message.c_str());
   }
 
-  JsonArray JsonArray::Read(deque<TOKEN> && tokens)
+  JsonArray JsonArray::Read(std::deque<Detail::TOKEN> && tokens)
   {
     return Read(tokens);
   }
 
-  deque<TOKEN>& JsonArray::Write(JsonArray const& array, deque<TOKEN>& tokens)
+  std::deque<Detail::TOKEN>& JsonArray::Write(JsonArray const& array, std::deque<Detail::TOKEN>& tokens)
   {
-    tokens.push_back({ JsonTokenType::StartArray, L"["s });
+    tokens.push_back({ Detail::JsonTokenType::StartArray, L"["s });
     for (auto& value : array)
     {
       Json::Write(value, tokens);
     }
-    tokens.push_back({ JsonTokenType::EndArray, L"]"s });
+    tokens.push_back({ Detail::JsonTokenType::EndArray, L"]"s });
     return tokens;
   }
 
-  deque<TOKEN> && JsonArray::Write(JsonArray const& array, deque<TOKEN> && tokens)
+  std::deque<Detail::TOKEN> && JsonArray::Write(JsonArray const& array, std::deque<Detail::TOKEN> && tokens)
   {
-    return move(Write(array, tokens));
+    return std::move(Write(array, tokens));
   }
 
   JsonArray::JsonArray(Json const& json)
@@ -85,16 +84,16 @@ namespace Json4CPP
 
   JsonArray::JsonArray(Json && json)
   {
-    *this = move(json.operator Json4CPP::JsonArray && ());
+    *this = std::move(json.operator Json4CPP::JsonArray && ());
   }
 
-  JsonArray::JsonArray(JsonBuilder const& builder)
+  JsonArray::JsonArray(Detail::JsonBuilder const& builder)
   {
-    if (auto array = get_if<JsonArray>(&builder._value))
+    if (auto array = std::get_if<JsonArray>(&builder._value))
     {
       *this = *array;
     }
-    else if (auto builders = get_if<vector<JsonBuilder>>(&builder._value))
+    else if (auto builders = std::get_if<std::vector<Detail::JsonBuilder>>(&builder._value))
     {
       for (auto& builder : *builders)
       {
@@ -103,40 +102,40 @@ namespace Json4CPP
     }
     else
     {
-      auto message = WString2String(L"JsonArray(JsonBuilder const& builder) is not defined for type "s + Json::Stringify(builder.Type()) + L"!"s);
-      throw exception(message.c_str());
+      auto message = Helper::WString2String(L"JsonArray(JsonBuilder const& builder) is not defined for type "s + Json::Stringify(builder.Type()) + L"!"s);
+      throw std::exception(message.c_str());
     }
   }
 
-  JsonArray::JsonArray(JsonBuilder && builder)
+  JsonArray::JsonArray(Detail::JsonBuilder && builder)
   {
-    if (auto array = get_if<JsonArray>(&builder._value))
+    if (auto array = std::get_if<JsonArray>(&builder._value))
     {
-      *this = move(*array);
+      *this = std::move(*array);
     }
-    else if (auto builders = get_if<vector<JsonBuilder>>(&builder._value))
+    else if (auto builders = std::get_if<std::vector<Detail::JsonBuilder>>(&builder._value))
     {
       for (auto& builder : *builders)
       {
-        _values.push_back(Json(move(builder)));
+        _values.push_back(Json(std::move(builder)));
       }
     }
     else
     {
-      auto message = WString2String(L"JsonArray(JsonBuilder && builder) is not defined for type "s + Json::Stringify(builder.Type()) + L"!"s);
-      throw exception(message.c_str());
+      auto message = Helper::WString2String(L"JsonArray(JsonBuilder && builder) is not defined for type "s + Json::Stringify(builder.Type()) + L"!"s);
+      throw std::exception(message.c_str());
     }
   }
 
-  JsonArray::JsonArray(initializer_list<JsonBuilder> builders) : JsonArray(JsonBuilder(builders))
+  JsonArray::JsonArray(std::initializer_list<Detail::JsonBuilder> builders) : JsonArray(Detail::JsonBuilder(builders))
   {
 
   }
 
-  wstring JsonArray::Dump(uint8_t indentSize, wchar_t indentChar) const
+  std::wstring JsonArray::Dump(uint8_t indentSize, wchar_t indentChar) const
   {
-    wstringstream os;
-    JsonLinter::Write(os, JsonArray::Write(*this, deque<TOKEN>()), indentSize, indentChar);
+    std::wstringstream os;
+    Detail::JsonLinter::Write(os, JsonArray::Write(*this, std::deque<Detail::TOKEN>()), indentSize, indentChar);
     return os.str();
   }
 
@@ -167,7 +166,7 @@ namespace Json4CPP
 
   void JsonArray::PushBack(Json && value)
   {
-    _values.push_back(move(value));
+    _values.push_back(std::move(value));
   }
 
   void JsonArray::Insert(int64_t index, Json const& value)
@@ -177,7 +176,7 @@ namespace Json4CPP
 
   void JsonArray::Insert(int64_t index, Json && value)
   {
-    _values.insert(_values.begin() + index, move(value));
+    _values.insert(_values.begin() + index, std::move(value));
   }
   
   void JsonArray::Erase(int64_t index)
@@ -192,48 +191,50 @@ namespace Json4CPP
 
   Json& JsonArray::At(int64_t index)
   {
-    return const_cast<Json&>(as_const(*this).At(index));
+    return const_cast<Json&>(std::as_const(*this).At(index));
   }
 
   Json const& JsonArray::At(int64_t index) const
   {
-    return _values[index];
+    return _values.at(index);
   }
 
-  vector<Json>::iterator JsonArray::begin()
+  std::vector<Json>::iterator JsonArray::begin()
   {
     return _values.begin();
   }
 
-  vector<Json>::iterator JsonArray::end()
+  std::vector<Json>::iterator JsonArray::end()
   {
     return _values.end();
   }
 
-  vector<Json>::const_iterator JsonArray::begin() const
+  std::vector<Json>::const_iterator JsonArray::begin() const
   {
     return _values.begin();
   }
 
-  vector<Json>::const_iterator JsonArray::end() const
+  std::vector<Json>::const_iterator JsonArray::end() const
   {
     return _values.end();
   }
 
-  wostream& operator<<(wostream& os, JsonArray const& array)
+  std::wostream& operator<<(std::wostream& os, JsonArray const& array)
   {
     auto isIndentSizeActive = JsonIndentSize::IsActive(os);
     auto isIndentCharActive = JsonIndentChar::IsActive(os);
-    JsonLinter::Write(os, JsonArray::Write(array, deque<TOKEN>()), isIndentSizeActive ? JsonIndentSize::GetSize(os) : JsonDefault::IndentSize,
-                                                                   isIndentCharActive ? JsonIndentChar::GetChar(os) : JsonDefault::IndentChar);
+    Detail::JsonLinter::Write(os,
+                              JsonArray::Write(array, std::deque<Detail::TOKEN>()),
+                              isIndentSizeActive ? JsonIndentSize::GetSize(os) : JsonDefault::IndentSize,
+                              isIndentCharActive ? JsonIndentChar::GetChar(os) : JsonDefault::IndentChar);
     if (isIndentSizeActive) JsonIndentSize::ResetState(os);
     if (isIndentCharActive) JsonIndentChar::ResetState(os);
     return os;
   }
 
-  wistream& operator>>(wistream& is, JsonArray& array)
+  std::wistream& operator>>(std::wistream& is, JsonArray& array)
   {
-    array = JsonArray::Read(JsonLinter::Read(is));
+    array = JsonArray::Read(Detail::JsonLinter::Read(is));
     return is;
   }
 
