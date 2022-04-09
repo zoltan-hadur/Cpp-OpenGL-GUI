@@ -450,10 +450,11 @@ namespace Json4CPP::Detail
       convertedNumber = std::string(count, ' ');
       switch (type)
       {
-      case Type::IntegerI: conversionResult = std::to_chars(convertedNumber.data(), convertedNumber.data() + convertedNumber.size(),                      std::get<int64_t>(number)) ; break;
-      case Type::IntegerD: conversionResult = std::to_chars(convertedNumber.data(), convertedNumber.data() + convertedNumber.size(), static_cast<int64_t>(std::get<double >(number))); break;
-      case Type::Float   : conversionResult = std::to_chars(convertedNumber.data(), convertedNumber.data() + convertedNumber.size(), static_cast<float  >(std::get<double >(number))); break;
-      case Type::Double  : conversionResult = std::to_chars(convertedNumber.data(), convertedNumber.data() + convertedNumber.size(),                      std::get<double >(number)) ; break;
+      using enum Type;
+      case IntegerI: conversionResult = std::to_chars(convertedNumber.data(), convertedNumber.data() + convertedNumber.size(),                      std::get<int64_t>(number)) ; break;
+      case IntegerD: conversionResult = std::to_chars(convertedNumber.data(), convertedNumber.data() + convertedNumber.size(), static_cast<int64_t>(std::get<double >(number))); break;
+      case Float   : conversionResult = std::to_chars(convertedNumber.data(), convertedNumber.data() + convertedNumber.size(), static_cast<float  >(std::get<double >(number))); break;
+      case Double  : conversionResult = std::to_chars(convertedNumber.data(), convertedNumber.data() + convertedNumber.size(),                      std::get<double >(number)) ; break;
       }
     }
     os << Helper::WidenString(std::string(convertedNumber.data(), conversionResult.ptr));
@@ -524,17 +525,18 @@ namespace Json4CPP::Detail
         std::tie(token, value) = tokens.front();
         switch (token)
         {
-        case JsonTokenType::StartObject:
+        using enum JsonTokenType;
+        case StartObject:
           WriteObject(os, tokens, indentSize, indentChar, depth + 1);
           break;
-        case JsonTokenType::StartArray:
+        case StartArray:
           WriteArray (os, tokens, indentSize, indentChar, depth + 1);
           break;
-        case JsonTokenType::Null:
-        case JsonTokenType::String:
-        case JsonTokenType::Boolean:
-        case JsonTokenType::Real:
-        case JsonTokenType::Integer:
+        case Null:
+        case String:
+        case Boolean:
+        case Real:
+        case Integer:
           Write(os, token, value);
           tokens.pop_front();
           break;
@@ -626,17 +628,18 @@ namespace Json4CPP::Detail
       std::tie(token, value) = tokens.front();
       switch (token)
       {
-      case JsonTokenType::StartObject:
+      using enum JsonTokenType;
+      case StartObject:
         WriteObject(os, tokens, indentSize, indentChar, depth + 1);
         break;
-      case JsonTokenType::StartArray:
+      case StartArray:
         WriteArray (os, tokens, indentSize, indentChar, depth + 1);
         break;
-      case JsonTokenType::Null:
-      case JsonTokenType::String:
-      case JsonTokenType::Boolean:
-      case JsonTokenType::Real:
-      case JsonTokenType::Integer:
+      case Null:
+      case String:
+      case Boolean:
+      case Real:
+      case Integer:
         Write(os, token, value);
         tokens.pop_front();
         break;
@@ -675,35 +678,36 @@ namespace Json4CPP::Detail
   {
     switch (token)
     {
-    case JsonTokenType::Null:
+    using enum JsonTokenType;
+    case Null:
       os << L"null"s;
       break;
 
-    case JsonTokenType::String:
-    case JsonTokenType::PropertyName:
+    case String:
+    case PropertyName:
       os << L"\""s << EscapeString(std::get<std::wstring>(value)) << L"\""s;
       break;
 
-    case JsonTokenType::Boolean:
+    case Boolean:
       os << (std::get<bool>(value) ? L"true"s : L"false"s);
       break;
 
-    case JsonTokenType::Real:
+    case Real:
       WriteNumber(os, std::get<double>(value));
       break;
 
-    case JsonTokenType::Integer:
+    case Integer:
       WriteNumber(os, std::get<int64_t>(value));
       break;
 
-    case JsonTokenType::StartObject:
-    case JsonTokenType::EndObject:
-    case JsonTokenType::StartArray:
-    case JsonTokenType::EndArray:
+    case StartObject:
+    case EndObject:
+    case StartArray:
+    case EndArray:
       os << std::get<std::wstring>(value);
       break;
 
-    case JsonTokenType::Undefined:
+    case Undefined:
     default:
       std::visit(Helper::Overload{
         [&](std::nullptr_t const& v) { os << L"null"s; },
@@ -758,8 +762,9 @@ namespace Json4CPP::Detail
     auto& [token, value] = tokens.front();
     switch (token)
     {
-    case JsonTokenType::StartObject: WriteObject(os, tokens, indentSize, indentChar, 0);                     break;
-    case JsonTokenType::StartArray : WriteArray (os, tokens, indentSize, indentChar, 0);                     break;
+    using enum JsonTokenType;
+    case StartObject: WriteObject(os, tokens, indentSize, indentChar, 0);                     break;
+    case StartArray : WriteArray (os, tokens, indentSize, indentChar, 0);                     break;
     default:                         Write      (os, token , value                    ); tokens.pop_front(); break;
     }
     return os;

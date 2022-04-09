@@ -37,14 +37,15 @@ namespace Json4CPP
       tie(token, value) = tokens.front();
       switch (token)
       {
-      case Detail::JsonTokenType::Null       : array._values.push_back(          std::get<std::nullptr_t>(value)) ; tokens.pop_front(); break;
-      case Detail::JsonTokenType::String     : array._values.push_back(std::move(std::get<std::wstring  >(value))); tokens.pop_front(); break;
-      case Detail::JsonTokenType::Boolean    : array._values.push_back(          std::get<bool          >(value)) ; tokens.pop_front(); break;
-      case Detail::JsonTokenType::Real       : array._values.push_back(          std::get<double        >(value)) ; tokens.pop_front(); break;
-      case Detail::JsonTokenType::Integer    : array._values.push_back(          std::get<int64_t       >(value)) ; tokens.pop_front(); break;
-      case Detail::JsonTokenType::StartObject: array._values.push_back(JsonObject::Read(tokens)); break;
-      case Detail::JsonTokenType::StartArray : array._values.push_back(JsonArray ::Read(tokens)); break;
-      case Detail::JsonTokenType::EndArray   : tokens.pop_front(); return array;
+      using enum Detail::JsonTokenType;
+      case Null       : array._values.push_back(          std::get<std::nullptr_t>(value)) ; tokens.pop_front(); break;
+      case String     : array._values.push_back(std::move(std::get<std::wstring  >(value))); tokens.pop_front(); break;
+      case Boolean    : array._values.push_back(          std::get<bool          >(value)) ; tokens.pop_front(); break;
+      case Real       : array._values.push_back(          std::get<double        >(value)) ; tokens.pop_front(); break;
+      case Integer    : array._values.push_back(          std::get<int64_t       >(value)) ; tokens.pop_front(); break;
+      case StartObject: array._values.push_back(JsonObject::Read(tokens)); break;
+      case StartArray : array._values.push_back(JsonArray ::Read(tokens)); break;
+      case EndArray   : tokens.pop_front(); return array;
       default:
       {
         auto message = Helper::WString2String(L"Invalid token: "s + Json::Stringify(token) + L"!"s);

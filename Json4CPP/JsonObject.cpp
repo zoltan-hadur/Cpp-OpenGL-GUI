@@ -48,7 +48,8 @@ namespace Json4CPP
       }
       switch (token)
       {
-      case Detail::JsonTokenType::PropertyName:
+      using enum Detail::JsonTokenType;
+      case PropertyName:
         property = std::move(std::get<std::wstring>(value));
         tokens.pop_front();
         if (object.Count(property))
@@ -57,14 +58,14 @@ namespace Json4CPP
           throw std::exception(message.c_str());
         }
         break;
-      case Detail::JsonTokenType::Null        : object.Insert({ std::move(property),           std::get<std::nullptr_t>(value)  }); tokens.pop_front(); break;
-      case Detail::JsonTokenType::String      : object.Insert({ std::move(property), std::move(std::get<std::wstring  >(value)) }); tokens.pop_front(); break;
-      case Detail::JsonTokenType::Boolean     : object.Insert({ std::move(property),           std::get<bool          >(value)  }); tokens.pop_front(); break;
-      case Detail::JsonTokenType::Real        : object.Insert({ std::move(property),           std::get<double        >(value)  }); tokens.pop_front(); break;
-      case Detail::JsonTokenType::Integer     : object.Insert({ std::move(property),           std::get<int64_t       >(value)  }); tokens.pop_front(); break;
-      case Detail::JsonTokenType::StartObject : object.Insert({ std::move(property), JsonObject::Read(tokens) }); break;
-      case Detail::JsonTokenType::StartArray  : object.Insert({ std::move(property), JsonArray ::Read(tokens) }); break;
-      case Detail::JsonTokenType::EndObject   : tokens.pop_front(); return object;
+      case Null        : object.Insert({ std::move(property),           std::get<std::nullptr_t>(value)  }); tokens.pop_front(); break;
+      case String      : object.Insert({ std::move(property), std::move(std::get<std::wstring  >(value)) }); tokens.pop_front(); break;
+      case Boolean     : object.Insert({ std::move(property),           std::get<bool          >(value)  }); tokens.pop_front(); break;
+      case Real        : object.Insert({ std::move(property),           std::get<double        >(value)  }); tokens.pop_front(); break;
+      case Integer     : object.Insert({ std::move(property),           std::get<int64_t       >(value)  }); tokens.pop_front(); break;
+      case StartObject : object.Insert({ std::move(property), JsonObject::Read(tokens) }); break;
+      case StartArray  : object.Insert({ std::move(property), JsonArray ::Read(tokens) }); break;
+      case EndObject   : tokens.pop_front(); return object;
       default:
       {
         auto message = Helper::WString2String(L"Invalid token: "s + Json::Stringify(token) + L"!"s);

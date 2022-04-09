@@ -137,7 +137,8 @@ namespace Json4CPP
       auto decodedToken = DecodeToken(encodedToken);
       switch (result->Type())
       {
-      case JsonType::Object:
+      using enum JsonType;
+      case Object:
         if (result->Count(decodedToken))
         {
           result = &(result->At(decodedToken));
@@ -148,7 +149,7 @@ namespace Json4CPP
           throw std::exception(message.c_str());
         }
         break;
-      case JsonType::Array:
+      case Array:
         if (PointsAfterTheLastArrayElement(decodedToken))
         {
           auto message = Helper::WString2String(L"Reference token \""s + encodedToken + L"\" at path \""s + path + L"\" points to the member after the last array element which does not exist!"s);

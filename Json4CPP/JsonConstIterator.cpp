@@ -146,7 +146,8 @@ namespace Json4CPP
   {
     switch (_json->Type())
     {
-    case JsonType::Object: return std::get<JsonObject>(_json->_value)._pairs[_position].first;
+    using enum JsonType;
+    case Object: return std::get<JsonObject>(_json->_value)._pairs[_position].first;
     default: throw std::exception("Key() is only defined for JsonObject!");
     }
   }
@@ -155,7 +156,8 @@ namespace Json4CPP
   {
     switch (_json->Type())
     {
-    case JsonType::Object: return std::get<JsonObject>(_json->_value)._pairs[_position].second;
+    using enum JsonType;
+    case Object: return std::get<JsonObject>(_json->_value)._pairs[_position].second;
     default: throw std::exception("Value() is only defined for JsonObject!");
     }
   }

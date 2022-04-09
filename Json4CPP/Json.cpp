@@ -28,8 +28,9 @@ namespace Json4CPP
     auto& [token, value] = tokens.front();
     switch (token)
     {
-    case Detail::JsonTokenType::StartObject: return JsonObject::Read(tokens);
-    case Detail::JsonTokenType::StartArray : return JsonArray ::Read(tokens);
+    using enum Detail::JsonTokenType;
+    case StartObject: return JsonObject::Read(tokens);
+    case StartArray : return JsonArray ::Read(tokens);
     default:
       auto message = Helper::WString2String(L"Invalid token: "s + Json::Stringify(token) + L", with invalid data: "s + Detail::JsonLinter::Dump(value) + L"!"s);
       throw std::exception(message.c_str());
@@ -45,13 +46,14 @@ namespace Json4CPP
   {
     switch (Detail::Value::GetType(json._value))
     {
-    case JsonType::Null   : tokens.push_back({ Detail::JsonTokenType::Null   , std::get<std::nullptr_t>(json._value) }); break;
-    case JsonType::String : tokens.push_back({ Detail::JsonTokenType::String , std::get<std::wstring  >(json._value) }); break;
-    case JsonType::Boolean: tokens.push_back({ Detail::JsonTokenType::Boolean, std::get<bool          >(json._value) }); break;
-    case JsonType::Real   : tokens.push_back({ Detail::JsonTokenType::Real   , std::get<double        >(json._value) }); break;
-    case JsonType::Integer: tokens.push_back({ Detail::JsonTokenType::Integer, std::get<int64_t       >(json._value) }); break;
-    case JsonType::Object : JsonObject::Write(std::get<JsonObject>(json._value), tokens); break;
-    case JsonType::Array  : JsonArray ::Write(std::get<JsonArray >(json._value), tokens); break;
+    using enum JsonType;
+    case Null   : tokens.push_back({ Detail::JsonTokenType::Null   , std::get<std::nullptr_t>(json._value) }); break;
+    case String : tokens.push_back({ Detail::JsonTokenType::String , std::get<std::wstring  >(json._value) }); break;
+    case Boolean: tokens.push_back({ Detail::JsonTokenType::Boolean, std::get<bool          >(json._value) }); break;
+    case Real   : tokens.push_back({ Detail::JsonTokenType::Real   , std::get<double        >(json._value) }); break;
+    case Integer: tokens.push_back({ Detail::JsonTokenType::Integer, std::get<int64_t       >(json._value) }); break;
+    case Object : JsonObject::Write(std::get<JsonObject>(json._value), tokens); break;
+    case Array  : JsonArray ::Write(std::get<JsonArray >(json._value), tokens); break;
     default:
       auto message = Helper::WString2String(L"Invalid type: "s + Json::Stringify(Detail::Value::GetType(json._value)) + L"!"s);
       throw std::exception(message.c_str());
@@ -83,12 +85,13 @@ namespace Json4CPP
   {
     switch (value.Type())
     {
-    case Detail::JsonBuilderType::Empty :
-    case Detail::JsonBuilderType::Object:
+    using enum Detail::JsonBuilderType;
+    case Empty :
+    case Object:
       _value = JsonObject(value);
       break;
-    case Detail::JsonBuilderType::Pair  :
-    case Detail::JsonBuilderType::Array :
+    case Pair  :
+    case Array :
       _value = JsonArray (value);
       break;
     default:
@@ -111,12 +114,13 @@ namespace Json4CPP
   {
     switch (value.Type())
     {
-    case Detail::JsonBuilderType::Empty :
-    case Detail::JsonBuilderType::Object:
+    using enum Detail::JsonBuilderType;
+    case Empty :
+    case Object:
       _value = JsonObject(std::move(value));
       break;
-    case Detail::JsonBuilderType::Pair  :
-    case Detail::JsonBuilderType::Array :
+    case Pair  :
+    case Array :
       _value = JsonArray (std::move(value));
       break;
     default:
@@ -222,8 +226,9 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Object: return std::get<JsonObject>(_value).Size();
-    case JsonType::Array : return std::get<JsonArray >(_value).Size();
+    using enum JsonType;
+    case Object: return std::get<JsonObject>(_value).Size();
+    case Array : return std::get<JsonArray >(_value).Size();
     default: throw std::exception("Size() is only defined for JsonObject and JsonArray!");
     }
   }
@@ -232,7 +237,8 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Object: return std::get<JsonObject>(_value).Count(key);
+    using enum JsonType;
+    case Object: return std::get<JsonObject>(_value).Count(key);
     default: throw std::exception("Count(wstring const& key) is only defined for JsonObject!");
     }
   }
@@ -241,7 +247,8 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Array: std::get<JsonArray>(_value).Resize(size); break;
+    using enum JsonType;
+    case Array: std::get<JsonArray>(_value).Resize(size); break;
     default: throw std::exception("Resize(int64_t size) is only defined for JsonArray!");
     }
   }
@@ -250,7 +257,8 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Array: std::get<JsonArray>(_value).Resize(size, json); break;
+    using enum JsonType;
+    case Array: std::get<JsonArray>(_value).Resize(size, json); break;
     default: throw std::exception("Resize(int64_t size, Json const& json) is only defined for JsonArray!");
     }
   }
@@ -259,8 +267,9 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Object: std::get<JsonObject>(_value).Clear(); break;
-    case JsonType::Array : std::get<JsonArray >(_value).Clear(); break;
+    using enum JsonType;
+    case Object: std::get<JsonObject>(_value).Clear(); break;
+    case Array : std::get<JsonArray >(_value).Clear(); break;
     default: throw std::exception("Clear() is only defined for JsonObject and JsonArray!");
     }
   }
@@ -269,8 +278,9 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Null: _value = JsonArray(); [[fallthrough]];
-    case JsonType::Array: std::get<JsonArray>(_value).PushBack(value); break;
+    using enum JsonType;
+    case Null: _value = JsonArray(); [[fallthrough]];
+    case Array: std::get<JsonArray>(_value).PushBack(value); break;
     default: throw std::exception("PushBack(Json const& value) is only defined for JsonArray!");
     }
   }
@@ -279,8 +289,9 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Null: _value = JsonArray(); [[fallthrough]];
-    case JsonType::Array: std::get<JsonArray>(_value).PushBack(std::move(value)); break;
+    using enum JsonType;
+    case Null: _value = JsonArray(); [[fallthrough]];
+    case Array: std::get<JsonArray>(_value).PushBack(std::move(value)); break;
     default: throw std::exception("PushBack(Json && value) is only defined for JsonArray!");
     }
   }
@@ -289,8 +300,9 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Null  : _value = JsonObject(); [[fallthrough]];
-    case JsonType::Object: return std::get<JsonObject>(_value).Insert(pair);
+    using enum JsonType;
+    case Null  : _value = JsonObject(); [[fallthrough]];
+    case Object: return std::get<JsonObject>(_value).Insert(pair);
     default: throw std::exception("Insert(pair<wstring, Json> const& pair) is only defined for JsonObject!");
     }
   }
@@ -299,8 +311,9 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Null: _value = JsonObject(); [[fallthrough]];
-    case JsonType::Object: return std::get<JsonObject>(_value).Insert(std::move(pair));
+    using enum JsonType;
+    case Null: _value = JsonObject(); [[fallthrough]];
+    case Object: return std::get<JsonObject>(_value).Insert(std::move(pair));
     default: throw std::exception("Insert(pair<wstring, Json> && pair) is only defined for JsonObject!");
     }
   }
@@ -309,8 +322,9 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Null  : _value = JsonArray(); [[fallthrough]];
-    case JsonType::Array: return std::get<JsonArray>(_value).Insert(index, value);
+    using enum JsonType;
+    case Null  : _value = JsonArray(); [[fallthrough]];
+    case Array: return std::get<JsonArray>(_value).Insert(index, value);
     default: throw std::exception("Insert(int64_t index, Json const& value) is only defined for JsonArray!");
     }
   }
@@ -319,8 +333,9 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Null: _value = JsonArray(); [[fallthrough]];
-    case JsonType::Array: return std::get<JsonArray>(_value).Insert(index, std::move(value));
+    using enum JsonType;
+    case Null: _value = JsonArray(); [[fallthrough]];
+    case Array: return std::get<JsonArray>(_value).Insert(index, std::move(value));
     default: throw std::exception("Insert(int64_t index, Json && value) is only defined for JsonArray!");
     }
   }
@@ -329,7 +344,8 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Object: std::get<JsonObject>(_value).Erase(key); break;
+    using enum JsonType;
+    case Object: std::get<JsonObject>(_value).Erase(key); break;
     default: throw std::exception("Erase(wstring const& key) is only defined for JsonObject!");
     }
   }
@@ -338,7 +354,8 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Array: std::get<JsonArray>(_value).Erase(index); break;
+    using enum JsonType;
+    case Array: std::get<JsonArray>(_value).Erase(index); break;
     default: throw std::exception("Erase(int64_t index) is only defined for JsonArray!");
     }
   }
@@ -347,7 +364,8 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Object: return std::get<JsonObject>(_value).Keys();
+    using enum JsonType;
+    case Object: return std::get<JsonObject>(_value).Keys();
     default: throw std::exception("Keys() is only defined for JsonObject!");
     }
   }
@@ -356,7 +374,8 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Object: return std::get<JsonObject>(_value).KeysView();
+    using enum JsonType;
+    case Object: return std::get<JsonObject>(_value).KeysView();
     default: throw std::exception("KeysView() is only defined for JsonObject!");
     }
   }
@@ -365,8 +384,9 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Object:
-    case JsonType::Array :
+    using enum JsonType;
+    case Object:
+    case Array :
       return ptr.Navigate(*this);
     default: throw std::exception("Operator[](JsonPointer const& ptr) is only defined for JsonObject and JsonArray!");
     }
@@ -381,8 +401,9 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Null  : _value = JsonObject(); [[fallthrough]];
-    case JsonType::Object: return std::get<JsonObject>(_value)[key];
+    using enum JsonType;
+    case Null  : _value = JsonObject(); [[fallthrough]];
+    case Object: return std::get<JsonObject>(_value)[key];
     default: throw std::exception("Operator[](wstring const& key) is only defined for JsonObject!");
     }
   }
@@ -391,7 +412,8 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Array: return std::get<JsonArray>(_value)[index];
+    using enum JsonType;
+    case Array: return std::get<JsonArray>(_value)[index];
     default: throw std::exception("Operator[](int64_t index) is only defined for JsonArray!");
     }
   }
@@ -405,8 +427,9 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Object:
-    case JsonType::Array :
+    using enum JsonType;
+    case Object:
+    case Array :
       return ptr.Navigate(*this);
     default: throw std::exception("At(JsonPointer const& ptr) is only defined for JsonObject and JsonArray!");
     }
@@ -431,7 +454,8 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Object: return std::get<JsonObject>(_value).At(key);
+    using enum JsonType;
+    case Object: return std::get<JsonObject>(_value).At(key);
     default: throw std::exception("At(wstring const& key) is only defined for JsonObject!");
     }
   }
@@ -445,7 +469,8 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Array: return std::get<JsonArray>(_value).At(index);
+    using enum JsonType;
+    case Array: return std::get<JsonArray>(_value).At(index);
     default: throw std::exception("At(int64_t index) is only defined for JsonArray!");
     }
   }
@@ -480,7 +505,8 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Null: return nullptr;
+    using enum JsonType;
+    case Null: return nullptr;
     default:
       auto message = Helper::WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Null) + L"'!"s);
       throw std::exception(message.c_str());
@@ -491,7 +517,8 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::String: return std::get<std::wstring>(_value);
+    using enum JsonType;
+    case String: return std::get<std::wstring>(_value);
     default:
       auto message = Helper::WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::String) + L"'!"s);
       throw std::exception(message.c_str());
@@ -502,7 +529,8 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::String: return std::move(std::get<std::wstring>(_value));
+    using enum JsonType;
+    case String: return std::move(std::get<std::wstring>(_value));
     default:
       auto message = Helper::WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::String) + L"'!"s);
       throw std::exception(message.c_str());
@@ -513,10 +541,11 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Null   : return false;
-    case JsonType::Boolean: return std::get<bool   >(_value);
-    case JsonType::Real   : return std::get<double >(_value);
-    case JsonType::Integer: return std::get<int64_t>(_value);
+    using enum JsonType;
+    case Null   : return false;
+    case Boolean: return std::get<bool   >(_value);
+    case Real   : return std::get<double >(_value);
+    case Integer: return std::get<int64_t>(_value);
     default: return true;
     }
   }
@@ -525,8 +554,9 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return static_cast<char>(std::get<double >(_value));
-    case JsonType::Integer: return static_cast<char>(std::get<int64_t>(_value));
+    using enum JsonType;
+    case Real   : return static_cast<char>(std::get<double >(_value));
+    case Integer: return static_cast<char>(std::get<int64_t>(_value));
     default: 
       auto message = Helper::WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Integer) + L"'!"s);
       throw std::exception(message.c_str());
@@ -537,8 +567,9 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return static_cast<int8_t>(std::get<double >(_value));
-    case JsonType::Integer: return static_cast<int8_t>(std::get<int64_t>(_value));
+    using enum JsonType;
+    case Real   : return static_cast<int8_t>(std::get<double >(_value));
+    case Integer: return static_cast<int8_t>(std::get<int64_t>(_value));
     default:
       auto message = Helper::WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Integer) + L"'!"s);
       throw std::exception(message.c_str());
@@ -549,8 +580,9 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return static_cast<uint8_t>(std::get<double >(_value));
-    case JsonType::Integer: return static_cast<uint8_t>(std::get<int64_t>(_value));
+    using enum JsonType;
+    case Real   : return static_cast<uint8_t>(std::get<double >(_value));
+    case Integer: return static_cast<uint8_t>(std::get<int64_t>(_value));
     default:
       auto message = Helper::WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Integer) + L"'!"s);
       throw std::exception(message.c_str());
@@ -561,8 +593,9 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return static_cast<int16_t>(std::get<double >(_value));
-    case JsonType::Integer: return static_cast<int16_t>(std::get<int64_t>(_value));
+    using enum JsonType;
+    case Real   : return static_cast<int16_t>(std::get<double >(_value));
+    case Integer: return static_cast<int16_t>(std::get<int64_t>(_value));
     default:
       auto message = Helper::WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Integer) + L"'!"s);
       throw std::exception(message.c_str());
@@ -573,8 +606,9 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return static_cast<uint16_t>(std::get<double >(_value));
-    case JsonType::Integer: return static_cast<uint16_t>(std::get<int64_t>(_value));
+    using enum JsonType;
+    case Real   : return static_cast<uint16_t>(std::get<double >(_value));
+    case Integer: return static_cast<uint16_t>(std::get<int64_t>(_value));
     default:
       auto message = Helper::WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Integer) + L"'!"s);
       throw std::exception(message.c_str());
@@ -585,8 +619,9 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return static_cast<int32_t>(std::get<double >(_value));
-    case JsonType::Integer: return static_cast<int32_t>(std::get<int64_t>(_value));
+    using enum JsonType;
+    case Real   : return static_cast<int32_t>(std::get<double >(_value));
+    case Integer: return static_cast<int32_t>(std::get<int64_t>(_value));
     default:
       auto message = Helper::WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Integer) + L"'!"s);
       throw std::exception(message.c_str());
@@ -597,8 +632,9 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return static_cast<uint32_t>(std::get<double >(_value));
-    case JsonType::Integer: return static_cast<uint32_t>(std::get<int64_t>(_value));
+    using enum JsonType;
+    case Real   : return static_cast<uint32_t>(std::get<double >(_value));
+    case Integer: return static_cast<uint32_t>(std::get<int64_t>(_value));
     default:
       auto message = Helper::WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Integer) + L"'!"s);
       throw std::exception(message.c_str());
@@ -609,8 +645,9 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return static_cast<int64_t>(std::get<double >(_value));
-    case JsonType::Integer: return static_cast<int64_t>(std::get<int64_t>(_value));
+    using enum JsonType;
+    case Real   : return static_cast<int64_t>(std::get<double >(_value));
+    case Integer: return static_cast<int64_t>(std::get<int64_t>(_value));
     default:
       auto message = Helper::WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Integer) + L"'!"s);
       throw std::exception(message.c_str());
@@ -621,8 +658,9 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return static_cast<uint64_t>(std::get<double >(_value));
-    case JsonType::Integer: return static_cast<uint64_t>(std::get<int64_t>(_value));
+    using enum JsonType;
+    case Real   : return static_cast<uint64_t>(std::get<double >(_value));
+    case Integer: return static_cast<uint64_t>(std::get<int64_t>(_value));
     default:
       auto message = Helper::WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Integer) + L"'!"s);
       throw std::exception(message.c_str());
@@ -633,8 +671,9 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return static_cast<float>(std::get<double >(_value));
-    case JsonType::Integer: return static_cast<float>(std::get<int64_t>(_value));
+    using enum JsonType;
+    case Real   : return static_cast<float>(std::get<double >(_value));
+    case Integer: return static_cast<float>(std::get<int64_t>(_value));
     default:
       auto message = Helper::WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Real) + L"'!"s);
       throw std::exception(message.c_str());
@@ -645,8 +684,9 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Real   : return static_cast<double>(std::get<double >(_value));
-    case JsonType::Integer: return static_cast<double>(std::get<int64_t>(_value));
+    using enum JsonType;
+    case Real   : return static_cast<double>(std::get<double >(_value));
+    case Integer: return static_cast<double>(std::get<int64_t>(_value));
     default:
       auto message = Helper::WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Real) + L"'!"s);
       throw std::exception(message.c_str());
@@ -657,7 +697,8 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Object: return std::get<JsonObject>(_value);
+    using enum JsonType;
+    case Object: return std::get<JsonObject>(_value);
     default:
       auto message = Helper::WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Object) + L"'!"s);
       throw std::exception(message.c_str());
@@ -668,7 +709,8 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Object: return std::move(std::get<JsonObject>(_value));
+    using enum JsonType;
+    case Object: return std::move(std::get<JsonObject>(_value));
     default:
       auto message = Helper::WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Object) + L"'!"s);
       throw std::exception(message.c_str());
@@ -679,7 +721,8 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Array: return std::get<JsonArray>(_value);
+    using enum JsonType;
+    case Array: return std::get<JsonArray>(_value);
     default:
       auto message = Helper::WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Array) + L"'!"s);
       throw std::exception(message.c_str());
@@ -690,7 +733,8 @@ namespace Json4CPP
   {
     switch (Type())
     {
-    case JsonType::Array: return std::move(std::get<JsonArray>(_value));
+    using enum JsonType;
+    case Array: return std::move(std::get<JsonArray>(_value));
     default:
       auto message = Helper::WString2String(L"Invalid conversion: Cannot convert type '"s + Json::Stringify(Type()) + L"' to '"s + Json::Stringify(JsonType::Array) + L"'!"s);
       throw std::exception(message.c_str());
