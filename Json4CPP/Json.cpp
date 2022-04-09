@@ -243,6 +243,16 @@ namespace Json4CPP
     }
   }
 
+  bool Json::Contains(std::wstring const& key) const
+  {
+    switch (Type())
+    {
+    using enum JsonType;
+    case Object: return std::get<JsonObject>(_value).Contains(key);
+    default: throw std::exception("Contains(wstring const& key) is only defined for JsonObject!");
+    }
+  }
+
   void Json::Resize(int64_t size)
   {
     switch (Type())

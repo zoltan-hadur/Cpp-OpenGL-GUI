@@ -53,6 +53,7 @@ namespace Json4CPP
 
     int64_t Size() const;
     int64_t Count(std::wstring const& key) const;
+    bool Contains(std::wstring const& key) const;
     void Clear();
     bool Insert(std::pair<std::wstring, Json> const& pair);
     bool Insert(std::pair<std::wstring, Json>     && pair);

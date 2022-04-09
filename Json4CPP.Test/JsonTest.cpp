@@ -2965,6 +2965,36 @@ namespace Json4CPP::Test
       }
     }
 
+    TEST_METHOD(TestContains)
+    {
+      ExpectException<exception>([]() { Json(nullptr_t()).Contains(wstring()); }, "Contains(wstring const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(wstring  ()).Contains(wstring()); }, "Contains(wstring const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(bool     ()).Contains(wstring()); }, "Contains(wstring const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(double   ()).Contains(wstring()); }, "Contains(wstring const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(int64_t  ()).Contains(wstring()); }, "Contains(wstring const& key) is only defined for JsonObject!");
+      ExpectException<exception>([]() { Json(JsonArray()).Contains(wstring()); }, "Contains(wstring const& key) is only defined for JsonObject!");
+
+      auto json = Json{
+        { L"Null", nullptr },
+        { L"String", L"Test" },
+        { L"Boolean", true },
+        { L"Real", 13.37 },
+        { L"Integer", 1337 },
+        { L"Object", {
+          { L"Key1", 1 },
+          { L"Key2", 2 } }
+        },
+        { L"Array", { 1, 2, 3 } },
+      };
+
+      Assert::IsFalse(json.Contains(L"asd"));
+      Assert::IsFalse(json.Contains(L"asd"s));
+      for (auto& key : json.Keys())
+      {
+        Assert::IsTrue(json.Contains(key));
+      }
+    }
+
     TEST_METHOD(TestResize)
     {
       ExpectException<exception>([]() { Json(nullptr_t ()).Resize(1); }, "Resize(int64_t size) is only defined for JsonArray!");

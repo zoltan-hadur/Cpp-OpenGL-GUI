@@ -52,7 +52,7 @@ namespace Json4CPP
       case PropertyName:
         property = std::move(std::get<std::wstring>(value));
         tokens.pop_front();
-        if (object.Count(property))
+        if (object.Contains(property))
         {
           auto message = Helper::WString2String(L"Duplicated key: \""s + property + L"\"!"s);
           throw std::exception(message.c_str());
@@ -124,7 +124,7 @@ namespace Json4CPP
           auto& pair = std::get<std::vector<Detail::JsonBuilder>>(builder._value);
           auto key = std::get<std::wstring>(pair[0]._value);
           auto value = Json(pair[1]);
-          if (Count(key))
+          if (Contains(key))
           {
             auto message = Helper::WString2String(L"Duplicated key: \""s + key + L"\"!"s);
             throw std::exception(message.c_str());
@@ -166,7 +166,7 @@ namespace Json4CPP
           auto& pair = std::get<std::vector<Detail::JsonBuilder>>(builder._value);
           auto& key = std::get<std::wstring>(pair[0]._value);
           auto value = Json(std::move(pair[1]));
-          if (Count(key))
+          if (Contains(key))
           {
             auto message = Helper::WString2String(L"Duplicated key: \""s + key + L"\"!"s);
             throw std::exception(message.c_str());
@@ -215,6 +215,11 @@ namespace Json4CPP
     return _indexes.count(key);
   }
 
+  bool JsonObject::Contains(std::wstring const& key) const
+  {
+    return _indexes.contains(key);
+  }
+
   void JsonObject::Clear()
   {
     _pairs  .clear();
@@ -223,7 +228,7 @@ namespace Json4CPP
 
   bool JsonObject::Insert(std::pair<std::wstring, Json> const& pair)
   {
-    if (_indexes.count(pair.first)) return false;
+    if (_indexes.contains(pair.first)) return false;
     _indexes[pair.first] = _pairs.size();
     _pairs.push_back(pair);
     return true;
@@ -231,7 +236,7 @@ namespace Json4CPP
 
   bool JsonObject::Insert(std::pair<std::wstring, Json> && pair)
   {
-    if (_indexes.count(pair.first)) return false;
+    if (_indexes.contains(pair.first)) return false;
     _indexes[pair.first] = _pairs.size();
     _pairs.push_back(std::move(pair));
     return true;
@@ -239,7 +244,7 @@ namespace Json4CPP
 
   void JsonObject::Erase(std::wstring const& key)
   {
-    if (!_indexes.count(key)) return;
+    if (!_indexes.contains(key)) return;
     _pairs.erase(std::remove_if(_pairs.begin(), _pairs.end(), [&](std::pair<std::wstring, Json> const& pair) { return pair.first == key; }), _pairs.end());
     _indexes.clear();
     for (int i = 0; i < _pairs.size(); ++i)
@@ -264,7 +269,7 @@ namespace Json4CPP
 
   Json& JsonObject::operator[](std::wstring const& key)
   {
-    if (!_indexes.count(key)) Insert({ key, Json{} });
+    if (!_indexes.contains(key)) Insert({ key, Json{} });
     return _pairs[_indexes[key]].second;
   }
 
@@ -327,7 +332,7 @@ namespace Json4CPP
     {
       for (auto& key : left.KeysView())
       {
-        if (!right.Count(key) || left.At(key) != right.At(key))
+        if (!right.Contains(key) || left.At(key) != right.At(key))
         {
           return false;
         }

@@ -892,6 +892,29 @@ namespace Json4CPP::Test
       }
     }
 
+    TEST_METHOD(TestContains)
+    {
+      JsonObject object = {
+        { L"Null", nullptr },
+        { L"String", L"Test" },
+        { L"Boolean", true },
+        { L"Real", 13.37 },
+        { L"Integer", 1337 },
+        { L"Object", {
+          { L"Key1", 1 },
+          { L"Key2", 2 } }
+        },
+        { L"Array", { 1, 2, 3 } },
+      };
+
+      Assert::IsFalse(object.Contains(L"asd"));
+      Assert::IsFalse(object.Contains(L"asd"s));
+      for (auto& key : object.Keys())
+      {
+        Assert::IsTrue(object.Count(key));
+      }
+    }
+
     TEST_METHOD(TestClear)
     {
       auto object = JsonObject{ { L"Key1", 1 }, { L"Key2", 2 } };

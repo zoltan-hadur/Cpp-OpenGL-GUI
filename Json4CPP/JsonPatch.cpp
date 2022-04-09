@@ -13,7 +13,7 @@ namespace Json4CPP
 {
   JsonPatch::OperationBase::OperationBase(Json const& json)
   {
-    if (!json.Count(L"path"s))
+    if (!json.Contains(L"path"s))
     {
       auto message = Helper::WString2String(L"Key 'path' is missing from object: "s + Json::Stringify(json) + L"!"s);
       throw std::exception(message.c_str());
@@ -29,7 +29,7 @@ namespace Json4CPP
 
   JsonPatch::OperationAdd::OperationAdd(Json const& json) : OperationBase(json)
   {
-    if (!json.Count(L"value"s))
+    if (!json.Contains(L"value"s))
     {
       auto message = Helper::WString2String(L"Key 'value' is missing from object: "s + Json::Stringify(json) + L"!"s);
       throw std::exception(message.c_str());
@@ -124,7 +124,7 @@ namespace Json4CPP
 
   JsonPatch::OperationReplace::OperationReplace(Json const& json) : OperationBase(json)
   {
-    if (!json.Count(L"value"s))
+    if (!json.Contains(L"value"s))
     {
       auto message = Helper::WString2String(L"Key 'value' is missing from object: "s + Json::Stringify(json) + L"!"s);
       throw std::exception(message.c_str());
@@ -150,7 +150,7 @@ namespace Json4CPP
 
   JsonPatch::OperationMove::OperationMove(Json const& json) : OperationBase(json)
   {
-    if (!json.Count(L"from"s))
+    if (!json.Contains(L"from"s))
     {
       auto message = Helper::WString2String(L"Key 'from' is missing from object: "s + Json::Stringify(json) + L"!"s);
       throw std::exception(message.c_str());
@@ -191,7 +191,7 @@ namespace Json4CPP
 
   JsonPatch::OperationCopy::OperationCopy(Json const& json) : OperationBase(json)
   {
-    if (!json.Count(L"from"s))
+    if (!json.Contains(L"from"s))
     {
       auto message = Helper::WString2String(L"Key 'from' is missing from object: "s + Json::Stringify(json) + L"!"s);
       throw std::exception(message.c_str());
@@ -225,7 +225,7 @@ namespace Json4CPP
 
   JsonPatch::OperationTest::OperationTest(Json const& json) : OperationBase(json)
   {
-    if (!json.Count(L"value"s))
+    if (!json.Contains(L"value"s))
     {
       auto message = Helper::WString2String(L"Key 'value' is missing from object: "s + Json::Stringify(json) + L"!"s);
       throw std::exception(message.c_str());
@@ -266,7 +266,7 @@ namespace Json4CPP
         auto message = Helper::WString2String(L"Value: "s + Json::Stringify(element) + L" is not an object!"s);
         throw std::exception(message.c_str());
       }
-      if (!element.Count(L"op"s))
+      if (!element.Contains(L"op"s))
       {
         auto message = Helper::WString2String(L"Key 'op' is missing from object: "s + Json::Stringify(element) + L"!"s);
         throw std::exception(message.c_str());
@@ -281,7 +281,7 @@ namespace Json4CPP
         { L"copy"   , [](Json const& element) { return std::make_shared<OperationCopy   >(element); } },
         { L"test"   , [](Json const& element) { return std::make_shared<OperationTest   >(element); } }
       };
-      if (!factory.count(op))
+      if (!factory.contains(op))
       {
         auto message = Helper::WString2String(L"Operation \""s + op + L"\" is not a valid operation! It must be one of \"add\", \"remove\", \"replace\", \"move\", \"copy\", or \"test\"."s);
         throw std::exception(message.c_str());

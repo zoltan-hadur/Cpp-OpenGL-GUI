@@ -139,7 +139,7 @@ namespace Json4CPP
       {
       using enum JsonType;
       case Object:
-        if (result->Count(decodedToken))
+        if (result->Contains(decodedToken))
         {
           result = &(result->At(decodedToken));
         }

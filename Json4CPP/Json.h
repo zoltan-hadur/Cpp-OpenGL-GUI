@@ -196,6 +196,7 @@ namespace Json4CPP
 
     int64_t Size() const;
     int64_t Count(std::wstring const& key) const;
+    bool Contains(std::wstring const& key) const;
     void Resize(int64_t size);
     void Resize(int64_t size, Json const& json);
     void Clear();
