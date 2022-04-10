@@ -911,7 +911,7 @@ namespace Json4CPP::Test
       Assert::IsFalse(object.Contains(L"asd"s));
       for (auto& key : object.Keys())
       {
-        Assert::IsTrue(object.Count(key));
+        Assert::IsTrue(object.Contains(key));
       }
     }
 
