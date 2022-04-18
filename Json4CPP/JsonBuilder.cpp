@@ -40,7 +40,29 @@ namespace Json4CPP::Detail
 
   JsonBuilderType JsonBuilder::Type() const
   {
-    return Value::GetType(_value);
+    JsonBuilderType result;
+    std::visit(Helper::Overload{
+      [&](std::nullptr_t const& v) { result = JsonBuilderType::Null;    },
+      [&](std::wstring   const& v) { result = JsonBuilderType::String;  },
+      [&](bool           const& v) { result = JsonBuilderType::Boolean; },
+      [&](double         const& v) { result = JsonBuilderType::Real;    },
+      [&](int64_t        const& v) { result = JsonBuilderType::Integer; },
+      [&](JsonObject     const& v) { result = JsonBuilderType::Object;  },
+      [&](JsonArray      const& v) { result = JsonBuilderType::Array;   },
+      [&](std::vector<JsonBuilder> const& arg)
+      {
+        if (arg.size() == 0)
+          result = JsonBuilderType::Empty;
+        else if (arg.size() == 2 && arg[0].Type() == JsonBuilderType::String)
+          result = JsonBuilderType::Pair;
+        else if (std::all_of(arg.begin(), arg.end(), [](JsonBuilder const& value) { return value.Is(JsonBuilderType::Pair); }))
+          result = JsonBuilderType::Object;
+        else
+          result = JsonBuilderType::Array;
+      },
+      [&](auto const& v) { result = JsonBuilderType::Invalid; }
+    }, _value);
+    return result;
   }
 
   bool JsonBuilder::Is(JsonBuilderType type) const

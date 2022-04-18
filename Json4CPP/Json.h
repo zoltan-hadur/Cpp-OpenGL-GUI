@@ -16,6 +16,7 @@
 #include "JsonIterator.h"
 #include "JsonConstIterator.h"
 #include "JsonPointer.h"
+#include "JsonBuilder.h"
 
 #include <variant>
 #include <string>

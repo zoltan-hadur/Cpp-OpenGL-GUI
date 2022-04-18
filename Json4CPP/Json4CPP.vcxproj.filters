@@ -101,9 +101,6 @@
     <ClCompile Include="JsonObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Value.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="JsonType.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

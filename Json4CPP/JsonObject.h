@@ -20,6 +20,10 @@
 
 namespace Json4CPP
 {
+  namespace Detail
+  {
+    class JSON_API JsonBuilder;
+  }
   class JSON_API JsonArray;
   class JSON_API Json;
   class JSON_API JsonIterator;

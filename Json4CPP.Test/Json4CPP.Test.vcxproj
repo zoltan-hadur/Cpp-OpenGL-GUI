@@ -115,7 +115,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="HelperTest.cpp" />
-    <ClCompile Include="ValueTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Json4CPP\Json4CPP.vcxproj">

@@ -6,6 +6,8 @@
 #define JSON_API __declspec(dllimport)
 #endif
 
+#include "Value.h"
+
 #include <sstream>
 #include <string>
 

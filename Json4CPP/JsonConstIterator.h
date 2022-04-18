@@ -6,9 +6,8 @@
 #define JSON_API __declspec(dllimport)
 #endif
 
-#include "Value.h"
-
 #include <xutility>
+#include <string>
 
 namespace Json4CPP
 {

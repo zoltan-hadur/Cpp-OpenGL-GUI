@@ -20,6 +20,8 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <istream>
+#include <ostream>
 #include <string>
 #include <variant>
 #include <vector>
@@ -31,3 +33,8 @@
 #include <filesystem>
 #include <charconv>
 #include <functional>
+#include <initializer_list>
+#include <deque>
+#include <xutility>
+#include <memory>
+#include <type_traits>

@@ -6,6 +6,8 @@
 #define JSON_API __declspec(dllimport)
 #endif
 
+#include <ostream>
+
 namespace Json4CPP
 {
   // Available values: Null, String, Boolean, Real, Integer, Number, Object, Array, Simple, Complex, Invalid.

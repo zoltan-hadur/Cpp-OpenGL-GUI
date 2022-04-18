@@ -22,7 +22,7 @@ namespace Json4CPP::Helper
 
   void WriteAllText(std::filesystem::path const& path, std::wstring const& value)
   {
-    std::wfstream(path, std::wfstream::out | std::wfstream::binary) << WidenString(WString2String(value));
+    std::fstream(path, std::fstream::out | std::fstream::binary) << WString2String(value);
   }
 
   std::wstring WidenString(std::string const& value)

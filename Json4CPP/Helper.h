@@ -9,6 +9,7 @@
 #include <string>
 #include <istream>
 #include <filesystem>
+#include <utility>
 
 namespace Json4CPP::Helper
 {

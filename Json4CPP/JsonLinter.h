@@ -7,6 +7,7 @@
 #endif
 
 #include "JsonTokenType.h"
+#include "Value.h"
 
 #include <variant>
 #include <string>
@@ -16,7 +17,6 @@
 
 namespace Json4CPP::Detail
 {
-  using VALUE_TOKEN = std::variant<std::nullptr_t, std::wstring, bool, double, int64_t>;
   using TOKEN = std::pair<JsonTokenType, VALUE_TOKEN>;
   using NUMBER = std::variant<double, int64_t>;
 
