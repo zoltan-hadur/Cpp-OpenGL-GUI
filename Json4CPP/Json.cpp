@@ -808,6 +808,8 @@ namespace Json4CPP
     return is;
   }
 
+#pragma warning(push)
+#pragma warning(disable : 4804 4805)
   bool operator==(Json const& left, Json const& right)
   {
     bool result;
@@ -1293,4 +1295,5 @@ namespace Json4CPP
   {
     return static_cast<bool>(left) || static_cast<bool>(right);
   }
+#pragma warning(pop)
 }
