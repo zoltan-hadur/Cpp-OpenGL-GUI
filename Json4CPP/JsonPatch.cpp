@@ -11,14 +11,14 @@ using namespace std::string_literals;
 
 namespace Json4CPP
 {
-  JsonPatch::OperationBase::OperationBase(Json const& json)
+  JsonPatch::OperationBase::OperationBase(JsonObject const& object)
   {
-    if (!json.Contains(L"path"s))
+    if (!object.Contains(L"path"s))
     {
-      auto message = Helper::WString2String(L"Key 'path' is missing from object: "s + Json::Stringify(json) + L"!"s);
+      auto message = Helper::WString2String(L"Key 'path' is missing from object: "s + Json::Stringify(object) + L"!"s);
       throw std::exception(message.c_str());
     }
-    auto& path = json.At(L"path"s);
+    auto& path = object.At(L"path"s);
     if (!path.Is(JsonType::String))
     {
       auto message = Helper::WString2String(L"Path: "s + Json::Stringify(path) + L" is not a string!"s);
@@ -27,14 +27,14 @@ namespace Json4CPP
     _path = JsonPointer(path.Get<std::wstring>());
   }
 
-  JsonPatch::OperationAdd::OperationAdd(Json const& json) : OperationBase(json)
+  JsonPatch::OperationAdd::OperationAdd(JsonObject const& object) : OperationBase(object)
   {
-    if (!json.Contains(L"value"s))
+    if (!object.Contains(L"value"s))
     {
-      auto message = Helper::WString2String(L"Key 'value' is missing from object: "s + Json::Stringify(json) + L"!"s);
+      auto message = Helper::WString2String(L"Key 'value' is missing from object: "s + Json::Stringify(object) + L"!"s);
       throw std::exception(message.c_str());
     }
-    _value = json.At(L"value"s);
+    _value = object.At(L"value"s);
   }
 
   JsonPatch::OperationAdd::operator JsonObject() const
@@ -90,7 +90,7 @@ namespace Json4CPP
     }
   }
 
-  JsonPatch::OperationRemove::OperationRemove(Json const& json) : OperationBase(json)
+  JsonPatch::OperationRemove::OperationRemove(JsonObject const& object) : OperationBase(object)
   {
     
   }
@@ -122,14 +122,14 @@ namespace Json4CPP
     }
   }
 
-  JsonPatch::OperationReplace::OperationReplace(Json const& json) : OperationBase(json)
+  JsonPatch::OperationReplace::OperationReplace(JsonObject const& object) : OperationBase(object)
   {
-    if (!json.Contains(L"value"s))
+    if (!object.Contains(L"value"s))
     {
-      auto message = Helper::WString2String(L"Key 'value' is missing from object: "s + Json::Stringify(json) + L"!"s);
+      auto message = Helper::WString2String(L"Key 'value' is missing from object: "s + Json::Stringify(object) + L"!"s);
       throw std::exception(message.c_str());
     }
-    _value = json.At(L"value"s);
+    _value = object.At(L"value"s);
   }
 
   JsonPatch::OperationReplace::operator JsonObject() const
@@ -148,14 +148,14 @@ namespace Json4CPP
     json[_path] = _value;
   }
 
-  JsonPatch::OperationMove::OperationMove(Json const& json) : OperationBase(json)
+  JsonPatch::OperationMove::OperationMove(JsonObject const& object) : OperationBase(object)
   {
-    if (!json.Contains(L"from"s))
+    if (!object.Contains(L"from"s))
     {
-      auto message = Helper::WString2String(L"Key 'from' is missing from object: "s + Json::Stringify(json) + L"!"s);
+      auto message = Helper::WString2String(L"Key 'from' is missing from object: "s + Json::Stringify(object) + L"!"s);
       throw std::exception(message.c_str());
     }
-    auto& from = json.At(L"from"s);
+    auto& from = object.At(L"from"s);
     if (!from.Is(JsonType::String))
     {
       auto message = Helper::WString2String(L"From: "s + Json::Stringify(from) + L" is not a string!"s);
@@ -189,14 +189,14 @@ namespace Json4CPP
     add   .Execute(json);
   }
 
-  JsonPatch::OperationCopy::OperationCopy(Json const& json) : OperationBase(json)
+  JsonPatch::OperationCopy::OperationCopy(JsonObject const& object) : OperationBase(object)
   {
-    if (!json.Contains(L"from"s))
+    if (!object.Contains(L"from"s))
     {
-      auto message = Helper::WString2String(L"Key 'from' is missing from object: "s + Json::Stringify(json) + L"!"s);
+      auto message = Helper::WString2String(L"Key 'from' is missing from object: "s + Json::Stringify(object) + L"!"s);
       throw std::exception(message.c_str());
     }
-    auto& from = json.At(L"from"s);
+    auto& from = object.At(L"from"s);
     if (!from.Is(JsonType::String))
     {
       auto message = Helper::WString2String(L"From: "s + Json::Stringify(from) + L" is not a string!"s);
@@ -223,14 +223,14 @@ namespace Json4CPP
     add.Execute(json);
   }
 
-  JsonPatch::OperationTest::OperationTest(Json const& json) : OperationBase(json)
+  JsonPatch::OperationTest::OperationTest(JsonObject const& object) : OperationBase(object)
   {
-    if (!json.Contains(L"value"s))
+    if (!object.Contains(L"value"s))
     {
-      auto message = Helper::WString2String(L"Key 'value' is missing from object: "s + Json::Stringify(json) + L"!"s);
+      auto message = Helper::WString2String(L"Key 'value' is missing from object: "s + Json::Stringify(object) + L"!"s);
       throw std::exception(message.c_str());
     }
-    _value = json.At(L"value"s);
+    _value = object.At(L"value"s);
   }
 
   JsonPatch::OperationTest::operator JsonObject() const
@@ -272,21 +272,21 @@ namespace Json4CPP
         throw std::exception(message.c_str());
       }
       auto op = element.At(L"op"s).Get<std::wstring>();
-      static auto factory = std::map<std::wstring, std::function<std::shared_ptr<OperationBase>(Json const&)>>
+      static auto factory = std::map<std::wstring, std::function<std::shared_ptr<OperationBase>(JsonObject const&)>>
       {
-        { L"add"    , [](Json const& element) { return std::make_shared<OperationAdd    >(element); } },
-        { L"remove" , [](Json const& element) { return std::make_shared<OperationRemove >(element); } },
-        { L"replace", [](Json const& element) { return std::make_shared<OperationReplace>(element); } },
-        { L"move"   , [](Json const& element) { return std::make_shared<OperationMove   >(element); } },
-        { L"copy"   , [](Json const& element) { return std::make_shared<OperationCopy   >(element); } },
-        { L"test"   , [](Json const& element) { return std::make_shared<OperationTest   >(element); } }
+        { L"add"    , [](JsonObject const& element) { return std::make_shared<OperationAdd    >(element); } },
+        { L"remove" , [](JsonObject const& element) { return std::make_shared<OperationRemove >(element); } },
+        { L"replace", [](JsonObject const& element) { return std::make_shared<OperationReplace>(element); } },
+        { L"move"   , [](JsonObject const& element) { return std::make_shared<OperationMove   >(element); } },
+        { L"copy"   , [](JsonObject const& element) { return std::make_shared<OperationCopy   >(element); } },
+        { L"test"   , [](JsonObject const& element) { return std::make_shared<OperationTest   >(element); } }
       };
       if (!factory.contains(op))
       {
         auto message = Helper::WString2String(L"Operation \""s + op + L"\" is not a valid operation! It must be one of \"add\", \"remove\", \"replace\", \"move\", \"copy\", or \"test\"."s);
         throw std::exception(message.c_str());
       }
-      _operations.push_back(factory[op](element));
+      _operations.push_back(factory[op](element.Get<JsonObject>()));
     }
   }
 

@@ -25,7 +25,7 @@ namespace Json4CPP
     protected:
       JsonPointer _path;
     public:
-      OperationBase(Json const& json);
+      OperationBase(JsonObject const& object);
       virtual explicit operator JsonObject() const = 0;
       virtual void Execute(Json& json) const = 0;
     };
@@ -35,7 +35,7 @@ namespace Json4CPP
     protected:
       Json _value;
     public:
-      OperationAdd(Json const& json);
+      OperationAdd(JsonObject const& object);
       virtual explicit operator JsonObject() const;
       virtual void Execute(Json& json) const;
     };
@@ -45,7 +45,7 @@ namespace Json4CPP
     protected:
 
     public:
-      OperationRemove(Json const& json);
+      OperationRemove(JsonObject const& object);
       virtual explicit operator JsonObject() const;
       virtual void Execute(Json& json) const;
     };
@@ -55,7 +55,7 @@ namespace Json4CPP
     protected:
       Json _value;
     public:
-      OperationReplace(Json const& json);
+      OperationReplace(JsonObject const& object);
       virtual explicit operator JsonObject() const;
       virtual void Execute(Json& json) const;
     };
@@ -65,7 +65,7 @@ namespace Json4CPP
     protected:
       JsonPointer _from;
     public:
-      OperationMove(Json const& json);
+      OperationMove(JsonObject const& object);
       virtual explicit operator JsonObject() const;
       virtual void Execute(Json& json) const;
     };
@@ -75,7 +75,7 @@ namespace Json4CPP
     protected:
       JsonPointer _from;
     public:
-      OperationCopy(Json const& json);
+      OperationCopy(JsonObject const& object);
       virtual explicit operator JsonObject() const;
       virtual void Execute(Json& json) const;
     };
@@ -85,7 +85,7 @@ namespace Json4CPP
     protected:
       Json _value;
     public:
-      OperationTest(Json const& json);
+      OperationTest(JsonObject const& object);
       virtual explicit operator JsonObject() const;
       virtual void Execute(Json& json) const;
     };
