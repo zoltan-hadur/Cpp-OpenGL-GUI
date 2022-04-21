@@ -6,7 +6,6 @@
 #define JSON_API __declspec(dllimport)
 #endif
 
-#include "JsonArray.h"
 #include "Json.h"
 #include "JsonPointer.h"
 

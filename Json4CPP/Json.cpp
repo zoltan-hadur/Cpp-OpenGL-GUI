@@ -3,11 +3,12 @@
 #include "JsonDefault.h"
 #include "Json.h"
 #include "JsonBuilder.h"
-#include "Value.h"
-#include "Helper.h"
 #include "JsonIndentSize.h"
 #include "JsonIndentChar.h"
 #include "JsonPatch.h"
+#include "JsonConstIterator.h"
+#include "JsonIterator.h"
+#include "JsonTokenType.h"
 
 #include <sstream>
 #include <iostream>

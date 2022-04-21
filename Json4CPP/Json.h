@@ -12,10 +12,6 @@
 #include "JsonArray.h"
 #include "JsonObject.h"
 #include "JsonLinter.h"
-#include "JsonTokenType.h"
-#include "JsonIterator.h"
-#include "JsonConstIterator.h"
-#include "JsonPointer.h"
 #include "JsonBuilder.h"
 
 #include <variant>
@@ -42,6 +38,7 @@ namespace Json4CPP
   class JSON_API JsonArray;
   class JSON_API JsonIterator;
   class JSON_API JsonConstIterator;
+  class JSON_API JsonPointer;
   class JSON_API JsonPatch;
 
   JSON_API Json operator""_Json(wchar_t const* value, std::size_t size);
