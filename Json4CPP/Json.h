@@ -147,7 +147,7 @@ namespace Json4CPP
       else
       {
         using namespace std::string_literals;
-        auto message = "Invalid conversion: Cannot convert type '"s + Json4CPP::Helper::WString2String(Json::Stringify(Type())) + "' to '"s + typeid(T).name() + "'!"s;
+        auto message = "Invalid conversion: Cannot convert type '"s + Helper::WString2String(Json::Stringify(Type())) + "' to '"s + typeid(T).name() + "'!"s;
         throw std::exception(message.c_str());
       }
     }

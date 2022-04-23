@@ -319,7 +319,7 @@ namespace Json4CPP
 
   std::wostream& operator<<(std::wostream& os, JsonPatch const& patch)
   {
-    return os << (JsonArray)patch;
+    return os << static_cast<JsonArray>(patch);
   }
 
   std::wistream& operator>>(std::wistream& is, JsonPatch& patch)
@@ -332,16 +332,16 @@ namespace Json4CPP
 
   bool operator==(JsonPatch const& left, JsonPatch const& right)
   {
-    return (JsonArray)left == (JsonArray)right;
+    return static_cast<JsonArray>(left) == static_cast<JsonArray>(right);
   }
 
   bool operator!=(JsonPatch const& left, JsonPatch const& right)
   {
-    return (JsonArray)left != (JsonArray)right;
+    return static_cast<JsonArray>(left) != static_cast<JsonArray>(right);
   }
 
   JsonPatch operator""_JsonPatch(wchar_t const* value, size_t size)
   {
-    return JsonPatch(JsonArray(Json::Parse(value)));
+    return JsonPatch(Json::Parse(value).Get<JsonArray>());
   }
 }
