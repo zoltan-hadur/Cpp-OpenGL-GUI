@@ -316,7 +316,7 @@ namespace Json4CPP
 
   std::wistream& operator>>(std::wistream& is, JsonObject& object)
   {
-    object = JsonObject::Read(Detail::JsonLinter::Read(is));
+    object = std::move(JsonObject::Read(Detail::JsonLinter::Read(is)));
     return is;
   }
 

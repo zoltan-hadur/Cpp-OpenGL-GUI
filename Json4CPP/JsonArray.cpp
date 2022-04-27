@@ -234,7 +234,7 @@ namespace Json4CPP
 
   std::wistream& operator>>(std::wistream& is, JsonArray& array)
   {
-    array = JsonArray::Read(Detail::JsonLinter::Read(is));
+    array = std::move(JsonArray::Read(Detail::JsonLinter::Read(is)));
     return is;
   }
 

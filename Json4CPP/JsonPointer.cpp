@@ -199,7 +199,7 @@ namespace Json4CPP
 
   std::wistream& operator>>(std::wistream& is, JsonPointer& ptr)
   {
-    ptr = JsonPointer(std::wstring(std::istreambuf_iterator<wchar_t>(is), {}));
+    ptr = std::move(JsonPointer(std::wstring(std::istreambuf_iterator<wchar_t>(is), {})));
     return is;
   }
 

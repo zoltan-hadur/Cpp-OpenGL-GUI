@@ -805,7 +805,7 @@ namespace Json4CPP
 
   std::wistream& operator>>(std::wistream&is, Json& json)
   {
-    json = Json::Read(Detail::JsonLinter::Read(is));
+    json = std::move(Json::Read(Detail::JsonLinter::Read(is)));
     return is;
   }
 

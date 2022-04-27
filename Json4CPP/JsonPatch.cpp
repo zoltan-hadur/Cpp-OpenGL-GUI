@@ -326,7 +326,7 @@ namespace Json4CPP
   {
     JsonArray array;
     is >> array;
-    patch = JsonPatch(array);
+    patch = std::move(JsonPatch(array));
     return is;
   }
 
