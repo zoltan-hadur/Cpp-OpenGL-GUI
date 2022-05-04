@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+  <UIVisualizer ServiceId="{9551EBC3-26F2-48A9-87D3-D1583D44E228}" Id="1" MenuName="Json4CPP Visualizer"/>
+  <Type Name="Json4CPP::Json">
+    <UIVisualizer ServiceId="{9551EBC3-26F2-48A9-87D3-D1583D44E228}" Id="1" />
+  </Type>
+  <Type Name="Json4CPP::JsonObject">
+    <UIVisualizer ServiceId="{9551EBC3-26F2-48A9-87D3-D1583D44E228}" Id="1" />
+  </Type>
+  <Type Name="Json4CPP::JsonArray">
+    <UIVisualizer ServiceId="{9551EBC3-26F2-48A9-87D3-D1583D44E228}" Id="1" />
+  </Type>
+</AutoVisualizer>
