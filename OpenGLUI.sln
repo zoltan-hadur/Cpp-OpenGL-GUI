@@ -15,6 +15,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Json4CPP.Test", "Json4CPP.T
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Log4CPP", "Log4CPP\Log4CPP.vcxproj", "{4C401594-8B08-4EB9-9B2A-4964BE010B1D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Json4CPP.Visualizer", "Json4CPP.Visualizer\Json4CPP.Visualizer.csproj", "{39FF2048-BD6E-4537-90A2-95422EAE1C5A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -45,6 +47,10 @@ Global
 		{4C401594-8B08-4EB9-9B2A-4964BE010B1D}.Debug|x64.Build.0 = Debug|x64
 		{4C401594-8B08-4EB9-9B2A-4964BE010B1D}.Release|x64.ActiveCfg = Release|x64
 		{4C401594-8B08-4EB9-9B2A-4964BE010B1D}.Release|x64.Build.0 = Release|x64
+		{39FF2048-BD6E-4537-90A2-95422EAE1C5A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{39FF2048-BD6E-4537-90A2-95422EAE1C5A}.Debug|x64.Build.0 = Debug|Any CPU
+		{39FF2048-BD6E-4537-90A2-95422EAE1C5A}.Release|x64.ActiveCfg = Release|Any CPU
+		{39FF2048-BD6E-4537-90A2-95422EAE1C5A}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
