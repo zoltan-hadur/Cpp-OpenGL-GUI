@@ -124,9 +124,9 @@ namespace Json4CPP.Visualizer
     private static Json BuildJson(DkmSuccessEvaluationResult result)
     {
       Json wJson;
-      var wWhichResult = EvaluateExpression(result, $"{result.FullName}._value._Which");
+      var wWhichResult = Json4CPPVisualizerService.EvaluateExpression(result, $"{result.FullName}._value._Which");
       var wWhich = int.Parse(wWhichResult.Value.Replace(wWhichResult.EditableValue, string.Empty).Trim());
-      var wValueResult = EvaluateExpression(result, $"{result.FullName}._value{string.Concat(Enumerable.Repeat("._Tail", wWhich))}._Head");
+      var wValueResult = Json4CPPVisualizerService.EvaluateExpression(result, $"{result.FullName}._value{string.Concat(Enumerable.Repeat("._Tail", wWhich))}._Head");
       var wType = (JsonType)wWhich;
       switch (wType)
       {
@@ -149,12 +149,12 @@ namespace Json4CPP.Visualizer
     private static Json BuildJsonObject(DkmSuccessEvaluationResult result)
     {
       var wJsonObject = new JsonObject();
-      var wSizeResult = EvaluateExpression(result, $"{result.FullName}._pairs.size()");
+      var wSizeResult = Json4CPPVisualizerService.EvaluateExpression(result, $"{result.FullName}._pairs.size()");
       var wSize = int.Parse(wSizeResult.Value);
       for (int i = 0; i < wSize; i++)
       {
-        var wFirstResult = EvaluateExpression(result, $"{result.FullName}[{i}].first");
-        var wSecondResult = EvaluateExpression(result, $"{result.FullName}[{i}].second");
+        var wFirstResult = Json4CPPVisualizerService.EvaluateExpression(result, $"{result.FullName}[{i}].first");
+        var wSecondResult = Json4CPPVisualizerService.EvaluateExpression(result, $"{result.FullName}[{i}].second");
         wJsonObject.Pairs.Add(new Json
         {
           Value = new Pair
@@ -173,32 +173,17 @@ namespace Json4CPP.Visualizer
     private static Json BuildJsonArray(DkmSuccessEvaluationResult result)
     {
       var wJsonArray = new JsonArray();
-      var wSizeResult = EvaluateExpression(result, $"{result.FullName}._values.size()");
+      var wSizeResult = Json4CPPVisualizerService.EvaluateExpression(result, $"{result.FullName}._values.size()");
       var wSize = int.Parse(wSizeResult.Value);
       for (int i = 0; i < wSize; i++)
       {
-        var wValueResult = EvaluateExpression(result, $"{result.FullName}[{i}]");
+        var wValueResult = Json4CPPVisualizerService.EvaluateExpression(result, $"{result.FullName}[{i}]");
         wJsonArray.Values.Add(BuildJson(wValueResult));
       }
       return new Json
       {
         Value = wJsonArray
       };
-    }
-
-    private static DkmSuccessEvaluationResult EvaluateExpression(DkmSuccessEvaluationResult result, string expression)
-    {
-      DkmSuccessEvaluationResult wResult = null;
-      var wWorkList = DkmWorkList.Create(null);
-      var wCompletionRoutine = new DkmCompletionRoutine<DkmEvaluateExpressionAsyncResult>(wExpressionResult =>
-      {
-        wResult = wExpressionResult.ResultObject as DkmSuccessEvaluationResult;
-      });
-      var wExpression = DkmLanguageExpression.Create(result.Language, result.InspectionContext.EvaluationFlags, expression, null);
-      result.InspectionContext.EvaluateExpression(wWorkList, wExpression, result.StackFrame, wCompletionRoutine);
-      wWorkList.Execute();
-      Debug.Assert(wResult != null, $"EvaluateExpression failed: {expression}");
-      return wResult;
     }
   }
 }

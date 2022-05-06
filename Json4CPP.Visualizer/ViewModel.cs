@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.Debugger.Evaluation;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,8 @@ namespace Json4CPP.Visualizer
 {
   public class ViewModel : ViewModelBase
   {
+    private DkmSuccessEvaluationResult mResult;
+
     private string mExpression;
     public string Expression
     {
@@ -20,6 +23,27 @@ namespace Json4CPP.Visualizer
     {
       get => mJson;
       set => Set(ref mJson, value);
+    }
+
+    protected ViewModel()
+    {
+
+    }
+
+    public ViewModel(DkmSuccessEvaluationResult result)
+    {
+      mResult = result;
+      Expression = result.FullName;
+      Json = JsonBuilder.Build(result);
+    }
+
+    public string Stringify()
+    {
+      var wResult = Json4CPPVisualizerService.EvaluateExpression(
+        mResult,
+        $"((Json4CPP.dll!{mResult.Type}*)&{mResult.FullName})->Dump(2, L' '),sub",
+        flagsToRemove: DkmEvaluationFlags.NoSideEffects);
+      return wResult.GetUnderlyingString();
     }
   }
 

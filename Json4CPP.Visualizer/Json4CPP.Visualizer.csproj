@@ -55,6 +55,9 @@
     <Compile Include="IJson4CPPVisualizerService.cs" />
     <Compile Include="IView.cs" />
     <Compile Include="JsonBuilder.cs" />
+    <Compile Include="MessageBox.xaml.cs">
+      <DependentUpon>MessageBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Json4CPPVisualizerService.cs" />
     <Compile Include="Json4CPPVisualizerPackage.cs" />
@@ -107,6 +110,10 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="MessageBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="VisualizerWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

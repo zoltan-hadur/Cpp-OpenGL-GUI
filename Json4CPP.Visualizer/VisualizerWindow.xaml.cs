@@ -53,5 +53,10 @@ namespace Json4CPP.Visualizer
         }
       }
     }
+
+    private void Stringify_Click(object sender, RoutedEventArgs e)
+    {
+      MessageBox.Show(ViewModel.Stringify());
+    }
   }
 }

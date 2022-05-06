@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Debugger;
 using Microsoft.VisualStudio.Debugger.Evaluation;
 using Microsoft.VisualStudio.Debugger.Interop;
 using System;
@@ -16,11 +17,7 @@ namespace Json4CPP.Visualizer
       try
       {
         var wResult = DkmSuccessEvaluationResult.ExtractFromProperty(debugProperty);
-        var wWindow = new VisualizerWindow(new ViewModel
-        {
-          Expression = wResult.FullName,
-          Json = JsonBuilder.Build(wResult)
-        });
+        var wWindow = new VisualizerWindow(new ViewModel(wResult));
         wWindow.ShowDialog();
       }
       catch (Exception e)
@@ -29,6 +26,37 @@ namespace Json4CPP.Visualizer
         return e.HResult;
       }
       return VSConstants.S_OK;
+    }
+
+    public static DkmSuccessEvaluationResult EvaluateExpression(
+      DkmSuccessEvaluationResult result,
+      string expression,
+      DkmEvaluationFlags flagsToRemove = DkmEvaluationFlags.None,
+      DkmEvaluationFlags flagsToAdd = DkmEvaluationFlags.None)
+    {
+      DkmSuccessEvaluationResult wResult = null;
+      var wWorkList = DkmWorkList.Create(null);
+      var wCompletionRoutine = new DkmCompletionRoutine<DkmEvaluateExpressionAsyncResult>(wExpressionResult =>
+      {
+        wResult = wExpressionResult.ResultObject as DkmSuccessEvaluationResult;
+      });
+
+      var wContext = DkmInspectionContext.Create(
+        InspectionSession: result.InspectionSession,
+        RuntimeInstance: result.RuntimeInstance,
+        Thread: result.InspectionContext.Thread,
+        Timeout: 1000,
+        EvaluationFlags: result.InspectionContext.EvaluationFlags & ~flagsToRemove | flagsToAdd,
+        FuncEvalFlags: result.InspectionContext.FuncEvalFlags,
+        Radix: 10,
+        Language: result.Language,
+        ReturnValue: null);
+
+      var wExpression = DkmLanguageExpression.Create(result.Language, wContext.EvaluationFlags, expression, null);
+      wContext.EvaluateExpression(wWorkList, wExpression, result.StackFrame, wCompletionRoutine);
+      wWorkList.Execute();
+      Debug.Assert(wResult != null, $"EvaluateExpression failed: {expression}");
+      return wResult;
     }
   }
 }

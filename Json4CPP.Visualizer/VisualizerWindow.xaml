@@ -25,6 +25,7 @@
         <ColumnDefinition Width="*"/>
         <ColumnDefinition Width="Auto"/>
         <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition Width="Auto"/>
       </Grid.ColumnDefinitions>
       <TextBlock Grid.Column="0"
                  Text="{Binding Json, StringFormat='Json: {0}'}"/>
@@ -33,12 +34,19 @@
               Content="Expand all"
               Click="ExpandAll_Click"
               Padding="4,0,4,0"
-              Margin="4,0,4,0"/>
+              Margin="4,0,0,0"/>
       <Button x:Name="CollapseAll"
               Grid.Column="2"
               Content="Collapse all"
               Click="CollapseAll_Click"
-              Padding="4,0,4,0"/>
+              Padding="4,0,4,0"
+              Margin="4,0,0,0"/>
+      <Button x:Name="Stringify"
+              Grid.Column="3"
+              Content="Stringify"
+              Click="Stringify_Click"
+              Padding="4,0,4,0"
+              Margin="4,0,0,0"/>
     </Grid>
     <TreeView x:Name="TreeView"
               Grid.Row="2"
