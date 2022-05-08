@@ -41,7 +41,7 @@ namespace Json4CPP.Visualizer
     {
       var wResult = Json4CPPVisualizerService.EvaluateExpression(
         mResult,
-        $"((Json4CPP.dll!{mResult.Type}*)&{mResult.FullName})->Dump(2, L' '),sub",
+        $"((Json4CPP.dll!{mResult.Type}*)&{mResult.FullName})->Dump(2, L' ')",
         flagsToRemove: DkmEvaluationFlags.NoSideEffects);
       return wResult.GetUnderlyingString();
     }
