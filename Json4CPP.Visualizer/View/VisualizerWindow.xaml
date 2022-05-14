@@ -1,0 +1,188 @@
+﻿<Window x:Class="Json4CPP.Visualizer.View.VisualizerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:Json4CPP.Visualizer.View"
+        xmlns:vm="clr-namespace:Json4CPP.Visualizer.ViewModel"
+        xmlns:control="clr-namespace:Json4CPP.Visualizer.Control"
+        mc:Ignorable="d"
+        Title="Json4CPP Visualizer"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="SingleBorderWindow"
+        FontSize="16"
+        Width="600"
+        Height="600"
+        d:DesignHeight="600" d:DesignWidth="600"
+        d:DataContext="{d:DesignInstance vm:VisualizerWindowVMDesign, IsDesignTimeCreatable=True}">
+  <Window.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Json4CPP.Visualizer;Component/Themes/Generic.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
+      <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+      <Style x:Key="DeleteButtonStyle"
+             TargetType="{x:Type local:DeleteButton}"
+             BasedOn="{StaticResource {x:Type local:DeleteButton}}">
+        <Style.Setters>
+          <Setter Property="Visibility"
+                  Value="Collapsed"/>
+        </Style.Setters>
+        <Style.Triggers>
+          <MultiDataTrigger>
+            <MultiDataTrigger.Conditions>
+              <Condition Binding="{Binding Path=IsChecked, ElementName=EditMode}"
+                         Value="True"/>
+              <Condition Binding="{Binding Path=IsMouseReallyOver, RelativeSource={RelativeSource AncestorType={x:Type control:TreeViewItemEx}}}"
+                         Value="True"/>
+            </MultiDataTrigger.Conditions>
+            <MultiDataTrigger.Setters>
+              <Setter Property="Visibility"
+                      Value="Visible"/>
+            </MultiDataTrigger.Setters>
+          </MultiDataTrigger>
+          <MultiDataTrigger>
+            <MultiDataTrigger.Conditions>
+              <Condition Binding="{Binding Path=IsChecked, ElementName=EditMode}"
+                         Value="True"/>
+              <Condition Binding="{Binding Path=IsMouseReallyOver, RelativeSource={RelativeSource AncestorType={x:Type control:TreeViewItemEx}}}"
+                         Value="False"/>
+            </MultiDataTrigger.Conditions>
+            <MultiDataTrigger.Setters>
+              <Setter Property="Visibility"
+                      Value="Hidden"/>
+              <d:Setter Property="Visibility"
+                        Value="Visible"/>
+            </MultiDataTrigger.Setters>
+          </MultiDataTrigger>
+        </Style.Triggers>
+      </Style>
+    </ResourceDictionary>
+  </Window.Resources>
+  <Grid Margin="4">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+    <TextBlock Grid.Row="0"
+               Text="{Binding Expression, StringFormat=Expression: {0}}"/>
+    <TextBlock Grid.Row="1"
+               Text="{Binding Json, StringFormat=Json: {0}}"/>
+    <Grid Grid.Row="2"
+          Margin="0,4,0,4">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="Auto"/>
+      </Grid.ColumnDefinitions>
+      <Button x:Name="ExpandAll"
+              Grid.Column="0"
+              Content="Expand all"
+              Click="ExpandAll_Click"
+              Margin="0,0,4,0"/>
+      <Button x:Name="CollapseAll"
+              Grid.Column="1"
+              Content="Collapse all"
+              Click="CollapseAll_Click"
+              Margin="0,0,4,0"/>
+      <Button x:Name="Stringify"
+              Grid.Column="2"
+              Content="Stringify"
+              Click="Stringify_Click"/>
+      <CheckBox x:Name="EditMode"
+                Grid.Column="4"
+                Content="Edit mode"
+                d:IsChecked="True"/>
+    </Grid>
+    <control:TreeViewEx x:Name="TreeView"
+                        Grid.Row="3"
+                        ItemsSource="{Binding Json.Children}">
+      <control:TreeViewEx.ItemContainerStyle>
+        <Style TargetType="{x:Type control:TreeViewItemEx}">
+          <Style.Setters>
+            <Setter Property="Focusable"
+                    Value="False"/>
+            <d:Setter Property="IsExpanded"
+                      Value="True"/>
+            <Setter Property="HorizontalContentAlignment"
+                    Value="Stretch"/>
+          </Style.Setters>
+        </Style>
+      </control:TreeViewEx.ItemContainerStyle>
+      <control:TreeViewEx.Resources>
+        <HierarchicalDataTemplate DataType="{x:Type vm:PairVM}"
+                                  ItemsSource="{Binding Value.Children}">
+          <StackPanel Orientation="Horizontal"
+                      Margin="0,2,0,2">
+            <local:DeleteButton Style="{StaticResource DeleteButtonStyle}"
+                                Margin="0,0,4,0"/>
+            <TextBlock Text="{Binding Key}"/>
+            <TextBlock Text=": "/>
+            <TextBlock Text="{Binding Value.Value}">
+              <TextBlock.Style>
+                <Style TargetType="{x:Type TextBlock}"
+                       BasedOn="{StaticResource {x:Type TextBlock}}">
+                  <Style.Setters>
+                    <Setter Property="Foreground"
+                            Value="Black"/>
+                  </Style.Setters>
+                  <Style.Triggers>
+                    <MultiDataTrigger>
+                      <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding Path=HasItems, RelativeSource={RelativeSource AncestorType={x:Type control:TreeViewItemEx}}}"
+                                   Value="True"/>
+                        <Condition Binding="{Binding Path=IsExpanded, RelativeSource={RelativeSource AncestorType={x:Type control:TreeViewItemEx}}}"
+                                   Value="True"/>
+                      </MultiDataTrigger.Conditions>
+                      <MultiDataTrigger.Setters>
+                        <Setter Property="Foreground"
+                                Value="LightGray"/>
+                      </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </TextBlock.Style>
+            </TextBlock>
+          </StackPanel>
+        </HierarchicalDataTemplate>
+        <HierarchicalDataTemplate DataType="{x:Type vm:JsonVM}"
+                                  ItemsSource="{Binding Children}">
+          <StackPanel Orientation="Horizontal"
+                      Margin="0,2,0,2">
+            <local:DeleteButton Style="{StaticResource DeleteButtonStyle}"
+                                Margin="0,0,4,0"/>
+            <TextBlock Text="{Binding Value}">
+              <TextBlock.Style>
+                <Style TargetType="{x:Type TextBlock}"
+                       BasedOn="{StaticResource {x:Type TextBlock}}">
+                  <Style.Setters>
+                    <Setter Property="Foreground"
+                            Value="Black"/>
+                  </Style.Setters>
+                  <Style.Triggers>
+                    <MultiDataTrigger>
+                      <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding Path=HasItems, RelativeSource={RelativeSource AncestorType={x:Type control:TreeViewItemEx}}}"
+                                   Value="True"/>
+                        <Condition Binding="{Binding Path=IsExpanded, RelativeSource={RelativeSource AncestorType={x:Type control:TreeViewItemEx}}}"
+                                   Value="True"/>
+                      </MultiDataTrigger.Conditions>
+                      <MultiDataTrigger.Setters>
+                        <Setter Property="Foreground"
+                                Value="LightGray"/>
+                      </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </TextBlock.Style>
+            </TextBlock>
+          </StackPanel>
+        </HierarchicalDataTemplate>
+      </control:TreeViewEx.Resources>
+    </control:TreeViewEx>
+  </Grid>
+</Window>

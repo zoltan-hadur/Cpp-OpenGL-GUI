@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio;
+﻿using Json4CPP.Visualizer.View;
+using Json4CPP.Visualizer.ViewModel;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Debugger;
 using Microsoft.VisualStudio.Debugger.Evaluation;
 using Microsoft.VisualStudio.Debugger.Interop;
@@ -17,7 +19,7 @@ namespace Json4CPP.Visualizer
       try
       {
         var wResult = DkmSuccessEvaluationResult.ExtractFromProperty(debugProperty);
-        var wWindow = new VisualizerWindow(new ViewModel(wResult));
+        var wWindow = new VisualizerWindow(new VisualizerWindowVM(wResult));
         wWindow.ShowDialog();
       }
       catch (Exception e)

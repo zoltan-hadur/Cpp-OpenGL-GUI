@@ -1,20 +1,23 @@
-﻿using System.Windows;
+﻿using Json4CPP.Visualizer.ViewModel;
+using System;
+using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
 
-namespace Json4CPP.Visualizer
+namespace Json4CPP.Visualizer.View
 {
   /// <summary>
   /// Interaction logic for VisualizerWindow.xaml
   /// </summary>
-  public partial class VisualizerWindow : Window, IView<ViewModel>
+  public partial class VisualizerWindow : Window, IView<VisualizerWindowVM>
   {
-    public ViewModel ViewModel
+    public VisualizerWindowVM ViewModel
     {
-      get => DataContext as ViewModel;
+      get => DataContext as VisualizerWindowVM;
       set => DataContext = value;
     }
 
-    public VisualizerWindow(ViewModel viewModel)
+    public VisualizerWindow(VisualizerWindowVM viewModel)
     {
       InitializeComponent();
       ViewModel = viewModel;
@@ -43,13 +46,16 @@ namespace Json4CPP.Visualizer
 
     private void SetIsExpanded(TreeViewItem item, bool isExpanded)
     {
-      item.IsExpanded = isExpanded;
-      item.UpdateLayout();
-      foreach (var wItem in item.Items)
+      if (item.HasItems)
       {
-        if (item.ItemContainerGenerator.ContainerFromItem(wItem) is TreeViewItem wTreeViewItem)
+        item.IsExpanded = isExpanded;
+        item.UpdateLayout();
+        foreach (var wItem in item.Items)
         {
-          SetIsExpanded(wTreeViewItem, isExpanded);
+          if (item.ItemContainerGenerator.ContainerFromItem(wItem) is TreeViewItem wTreeViewItem)
+          {
+            SetIsExpanded(wTreeViewItem, isExpanded);
+          }
         }
       }
     }
