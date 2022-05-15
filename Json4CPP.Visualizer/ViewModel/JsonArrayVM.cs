@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 namespace Json4CPP.Visualizer.ViewModel
 {
   /// <summary>
-  /// <see cref="Values"/> should contain one of the following types:
+  /// <see cref="Values"/> should contain one of the following types wrapped in a <see cref="JsonVM"/>:
   /// <list type="bullet">
   /// <item><see cref="JsonObjectVM"/></item>
   /// <item><see cref="JsonArrayVM"/></item>

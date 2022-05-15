@@ -13,7 +13,7 @@
         FontSize="16"
         Width="600"
         Height="600"
-        d:DesignHeight="600" d:DesignWidth="600"
+        d:DesignHeight="830" d:DesignWidth="600"
         d:DataContext="{d:DesignInstance vm:VisualizerWindowVMDesign, IsDesignTimeCreatable=True}">
   <Window.Resources>
     <ResourceDictionary>
@@ -57,6 +57,52 @@
           </MultiDataTrigger>
         </Style.Triggers>
       </Style>
+      <Style x:Key="ReadOnlyTextBoxStyle"
+             TargetType="{x:Type TextBox}"
+             BasedOn="{StaticResource {x:Type TextBox}}">
+        <Style.Triggers>
+          <DataTrigger Binding="{Binding Path=IsChecked, ElementName=EditMode}"
+                       Value="False">
+            <Setter Property="BorderBrush"
+                    Value="Transparent"/>
+            <Setter Property="IsReadOnly"
+                    Value="True"/>
+            <Setter Property="Focusable"
+                    Value="False"/>
+            <Setter Property="Cursor"
+                    Value="Arrow"/>
+          </DataTrigger>
+        </Style.Triggers>
+      </Style>
+      <Style x:Key="ObjectOrArrayStyle"
+             TargetType="{x:Type TextBox}"
+             BasedOn="{StaticResource ReadOnlyTextBoxStyle}">
+        <Style.Triggers>
+          <MultiDataTrigger>
+            <MultiDataTrigger.Conditions>
+              <Condition Binding="{Binding Path=HasItems, RelativeSource={RelativeSource AncestorType={x:Type control:TreeViewItemEx}}}"
+                         Value="True"/>
+              <Condition Binding="{Binding Path=IsExpanded, RelativeSource={RelativeSource AncestorType={x:Type control:TreeViewItemEx}}}"
+                         Value="True"/>
+            </MultiDataTrigger.Conditions>
+            <MultiDataTrigger.Setters>
+              <Setter Property="Foreground"
+                      Value="LightGray"/>
+            </MultiDataTrigger.Setters>
+          </MultiDataTrigger>
+          <DataTrigger Binding="{Binding Path=HasItems, RelativeSource={RelativeSource AncestorType={x:Type control:TreeViewItemEx}}}"
+                       Value="True">
+            <Setter Property="BorderBrush"
+                    Value="Transparent"/>
+            <Setter Property="IsReadOnly"
+                    Value="True"/>
+            <Setter Property="Focusable"
+                    Value="False"/>
+            <Setter Property="Cursor"
+                    Value="Arrow"/>
+          </DataTrigger>
+        </Style.Triggers>
+      </Style>
     </ResourceDictionary>
   </Window.Resources>
   <Grid Margin="4">
@@ -96,7 +142,7 @@
       <CheckBox x:Name="EditMode"
                 Grid.Column="4"
                 Content="Edit mode"
-                d:IsChecked="True"/>
+                d:IsChecked="False"/>
     </Grid>
     <control:TreeViewEx x:Name="TreeView"
                         Grid.Row="3"
@@ -120,33 +166,34 @@
                       Margin="0,2,0,2">
             <local:DeleteButton Style="{StaticResource DeleteButtonStyle}"
                                 Margin="0,0,4,0"/>
-            <TextBlock Text="{Binding Key}"/>
-            <TextBlock Text=": "/>
-            <TextBlock Text="{Binding Value.Value}">
-              <TextBlock.Style>
-                <Style TargetType="{x:Type TextBlock}"
-                       BasedOn="{StaticResource {x:Type TextBlock}}">
+            <TextBox Style="{StaticResource ReadOnlyTextBoxStyle}"
+                     Text="{Binding Key}"/>
+            <TextBox Text=": ">
+              <TextBox.Style>
+                <Style TargetType="{x:Type TextBox}"
+                       BasedOn="{StaticResource ReadOnlyTextBoxStyle}">
                   <Style.Setters>
-                    <Setter Property="Foreground"
-                            Value="Black"/>
+                    <Setter Property="BorderBrush"
+                            Value="Transparent"/>
+                    <Setter Property="IsReadOnly"
+                            Value="True"/>
+                    <Setter Property="Focusable"
+                            Value="False"/>
+                    <Setter Property="Cursor"
+                            Value="Arrow"/>
                   </Style.Setters>
                   <Style.Triggers>
-                    <MultiDataTrigger>
-                      <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding Path=HasItems, RelativeSource={RelativeSource AncestorType={x:Type control:TreeViewItemEx}}}"
-                                   Value="True"/>
-                        <Condition Binding="{Binding Path=IsExpanded, RelativeSource={RelativeSource AncestorType={x:Type control:TreeViewItemEx}}}"
-                                   Value="True"/>
-                      </MultiDataTrigger.Conditions>
-                      <MultiDataTrigger.Setters>
-                        <Setter Property="Foreground"
-                                Value="LightGray"/>
-                      </MultiDataTrigger.Setters>
-                    </MultiDataTrigger>
+                    <Trigger Property="IsMouseOver"
+                             Value="True">
+                      <Setter Property="BorderBrush"
+                              Value="Transparent"/>
+                    </Trigger>
                   </Style.Triggers>
                 </Style>
-              </TextBlock.Style>
-            </TextBlock>
+              </TextBox.Style>
+            </TextBox>
+            <TextBox Style="{StaticResource ObjectOrArrayStyle}"
+                     Text="{Binding Value.Value}"/>
           </StackPanel>
         </HierarchicalDataTemplate>
         <HierarchicalDataTemplate DataType="{x:Type vm:JsonVM}"
@@ -155,31 +202,8 @@
                       Margin="0,2,0,2">
             <local:DeleteButton Style="{StaticResource DeleteButtonStyle}"
                                 Margin="0,0,4,0"/>
-            <TextBlock Text="{Binding Value}">
-              <TextBlock.Style>
-                <Style TargetType="{x:Type TextBlock}"
-                       BasedOn="{StaticResource {x:Type TextBlock}}">
-                  <Style.Setters>
-                    <Setter Property="Foreground"
-                            Value="Black"/>
-                  </Style.Setters>
-                  <Style.Triggers>
-                    <MultiDataTrigger>
-                      <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding Path=HasItems, RelativeSource={RelativeSource AncestorType={x:Type control:TreeViewItemEx}}}"
-                                   Value="True"/>
-                        <Condition Binding="{Binding Path=IsExpanded, RelativeSource={RelativeSource AncestorType={x:Type control:TreeViewItemEx}}}"
-                                   Value="True"/>
-                      </MultiDataTrigger.Conditions>
-                      <MultiDataTrigger.Setters>
-                        <Setter Property="Foreground"
-                                Value="LightGray"/>
-                      </MultiDataTrigger.Setters>
-                    </MultiDataTrigger>
-                  </Style.Triggers>
-                </Style>
-              </TextBlock.Style>
-            </TextBlock>
+            <TextBox Style="{StaticResource ObjectOrArrayStyle}"
+                     Text="{Binding Value}"/>
           </StackPanel>
         </HierarchicalDataTemplate>
       </control:TreeViewEx.Resources>

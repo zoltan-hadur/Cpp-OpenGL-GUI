@@ -42,4 +42,42 @@
               Value="Center"/>
     </Style.Setters>
   </Style>
+  <Style TargetType="{x:Type TextBox}"
+         BasedOn="{StaticResource {x:Type TextBox}}">
+    <Style.Setters>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="{x:Type TextBox}">
+            <Border x:Name="border"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    Background="{TemplateBinding Background}"
+                    SnapsToDevicePixels="True">
+              <ScrollViewer x:Name="PART_ContentHost"
+                            Focusable="false"
+                            HorizontalScrollBarVisibility="Hidden"
+                            VerticalScrollBarVisibility="Hidden"/>
+            </Border>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style.Setters>
+    <Style.Triggers>
+      <Trigger Property="IsEnabled"
+               Value="False">
+        <Setter Property="Opacity"
+                Value="0.56"/>
+      </Trigger>
+      <Trigger Property="IsMouseOver"
+               Value="True">
+        <Setter Property="BorderBrush"
+                Value="#FFC5DAED"/>
+      </Trigger>
+      <Trigger Property="IsFocused"
+               Value="True">
+        <Setter Property="BorderBrush"
+                Value="#FFB5CFE7"/>
+      </Trigger>
+    </Style.Triggers>
+  </Style>
 </ResourceDictionary>
