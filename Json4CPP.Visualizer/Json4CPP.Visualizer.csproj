@@ -65,7 +65,7 @@
     <Compile Include="ViewModel\JsonObjectVM.cs" />
     <Compile Include="ViewModel\JsonVM.cs" />
     <Compile Include="ViewModel\PairVM.cs" />
-    <Compile Include="View\DeleteButton.xaml.cs">
+    <Compile Include="Control\DeleteButton.xaml.cs">
       <DependentUpon>DeleteButton.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\IView.cs" />
@@ -130,7 +130,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\DeleteButton.xaml">
+    <Page Include="Control\DeleteButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -22,8 +22,8 @@
       </ResourceDictionary.MergedDictionaries>
       <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
       <Style x:Key="DeleteButtonStyle"
-             TargetType="{x:Type local:DeleteButton}"
-             BasedOn="{StaticResource {x:Type local:DeleteButton}}">
+             TargetType="{x:Type control:DeleteButton}"
+             BasedOn="{StaticResource {x:Type control:DeleteButton}}">
         <Style.Setters>
           <Setter Property="Visibility"
                   Value="Collapsed"/>
@@ -164,7 +164,7 @@
                                   ItemsSource="{Binding Value.Children}">
           <StackPanel Orientation="Horizontal"
                       Margin="0,2,0,2">
-            <local:DeleteButton Style="{StaticResource DeleteButtonStyle}"
+            <control:DeleteButton Style="{StaticResource DeleteButtonStyle}"
                                 Margin="0,0,4,0"/>
             <TextBox Style="{StaticResource ReadOnlyTextBoxStyle}"
                      Text="{Binding Key}"/>
@@ -200,7 +200,7 @@
                                   ItemsSource="{Binding Children}">
           <StackPanel Orientation="Horizontal"
                       Margin="0,2,0,2">
-            <local:DeleteButton Style="{StaticResource DeleteButtonStyle}"
+            <control:DeleteButton Style="{StaticResource DeleteButtonStyle}"
                                 Margin="0,0,4,0"/>
             <TextBox Style="{StaticResource ObjectOrArrayStyle}"
                      Text="{Binding Value}"/>

@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Json4CPP.Visualizer.View
+namespace Json4CPP.Visualizer.Control
 {
   /// <summary>
   /// Interaction logic for DeleteButton.xaml
