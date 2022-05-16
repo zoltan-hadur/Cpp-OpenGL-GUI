@@ -1,6 +1,56 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:converter="clr-namespace:Json4CPP.Visualizer.Converter"
                     xmlns:control="clr-namespace:Json4CPP.Visualizer.Control">
+  <converter:MathConverterSingleValue x:Key="MathConverterSingleValue"/>
+  <converter:MathConverterMultiValue x:Key="MathConverterMultiValue"/>
+  <Style TargetType="{x:Type control:BorderEx}">
+    <Style.Setters>
+      <Setter Property="RenderTransform">
+        <Setter.Value>
+          <TransformGroup>
+            <TranslateTransform>
+              <TranslateTransform.X>
+                <Binding Path="Width"
+                         RelativeSource="{RelativeSource AncestorType={x:Type control:BorderEx}}"
+                         Converter="{StaticResource MathConverterSingleValue}"
+                         ConverterParameter="{}-{0}/2"/>
+              </TranslateTransform.X>
+              <TranslateTransform.Y>
+                <Binding Path="Height"
+                         RelativeSource="{RelativeSource AncestorType={x:Type control:BorderEx}}"
+                         Converter="{StaticResource MathConverterSingleValue}"
+                         ConverterParameter="{}-{0}/2"/>
+              </TranslateTransform.Y>
+            </TranslateTransform>
+            <ScaleTransform>
+              <ScaleTransform.ScaleX>
+                <Binding Path="Scale"
+                         RelativeSource="{RelativeSource AncestorType={x:Type control:BorderEx}}"/>
+              </ScaleTransform.ScaleX>
+              <ScaleTransform.ScaleY>
+                <MultiBinding Converter="{StaticResource MathConverterMultiValue}"
+                              ConverterParameter="{}({1}-({0}-{0}*{2}))/{1}">
+                  <Binding Path="Width"
+                           RelativeSource="{RelativeSource AncestorType={x:Type control:BorderEx}}"/>
+                  <Binding Path="Height"
+                           RelativeSource="{RelativeSource AncestorType={x:Type control:BorderEx}}"/>
+                  <Binding Path="Scale"
+                           RelativeSource="{RelativeSource AncestorType={x:Type control:BorderEx}}"/>
+                </MultiBinding>
+              </ScaleTransform.ScaleY>
+            </ScaleTransform>
+            <RotateTransform>
+              <RotateTransform.Angle>
+                <Binding Path="Angle"
+                         RelativeSource="{RelativeSource AncestorType={x:Type control:BorderEx}}"/>
+              </RotateTransform.Angle>
+            </RotateTransform>
+          </TransformGroup>
+        </Setter.Value>
+      </Setter>
+    </Style.Setters>
+  </Style>
   <Style TargetType="{x:Type control:DeleteButton}"
          BasedOn="{StaticResource {x:Type Button}}">
     <Style.Setters>
@@ -8,6 +58,8 @@
               Value="20"/>
       <Setter Property="Height"
               Value="20"/>
+      <Setter Property="Foreground"
+              Value="White"/>
     </Style.Setters>
     <Style.Triggers>
       <Trigger Property="IsMouseOver"

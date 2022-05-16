@@ -7,13 +7,15 @@
         xmlns:converter="clr-namespace:Json4CPP.Visualizer.Converter"
         xmlns:control="clr-namespace:Json4CPP.Visualizer.Control"
         mc:Ignorable="d"
+        d:Foreground="White"
         d:DesignHeight="15" d:DesignWidth="15">
   <Button.Template>
     <ControlTemplate>
       <ControlTemplate.Resources>
         <converter:MathConverterSingleValue x:Key="MathConverterSingleValue"/>
         <converter:MathConverterMultiValue x:Key="MathConverterMultiValue"/>
-        <Style TargetType="control:BorderEx">
+        <Style TargetType="control:BorderEx"
+               BasedOn="{StaticResource {x:Type control:BorderEx}}">
           <Setter Property="Width">
             <Setter.Value>
               <MultiBinding Converter="{StaticResource MathConverterMultiValue}"
@@ -78,49 +80,6 @@
                        ConverterParameter="{}{0}/3"/>
             </Setter.Value>
           </Setter>
-          <Setter Property="RenderTransform">
-            <Setter.Value>
-              <TransformGroup>
-                <TranslateTransform>
-                  <TranslateTransform.X>
-                    <Binding Path="Width"
-                             RelativeSource="{RelativeSource AncestorType={x:Type control:BorderEx}}"
-                             Converter="{StaticResource MathConverterSingleValue}"
-                             ConverterParameter="{}-{0}/2"/>
-                  </TranslateTransform.X>
-                  <TranslateTransform.Y>
-                    <Binding Path="Height"
-                             RelativeSource="{RelativeSource AncestorType={x:Type control:BorderEx}}"
-                             Converter="{StaticResource MathConverterSingleValue}"
-                             ConverterParameter="{}-{0}/2"/>
-                  </TranslateTransform.Y>
-                </TranslateTransform>
-                <ScaleTransform>
-                  <ScaleTransform.ScaleX>
-                    <Binding Path="Scale"
-                             RelativeSource="{RelativeSource AncestorType={x:Type control:BorderEx}}"/>
-                  </ScaleTransform.ScaleX>
-                  <ScaleTransform.ScaleY>
-                    <MultiBinding Converter="{StaticResource MathConverterMultiValue}"
-                                  ConverterParameter="{}({1}-({0}-{0}*{2}))/{1}">
-                      <Binding Path="Width"
-                               RelativeSource="{RelativeSource AncestorType={x:Type control:BorderEx}}"/>
-                      <Binding Path="Height"
-                               RelativeSource="{RelativeSource AncestorType={x:Type control:BorderEx}}"/>
-                      <Binding Path="Scale"
-                               RelativeSource="{RelativeSource AncestorType={x:Type control:BorderEx}}"/>
-                    </MultiBinding>
-                  </ScaleTransform.ScaleY>
-                </ScaleTransform>
-                <RotateTransform>
-                  <RotateTransform.Angle>
-                    <Binding Path="Angle"
-                             RelativeSource="{RelativeSource AncestorType={x:Type control:BorderEx}}"/>
-                  </RotateTransform.Angle>
-                </RotateTransform>
-              </TransformGroup>
-            </Setter.Value>
-          </Setter>
         </Style>
       </ControlTemplate.Resources>
       <Border BorderThickness="{TemplateBinding BorderThickness}"
@@ -142,10 +101,10 @@
                             Angle="45"/>
           <control:BorderEx Background="{TemplateBinding BorderBrush}"
                             Angle="-45"/>
-          <control:BorderEx Background="White"
+          <control:BorderEx Background="{TemplateBinding Foreground}"
                             Angle="45"
                             Scale="0.8"/>
-          <control:BorderEx Background="White"
+          <control:BorderEx Background="{TemplateBinding Foreground}"
                             Angle="-45"
                             Scale="0.8"/>
         </Canvas>

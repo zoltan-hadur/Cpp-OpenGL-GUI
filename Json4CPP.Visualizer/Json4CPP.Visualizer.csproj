@@ -52,7 +52,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Control\BorderEx.cs" />
+    <Compile Include="Control\BorderEx.xaml.cs">
+      <DependentUpon>BorderEx.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Control\TreeViewItemEx.cs" />
     <Compile Include="Converter\MathConverterMultiValue.cs" />
     <Compile Include="Converter\MathConverterSingleValue.cs" />
@@ -126,6 +128,10 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Control\BorderEx.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\Generic.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

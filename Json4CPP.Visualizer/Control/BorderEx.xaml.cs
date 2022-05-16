@@ -5,10 +5,20 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
 namespace Json4CPP.Visualizer.Control
 {
-  public class BorderEx : Border
+  /// <summary>
+  /// Interaction logic for BorderEx.xaml
+  /// </summary>
+  public partial class BorderEx : Border
   {
     public static readonly DependencyProperty AngleProperty = DependencyProperty.Register(nameof(Angle), typeof(double), typeof(BorderEx), new PropertyMetadata(0.0));
     public static readonly DependencyProperty ScaleProperty = DependencyProperty.Register(nameof(Scale), typeof(double), typeof(BorderEx), new PropertyMetadata(1.0));
@@ -23,6 +33,16 @@ namespace Json4CPP.Visualizer.Control
     {
       get => (double)GetValue(ScaleProperty);
       set => SetValue(ScaleProperty, value);
+    }
+
+    static BorderEx()
+    {
+      DefaultStyleKeyProperty.OverrideMetadata(typeof(BorderEx), new FrameworkPropertyMetadata(typeof(BorderEx)));
+    }
+
+    public BorderEx()
+    {
+      InitializeComponent();
     }
   }
 }
