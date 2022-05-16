@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Json4CPP.Visualizer.Extension;
+using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -50,7 +51,7 @@ namespace Json4CPP.Visualizer.Control
 
     private void OnIsMouseOverChanged(object sender, EventArgs e)
     {
-      var wIsMouseReallyOver = IsMouseOver && !IsMouseOverTrueForAnyChild(sender as TreeViewItemEx);
+      var wIsMouseReallyOver = IsMouseOver && !(sender as TreeViewItemEx).IsMouseOverTrueForAnyChild();
       if (wIsMouseReallyOver == IsMouseReallyOver)
       {
         return;
@@ -61,53 +62,17 @@ namespace Json4CPP.Visualizer.Control
         IsMouseReallyOver = wIsMouseReallyOver;
       }
 
-      var wParent = FindParent<TreeViewItemEx>(this);
+      var wParent = this.FindParent<TreeViewItemEx>();
       while(wParent != null)
       {
         wParent.OnIsMouseOverChanged(wParent, EventArgs.Empty);
-        wParent = FindParent<TreeViewItemEx>(wParent);
+        wParent = wParent.FindParent<TreeViewItemEx>();
       }
 
       if (wIsMouseReallyOver)
       {
         IsMouseReallyOver = wIsMouseReallyOver;
       }
-    }
-
-    private static T FindParent<T>(DependencyObject child) where T : DependencyObject
-    {
-      var wParent = VisualTreeHelper.GetParent(child);
-      if (wParent == null)
-      {
-        return null;
-      }
-      if (wParent is T)
-      {
-        return wParent as T;
-      }
-      else
-      {
-        return FindParent<T>(wParent);
-      }
-    }
-
-    private bool IsMouseOverTrueForAnyChild(TreeViewItemEx item)
-    {
-      foreach (var wItem in item.Items)
-      {
-        if (item.ItemContainerGenerator.ContainerFromItem(wItem) is TreeViewItemEx wTreeViewItem)
-        {
-          if (wTreeViewItem.IsMouseOver)
-          {
-            return true;
-          }
-          if (IsMouseOverTrueForAnyChild(wTreeViewItem))
-          {
-            return true;
-          }
-        }
-      }
-      return false;
     }
 
     protected override DependencyObject GetContainerForItemOverride()

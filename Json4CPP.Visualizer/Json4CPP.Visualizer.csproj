@@ -56,6 +56,7 @@
     <Compile Include="Control\TreeViewItemEx.cs" />
     <Compile Include="Converter\MathConverterMultiValue.cs" />
     <Compile Include="Converter\MathConverterSingleValue.cs" />
+    <Compile Include="Extension\Extensions.cs" />
     <Compile Include="IJson4CPPVisualizerService.cs" />
     <Compile Include="ViewModel\MessageBoxVM.cs" />
     <Compile Include="ViewModel\VisualizerWindowVMDesign.cs" />
