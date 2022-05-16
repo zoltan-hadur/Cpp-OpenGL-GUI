@@ -35,7 +35,10 @@ namespace Json4CPP.Visualizer.View
 
     public static void Show(string message)
     {
-      var wMessageBox = new MessageBox(new MessageBoxVM(message));
+      var wMessageBox = new MessageBox(new MessageBoxVM(message))
+      {
+        Owner = Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive)
+      };
       wMessageBox.ShowDialog();
     }
   }

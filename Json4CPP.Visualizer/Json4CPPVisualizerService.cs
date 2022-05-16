@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.Debugger.Evaluation;
 using Microsoft.VisualStudio.Debugger.Interop;
 using System;
 using System.Diagnostics;
+using System.Windows.Interop;
 
 namespace Json4CPP.Visualizer
 {
@@ -20,6 +21,8 @@ namespace Json4CPP.Visualizer
       {
         var wResult = DkmSuccessEvaluationResult.ExtractFromProperty(debugProperty);
         var wWindow = new VisualizerWindow(new VisualizerWindowVM(wResult));
+        var wHelper = new WindowInteropHelper(wWindow);
+        wHelper.Owner = new IntPtr(ownerHwnd);
         wWindow.ShowDialog();
       }
       catch (Exception e)

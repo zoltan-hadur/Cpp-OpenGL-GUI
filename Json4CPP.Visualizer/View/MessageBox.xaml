@@ -9,9 +9,8 @@
         WindowStartupLocation="CenterOwner"
         WindowStyle="SingleBorderWindow"
         FontSize="16"
-        Width="600"
-        Height="600"
-        d:DesignHeight="600" d:DesignWidth="600">
+        Width="350"
+        Height="450">
   <Window.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
