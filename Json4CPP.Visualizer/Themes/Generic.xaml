@@ -8,8 +8,6 @@
               Value="20"/>
       <Setter Property="Height"
               Value="20"/>
-      <Setter Property="Cursor"
-              Value="Hand"/>
     </Style.Setters>
     <Style.Triggers>
       <Trigger Property="IsMouseOver"
