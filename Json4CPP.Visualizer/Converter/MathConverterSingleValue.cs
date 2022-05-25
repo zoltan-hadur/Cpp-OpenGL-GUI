@@ -13,17 +13,7 @@ namespace Json4CPP.Visualizer.Converter
   {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-      if (value == System.Windows.DependencyProperty.UnsetValue)
-      {
-        return System.Windows.DependencyProperty.UnsetValue;
-      }
-
-      double wValue;
-      if (!double.TryParse(value.ToString(), out wValue))
-      {
-        throw new ArgumentException($"Parameter is not a number! Actual value is \"{value.ToString()}\"", nameof(value));
-      }
-      if (double.IsNaN(wValue))
+      if (value == System.Windows.DependencyProperty.UnsetValue || value is double wValue && double.IsNaN(wValue))
       {
         return System.Windows.DependencyProperty.UnsetValue;
       }
@@ -40,7 +30,7 @@ namespace Json4CPP.Visualizer.Converter
 
       try
       {
-        wFormat = wFormat.Replace("{0}", wValue.ToString());
+        wFormat = wFormat.Replace("{0}", value.ToString());
         var wExpression = new Expression(wFormat);
         var wResult = wExpression.Evaluate();
 
@@ -55,6 +45,7 @@ namespace Json4CPP.Visualizer.Converter
       }
       catch (Exception ex)
       {
+        System.Diagnostics.Debug.WriteLine(ex.ToString());
         return System.Windows.DependencyProperty.UnsetValue;
       }
     }

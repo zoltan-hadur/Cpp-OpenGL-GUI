@@ -1,4 +1,6 @@
-﻿namespace Json4CPP.Visualizer.ViewModel
+﻿using System.ComponentModel;
+
+namespace Json4CPP.Visualizer.ViewModel
 {
   /// <summary>
   /// <see cref="string"/> Key, <see cref="JsonVM"/> Value pair.<para/>
@@ -22,7 +24,49 @@
     public JsonVM Value
     {
       get { return mValue; }
-      set { Set(ref mValue, value); }
+      set
+      {
+        if (mValue != null)
+        {
+          mValue.PropertyChanged -= Value_PropertyChanged;
+        }
+        Set(ref mValue, value);
+        if (mValue != null)
+        {
+          mValue.PropertyChanged += Value_PropertyChanged;
+        }
+      }
+    }
+
+    private void Value_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+      switch (e.PropertyName)
+      {
+        case nameof(Value.IsObject):
+        case nameof(Value.IsArray):
+          OnPropertyChanged(nameof(IsObject));
+          OnPropertyChanged(nameof(IsArray));
+          break;
+      }
+    }
+
+    public bool IsObject => Value.IsObject;
+    public bool IsArray => Value.IsArray;
+
+    public PairVM()
+    {
+      PropertyChanged += PairVM_PropertyChanged;
+    }
+
+    private void PairVM_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+      switch (e.PropertyName)
+      {
+        case nameof(Value):
+          OnPropertyChanged(nameof(IsObject));
+          OnPropertyChanged(nameof(IsArray));
+          break;
+      }
     }
   }
 }

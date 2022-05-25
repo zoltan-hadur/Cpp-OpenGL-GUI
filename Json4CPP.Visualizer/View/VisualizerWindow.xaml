@@ -13,7 +13,7 @@
         FontSize="16"
         Width="600"
         Height="600"
-        d:DesignHeight="830" d:DesignWidth="600"
+        d:DesignHeight="1450" d:DesignWidth="600"
         d:DataContext="{d:DesignInstance vm:VisualizerWindowVMDesign, IsDesignTimeCreatable=True}">
   <Window.Resources>
     <ResourceDictionary>
@@ -21,42 +21,6 @@
         <ResourceDictionary Source="pack://application:,,,/Json4CPP.Visualizer;Component/Themes/Generic.xaml"/>
       </ResourceDictionary.MergedDictionaries>
       <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-      <Style x:Key="DeleteButtonStyle"
-             TargetType="{x:Type control:DeleteButton}"
-             BasedOn="{StaticResource {x:Type control:DeleteButton}}">
-        <Style.Setters>
-          <Setter Property="Visibility"
-                  Value="Collapsed"/>
-        </Style.Setters>
-        <Style.Triggers>
-          <MultiDataTrigger>
-            <MultiDataTrigger.Conditions>
-              <Condition Binding="{Binding Path=IsChecked, ElementName=EditMode}"
-                         Value="True"/>
-              <Condition Binding="{Binding Path=IsMouseReallyOver, RelativeSource={RelativeSource AncestorType={x:Type control:TreeViewItemEx}}}"
-                         Value="True"/>
-            </MultiDataTrigger.Conditions>
-            <MultiDataTrigger.Setters>
-              <Setter Property="Visibility"
-                      Value="Visible"/>
-            </MultiDataTrigger.Setters>
-          </MultiDataTrigger>
-          <MultiDataTrigger>
-            <MultiDataTrigger.Conditions>
-              <Condition Binding="{Binding Path=IsChecked, ElementName=EditMode}"
-                         Value="True"/>
-              <Condition Binding="{Binding Path=IsMouseReallyOver, RelativeSource={RelativeSource AncestorType={x:Type control:TreeViewItemEx}}}"
-                         Value="False"/>
-            </MultiDataTrigger.Conditions>
-            <MultiDataTrigger.Setters>
-              <Setter Property="Visibility"
-                      Value="Hidden"/>
-              <d:Setter Property="Visibility"
-                        Value="Visible"/>
-            </MultiDataTrigger.Setters>
-          </MultiDataTrigger>
-        </Style.Triggers>
-      </Style>
       <Style x:Key="ReadOnlyTextBoxStyle"
              TargetType="{x:Type TextBox}"
              BasedOn="{StaticResource {x:Type TextBox}}">
@@ -72,26 +36,30 @@
             <Setter Property="Cursor"
                     Value="Arrow"/>
           </DataTrigger>
+          <DataTrigger Binding="{Binding Path=IsChecked, ElementName=EditMode}"
+                       Value="True">
+            <Setter Property="MinWidth"
+                    Value="30"/>
+          </DataTrigger>
         </Style.Triggers>
       </Style>
       <Style x:Key="ObjectOrArrayStyle"
              TargetType="{x:Type TextBox}"
              BasedOn="{StaticResource ReadOnlyTextBoxStyle}">
         <Style.Triggers>
-          <MultiDataTrigger>
-            <MultiDataTrigger.Conditions>
-              <Condition Binding="{Binding Path=HasItems, RelativeSource={RelativeSource AncestorType={x:Type control:TreeViewItemEx}}}"
-                         Value="True"/>
-              <Condition Binding="{Binding Path=IsExpanded, RelativeSource={RelativeSource AncestorType={x:Type control:TreeViewItemEx}}}"
-                         Value="True"/>
-            </MultiDataTrigger.Conditions>
-            <MultiDataTrigger.Setters>
-              <Setter Property="Foreground"
-                      Value="LightGray"/>
-            </MultiDataTrigger.Setters>
-          </MultiDataTrigger>
-          <DataTrigger Binding="{Binding Path=HasItems, RelativeSource={RelativeSource AncestorType={x:Type control:TreeViewItemEx}}}"
+          <DataTrigger Binding="{Binding Path=IsExpanded, RelativeSource={RelativeSource AncestorType={x:Type control:TreeViewItemEx}}}"
                        Value="True">
+            <Setter Property="Foreground"
+                    Value="LightGray"/>
+          </DataTrigger>
+          <DataTrigger Value="True">
+            <DataTrigger.Binding>
+              <MultiBinding Converter="{StaticResource MathConverterMultiValue}"
+                            ConverterParameter="{}{0} || {1}">
+                <Binding Path="IsObject"/>
+                <Binding Path="IsArray"/>
+              </MultiBinding>
+            </DataTrigger.Binding>
             <Setter Property="BorderBrush"
                     Value="Transparent"/>
             <Setter Property="IsReadOnly"
@@ -142,36 +110,59 @@
       <CheckBox x:Name="EditMode"
                 Grid.Column="4"
                 Content="Edit mode"
-                d:IsChecked="False"/>
+                d:IsChecked="True"/>
     </Grid>
-    <control:TreeViewEx x:Name="TreeView"
+    <control:TreeViewEx x:Name="TreeViewEx"
                         Grid.Row="3"
                         ItemsSource="{Binding Json.Children}">
-      <control:TreeViewEx.ItemContainerStyle>
-        <Style TargetType="{x:Type control:TreeViewItemEx}">
+      <control:TreeViewEx.Resources>
+        <Style TargetType="{x:Type control:TreeViewItemEx}"
+               BasedOn="{StaticResource {x:Type control:TreeViewItemEx}}">
           <Style.Setters>
+            <d:Setter Property="IsExpanded">
+              <Setter.Value>
+                <MultiBinding Converter="{StaticResource MathConverterMultiValue}"
+                              ConverterParameter="{}{0} || {1}">
+                  <Binding Path="HasItems"
+                           RelativeSource="{RelativeSource Self}"/>
+                  <Binding Path="EmptyExpandable"
+                           RelativeSource="{RelativeSource Self}"/>
+                </MultiBinding>
+              </Setter.Value>
+            </d:Setter>
             <Setter Property="Focusable"
                     Value="False"/>
-            <d:Setter Property="IsExpanded"
-                      Value="True"/>
-            <Setter Property="HorizontalContentAlignment"
-                    Value="Stretch"/>
+            <Setter Property="Margin"
+                    Value="0,2,0,0"/>
+            <Setter Property="EditMode"
+                    Value="{Binding Path=IsChecked, ElementName=EditMode}"/>
+            <Setter Property="EmptyExpandable">
+              <Setter.Value>
+                <MultiBinding Converter="{StaticResource MathConverterMultiValue}"
+                              ConverterParameter="{}{0} &amp;&amp; ({1} || {2})">
+                  <Binding Path="EditMode"
+                           RelativeSource="{RelativeSource Self}"/>
+                  <Binding Path="IsObject"/>
+                  <Binding Path="IsArray"/>
+                </MultiBinding>
+              </Setter.Value>
+            </Setter>
           </Style.Setters>
         </Style>
-      </control:TreeViewEx.ItemContainerStyle>
-      <control:TreeViewEx.Resources>
         <HierarchicalDataTemplate DataType="{x:Type vm:PairVM}"
                                   ItemsSource="{Binding Value.Children}">
-          <StackPanel Orientation="Horizontal"
-                      Margin="0,2,0,2">
-            <control:DeleteButton Style="{StaticResource DeleteButtonStyle}"
-                                Margin="0,0,4,0"/>
+          <!--<HierarchicalDataTemplate.ItemContainerStyle>
+            <Style TargetType="{x:Type control:TreeViewItemEx}"
+                   BasedOn="{StaticResource {x:Type control:TreeViewItemEx}}">
+            </Style>
+          </HierarchicalDataTemplate.ItemContainerStyle>-->
+          <StackPanel Orientation="Horizontal">
             <TextBox Style="{StaticResource ReadOnlyTextBoxStyle}"
                      Text="{Binding Key}"/>
             <TextBox Text=": ">
               <TextBox.Style>
                 <Style TargetType="{x:Type TextBox}"
-                       BasedOn="{StaticResource ReadOnlyTextBoxStyle}">
+                       BasedOn="{StaticResource {x:Type TextBox}}">
                   <Style.Setters>
                     <Setter Property="BorderBrush"
                             Value="Transparent"/>
@@ -198,13 +189,13 @@
         </HierarchicalDataTemplate>
         <HierarchicalDataTemplate DataType="{x:Type vm:JsonVM}"
                                   ItemsSource="{Binding Children}">
-          <StackPanel Orientation="Horizontal"
-                      Margin="0,2,0,2">
-            <control:DeleteButton Style="{StaticResource DeleteButtonStyle}"
-                                Margin="0,0,4,0"/>
-            <TextBox Style="{StaticResource ObjectOrArrayStyle}"
-                     Text="{Binding Value}"/>
-          </StackPanel>
+          <!--<HierarchicalDataTemplate.ItemContainerStyle>
+            <Style TargetType="{x:Type control:TreeViewItemEx}"
+                   BasedOn="{StaticResource {x:Type control:TreeViewItemEx}}">
+            </Style>
+          </HierarchicalDataTemplate.ItemContainerStyle>-->
+          <TextBox Style="{StaticResource ObjectOrArrayStyle}"
+                   Text="{Binding Value}"/>
         </HierarchicalDataTemplate>
       </control:TreeViewEx.Resources>
     </control:TreeViewEx>

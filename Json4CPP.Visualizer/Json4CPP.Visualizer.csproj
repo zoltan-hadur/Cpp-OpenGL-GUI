@@ -55,6 +55,9 @@
     <Compile Include="Control\BorderEx.xaml.cs">
       <DependentUpon>BorderEx.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Control\PlusButton.xaml.cs">
+      <DependentUpon>PlusButton.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Control\TreeViewItemEx.cs" />
     <Compile Include="Converter\MathConverterMultiValue.cs" />
     <Compile Include="Converter\MathConverterSingleValue.cs" />
@@ -67,9 +70,6 @@
     <Compile Include="ViewModel\JsonObjectVM.cs" />
     <Compile Include="ViewModel\JsonVM.cs" />
     <Compile Include="ViewModel\PairVM.cs" />
-    <Compile Include="Control\DeleteButton.xaml.cs">
-      <DependentUpon>DeleteButton.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\IView.cs" />
     <Compile Include="ViewModel\JsonBuilder.cs" />
     <Compile Include="View\MessageBox.xaml.cs">
@@ -132,11 +132,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Themes\Generic.xaml">
+    <Page Include="Control\PlusButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Control\DeleteButton.xaml">
+    <Page Include="Themes\Generic.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

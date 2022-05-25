@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace Json4CPP.Visualizer.ViewModel
 {
@@ -8,7 +9,6 @@ namespace Json4CPP.Visualizer.ViewModel
   /// <list type="bullet">
   /// <item><see cref="JsonObjectVM"/></item>
   /// <item><see cref="JsonArrayVM"/></item>
-  /// <item><see cref="PairVM"/></item>
   /// <item><see cref="string"/></item>
   /// </list>
   /// </summary>
@@ -20,6 +20,9 @@ namespace Json4CPP.Visualizer.ViewModel
       get { return mValue; }
       set { Set(ref mValue, value); }
     }
+
+    public bool IsObject => Value is JsonObjectVM;
+    public bool IsArray => Value is JsonArrayVM;
 
     private ObservableCollection<object> mEmptyChildren = new ObservableCollection<object>();
 
@@ -38,14 +41,27 @@ namespace Json4CPP.Visualizer.ViewModel
         {
           return wArray.Values;
         }
-        else if (Value is PairVM wPair)
-        {
-          return wPair.Value.Children;
-        }
         else
         {
           return mEmptyChildren;
         }
+      }
+    }
+
+    public JsonVM()
+    {
+      PropertyChanged += JsonVM_PropertyChanged;
+    }
+
+    private void JsonVM_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+      switch (e.PropertyName)
+      {
+        case nameof(Value):
+          OnPropertyChanged(nameof(IsObject));
+          OnPropertyChanged(nameof(IsArray));
+          OnPropertyChanged(nameof(Children));
+          break;
       }
     }
 

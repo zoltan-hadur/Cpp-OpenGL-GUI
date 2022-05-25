@@ -1,9 +1,14 @@
-﻿using Json4CPP.Visualizer.Extension;
+﻿using Json4CPP.Visualizer.Converter;
+using Json4CPP.Visualizer.Extension;
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace Json4CPP.Visualizer.Control
 {
@@ -19,6 +24,27 @@ namespace Json4CPP.Visualizer.Control
       set => SetValue(IsMouseReallyOverProperty, value);
     }
 
+    public static readonly DependencyProperty EditModeProperty = DependencyProperty.Register(nameof(EditMode), typeof(bool), typeof(TreeViewItemEx), new PropertyMetadata(false));
+
+    public bool EditMode
+    {
+      get => (bool)GetValue(EditModeProperty);
+      set => SetValue(EditModeProperty, value);
+    }
+
+    public static readonly DependencyProperty EmptyExpandableProperty = DependencyProperty.Register(nameof(EmptyExpandable), typeof(bool), typeof(TreeViewItemEx), new PropertyMetadata(false));
+
+    public bool EmptyExpandable
+    {
+      get => (bool)GetValue(EmptyExpandableProperty);
+      set => SetValue(EmptyExpandableProperty, value);
+    }
+
+    static TreeViewItemEx()
+    {
+      DefaultStyleKeyProperty.OverrideMetadata(typeof(TreeViewItemEx), new FrameworkPropertyMetadata(typeof(TreeViewItemEx)));
+    }
+
     public TreeViewItemEx() : base()
     {
       mOnIsMouseOverChanged = new EventHandler(OnIsMouseOverChanged);
@@ -31,27 +57,11 @@ namespace Json4CPP.Visualizer.Control
         Unloaded -= wHandler;
       };
       Unloaded += wHandler;
-
-      RoutedEventHandler wHandler2 = null;
-      wHandler2 = (object sender, RoutedEventArgs e) =>
-      {
-        var wGrid = VisualTreeHelper.GetChild(this, 0) as Grid;
-        if (wGrid != null)
-        {
-          var wBorder = VisualTreeHelper.GetChild(wGrid, 1) as Border;
-          if (wBorder != null)
-          {
-            Grid.SetColumnSpan(wBorder, 2);
-          }
-        }
-        Loaded -= wHandler2;
-      };
-      Loaded += wHandler2;
     }
 
     private void OnIsMouseOverChanged(object sender, EventArgs e)
     {
-      var wIsMouseReallyOver = IsMouseOver && !(sender as TreeViewItemEx).IsMouseOverTrueForAnyChild();
+      var wIsMouseReallyOver = IsMouseOver && !(sender as TreeViewItemEx).IsMouseOverTrueForAnyChild() && !(GetTemplateChild("NewItem") as Button).IsMouseOver;
       if (wIsMouseReallyOver == IsMouseReallyOver)
       {
         return;

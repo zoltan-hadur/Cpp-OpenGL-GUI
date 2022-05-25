@@ -13,54 +13,65 @@ namespace Json4CPP.Visualizer.Converter
   {
     public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
     {
-      if(values.Any(wValue => wValue == System.Windows.DependencyProperty.UnsetValue))
+      if(values.Any(wValue => wValue == System.Windows.DependencyProperty.UnsetValue || wValue is double wDoubleValue && double.IsNaN(wDoubleValue)))
       {
         return System.Windows.DependencyProperty.UnsetValue;
       }
 
-      var wValues = values.Select((wValue, wIndex) =>
+      var wFormats = parameter is string ? new List<string> { parameter as string } :
+                                           parameter is IEnumerable<string> wEnumerable ? wEnumerable.ToList() : null;
+      if (wFormats == null)
       {
-        if (double.TryParse(wValue.ToString(), out var wDoubleValue))
-        {
-          return wDoubleValue;
-        }
-        throw new ArgumentException($"Parameter {nameof(values)}[{wIndex}] is not a number! Actual value is \"{wValue.ToString()}\"", nameof(values));
-      }).ToList();
-      if (wValues.Any(wValue => double.IsNaN(wValue)))
-      {
-        return System.Windows.DependencyProperty.UnsetValue;
+        throw new ArgumentException("Parameter is not a string or IEnumerable<string>!", nameof(parameter));
       }
-
-      var wFormat = parameter as string;
-      if (wFormat == null)
+      for(int i = 0; i < values.Length; i++)
       {
-        throw new ArgumentException("Parameter is not a string!", nameof(parameter));
-      }
-      for(int i = 0; i < wValues.Count; i++)
-      {
-        if (!wFormat.Contains($"{i}"))
+        if (!wFormats.Any(wFormat => wFormat.Contains($"{{{i}}}")))
         {
-          throw new ArgumentException($"Parameter is not a valid format string! It must contain the value \"{i}\" as there are {wValues.Count} elements! Actual value is \"{wFormat}\"", nameof(parameter));
+          throw new ArgumentException($"Parameter is not a valid format string(s)! It must contain the value \"{{{i}}}\" as there are {values.Length} elements! Actual value is \"[{string.Join(", ",wFormats)}]\"", nameof(parameter));
         }
-        wFormat = wFormat.Replace($"{{{i}}}", wValues[i].ToString());
+      }
+      for (int i = 0; i < values.Length; i++)
+      {
+        for (int j = 0; j < wFormats.Count; ++j)
+        {
+          wFormats[j] = wFormats[j].Replace($"{{{i}}}", values[i].ToString());
+        }
       }
 
       try
       {
-        var wExpression = new Expression(wFormat);
-        var wResult = wExpression.Evaluate();
-
-        if (targetType == typeof(System.Windows.CornerRadius))
+        if (wFormats.Count == 1)
         {
-          return new System.Windows.CornerRadius(System.Convert.ToDouble(wResult));
+          var wExpression = new Expression(wFormats[0]);
+          var wResult = wExpression.Evaluate();
+
+          if (targetType == typeof(System.Windows.CornerRadius))
+          {
+            return new System.Windows.CornerRadius(System.Convert.ToDouble(wResult));
+          }
+          else
+          {
+            return wResult;
+          }
         }
         else
         {
-          return wResult;
+          var wResults = wFormats.Select(wFormat => new Expression(wFormat).Evaluate()).ToArray();
+
+          if (targetType == typeof(System.Windows.Point))
+          {
+            return new System.Windows.Point(System.Convert.ToDouble(wResults[0]), System.Convert.ToDouble(wResults[1]));
+          }
+          else
+          {
+            return wResults;
+          }
         }
       }
       catch (Exception ex)
       {
+        System.Diagnostics.Debug.WriteLine(ex.ToString());
         return System.Windows.DependencyProperty.UnsetValue;
       }
     }
