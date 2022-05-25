@@ -339,6 +339,12 @@
                       Property="Visibility"
                       Value="Hidden"/>
             </MultiTrigger>
+            <Trigger Property="Deletable"
+                     Value="False">
+              <Setter TargetName="DeleteItem"
+                      Property="Visibility"
+                      Value="Collapsed"/>
+            </Trigger>
             <Trigger Property="IsExpanded"
                      Value="false">
               <Setter Property="Visibility"

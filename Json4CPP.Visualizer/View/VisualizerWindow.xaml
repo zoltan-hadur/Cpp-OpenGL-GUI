@@ -113,7 +113,8 @@
                         Grid.Row="2">
       <control:TreeViewItemEx Header="{Binding Json}"
                               ItemsSource="{Binding Json.Children}"
-                              IsExpanded="True">
+                              IsExpanded="True"
+                              Deletable="False">
       </control:TreeViewItemEx>
       <control:TreeViewEx.Resources>
         <Style TargetType="{x:Type control:TreeViewItemEx}"

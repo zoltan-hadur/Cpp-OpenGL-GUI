@@ -40,6 +40,14 @@ namespace Json4CPP.Visualizer.Control
       set => SetValue(EmptyExpandableProperty, value);
     }
 
+    public static readonly DependencyProperty DeletableProperty = DependencyProperty.Register(nameof(Deletable), typeof(bool), typeof(TreeViewItemEx), new PropertyMetadata(true));
+
+    public bool Deletable
+    {
+      get => (bool)GetValue(DeletableProperty);
+      set => SetValue(DeletableProperty, value);
+    }
+
     static TreeViewItemEx()
     {
       DefaultStyleKeyProperty.OverrideMetadata(typeof(TreeViewItemEx), new FrameworkPropertyMetadata(typeof(TreeViewItemEx)));
