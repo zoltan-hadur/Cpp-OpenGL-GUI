@@ -77,14 +77,11 @@
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto"/>
       <RowDefinition Height="Auto"/>
-      <RowDefinition Height="Auto"/>
       <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
     <TextBlock Grid.Row="0"
                Text="{Binding Expression, StringFormat=Expression: {0}}"/>
-    <TextBlock Grid.Row="1"
-               Text="{Binding Json, StringFormat=Json: {0}}"/>
-    <Grid Grid.Row="2"
+    <Grid Grid.Row="1"
           Margin="0,4,0,4">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="Auto"/>
@@ -113,8 +110,11 @@
                 d:IsChecked="True"/>
     </Grid>
     <control:TreeViewEx x:Name="TreeViewEx"
-                        Grid.Row="3"
-                        ItemsSource="{Binding Json.Children}">
+                        Grid.Row="2">
+      <control:TreeViewItemEx Header="{Binding Json}"
+                              ItemsSource="{Binding Json.Children}"
+                              IsExpanded="True">
+      </control:TreeViewItemEx>
       <control:TreeViewEx.Resources>
         <Style TargetType="{x:Type control:TreeViewItemEx}"
                BasedOn="{StaticResource {x:Type control:TreeViewItemEx}}">
