@@ -21,6 +21,65 @@
         <ResourceDictionary Source="pack://application:,,,/Json4CPP.Visualizer;Component/Themes/Generic.xaml"/>
       </ResourceDictionary.MergedDictionaries>
       <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+      <Style x:Key="TreeViewItemExStyle"
+             TargetType="{x:Type control:TreeViewItemEx}"
+             BasedOn="{StaticResource {x:Type control:TreeViewItemEx}}">
+        <Style.Setters>
+          <!-- Setter for the designer -->
+          <d:Setter Property="IsExpanded">
+            <Setter.Value>
+              <MultiBinding Converter="{StaticResource MathConverterMultiValue}"
+                            ConverterParameter="{}({0} || {1}) &amp;&amp; ({2} || {3})">
+                <Binding Path="HasItems"
+                         RelativeSource="{RelativeSource Self}"/>
+                <Binding Path="EmptyExpandable"
+                         RelativeSource="{RelativeSource Self}"/>
+                <Binding Path="IsObject"/>
+                <Binding Path="IsArray"/>
+              </MultiBinding>
+            </Setter.Value>
+          </d:Setter>
+          <Setter Property="Focusable"
+                  Value="False"/>
+          <Setter Property="Margin"
+                  Value="0,2,0,0"/>
+          <Setter Property="EditMode"
+                  Value="{Binding Path=IsChecked, ElementName=EditMode}"/>
+          <Setter Property="EmptyExpandable">
+            <Setter.Value>
+              <MultiBinding Converter="{StaticResource MathConverterMultiValue}"
+                            ConverterParameter="{}{0} &amp;&amp; ({1} || {2})">
+                <Binding Path="EditMode"
+                         RelativeSource="{RelativeSource Self}"/>
+                <Binding Path="IsObject"/>
+                <Binding Path="IsArray"/>
+              </MultiBinding>
+            </Setter.Value>
+          </Setter>
+        </Style.Setters>
+      </Style>
+      <!-- If the root is an object or an array, it is expanded -->
+      <Style x:Key="RootTreeViewItemExStyle"
+             TargetType="{x:Type control:TreeViewItemEx}"
+             BasedOn="{StaticResource TreeViewItemExStyle}">
+        <Style.Setters>
+          <Setter Property="IsExpanded"
+                  Value="False"/>
+        </Style.Setters>
+        <Style.Triggers>
+          <DataTrigger Value="True">
+            <DataTrigger.Binding>
+              <MultiBinding Converter="{StaticResource MathConverterMultiValue}"
+                            ConverterParameter="{}{0} || {1}">
+                <Binding Path="IsObject"/>
+                <Binding Path="IsArray"/>
+              </MultiBinding>
+            </DataTrigger.Binding>
+            <Setter Property="IsExpanded"
+                    Value="True"/>
+          </DataTrigger>
+        </Style.Triggers>
+      </Style>
       <Style x:Key="ReadOnlyTextBoxStyle"
              TargetType="{x:Type TextBox}"
              BasedOn="{StaticResource {x:Type TextBox}}">
@@ -43,12 +102,24 @@
           </DataTrigger>
         </Style.Triggers>
       </Style>
-      <Style x:Key="ObjectOrArrayStyle"
+      <Style x:Key="ObjectOrArrayTextBoxStyle"
              TargetType="{x:Type TextBox}"
              BasedOn="{StaticResource ReadOnlyTextBoxStyle}">
         <Style.Triggers>
-          <DataTrigger Binding="{Binding Path=IsExpanded, RelativeSource={RelativeSource AncestorType={x:Type control:TreeViewItemEx}}}"
-                       Value="True">
+          <DataTrigger Value="True">
+            <DataTrigger.Binding>
+              <MultiBinding Converter="{StaticResource MathConverterMultiValue}"
+                            ConverterParameter="{}({0} || {1}) &amp;&amp; {2} &amp;&amp; ({3} || {4})">
+                <Binding Path="EditMode"
+                         RelativeSource="{RelativeSource AncestorType={x:Type control:TreeViewItemEx}}"/>
+                <Binding Path="HasItems"
+                         RelativeSource="{RelativeSource AncestorType={x:Type control:TreeViewItemEx}}"/>
+                <Binding Path="IsExpanded"
+                         RelativeSource="{RelativeSource AncestorType={x:Type control:TreeViewItemEx}}"/>
+                <Binding Path="IsObject"/>
+                <Binding Path="IsArray"/>
+              </MultiBinding>
+            </DataTrigger.Binding>
             <Setter Property="Foreground"
                     Value="LightGray"/>
           </DataTrigger>
@@ -111,45 +182,16 @@
     </Grid>
     <control:TreeViewEx x:Name="TreeViewEx"
                         Grid.Row="2">
-      <control:TreeViewItemEx Header="{Binding Json}"
-                              ItemsSource="{Binding Json.Children}"
-                              IsExpanded="True"
-                              Deletable="False">
+      <control:TreeViewItemEx DataContext="{Binding Json}"
+                              Header="{Binding}"
+                              ItemsSource="{Binding Children}"
+                              Deletable="False"
+                              Style="{StaticResource RootTreeViewItemExStyle}">
       </control:TreeViewItemEx>
       <control:TreeViewEx.Resources>
+        <!-- So that every tree view item in the tree view will have this style -->
         <Style TargetType="{x:Type control:TreeViewItemEx}"
-               BasedOn="{StaticResource {x:Type control:TreeViewItemEx}}">
-          <Style.Setters>
-            <d:Setter Property="IsExpanded">
-              <Setter.Value>
-                <MultiBinding Converter="{StaticResource MathConverterMultiValue}"
-                              ConverterParameter="{}{0} || {1}">
-                  <Binding Path="HasItems"
-                           RelativeSource="{RelativeSource Self}"/>
-                  <Binding Path="EmptyExpandable"
-                           RelativeSource="{RelativeSource Self}"/>
-                </MultiBinding>
-              </Setter.Value>
-            </d:Setter>
-            <Setter Property="Focusable"
-                    Value="False"/>
-            <Setter Property="Margin"
-                    Value="0,2,0,0"/>
-            <Setter Property="EditMode"
-                    Value="{Binding Path=IsChecked, ElementName=EditMode}"/>
-            <Setter Property="EmptyExpandable">
-              <Setter.Value>
-                <MultiBinding Converter="{StaticResource MathConverterMultiValue}"
-                              ConverterParameter="{}{0} &amp;&amp; ({1} || {2})">
-                  <Binding Path="EditMode"
-                           RelativeSource="{RelativeSource Self}"/>
-                  <Binding Path="IsObject"/>
-                  <Binding Path="IsArray"/>
-                </MultiBinding>
-              </Setter.Value>
-            </Setter>
-          </Style.Setters>
-        </Style>
+               BasedOn="{StaticResource TreeViewItemExStyle}"/>
         <HierarchicalDataTemplate DataType="{x:Type vm:PairVM}"
                                   ItemsSource="{Binding Value.Children}">
           <!--<HierarchicalDataTemplate.ItemContainerStyle>
@@ -184,7 +226,7 @@
                 </Style>
               </TextBox.Style>
             </TextBox>
-            <TextBox Style="{StaticResource ObjectOrArrayStyle}"
+            <TextBox Style="{StaticResource ObjectOrArrayTextBoxStyle}"
                      Text="{Binding Value.Value}"/>
           </StackPanel>
         </HierarchicalDataTemplate>
@@ -195,7 +237,7 @@
                    BasedOn="{StaticResource {x:Type control:TreeViewItemEx}}">
             </Style>
           </HierarchicalDataTemplate.ItemContainerStyle>-->
-          <TextBox Style="{StaticResource ObjectOrArrayStyle}"
+          <TextBox Style="{StaticResource ObjectOrArrayTextBoxStyle}"
                    Text="{Binding Value}"/>
         </HierarchicalDataTemplate>
       </control:TreeViewEx.Resources>
