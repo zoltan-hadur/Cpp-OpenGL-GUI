@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Specialized;
+using System.ComponentModel;
 
 namespace Json4CPP.Visualizer.ViewModel
 {
@@ -47,6 +48,9 @@ namespace Json4CPP.Visualizer.ViewModel
           OnPropertyChanged(nameof(IsObject));
           OnPropertyChanged(nameof(IsArray));
           break;
+        case nameof(Value.Value):
+          OnPropertyChanged(nameof(Value));
+          break;
       }
     }
 
@@ -68,5 +72,7 @@ namespace Json4CPP.Visualizer.ViewModel
           break;
       }
     }
+
+    public override string ToString() => $"{Key}: {Value}";
   }
 }

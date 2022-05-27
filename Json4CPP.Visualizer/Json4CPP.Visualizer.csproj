@@ -59,6 +59,7 @@
       <DependentUpon>PlusButton.xaml</DependentUpon>
     </Compile>
     <Compile Include="Control\TreeViewItemEx.cs" />
+    <Compile Include="Converter\JsonItemsSourceConverter.cs" />
     <Compile Include="Converter\MathConverterMultiValue.cs" />
     <Compile Include="Converter\MathConverterSingleValue.cs" />
     <Compile Include="Extension\Extensions.cs" />

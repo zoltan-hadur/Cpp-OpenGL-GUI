@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Json4CPP.Visualizer.View"
         xmlns:vm="clr-namespace:Json4CPP.Visualizer.ViewModel"
         xmlns:control="clr-namespace:Json4CPP.Visualizer.Control"
+        xmlns:converter="clr-namespace:Json4CPP.Visualizer.Converter"
         mc:Ignorable="d"
         Title="Json4CPP Visualizer"
         WindowStartupLocation="CenterOwner"
@@ -21,6 +22,7 @@
         <ResourceDictionary Source="pack://application:,,,/Json4CPP.Visualizer;Component/Themes/Generic.xaml"/>
       </ResourceDictionary.MergedDictionaries>
       <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+      <converter:JsonItemsSourceConverter x:Key="JsonItemsSourceConverter"/>
       <Style x:Key="TreeViewItemExStyle"
              TargetType="{x:Type control:TreeViewItemEx}"
              BasedOn="{StaticResource {x:Type control:TreeViewItemEx}}">
@@ -184,7 +186,7 @@
                         Grid.Row="2">
       <control:TreeViewItemEx DataContext="{Binding Json}"
                               Header="{Binding}"
-                              ItemsSource="{Binding Children}"
+                              ItemsSource="{Binding Path=., Converter={StaticResource JsonItemsSourceConverter}}"
                               Deletable="False"
                               Style="{StaticResource RootTreeViewItemExStyle}">
       </control:TreeViewItemEx>
@@ -193,7 +195,7 @@
         <Style TargetType="{x:Type control:TreeViewItemEx}"
                BasedOn="{StaticResource TreeViewItemExStyle}"/>
         <HierarchicalDataTemplate DataType="{x:Type vm:PairVM}"
-                                  ItemsSource="{Binding Value.Children}">
+                                  ItemsSource="{Binding Value, Converter={StaticResource JsonItemsSourceConverter}}">
           <!--<HierarchicalDataTemplate.ItemContainerStyle>
             <Style TargetType="{x:Type control:TreeViewItemEx}"
                    BasedOn="{StaticResource {x:Type control:TreeViewItemEx}}">
@@ -231,7 +233,7 @@
           </StackPanel>
         </HierarchicalDataTemplate>
         <HierarchicalDataTemplate DataType="{x:Type vm:JsonVM}"
-                                  ItemsSource="{Binding Children}">
+                                  ItemsSource="{Binding Path=., Converter={StaticResource JsonItemsSourceConverter}}">
           <!--<HierarchicalDataTemplate.ItemContainerStyle>
             <Style TargetType="{x:Type control:TreeViewItemEx}"
                    BasedOn="{StaticResource {x:Type control:TreeViewItemEx}}">

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 
 namespace Json4CPP.Visualizer.ViewModel
@@ -18,35 +20,43 @@ namespace Json4CPP.Visualizer.ViewModel
     public object Value
     {
       get { return mValue; }
-      set { Set(ref mValue, value); }
+      set
+      {
+        if (mValue != null)
+        {
+          switch (mValue)
+          {
+            case JsonObjectVM wObject:
+              wObject.Pairs.CollectionChanged -= CollectionChanged;
+              break;
+            case JsonArrayVM wArray:
+              wArray.Values.CollectionChanged -= CollectionChanged;
+              break;
+          }
+        }
+        Set(ref mValue, value);
+        if (mValue != null)
+        {
+          switch (mValue)
+          {
+            case JsonObjectVM wObject:
+              wObject.Pairs.CollectionChanged += CollectionChanged;
+              break;
+            case JsonArrayVM wArray:
+              wArray.Values.CollectionChanged += CollectionChanged;
+              break;
+          }
+        }
+      }
+    }
+
+    private void CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    {
+      OnPropertyChanged(nameof(Value));
     }
 
     public bool IsObject => Value is JsonObjectVM;
     public bool IsArray => Value is JsonArrayVM;
-
-    private ObservableCollection<object> mEmptyChildren = new ObservableCollection<object>();
-
-    /// <summary>
-    /// Returns the appropriate children according to the actual type of <see cref="Value"/>.
-    /// </summary>
-    public ObservableCollection<object> Children
-    {
-      get
-      {
-        if (Value is JsonObjectVM wObject)
-        {
-          return wObject.Pairs;
-        }
-        else if (Value is JsonArrayVM wArray)
-        {
-          return wArray.Values;
-        }
-        else
-        {
-          return mEmptyChildren;
-        }
-      }
-    }
 
     public JsonVM()
     {
@@ -60,7 +70,6 @@ namespace Json4CPP.Visualizer.ViewModel
         case nameof(Value):
           OnPropertyChanged(nameof(IsObject));
           OnPropertyChanged(nameof(IsArray));
-          OnPropertyChanged(nameof(Children));
           break;
       }
     }

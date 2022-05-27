@@ -69,7 +69,7 @@ namespace Json4CPP.Visualizer.Control
 
     private void OnIsMouseOverChanged(object sender, EventArgs e)
     {
-      var wIsMouseReallyOver = IsMouseOver && !(sender as TreeViewItemEx).IsMouseOverTrueForAnyChild() && !(GetTemplateChild("NewItem") as Button).IsMouseOver;
+      var wIsMouseReallyOver = IsMouseOver && !(sender as TreeViewItemEx).IsMouseOverTrueForAnyChild() && !(GetTemplateChild("Part_NewItem") as Button).IsMouseOver;
       if (wIsMouseReallyOver == IsMouseReallyOver)
       {
         return;
@@ -101,6 +101,24 @@ namespace Json4CPP.Visualizer.Control
     protected override bool IsItemItsOwnContainerOverride(object item)
     {
       return item is TreeViewItemEx;
+    }
+
+    public override void OnApplyTemplate()
+    {
+      base.OnApplyTemplate();
+      if (GetTemplateChild("Part_DeleteItem") is Button wDeleteItem)
+      {
+        wDeleteItem.Click += Part_DeleteItem_Click;
+      }
+    }
+
+    private void Part_DeleteItem_Click(object sender, RoutedEventArgs e)
+    {
+      var wParent = this.FindParent<TreeViewItemEx>();
+      if (wParent != null && wParent.Items is IEditableCollectionView wItems)
+      {
+        wItems.Remove(DataContext);
+      }
     }
   }
 }

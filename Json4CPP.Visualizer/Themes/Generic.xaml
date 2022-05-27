@@ -214,7 +214,7 @@
                                   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                   SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                   Margin="0,0,4,0"/>
-                <control:PlusButton x:Name="DeleteItem"
+                <control:PlusButton x:Name="Part_DeleteItem"
                                     Style="{StaticResource DeleteItem}"/>
               </StackPanel>
             </Border>
@@ -228,7 +228,7 @@
                     Grid.ColumnSpan="2"
                     Margin="{TemplateBinding Margin}"
                     Padding="{TemplateBinding Padding}">
-              <Button x:Name="NewItem"
+              <Button x:Name="Part_NewItem"
                       Style="{StaticResource NewItem}"/>
             </Border>
             <Path x:Name="Path"
@@ -318,7 +318,7 @@
           <ControlTemplate.Triggers>
             <Trigger Property="EditMode"
                      Value="False">
-              <Setter TargetName="DeleteItem"
+              <Setter TargetName="Part_DeleteItem"
                       Property="Visibility"
                       Value="Collapsed"/>
               <Setter TargetName="NewItemBd"
@@ -335,13 +335,13 @@
                 <Condition Property="IsMouseReallyOver"
                            Value="false"/>
               </MultiTrigger.Conditions>
-              <Setter TargetName="DeleteItem"
+              <Setter TargetName="Part_DeleteItem"
                       Property="Visibility"
                       Value="Hidden"/>
             </MultiTrigger>
             <Trigger Property="Deletable"
                      Value="False">
-              <Setter TargetName="DeleteItem"
+              <Setter TargetName="Part_DeleteItem"
                       Property="Visibility"
                       Value="Collapsed"/>
             </Trigger>

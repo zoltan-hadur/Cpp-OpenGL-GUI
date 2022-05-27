@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 namespace Json4CPP.Visualizer.ViewModel
 {
   /// <summary>
-  /// <see cref="Values"/> should contain one of the following types wrapped in a <see cref="JsonVM"/>:
+  /// <see cref="Values"/> contains one of the following types wrapped in a <see cref="JsonVM"/>:
   /// <list type="bullet">
   /// <item><see cref="JsonObjectVM"/></item>
   /// <item><see cref="JsonArrayVM"/></item>
@@ -13,11 +13,10 @@ namespace Json4CPP.Visualizer.ViewModel
   /// </summary>
   public class JsonArrayVM : ViewModelBase
   {
-    private ObservableCollection<object> mValues = new ObservableCollection<object>();
-    public ObservableCollection<object> Values
+    private ObservableCollection<JsonVM> mValues = new ObservableCollection<JsonVM>();
+    public ObservableCollection<JsonVM> Values
     {
       get { return mValues; }
-      set { Set(ref mValues, value); }
     }
 
     public override string ToString() => $"{{ Array={{Values={Values.Count}}} }}";
