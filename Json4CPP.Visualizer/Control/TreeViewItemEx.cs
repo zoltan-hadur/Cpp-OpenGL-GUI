@@ -110,6 +110,10 @@ namespace Json4CPP.Visualizer.Control
       {
         wDeleteItem.Click += Part_DeleteItem_Click;
       }
+      if (GetTemplateChild("Part_NewItem") is Button wNewItem)
+      {
+        wNewItem.Click += Part_NewItem_Click;
+      }
     }
 
     private void Part_DeleteItem_Click(object sender, RoutedEventArgs e)
@@ -118,6 +122,15 @@ namespace Json4CPP.Visualizer.Control
       if (wParent != null && wParent.Items is IEditableCollectionView wItems)
       {
         wItems.Remove(DataContext);
+      }
+    }
+
+    private void Part_NewItem_Click(object sender, RoutedEventArgs e)
+    {
+      if (Items is IEditableCollectionView wItems)
+      {
+        wItems.AddNew();
+        wItems.CommitNew();
       }
     }
   }
