@@ -1,5 +1,5 @@
-﻿using Json4CPP.Visualizer.Converter;
-using Json4CPP.Visualizer.Extension;
+﻿using Json4CPP.Visualizer.Converters;
+using Json4CPP.Visualizer.Extensions;
 using System;
 using System.ComponentModel;
 using System.Linq;
@@ -10,7 +10,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace Json4CPP.Visualizer.Control
+namespace Json4CPP.Visualizer.Controls
 {
   public class TreeViewItemEx : TreeViewItem
   {

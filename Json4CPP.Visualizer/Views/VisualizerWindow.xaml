@@ -1,12 +1,12 @@
-﻿<Window x:Class="Json4CPP.Visualizer.View.VisualizerWindow"
+﻿<Window x:Class="Json4CPP.Visualizer.Views.VisualizerWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:local="clr-namespace:Json4CPP.Visualizer.View"
-        xmlns:vm="clr-namespace:Json4CPP.Visualizer.ViewModel"
-        xmlns:control="clr-namespace:Json4CPP.Visualizer.Control"
-        xmlns:converter="clr-namespace:Json4CPP.Visualizer.Converter"
+        xmlns:local="clr-namespace:Json4CPP.Visualizer.Views"
+        xmlns:vm="clr-namespace:Json4CPP.Visualizer.ViewModels"
+        xmlns:controls="clr-namespace:Json4CPP.Visualizer.Controls"
+        xmlns:converters="clr-namespace:Json4CPP.Visualizer.Converters"
         mc:Ignorable="d"
         Title="Json4CPP Visualizer"
         WindowStartupLocation="CenterOwner"
@@ -22,10 +22,10 @@
         <ResourceDictionary Source="pack://application:,,,/Json4CPP.Visualizer;Component/Themes/Generic.xaml"/>
       </ResourceDictionary.MergedDictionaries>
       <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-      <converter:JsonItemsSourceConverter x:Key="JsonItemsSourceConverter"/>
+      <converters:JsonItemsSourceConverter x:Key="JsonItemsSourceConverter"/>
       <Style x:Key="TreeViewItemExStyle"
-             TargetType="{x:Type control:TreeViewItemEx}"
-             BasedOn="{StaticResource {x:Type control:TreeViewItemEx}}">
+             TargetType="{x:Type controls:TreeViewItemEx}"
+             BasedOn="{StaticResource {x:Type controls:TreeViewItemEx}}">
         <Style.Setters>
           <!-- Setter for the designer -->
           <d:Setter Property="IsExpanded">
@@ -62,7 +62,7 @@
       </Style>
       <!-- If the root is an object or an array, it is expanded -->
       <Style x:Key="RootTreeViewItemExStyle"
-             TargetType="{x:Type control:TreeViewItemEx}"
+             TargetType="{x:Type controls:TreeViewItemEx}"
              BasedOn="{StaticResource TreeViewItemExStyle}">
         <Style.Setters>
           <Setter Property="IsExpanded"
@@ -113,11 +113,11 @@
               <MultiBinding Converter="{StaticResource MathConverterMultiValue}"
                             ConverterParameter="{}({0} || {1}) &amp;&amp; {2} &amp;&amp; ({3} || {4})">
                 <Binding Path="EditMode"
-                         RelativeSource="{RelativeSource AncestorType={x:Type control:TreeViewItemEx}}"/>
+                         RelativeSource="{RelativeSource AncestorType={x:Type controls:TreeViewItemEx}}"/>
                 <Binding Path="HasItems"
-                         RelativeSource="{RelativeSource AncestorType={x:Type control:TreeViewItemEx}}"/>
+                         RelativeSource="{RelativeSource AncestorType={x:Type controls:TreeViewItemEx}}"/>
                 <Binding Path="IsExpanded"
-                         RelativeSource="{RelativeSource AncestorType={x:Type control:TreeViewItemEx}}"/>
+                         RelativeSource="{RelativeSource AncestorType={x:Type controls:TreeViewItemEx}}"/>
                 <Binding Path="IsObject"/>
                 <Binding Path="IsArray"/>
               </MultiBinding>
@@ -182,25 +182,20 @@
                 Content="Edit mode"
                 d:IsChecked="True"/>
     </Grid>
-    <control:TreeViewEx x:Name="TreeViewEx"
-                        Grid.Row="2">
-      <control:TreeViewItemEx DataContext="{Binding Json}"
-                              Header="{Binding}"
-                              ItemsSource="{Binding Path=., Converter={StaticResource JsonItemsSourceConverter}}"
-                              Deletable="False"
-                              Style="{StaticResource RootTreeViewItemExStyle}">
-      </control:TreeViewItemEx>
-      <control:TreeViewEx.Resources>
+    <controls:TreeViewEx x:Name="TreeViewEx"
+                         Grid.Row="2">
+      <controls:TreeViewItemEx DataContext="{Binding Json}"
+                               Header="{Binding}"
+                               ItemsSource="{Binding Path=., Converter={StaticResource JsonItemsSourceConverter}}"
+                               Deletable="False"
+                               Style="{StaticResource RootTreeViewItemExStyle}">
+      </controls:TreeViewItemEx>
+      <controls:TreeViewEx.Resources>
         <!-- So that every tree view item in the tree view will have this style -->
-        <Style TargetType="{x:Type control:TreeViewItemEx}"
+        <Style TargetType="{x:Type controls:TreeViewItemEx}"
                BasedOn="{StaticResource TreeViewItemExStyle}"/>
         <HierarchicalDataTemplate DataType="{x:Type vm:PairVM}"
                                   ItemsSource="{Binding Value, Converter={StaticResource JsonItemsSourceConverter}}">
-          <!--<HierarchicalDataTemplate.ItemContainerStyle>
-            <Style TargetType="{x:Type control:TreeViewItemEx}"
-                   BasedOn="{StaticResource {x:Type control:TreeViewItemEx}}">
-            </Style>
-          </HierarchicalDataTemplate.ItemContainerStyle>-->
           <StackPanel Orientation="Horizontal">
             <TextBox Style="{StaticResource ReadOnlyTextBoxStyle}"
                      Text="{Binding Key}"/>
@@ -234,15 +229,10 @@
         </HierarchicalDataTemplate>
         <HierarchicalDataTemplate DataType="{x:Type vm:JsonVM}"
                                   ItemsSource="{Binding Path=., Converter={StaticResource JsonItemsSourceConverter}}">
-          <!--<HierarchicalDataTemplate.ItemContainerStyle>
-            <Style TargetType="{x:Type control:TreeViewItemEx}"
-                   BasedOn="{StaticResource {x:Type control:TreeViewItemEx}}">
-            </Style>
-          </HierarchicalDataTemplate.ItemContainerStyle>-->
           <TextBox Style="{StaticResource ObjectOrArrayTextBoxStyle}"
                    Text="{Binding Value}"/>
         </HierarchicalDataTemplate>
-      </control:TreeViewEx.Resources>
-    </control:TreeViewEx>
+      </controls:TreeViewEx.Resources>
+    </controls:TreeViewEx>
   </Grid>
 </Window>

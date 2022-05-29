@@ -52,37 +52,35 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Control\BorderEx.xaml.cs">
-      <DependentUpon>BorderEx.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Control\PlusButton.xaml.cs">
+    <Compile Include="Controls\BorderEx.cs" />
+    <Compile Include="Controls\PlusButton.xaml.cs">
       <DependentUpon>PlusButton.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Control\TreeViewItemEx.cs" />
-    <Compile Include="Converter\JsonItemsSourceConverter.cs" />
-    <Compile Include="Converter\MathConverterMultiValue.cs" />
-    <Compile Include="Converter\MathConverterSingleValue.cs" />
-    <Compile Include="Extension\Extensions.cs" />
+    <Compile Include="Controls\TreeViewItemEx.cs" />
+    <Compile Include="Converters\JsonItemsSourceConverter.cs" />
+    <Compile Include="Converters\MathConverterMultiValue.cs" />
+    <Compile Include="Converters\MathConverterSingleValue.cs" />
+    <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="IJson4CPPVisualizerService.cs" />
-    <Compile Include="ViewModel\MessageBoxVM.cs" />
-    <Compile Include="ViewModel\VisualizerWindowVMDesign.cs" />
-    <Compile Include="ViewModel\JsonType.cs" />
-    <Compile Include="ViewModel\JsonArrayVM.cs" />
-    <Compile Include="ViewModel\JsonObjectVM.cs" />
-    <Compile Include="ViewModel\JsonVM.cs" />
-    <Compile Include="ViewModel\PairVM.cs" />
-    <Compile Include="View\IView.cs" />
-    <Compile Include="ViewModel\JsonBuilder.cs" />
-    <Compile Include="View\MessageBox.xaml.cs">
+    <Compile Include="ViewModels\MessageBoxVM.cs" />
+    <Compile Include="ViewModels\VisualizerWindowVMDesign.cs" />
+    <Compile Include="ViewModels\JsonType.cs" />
+    <Compile Include="ViewModels\JsonArrayVM.cs" />
+    <Compile Include="ViewModels\JsonObjectVM.cs" />
+    <Compile Include="ViewModels\JsonVM.cs" />
+    <Compile Include="ViewModels\PairVM.cs" />
+    <Compile Include="Views\IView.cs" />
+    <Compile Include="ViewModels\JsonBuilder.cs" />
+    <Compile Include="Views\MessageBox.xaml.cs">
       <DependentUpon>MessageBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Json4CPPVisualizerService.cs" />
     <Compile Include="Json4CPPVisualizerPackage.cs" />
-    <Compile Include="Control\TreeViewEx.cs" />
-    <Compile Include="ViewModel\VisualizerWindowVM.cs" />
-    <Compile Include="ViewModel\ViewModelBase.cs" />
-    <Compile Include="View\VisualizerWindow.xaml.cs">
+    <Compile Include="Controls\TreeViewEx.cs" />
+    <Compile Include="ViewModels\VisualizerWindowVM.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Compile Include="Views\VisualizerWindow.xaml.cs">
       <DependentUpon>VisualizerWindow.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -129,11 +127,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Control\BorderEx.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Control\PlusButton.xaml">
+    <Page Include="Controls\PlusButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -141,11 +135,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\MessageBox.xaml">
+    <Page Include="Views\MessageBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\VisualizerWindow.xaml">
+    <Page Include="Views\VisualizerWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

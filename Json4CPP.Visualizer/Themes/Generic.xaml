@@ -1,13 +1,13 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:converter="clr-namespace:Json4CPP.Visualizer.Converter"
-                    xmlns:control="clr-namespace:Json4CPP.Visualizer.Control"
+                    xmlns:converters="clr-namespace:Json4CPP.Visualizer.Converters"
+                    xmlns:controls="clr-namespace:Json4CPP.Visualizer.Controls"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
-  
-  <converter:MathConverterSingleValue x:Key="MathConverterSingleValue"/>
-  <converter:MathConverterMultiValue x:Key="MathConverterMultiValue"/>
-  
-  <Style TargetType="{x:Type control:PlusButton}"
+
+  <converters:MathConverterSingleValue x:Key="MathConverterSingleValue"/>
+  <converters:MathConverterMultiValue x:Key="MathConverterMultiValue"/>
+
+  <Style TargetType="{x:Type controls:PlusButton}"
          BasedOn="{StaticResource {x:Type Button}}">
     <Style.Setters>
       <Setter Property="Width"
@@ -20,8 +20,8 @@
   </Style>
 
   <Style x:Key="DeleteItem"
-         TargetType="{x:Type control:PlusButton}"
-         BasedOn="{StaticResource {x:Type control:PlusButton}}">
+         TargetType="{x:Type controls:PlusButton}"
+         BasedOn="{StaticResource {x:Type controls:PlusButton}}">
     <Style.Setters>
       <Setter Property="Angle"
               Value="45"/>
@@ -46,7 +46,7 @@
           <ControlTemplate TargetType="{x:Type Button}">
             <Border Background="Transparent">
               <StackPanel Orientation="Horizontal">
-                <control:PlusButton x:Name="btn"/>
+                <controls:PlusButton x:Name="btn"/>
                 <TextBlock Text="Add new item"
                            Margin="4,0,4,0"/>
               </StackPanel>
@@ -166,7 +166,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <Style TargetType="{x:Type control:TreeViewItemEx}">
+  <Style TargetType="{x:Type controls:TreeViewItemEx}">
     <Setter Property="Background"
             Value="Transparent"/>
     <Setter Property="HorizontalContentAlignment"
@@ -181,7 +181,7 @@
             Value="{StaticResource TreeViewItemExFocusVisual}"/>
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="{x:Type control:TreeViewItemEx}">
+        <ControlTemplate TargetType="{x:Type controls:TreeViewItemEx}">
           <Grid>
             <Grid.ColumnDefinitions>
               <ColumnDefinition MinWidth="19"
@@ -214,8 +214,8 @@
                                   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                   SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                   Margin="0,0,4,0"/>
-                <control:PlusButton x:Name="Part_DeleteItem"
-                                    Style="{StaticResource DeleteItem}"/>
+                <controls:PlusButton x:Name="Part_DeleteItem"
+                                     Style="{StaticResource DeleteItem}"/>
               </StackPanel>
             </Border>
             <ItemsPresenter x:Name="ItemsHost"
@@ -275,7 +275,7 @@
                                            Path="ActualHeight"/>
                                   <Binding ElementName="NewItemBd"
                                            Path="ActualHeight"/>
-                                  <Binding RelativeSource="{RelativeSource AncestorType={x:Type control:TreeViewItemEx}}"
+                                  <Binding RelativeSource="{RelativeSource AncestorType={x:Type controls:TreeViewItemEx}}"
                                            Path="Margin.Top"/>
                                 </MultiBinding>
                               </LineSegment.Point>
@@ -291,9 +291,9 @@
                                   </MultiBinding.ConverterParameter>
                                   <Binding ElementName="Row0Column0"
                                            Path="ActualWidth"/>
-                                  <Binding RelativeSource="{RelativeSource AncestorType={x:Type control:TreeViewItemEx}}"
+                                  <Binding RelativeSource="{RelativeSource AncestorType={x:Type controls:TreeViewItemEx}}"
                                            Path="Padding.Left"/>
-                                  <Binding RelativeSource="{RelativeSource AncestorType={x:Type control:TreeViewItemEx}}"
+                                  <Binding RelativeSource="{RelativeSource AncestorType={x:Type controls:TreeViewItemEx}}"
                                            Path="Margin.Left"/>
                                   <Binding ElementName="Bd"
                                            Path="ActualHeight"/>
@@ -301,7 +301,7 @@
                                            Path="ActualHeight"/>
                                   <Binding ElementName="NewItemBd"
                                            Path="ActualHeight"/>
-                                  <Binding RelativeSource="{RelativeSource AncestorType={x:Type control:TreeViewItemEx}}"
+                                  <Binding RelativeSource="{RelativeSource AncestorType={x:Type controls:TreeViewItemEx}}"
                                            Path="Margin.Top"/>
                                 </MultiBinding>
                               </LineSegment.Point>
@@ -411,8 +411,8 @@
       </Trigger>
     </Style.Triggers>
   </Style>
-  
-  <Style TargetType="{x:Type control:BorderEx}">
+
+  <Style TargetType="{x:Type controls:BorderEx}">
     <Style.Setters>
       <Setter Property="RenderTransform">
         <Setter.Value>
@@ -420,13 +420,13 @@
             <TranslateTransform>
               <TranslateTransform.X>
                 <Binding Path="Width"
-                         RelativeSource="{RelativeSource AncestorType={x:Type control:BorderEx}}"
+                         RelativeSource="{RelativeSource AncestorType={x:Type controls:BorderEx}}"
                          Converter="{StaticResource MathConverterSingleValue}"
                          ConverterParameter="{}-{0} / 2"/>
               </TranslateTransform.X>
               <TranslateTransform.Y>
                 <Binding Path="Height"
-                         RelativeSource="{RelativeSource AncestorType={x:Type control:BorderEx}}"
+                         RelativeSource="{RelativeSource AncestorType={x:Type controls:BorderEx}}"
                          Converter="{StaticResource MathConverterSingleValue}"
                          ConverterParameter="{}-{0} / 2"/>
               </TranslateTransform.Y>
@@ -434,24 +434,24 @@
             <ScaleTransform>
               <ScaleTransform.ScaleX>
                 <Binding Path="Scale"
-                         RelativeSource="{RelativeSource AncestorType={x:Type control:BorderEx}}"/>
+                         RelativeSource="{RelativeSource AncestorType={x:Type controls:BorderEx}}"/>
               </ScaleTransform.ScaleX>
               <ScaleTransform.ScaleY>
                 <MultiBinding Converter="{StaticResource MathConverterMultiValue}"
                               ConverterParameter="{}({1} - ({0} - {0} * {2})) / {1}">
                   <Binding Path="Width"
-                           RelativeSource="{RelativeSource AncestorType={x:Type control:BorderEx}}"/>
+                           RelativeSource="{RelativeSource AncestorType={x:Type controls:BorderEx}}"/>
                   <Binding Path="Height"
-                           RelativeSource="{RelativeSource AncestorType={x:Type control:BorderEx}}"/>
+                           RelativeSource="{RelativeSource AncestorType={x:Type controls:BorderEx}}"/>
                   <Binding Path="Scale"
-                           RelativeSource="{RelativeSource AncestorType={x:Type control:BorderEx}}"/>
+                           RelativeSource="{RelativeSource AncestorType={x:Type controls:BorderEx}}"/>
                 </MultiBinding>
               </ScaleTransform.ScaleY>
             </ScaleTransform>
             <RotateTransform>
               <RotateTransform.Angle>
                 <Binding Path="Angle"
-                         RelativeSource="{RelativeSource AncestorType={x:Type control:BorderEx}}"/>
+                         RelativeSource="{RelativeSource AncestorType={x:Type controls:BorderEx}}"/>
               </RotateTransform.Angle>
             </RotateTransform>
           </TransformGroup>

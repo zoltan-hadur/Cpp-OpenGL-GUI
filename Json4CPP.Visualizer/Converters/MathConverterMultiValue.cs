@@ -5,17 +5,19 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
+using Expression = NCalc.Expression;
 
-namespace Json4CPP.Visualizer.Converter
+namespace Json4CPP.Visualizer.Converters
 {
   public class MathConverterMultiValue : IMultiValueConverter
   {
     public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
     {
-      if(values.Any(wValue => wValue == System.Windows.DependencyProperty.UnsetValue || wValue is double wDoubleValue && double.IsNaN(wDoubleValue)))
+      if(values.Any(wValue => wValue == DependencyProperty.UnsetValue || wValue is double wDoubleValue && double.IsNaN(wDoubleValue)))
       {
-        return System.Windows.DependencyProperty.UnsetValue;
+        return DependencyProperty.UnsetValue;
       }
 
       var wFormats = parameter is string ? new List<string> { parameter as string } :
@@ -46,9 +48,9 @@ namespace Json4CPP.Visualizer.Converter
           var wExpression = new Expression(wFormats[0]);
           var wResult = wExpression.Evaluate();
 
-          if (targetType == typeof(System.Windows.CornerRadius))
+          if (targetType == typeof(CornerRadius))
           {
-            return new System.Windows.CornerRadius(System.Convert.ToDouble(wResult));
+            return new CornerRadius(System.Convert.ToDouble(wResult));
           }
           else
           {
@@ -59,9 +61,9 @@ namespace Json4CPP.Visualizer.Converter
         {
           var wResults = wFormats.Select(wFormat => new Expression(wFormat).Evaluate()).ToArray();
 
-          if (targetType == typeof(System.Windows.Point))
+          if (targetType == typeof(Point))
           {
-            return new System.Windows.Point(System.Convert.ToDouble(wResults[0]), System.Convert.ToDouble(wResults[1]));
+            return new Point(System.Convert.ToDouble(wResults[0]), System.Convert.ToDouble(wResults[1]));
           }
           else
           {
@@ -72,7 +74,7 @@ namespace Json4CPP.Visualizer.Converter
       catch (Exception ex)
       {
         System.Diagnostics.Debug.WriteLine(ex.ToString());
-        return System.Windows.DependencyProperty.UnsetValue;
+        return DependencyProperty.UnsetValue;
       }
     }
 

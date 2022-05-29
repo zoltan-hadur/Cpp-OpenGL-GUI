@@ -5,17 +5,19 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
+using Expression = NCalc.Expression;
 
-namespace Json4CPP.Visualizer.Converter
+namespace Json4CPP.Visualizer.Converters
 {
   public class MathConverterSingleValue : IValueConverter
   {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-      if (value == System.Windows.DependencyProperty.UnsetValue || value is double wValue && double.IsNaN(wValue))
+      if (value == DependencyProperty.UnsetValue || value is double wValue && double.IsNaN(wValue))
       {
-        return System.Windows.DependencyProperty.UnsetValue;
+        return DependencyProperty.UnsetValue;
       }
 
       var wFormat = parameter as string;
@@ -34,9 +36,9 @@ namespace Json4CPP.Visualizer.Converter
         var wExpression = new Expression(wFormat);
         var wResult = wExpression.Evaluate();
 
-        if (targetType == typeof(System.Windows.CornerRadius))
+        if (targetType == typeof(CornerRadius))
         {
-          return new System.Windows.CornerRadius(System.Convert.ToDouble(wResult));
+          return new CornerRadius(System.Convert.ToDouble(wResult));
         }
         else
         {
@@ -46,7 +48,7 @@ namespace Json4CPP.Visualizer.Converter
       catch (Exception ex)
       {
         System.Diagnostics.Debug.WriteLine(ex.ToString());
-        return System.Windows.DependencyProperty.UnsetValue;
+        return DependencyProperty.UnsetValue;
       }
     }
 

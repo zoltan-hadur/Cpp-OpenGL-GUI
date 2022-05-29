@@ -1,4 +1,4 @@
-﻿using Json4CPP.Visualizer.Control;
+﻿using Json4CPP.Visualizer.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
-namespace Json4CPP.Visualizer.Extension
+namespace Json4CPP.Visualizer.Extensions
 {
   public static class Extensions
   {

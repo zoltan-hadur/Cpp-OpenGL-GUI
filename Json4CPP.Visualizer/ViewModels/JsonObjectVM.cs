@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 
-namespace Json4CPP.Visualizer.ViewModel
+namespace Json4CPP.Visualizer.ViewModels
 {
   /// <summary>
   /// <see cref="Pairs"/> contains only <see cref="PairVM"/>s.

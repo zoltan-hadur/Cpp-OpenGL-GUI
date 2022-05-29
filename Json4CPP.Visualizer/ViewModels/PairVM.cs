@@ -1,7 +1,7 @@
 ﻿using System.Collections.Specialized;
 using System.ComponentModel;
 
-namespace Json4CPP.Visualizer.ViewModel
+namespace Json4CPP.Visualizer.ViewModels
 {
   /// <summary>
   /// <see cref="string"/> Key, <see cref="JsonVM"/> Value pair.<para/>

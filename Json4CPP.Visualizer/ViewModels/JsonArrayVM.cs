@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
-namespace Json4CPP.Visualizer.ViewModel
+namespace Json4CPP.Visualizer.ViewModels
 {
   /// <summary>
   /// <see cref="Values"/> contains one of the following types wrapped in a <see cref="JsonVM"/>:

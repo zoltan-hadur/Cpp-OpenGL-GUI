@@ -1,20 +1,20 @@
-﻿<Button x:Class="Json4CPP.Visualizer.Control.PlusButton"
+﻿<Button x:Class="Json4CPP.Visualizer.Controls.PlusButton"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-        xmlns:converter="clr-namespace:Json4CPP.Visualizer.Converter"
-        xmlns:control="clr-namespace:Json4CPP.Visualizer.Control"
+        xmlns:converters="clr-namespace:Json4CPP.Visualizer.Converters"
+        xmlns:controls="clr-namespace:Json4CPP.Visualizer.Controls"
         mc:Ignorable="d"
         d:Foreground="White"
         d:DesignHeight="20" d:DesignWidth="20">
   <Button.Template>
     <ControlTemplate>
       <ControlTemplate.Resources>
-        <converter:MathConverterSingleValue x:Key="MathConverterSingleValue"/>
-        <converter:MathConverterMultiValue x:Key="MathConverterMultiValue"/>
-        <Style TargetType="control:BorderEx"
-               BasedOn="{StaticResource {x:Type control:BorderEx}}">
+        <converters:MathConverterSingleValue x:Key="MathConverterSingleValue"/>
+        <converters:MathConverterMultiValue x:Key="MathConverterMultiValue"/>
+        <Style TargetType="controls:BorderEx"
+               BasedOn="{StaticResource {x:Type controls:BorderEx}}">
           <Setter Property="Width">
             <Setter.Value>
               <MultiBinding Converter="{StaticResource MathConverterMultiValue}"
@@ -96,18 +96,18 @@
           </MultiBinding>
         </Border.CornerRadius>
         <Canvas>
-          <control:BorderEx x:Name="border1"
-                            Background="{TemplateBinding BorderBrush}"
-                            Angle="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:PlusButton}}, Path=Angle}"/>
-          <control:BorderEx x:Name="border2"
-                            Background="{TemplateBinding BorderBrush}"
-                            Angle="{Binding ElementName=border1, Path=Angle, Converter={StaticResource MathConverterSingleValue}, ConverterParameter={}{0} + 90}"/>
-          <control:BorderEx Background="{TemplateBinding Foreground}"
-                            Angle="{Binding ElementName=border1, Path=Angle}"
-                            Scale="0.8"/>
-          <control:BorderEx Background="{TemplateBinding Foreground}"
-                            Angle="{Binding ElementName=border2, Path=Angle}"
-                            Scale="0.8"/>
+          <controls:BorderEx x:Name="border1"
+                             Background="{TemplateBinding BorderBrush}"
+                             Angle="{Binding RelativeSource={RelativeSource AncestorType={x:Type controls:PlusButton}}, Path=Angle}"/>
+          <controls:BorderEx x:Name="border2"
+                             Background="{TemplateBinding BorderBrush}"
+                             Angle="{Binding ElementName=border1, Path=Angle, Converter={StaticResource MathConverterSingleValue}, ConverterParameter={}{0} + 90}"/>
+          <controls:BorderEx Background="{TemplateBinding Foreground}"
+                             Angle="{Binding ElementName=border1, Path=Angle}"
+                             Scale="0.8"/>
+          <controls:BorderEx Background="{TemplateBinding Foreground}"
+                             Angle="{Binding ElementName=border2, Path=Angle}"
+                             Scale="0.8"/>
         </Canvas>
       </Border>
     </ControlTemplate>

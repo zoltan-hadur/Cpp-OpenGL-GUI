@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 
-namespace Json4CPP.Visualizer.ViewModel
+namespace Json4CPP.Visualizer.ViewModels
 {
   /// <summary>
   /// <see cref="Value"/> should contain one of the following types:

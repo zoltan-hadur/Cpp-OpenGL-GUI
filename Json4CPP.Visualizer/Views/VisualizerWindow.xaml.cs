@@ -1,11 +1,11 @@
-﻿using Json4CPP.Visualizer.Control;
-using Json4CPP.Visualizer.ViewModel;
+﻿using Json4CPP.Visualizer.Controls;
+using Json4CPP.Visualizer.ViewModels;
 using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Json4CPP.Visualizer.View
+namespace Json4CPP.Visualizer.Views
 {
   /// <summary>
   /// Interaction logic for VisualizerWindow.xaml

@@ -1,5 +1,5 @@
-﻿using Json4CPP.Visualizer.View;
-using Json4CPP.Visualizer.ViewModel;
+﻿using Json4CPP.Visualizer.Views;
+using Json4CPP.Visualizer.ViewModels;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Debugger;
 using Microsoft.VisualStudio.Debugger.Evaluation;

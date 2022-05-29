@@ -1,4 +1,4 @@
-﻿using Json4CPP.Visualizer.ViewModel;
+﻿using Json4CPP.Visualizer.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Json4CPP.Visualizer.View
+namespace Json4CPP.Visualizer.Views
 {
   /// <summary>
   /// Interaction logic for MessageBox.xaml

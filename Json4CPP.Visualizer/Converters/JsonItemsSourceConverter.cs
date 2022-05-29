@@ -1,4 +1,4 @@
-﻿using Json4CPP.Visualizer.ViewModel;
+﻿using Json4CPP.Visualizer.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6,9 +6,10 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 
-namespace Json4CPP.Visualizer.Converter
+namespace Json4CPP.Visualizer.Converters
 {
   public class JsonItemsSourceConverter : IValueConverter
   {
@@ -18,7 +19,7 @@ namespace Json4CPP.Visualizer.Converter
     {
       if (value == null)
       {
-        return System.Windows.DependencyProperty.UnsetValue;
+        return DependencyProperty.UnsetValue;
       }
       else if (value is JsonVM wJson)
       {

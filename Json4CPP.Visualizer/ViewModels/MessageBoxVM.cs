@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Json4CPP.Visualizer.ViewModel
+namespace Json4CPP.Visualizer.ViewModels
 {
   public class MessageBoxVM : ViewModelBase
   {

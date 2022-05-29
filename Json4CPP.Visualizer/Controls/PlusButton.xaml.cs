@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Json4CPP.Visualizer.Control
+namespace Json4CPP.Visualizer.Controls
 {
   /// <summary>
   /// Interaction logic for PlusButton.xaml

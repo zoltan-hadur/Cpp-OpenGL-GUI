@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Json4CPP.Visualizer.Control
+namespace Json4CPP.Visualizer.Controls
 {
   public class TreeViewEx : TreeView
   {

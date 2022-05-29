@@ -1,4 +1,4 @@
-﻿namespace Json4CPP.Visualizer.ViewModel
+﻿namespace Json4CPP.Visualizer.ViewModels
 {
   //             0               1             2     3       4        5           6
   //std::variant<std::nullptr_t, std::wstring, bool, double, int64_t, JsonObject, JsonArray>

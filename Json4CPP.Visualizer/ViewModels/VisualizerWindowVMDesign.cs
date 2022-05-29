@@ -1,4 +1,4 @@
-﻿namespace Json4CPP.Visualizer.ViewModel
+﻿namespace Json4CPP.Visualizer.ViewModels
 {
   public class VisualizerWindowVMDesign : VisualizerWindowVM
   {
