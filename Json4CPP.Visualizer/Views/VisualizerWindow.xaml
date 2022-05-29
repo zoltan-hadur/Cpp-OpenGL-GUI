@@ -7,6 +7,8 @@
         xmlns:vm="clr-namespace:Json4CPP.Visualizer.ViewModels"
         xmlns:controls="clr-namespace:Json4CPP.Visualizer.Controls"
         xmlns:converters="clr-namespace:Json4CPP.Visualizer.Converters"
+        xmlns:rules="clr-namespace:Json4CPP.Visualizer.ValidationRules"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="Json4CPP Visualizer"
         WindowStartupLocation="CenterOwner"
@@ -58,6 +60,8 @@
               </MultiBinding>
             </Setter.Value>
           </Setter>
+          <Setter Property="AlternationCount"
+                  Value="{x:Static sys:Int32.MaxValue}"/>
         </Style.Setters>
       </Style>
       <!-- If the root is an object or an array, it is expanded -->
@@ -197,8 +201,26 @@
         <HierarchicalDataTemplate DataType="{x:Type vm:PairVM}"
                                   ItemsSource="{Binding Value, Converter={StaticResource JsonItemsSourceConverter}}">
           <StackPanel Orientation="Horizontal">
-            <TextBox Style="{StaticResource ReadOnlyTextBoxStyle}"
-                     Text="{Binding Key}"/>
+            <TextBox Style="{StaticResource ReadOnlyTextBoxStyle}">
+              <TextBox.Resources>
+                <rules:BindingProxy x:Key="proxy1"
+                                    Data="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorLevel=2, AncestorType={x:Type controls:TreeViewItemEx}}}"/>
+                <rules:BindingProxy x:Key="proxy2"
+                                    Data="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type controls:TreeViewItemEx}}}"/>
+              </TextBox.Resources>
+              <TextBox.Text>
+                <Binding Path="Key">
+                  <Binding.ValidationRules>
+                    <rules:KeyRule>
+                      <rules:KeyRule.Wrapper>
+                        <rules:KeyRuleWrapper Parent="{Binding Path=Data, Source={StaticResource proxy1}}"
+                                              Current="{Binding Path=Data, Source={StaticResource proxy2}}"/>
+                      </rules:KeyRule.Wrapper>
+                    </rules:KeyRule>
+                  </Binding.ValidationRules>
+                </Binding>
+              </TextBox.Text>
+            </TextBox>
             <TextBox Text=": ">
               <TextBox.Style>
                 <Style TargetType="{x:Type TextBox}"

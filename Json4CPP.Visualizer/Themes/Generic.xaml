@@ -524,6 +524,11 @@
         <Setter Property="BorderBrush"
                 Value="#FFB5CFE7"/>
       </Trigger>
+      <Trigger Property="Validation.HasError"
+               Value="True">
+        <Setter Property="ToolTip"
+                Value="{Binding Path=(Validation.Errors)[0].ErrorContent, RelativeSource={RelativeSource Self}}"/>
+      </Trigger>
     </Style.Triggers>
   </Style>
 </ResourceDictionary>

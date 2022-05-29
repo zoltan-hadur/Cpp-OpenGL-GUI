@@ -62,6 +62,8 @@
     <Compile Include="Converters\MathConverterSingleValue.cs" />
     <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="IJson4CPPVisualizerService.cs" />
+    <Compile Include="ValidationRules\BindingProxy.cs" />
+    <Compile Include="ValidationRules\KeyRule.cs" />
     <Compile Include="ViewModels\MessageBoxVM.cs" />
     <Compile Include="ViewModels\VisualizerWindowVMDesign.cs" />
     <Compile Include="ViewModels\JsonType.cs" />
