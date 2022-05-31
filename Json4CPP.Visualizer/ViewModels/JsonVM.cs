@@ -75,5 +75,32 @@ namespace Json4CPP.Visualizer.ViewModels
     }
 
     public override string ToString() => Value.ToString();
+
+    protected override void OnValidate(string propertyName)
+    {
+      base.OnValidate(propertyName);
+      switch (propertyName)
+      {
+        case nameof(Value):
+          {
+            if (Value is string wValue &&                                                                     // Value is string and it is either
+               (
+                 Convert.ToInt32(wValue.StartsWith("L\"") && wValue.EndsWith("\"") && wValue.Length >= 3) +   // a valid string, or
+                 Convert.ToInt32(double.TryParse(wValue, out _)) +                                            // a valid number, or
+                 Convert.ToInt32(wValue == "true" || wValue == "false") +                                     // a valid boolean, or
+                 Convert.ToInt32(wValue == "null")                                                            // null
+               )
+               != 1)  // If it is not exactly one of the above, then it is invalid
+            {
+              AddError(propertyName, $"{nameof(Value)} must be one of the following:"         + Environment.NewLine +
+                                      "  string: must be enclosed within \"L\"\" and \"\"\"!" + Environment.NewLine +
+                                      "  number: must be a valid number!"                     + Environment.NewLine +
+                                      "  boolean: must be either \"true\" or \"false\"!"      + Environment.NewLine +
+                                      "  null: must be \"null\"!");
+            }
+          }
+          break;
+      }
+    }
   }
 }
