@@ -1,5 +1,5 @@
-﻿using System.Collections.Specialized;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using System.Linq;
 
 namespace Json4CPP.Visualizer.ViewModels
 {
@@ -14,6 +14,8 @@ namespace Json4CPP.Visualizer.ViewModels
   /// </summary>
   public class PairVM : ViewModelBase
   {
+    public JsonObjectVM Parent { get; set; }
+
     private string mKey;
     public string Key
     {
@@ -74,5 +76,29 @@ namespace Json4CPP.Visualizer.ViewModels
     }
 
     public override string ToString() => $"{Key}: {Value}";
+
+    protected override void OnValidate(string propertyName)
+    {
+      base.OnValidate(propertyName);
+      switch (propertyName)
+      {
+        case nameof(Key):
+          {
+            if (Key == null)
+            {
+              AddError(propertyName, $"{nameof(Key)} can't be null!");
+            }
+            if (!(Key.StartsWith("L\"") && Key.EndsWith("\"") && Key.Length >= 3))
+            {
+              AddError(propertyName, $"{nameof(Key)} must be enclosed within \"L\"\" and \"\"\"!");
+            }
+            if (Parent?.Pairs.Any(wPair => wPair != this && wPair.Key == Key) == true)
+            {
+              AddError(propertyName, $"{nameof(Key)} must be unique!");
+            }
+          }
+          break;
+      }
+    }
   }
 }

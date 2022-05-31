@@ -23,6 +23,15 @@ namespace Json4CPP.Visualizer.ViewModels
 
     private void Pairs_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
+      if (e.OldItems != null) foreach(PairVM wPair in e.OldItems)
+      {
+        wPair.Parent = null;
+      }
+      if (e.NewItems != null) foreach (PairVM wPair in e.NewItems)
+      {
+        wPair.Parent = this;
+      }
+
       // Default value when added from the UI
       if (e.NewItems != null &&
           e.NewItems.Count == 1 &&
