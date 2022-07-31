@@ -45,6 +45,9 @@ namespace Json4CPP
     static JsonObject                   Read (                          std::deque<Detail::TOKEN> && tokens);
     static std::deque<Detail::TOKEN>  & Write(JsonObject const& object, std::deque<Detail::TOKEN>  & tokens);
     static std::deque<Detail::TOKEN> && Write(JsonObject const& object, std::deque<Detail::TOKEN> && tokens);
+
+    void AddItem();
+    void RemoveItem(wchar_t const* key);
   public:
     JsonObject() = default;
     JsonObject(Json const& json);

@@ -1,5 +1,6 @@
 ﻿using Json4CPP.Visualizer.Converters;
 using Json4CPP.Visualizer.Extensions;
+using Json4CPP.Visualizer.Interfaces;
 using System;
 using System.ComponentModel;
 using System.Linq;
@@ -119,18 +120,17 @@ namespace Json4CPP.Visualizer.Controls
     private void Part_DeleteItem_Click(object sender, RoutedEventArgs e)
     {
       var wParent = this.FindParent<TreeViewItemEx>();
-      if (wParent != null && wParent.Items is IEditableCollectionView wItems)
+      if (wParent != null && wParent.DataContext is IEditableCollection wEditableCollection)
       {
-        wItems.Remove(DataContext);
+        wEditableCollection.RemoveItem(DataContext);
       }
     }
 
     private void Part_NewItem_Click(object sender, RoutedEventArgs e)
     {
-      if (Items is IEditableCollectionView wItems)
+      if (DataContext is IEditableCollection wEditableCollection)
       {
-        wItems.AddNew();
-        wItems.CommitNew();
+        wEditableCollection.AddItem();
       }
     }
   }

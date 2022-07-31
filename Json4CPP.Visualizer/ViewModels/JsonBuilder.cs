@@ -41,6 +41,7 @@ namespace Json4CPP.Visualizer.ViewModels
         default:
           wJson = new JsonVM()
           {
+            Result = result,
             Value = result.Value
           };
           break;
@@ -56,15 +57,21 @@ namespace Json4CPP.Visualizer.ViewModels
 
     private static JsonVM BuildJsonObject(DkmSuccessEvaluationResult result)
     {
-      var wJsonObject = new JsonObjectVM();
+      var wJsonObject = new JsonObjectVM()
+      {
+        Result = result
+      };
       var wSizeResult = Json4CPPVisualizerService.EvaluateExpression(result, $"{result.FullName}._pairs.size()");
       var wSize = int.Parse(wSizeResult.Value);
       for (int i = 0; i < wSize; i++)
       {
-        var wFirstResult = Json4CPPVisualizerService.EvaluateExpression(result, $"{result.FullName}[{i}].first");
-        var wSecondResult = Json4CPPVisualizerService.EvaluateExpression(result, $"{result.FullName}[{i}].second");
-        wJsonObject.Pairs.Add(new PairVM
+        var wPairResult = Json4CPPVisualizerService.EvaluateExpression(result, $"{result.FullName}[{i}]");
+        var wFirstResult = Json4CPPVisualizerService.EvaluateExpression(wPairResult, $"{wPairResult.FullName}.first");
+        var wSecondResult = Json4CPPVisualizerService.EvaluateExpression(wPairResult, $"{wPairResult.FullName}.second");
+        wJsonObject.Pairs.Add(new PairVM()
         {
+          Parent = wJsonObject,
+          Result = wPairResult,
           Key = wFirstResult.Value,
           Value = BuildJson(wSecondResult)
         });
@@ -77,7 +84,10 @@ namespace Json4CPP.Visualizer.ViewModels
 
     private static JsonVM BuildJsonArray(DkmSuccessEvaluationResult result)
     {
-      var wJsonArray = new JsonArrayVM();
+      var wJsonArray = new JsonArrayVM()
+      {
+        Result = result
+      };
       var wSizeResult = Json4CPPVisualizerService.EvaluateExpression(result, $"{result.FullName}._values.size()");
       var wSize = int.Parse(wSizeResult.Value);
       for (int i = 0; i < wSize; i++)

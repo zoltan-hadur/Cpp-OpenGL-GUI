@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using Json4CPP.Visualizer.Interfaces;
+using Microsoft.VisualStudio.Debugger.Evaluation;
+using System.ComponentModel;
 using System.Linq;
 
 namespace Json4CPP.Visualizer.ViewModels
@@ -12,8 +14,10 @@ namespace Json4CPP.Visualizer.ViewModels
   /// <item><see cref="string"/></item>
   /// </list>
   /// </summary>
-  public class PairVM : ViewModelBase
+  public class PairVM : ViewModelBase, IEditableCollection
   {
+    public DkmSuccessEvaluationResult Result { get; set; }
+
     public JsonObjectVM Parent { get; set; }
 
     private string mKey;
@@ -92,12 +96,28 @@ namespace Json4CPP.Visualizer.ViewModels
             {
               AddError(propertyName, $"{nameof(Key)} must be enclosed within \"L\"\" and \"\"\"!");
             }
-            if (Parent?.Pairs.Any(wPair => wPair != this && wPair.Key == Key) == true)
+            if (Parent?.Pairs.Any(wPair => wPair != this && wPair?.Key == Key) == true)
             {
               AddError(propertyName, $"{nameof(Key)} must be unique!");
             }
           }
           break;
+      }
+    }
+
+    public void RemoveItem(object obj)
+    {
+      if (Value is IEditableCollection wValue)
+      {
+        wValue.RemoveItem(obj);
+      }
+    }
+
+    public void AddItem()
+    {
+      if (Value is IEditableCollection wValue)
+      {
+        wValue.AddItem();
       }
     }
   }

@@ -37,6 +37,9 @@ namespace Json4CPP
     static JsonArray                    Read (                        std::deque<Detail::TOKEN> && tokens);
     static std::deque<Detail::TOKEN>  & Write(JsonArray const& array, std::deque<Detail::TOKEN>  & tokens);
     static std::deque<Detail::TOKEN> && Write(JsonArray const& array, std::deque<Detail::TOKEN> && tokens);
+
+    void AddItem();
+    void RemoveItem(int64_t index);
   public:
     JsonArray() = default;
     JsonArray(Json const& json);

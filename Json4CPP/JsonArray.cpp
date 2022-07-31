@@ -77,6 +77,20 @@ namespace Json4CPP
     return std::move(Write(array, tokens));
   }
 
+#pragma optimize( "", off )
+  void JsonArray::AddItem()
+  {
+    PushBack(std::move(Json()));
+  }
+#pragma optimize( "", on )
+
+#pragma optimize( "", off )
+  void JsonArray::RemoveItem(int64_t index)
+  {
+    Erase(index);
+  }
+#pragma optimize( "", on )
+
   JsonArray::JsonArray(Json const& json)
   {
     *this = json.operator const Json4CPP::JsonArray & ();

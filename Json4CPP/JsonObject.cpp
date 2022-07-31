@@ -97,6 +97,39 @@ namespace Json4CPP
     return std::move(Write(object, tokens));
   }
 
+#pragma optimize( "", off )
+  void JsonObject::AddItem()
+  {
+    auto key = L"0"s;
+    auto unique = false;
+    while (!unique)
+    {
+      auto found = false;
+      for (int i = 0; i < _pairs.size(); ++i)
+      {
+        if (_pairs[i].first == key)
+        {
+          found = true;
+          key = std::to_wstring(std::stoull(key) + 1);
+          break;
+        }
+      }
+      if (!found)
+      {
+        unique = true;
+      }
+    }
+    Insert({ std::move(key), std::move(Json())});
+  }
+#pragma optimize( "", on )
+
+#pragma optimize( "", off )
+  void JsonObject::RemoveItem(wchar_t const* key)
+  {
+    Erase(key);
+  }
+#pragma optimize( "", on )
+
   JsonObject::JsonObject(Json const& json)
   {
     *this = json.operator const Json4CPP::JsonObject & ();

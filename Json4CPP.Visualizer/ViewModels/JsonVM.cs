@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Json4CPP.Visualizer.Interfaces;
+using Microsoft.VisualStudio.Debugger.Evaluation;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -14,8 +16,10 @@ namespace Json4CPP.Visualizer.ViewModels
   /// <item><see cref="string"/></item>
   /// </list>
   /// </summary>
-  public class JsonVM : ViewModelBase
+  public class JsonVM : ViewModelBase, IEditableCollection
   {
+    public DkmSuccessEvaluationResult Result { get; set; }
+
     private object mValue;
     public object Value
     {
@@ -100,6 +104,22 @@ namespace Json4CPP.Visualizer.ViewModels
             }
           }
           break;
+      }
+    }
+
+    public void RemoveItem(object obj)
+    {
+      if (Value is IEditableCollection wValue)
+      {
+        wValue.RemoveItem(obj);
+      }
+    }
+
+    public void AddItem()
+    {
+      if (Value is IEditableCollection wValue)
+      {
+        wValue.AddItem();
       }
     }
   }
