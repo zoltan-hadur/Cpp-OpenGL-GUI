@@ -48,6 +48,7 @@ namespace Json4CPP
 
     void AddItem();
     void RemoveItem(wchar_t const* key);
+    void ChangeKey(int64_t index, wchar_t const* key);
   public:
     JsonObject() = default;
     JsonObject(Json const& json);

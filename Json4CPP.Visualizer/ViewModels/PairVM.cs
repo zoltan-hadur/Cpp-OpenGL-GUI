@@ -85,6 +85,14 @@ namespace Json4CPP.Visualizer.ViewModels
     {
       switch (e.PropertyName)
       {
+        case nameof(Key):
+          {
+            if (!HasError(nameof(Key)))
+            {
+              mParent.ChangeKey(mParent.Pairs.IndexOf(this), Key);
+            }
+            break;
+          }
         case nameof(Value):
           OnPropertyChanged(nameof(IsObject));
           OnPropertyChanged(nameof(IsArray));

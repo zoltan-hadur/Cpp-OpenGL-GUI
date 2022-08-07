@@ -130,6 +130,15 @@ namespace Json4CPP
   }
 #pragma optimize( "", on )
 
+#pragma optimize( "", off )
+  void JsonObject::ChangeKey(int64_t index, wchar_t const* key)
+  {
+    _pairs[index].first = key;
+    _indexes.erase(_pairs[index].first);
+    _indexes[_pairs[index].first] = index;
+  }
+#pragma optimize( "", on )
+
   JsonObject::JsonObject(Json const& json)
   {
     *this = json.operator const Json4CPP::JsonObject & ();

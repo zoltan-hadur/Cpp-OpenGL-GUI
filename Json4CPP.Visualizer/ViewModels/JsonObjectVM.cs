@@ -43,6 +43,14 @@ namespace Json4CPP.Visualizer.ViewModels
 
     public override string ToString() => $"{{ Object={{Pairs={Pairs.Count}}} }}";
 
+    public void ChangeKey(int index, string key)
+    {
+      _ = Json4CPPVisualizerService.EvaluateExpression(
+        mResult,
+        $"((Json4CPP.dll!{mResult.Type}*)&{mResult.FullName})->ChangeKey({index},{key})",
+        flagsToRemove: DkmEvaluationFlags.NoSideEffects);
+    }
+
     public void RemoveItem(object obj)
     {
       if (obj is PairVM wPair && Pairs.IndexOf(wPair) is int wIndex && wIndex >= 0)
