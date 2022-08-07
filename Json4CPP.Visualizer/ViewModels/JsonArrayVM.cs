@@ -18,12 +18,33 @@ namespace Json4CPP.Visualizer.ViewModels
   /// </summary>
   public class JsonArrayVM : ViewModelBase, IEditableCollection
   {
-    public DkmSuccessEvaluationResult Result { get; set; }
+    private DkmSuccessEvaluationResult mResult;
 
     private ObservableCollection<JsonVM> mValues = new ObservableCollection<JsonVM>();
     public ObservableCollection<JsonVM> Values
     {
-      get { return mValues; }
+      get => mValues;
+    }
+
+    protected JsonArrayVM()
+    {
+
+    }
+
+    public JsonArrayVM(DkmSuccessEvaluationResult result)
+    {
+      mResult = result;
+
+      // Query the size of the c++ object
+      var wSizeResult = Json4CPPVisualizerService.EvaluateExpression(mResult, $"{mResult.FullName}._values.size()");
+      var wSize = int.Parse(wSizeResult.Value);
+
+      // Query each element of the c++ object and add it to the c# ui
+      for (int i = 0; i < wSize; i++)
+      {
+        var wValueResult = Json4CPPVisualizerService.EvaluateExpression(mResult, $"{mResult.FullName}[{i}]");
+        Values.Add(JsonBuilder.Build(wValueResult));
+      }
     }
 
     public override string ToString() => $"{{ Array={{Values={Values.Count}}} }}";
@@ -32,14 +53,19 @@ namespace Json4CPP.Visualizer.ViewModels
     {
       if (obj is JsonVM wJson && Values.IndexOf(wJson) is int wIndex && wIndex >= 0)
       {
+        // Remove item from the c++ object
         _ = Json4CPPVisualizerService.EvaluateExpression(
-          Result,
-          $"((Json4CPP.dll!{Result.Type}*)&{Result.FullName})->RemoveItem({wIndex})",
+          mResult,
+          $"((Json4CPP.dll!{mResult.Type}*)&{mResult.FullName})->RemoveItem({wIndex})",
           flagsToRemove: DkmEvaluationFlags.NoSideEffects);
+
+        // Remove item from the c# ui
         Values.Remove(wJson);
+
+        // Refresh the remaining ones
         for (int i = wIndex; i < Values.Count; i++)
         {
-          var wResult = Json4CPPVisualizerService.EvaluateExpression(Result, $"{Result.FullName}[{i}]");
+          var wResult = Json4CPPVisualizerService.EvaluateExpression(mResult, $"{mResult.FullName}[{i}]");
           var wRebuiltJson = JsonBuilder.Build(wResult);
           Values[i] = wRebuiltJson;
         }
@@ -48,13 +74,15 @@ namespace Json4CPP.Visualizer.ViewModels
 
     public void AddItem()
     {
+      // Add item to the c++ object
       _ = Json4CPPVisualizerService.EvaluateExpression(
-        Result,
-        $"((Json4CPP.dll!{Result.Type}*)&{Result.FullName})->AddItem()",
+        mResult,
+        $"((Json4CPP.dll!{mResult.Type}*)&{mResult.FullName})->AddItem()",
         flagsToRemove: DkmEvaluationFlags.NoSideEffects);
-      var wResult = Json4CPPVisualizerService.EvaluateExpression(Result, $"{Result.FullName}[{Values.Count}]");
-      var wJson = JsonBuilder.Build(wResult);
-      Values.Add(wJson);
+
+      // Query and add the newly added item from the c++ object to the c# ui
+      var wResult = Json4CPPVisualizerService.EvaluateExpression(mResult, $"{mResult.FullName}[{Values.Count}]");
+      Values.Add(JsonBuilder.Build(wResult));
     }
   }
 }

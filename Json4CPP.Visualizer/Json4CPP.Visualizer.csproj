@@ -63,8 +63,12 @@
     <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="IJson4CPPVisualizerService.cs" />
     <Compile Include="Interfaces\IEditableCollection.cs" />
+    <Compile Include="ViewModels\Designs\JsonArrayVMDesign.cs" />
+    <Compile Include="ViewModels\Designs\JsonObjectVMDesign.cs" />
+    <Compile Include="ViewModels\Designs\JsonVMDesign.cs" />
     <Compile Include="ViewModels\MessageBoxVM.cs" />
-    <Compile Include="ViewModels\VisualizerWindowVMDesign.cs" />
+    <Compile Include="ViewModels\Designs\PairVMDesign.cs" />
+    <Compile Include="ViewModels\Designs\VisualizerWindowVMDesign.cs" />
     <Compile Include="ViewModels\JsonType.cs" />
     <Compile Include="ViewModels\JsonArrayVM.cs" />
     <Compile Include="ViewModels\JsonObjectVM.cs" />

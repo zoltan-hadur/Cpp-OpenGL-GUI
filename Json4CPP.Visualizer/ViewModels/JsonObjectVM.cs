@@ -12,12 +12,33 @@ namespace Json4CPP.Visualizer.ViewModels
   /// </summary>
   public class JsonObjectVM : ViewModelBase, IEditableCollection
   {
-    public DkmSuccessEvaluationResult Result { get; set; }
+    private DkmSuccessEvaluationResult mResult;
 
     private ObservableCollection<PairVM> mPairs = new ObservableCollection<PairVM>();
     public ObservableCollection<PairVM> Pairs
     {
-      get { return mPairs; }
+      get => mPairs;
+    }
+
+    protected JsonObjectVM()
+    {
+
+    }
+
+    public JsonObjectVM(DkmSuccessEvaluationResult result)
+    {
+      mResult = result;
+
+      // Query the size of the c++ object
+      var wSizeResult = Json4CPPVisualizerService.EvaluateExpression(mResult, $"{mResult.FullName}._pairs.size()");
+      var wSize = int.Parse(wSizeResult.Value);
+
+      // Query each element of the c++ object and add it to the c# ui
+      for (int i = 0; i < wSize; i++)
+      {
+        var wPairResult = Json4CPPVisualizerService.EvaluateExpression(mResult, $"{mResult.FullName}[{i}]");
+        Pairs.Add(new PairVM(wPairResult, this));
+      }
     }
 
     public override string ToString() => $"{{ Object={{Pairs={Pairs.Count}}} }}";
@@ -26,44 +47,35 @@ namespace Json4CPP.Visualizer.ViewModels
     {
       if (obj is PairVM wPair && Pairs.IndexOf(wPair) is int wIndex && wIndex >= 0)
       {
+        // Remove item from the c++ object
         _ = Json4CPPVisualizerService.EvaluateExpression(
-          Result,
-          $"((Json4CPP.dll!{Result.Type}*)&{Result.FullName})->RemoveItem({wPair.Key})",
+          mResult,
+          $"((Json4CPP.dll!{mResult.Type}*)&{mResult.FullName})->RemoveItem({wPair.Key})",
           flagsToRemove: DkmEvaluationFlags.NoSideEffects);
+
+        // Remove item from the c# ui
         Pairs.Remove(wPair);
+
+        // Refresh the remaining ones
         for (int i = wIndex; i < Pairs.Count; i++)
         {
-          var wPairResult = Json4CPPVisualizerService.EvaluateExpression(Result, $"{Result.FullName}[{i}]");
-          var wFirstResult = Json4CPPVisualizerService.EvaluateExpression(wPairResult, $"{wPairResult.FullName}.first");
-          var wSecondResult = Json4CPPVisualizerService.EvaluateExpression(wPairResult, $"{wPairResult.FullName}.second");
-          Pairs[i] = null;
-          Pairs[i] = new PairVM()
-          {
-            Parent = this,
-            Result = wPairResult,
-            Key = wFirstResult.Value,
-            Value = JsonBuilder.Build(wSecondResult)
-          };
+          var wPairResult = Json4CPPVisualizerService.EvaluateExpression(mResult, $"{mResult.FullName}[{i}]");
+          Pairs[i] = new PairVM(wPairResult, this);
         }
       }
     }
 
     public void AddItem()
     {
+      // Add item to the c++ object
       _ = Json4CPPVisualizerService.EvaluateExpression(
-        Result,
-        $"((Json4CPP.dll!{Result.Type}*)&{Result.FullName})->AddItem()",
+        mResult,
+        $"((Json4CPP.dll!{mResult.Type}*)&{mResult.FullName})->AddItem()",
         flagsToRemove: DkmEvaluationFlags.NoSideEffects);
-      var wPairResult = Json4CPPVisualizerService.EvaluateExpression(Result, $"{Result.FullName}[{Pairs.Count}]");
-      var wFirstResult = Json4CPPVisualizerService.EvaluateExpression(wPairResult, $"{wPairResult.FullName}.first");
-      var wSecondResult = Json4CPPVisualizerService.EvaluateExpression(wPairResult, $"{wPairResult.FullName}.second");
-      Pairs.Add(new PairVM()
-      {
-        Parent = this,
-        Result = wPairResult,
-        Key = wFirstResult.Value,
-        Value = JsonBuilder.Build(wSecondResult)
-      });
+
+      // Query and add the newly added item from the c++ object to the c# ui
+      var wPairResult = Json4CPPVisualizerService.EvaluateExpression(mResult, $"{mResult.FullName}[{Pairs.Count}]");
+      Pairs.Add(new PairVM(wPairResult, this));
     }
   }
 }

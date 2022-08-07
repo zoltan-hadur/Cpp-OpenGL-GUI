@@ -18,12 +18,12 @@ namespace Json4CPP.Visualizer.ViewModels
   /// </summary>
   public class JsonVM : ViewModelBase, IEditableCollection
   {
-    public DkmSuccessEvaluationResult Result { get; set; }
+    private DkmSuccessEvaluationResult mResult;
 
     private object mValue;
     public object Value
     {
-      get { return mValue; }
+      get => mValue;
       set
       {
         if (mValue != null)
@@ -62,8 +62,15 @@ namespace Json4CPP.Visualizer.ViewModels
     public bool IsObject => Value is JsonObjectVM;
     public bool IsArray => Value is JsonArrayVM;
 
-    public JsonVM()
+    protected JsonVM()
     {
+
+    }
+
+    public JsonVM(DkmSuccessEvaluationResult result, object value)
+    {
+      mResult = result;
+      mValue = value;
       PropertyChanged += JsonVM_PropertyChanged;
     }
 

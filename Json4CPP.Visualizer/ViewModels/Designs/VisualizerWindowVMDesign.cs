@@ -1,8 +1,8 @@
-﻿namespace Json4CPP.Visualizer.ViewModels
+﻿namespace Json4CPP.Visualizer.ViewModels.Designs
 {
-  public class VisualizerWindowVMDesign : VisualizerWindowVM
+  public class VisualizerWindowVM : ViewModels.VisualizerWindowVM
   {
-    public VisualizerWindowVMDesign()
+    public VisualizerWindowVM()
     {
       var wInnerInnerJsonObject = new JsonObjectVM();
       wInnerInnerJsonObject.Pairs.Add(new PairVM { Key = "L\"Key1\"", Value = new JsonVM { Value = "1" } });

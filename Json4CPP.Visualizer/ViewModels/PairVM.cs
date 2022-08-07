@@ -16,21 +16,21 @@ namespace Json4CPP.Visualizer.ViewModels
   /// </summary>
   public class PairVM : ViewModelBase, IEditableCollection
   {
-    public DkmSuccessEvaluationResult Result { get; set; }
+    private DkmSuccessEvaluationResult mResult;
 
-    public JsonObjectVM Parent { get; set; }
+    private JsonObjectVM mParent;
 
     private string mKey;
     public string Key
     {
-      get { return mKey; }
-      set { Set(ref mKey, value); }
+      get => mKey;
+      set => Set(ref mKey, value);
     }
 
     private JsonVM mValue;
     public JsonVM Value
     {
-      get { return mValue; }
+      get => mValue;
       set
       {
         if (mValue != null)
@@ -63,8 +63,21 @@ namespace Json4CPP.Visualizer.ViewModels
     public bool IsObject => Value.IsObject;
     public bool IsArray => Value.IsArray;
 
-    public PairVM()
+    protected PairVM()
     {
+
+    }
+
+    public PairVM(DkmSuccessEvaluationResult result, JsonObjectVM parent)
+    {
+      mResult = result;
+      mParent = parent;
+
+      var wFirstResult = Json4CPPVisualizerService.EvaluateExpression(mResult, $"{mResult.FullName}.first");
+      var wSecondResult = Json4CPPVisualizerService.EvaluateExpression(mResult, $"{mResult.FullName}.second");
+      mKey = wFirstResult.Value;
+      mValue = JsonBuilder.Build(wSecondResult);
+
       PropertyChanged += PairVM_PropertyChanged;
     }
 
@@ -96,7 +109,7 @@ namespace Json4CPP.Visualizer.ViewModels
             {
               AddError(propertyName, $"{nameof(Key)} must be enclosed within \"L\"\" and \"\"\"!");
             }
-            if (Parent?.Pairs.Any(wPair => wPair != this && wPair?.Key == Key) == true)
+            if (mParent.Pairs.Any(wPair => wPair != this && wPair?.Key == Key) == true)
             {
               AddError(propertyName, $"{nameof(Key)} must be unique!");
             }

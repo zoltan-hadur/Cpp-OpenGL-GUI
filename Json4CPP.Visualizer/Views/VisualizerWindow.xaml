@@ -5,6 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:Json4CPP.Visualizer.Views"
         xmlns:vm="clr-namespace:Json4CPP.Visualizer.ViewModels"
+        xmlns:vmd="clr-namespace:Json4CPP.Visualizer.ViewModels.Designs"
         xmlns:controls="clr-namespace:Json4CPP.Visualizer.Controls"
         xmlns:converters="clr-namespace:Json4CPP.Visualizer.Converters"
         mc:Ignorable="d"
@@ -15,7 +16,7 @@
         Width="600"
         Height="600"
         d:DesignHeight="1450" d:DesignWidth="600"
-        d:DataContext="{d:DesignInstance vm:VisualizerWindowVMDesign, IsDesignTimeCreatable=True}">
+        d:DataContext="{d:DesignInstance vmd:VisualizerWindowVM, IsDesignTimeCreatable=True}">
   <Window.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>

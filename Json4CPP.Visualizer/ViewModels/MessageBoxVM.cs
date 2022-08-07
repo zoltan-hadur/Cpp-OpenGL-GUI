@@ -11,13 +11,13 @@ namespace Json4CPP.Visualizer.ViewModels
     private string mMessage;
     public string Message
     {
-      get { return mMessage; }
-      set { Set(ref mMessage, value); }
+      get => mMessage;
+      set => Set(ref mMessage, value);
     }
 
     public MessageBoxVM(string message)
     {
-      Message = message;
+      mMessage = message;
     }
   }
 }
